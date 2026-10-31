@@ -1,0 +1,20 @@
+{
+  "title": "Recipe Name",
+  "category": "cooking",
+  "description": "One or two sentences about the dish.",
+  "tags": ["weeknight", "vegetarian"],
+  "added": "2026-10-31",
+  "yield": "4 servings",
+  "time": { "prep": 15, "cook": 30 },
+  "image": "",
+  "ingredients": [
+    "1 tbsp olive oil",
+    { "group": "For the sauce", "items": ["2 cloves garlic, minced", "1 can (28 oz) crushed tomatoes"] }
+  ],
+  "steps": [
+    "First step.",
+    "Second step."
+  ],
+  "notes": ["Optional tips, substitutions, or what you'd change next time."],
+  "source": { "name": "Where it came from", "url": "" }
+}

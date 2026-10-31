@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#b4532a"/>
+  <!-- cocktail glass -->
+  <path d="M136 150h240L256 290z" fill="#fbf7f1"/>
+  <rect x="244" y="285" width="24" height="95" fill="#fbf7f1"/>
+  <rect x="186" y="372" width="140" height="22" rx="11" fill="#fbf7f1"/>
+  <circle cx="342" cy="138" r="34" fill="#e8b04f"/>
+  <path d="M300 120 352 186" stroke="#fbf7f1" stroke-width="12" stroke-linecap="round"/>
+</svg>
