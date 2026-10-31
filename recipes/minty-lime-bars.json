@@ -1,0 +1,237 @@
+{
+  "title": "Minty Lime Bars",
+  "category": "baking",
+  "kind": "dish",
+  "description": "Lime-mint shortbread under baked lime curd, chilled and cut.",
+  "tags": [
+    "citrus",
+    "tangy",
+    "mint",
+    "make-ahead",
+    "uses egg yolks"
+  ],
+  "added": "2026-10-26",
+  "bakeCategory": "Cookies & Bars",
+  "flavor": "sweet",
+  "yield": "Makes 16 bars",
+  "times": [
+    [
+      "Active",
+      "50 min"
+    ],
+    [
+      "Total",
+      "1 hr 45 min, plus cooling and 1 hr chill"
+    ]
+  ],
+  "time": {
+    "total": 105
+  },
+  "pan": "8 x 8 in, metal preferred",
+  "heat": "350°F (175°C), then 300°F (150°C)",
+  "heatLabel": "Oven",
+  "beforeYouStart": [
+    "Rack in the center; preheat the oven to 350°F (175°C).",
+    "Line the pan with two crossed sheets of foil pressed into the corners and up the sides, then butter the foil. The overhang becomes handles for lifting the bars out.",
+    "Zest the limes for the crust (and a little extra for serving) before juicing them.",
+    "Keep both portions of butter cold until they go in. Have an instant-read thermometer ready for the curd."
+  ],
+  "ingredients": [
+    {
+      "group": "Shortbread crust",
+      "items": [
+        {
+          "item": "Butter",
+          "note": "for the pan"
+        },
+        {
+          "qty": "2 Tbsp",
+          "item": "Finely grated lime zest",
+          "note": "about 3 limes"
+        },
+        {
+          "grams": 50,
+          "qty": "1/4 cup",
+          "item": "Granulated sugar"
+        },
+        {
+          "grams": 130,
+          "qty": "1 cup",
+          "item": "All-purpose flour"
+        },
+        {
+          "qty": "2 Tbsp",
+          "item": "Fresh mint",
+          "note": "finely chopped"
+        },
+        {
+          "qty": "1/4 tsp",
+          "item": "Baking powder"
+        },
+        {
+          "qty": "pinch",
+          "item": "Diamond Crystal kosher salt"
+        },
+        {
+          "grams": 113,
+          "qty": "1 stick",
+          "item": "Unsalted butter",
+          "note": "cut into 1/2-inch pieces, chilled"
+        }
+      ]
+    },
+    {
+      "group": "Lime curd",
+      "items": [
+        {
+          "grams": 170,
+          "qty": "3/4 cup",
+          "item": "Fresh lime juice",
+          "note": "about 7 limes"
+        },
+        {
+          "grams": 57,
+          "qty": "1/4 cup",
+          "item": "Fresh lemon juice",
+          "note": "about 1 large lemon"
+        },
+        {
+          "grams": 3,
+          "qty": "1 tsp",
+          "item": "Cornstarch"
+        },
+        {
+          "qty": "pinch",
+          "item": "Diamond Crystal kosher salt"
+        },
+        {
+          "grams": 200,
+          "qty": "1 cup",
+          "item": "Granulated sugar",
+          "note": "divided"
+        },
+        {
+          "grams": 80,
+          "qty": "5",
+          "item": "Large egg yolks"
+        },
+        {
+          "grams": 50,
+          "qty": "1",
+          "item": "Large egg"
+        },
+        {
+          "grams": 85,
+          "qty": "6 Tbsp",
+          "item": "Unsalted butter",
+          "note": "cut into pieces, chilled"
+        }
+      ]
+    },
+    {
+      "group": "To finish",
+      "items": [
+        {
+          "item": "Powdered sugar and lime zest",
+          "note": "for serving"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "group": "Crust",
+      "items": [
+        {
+          "do": "Rub the lime zest into the sugar with your fingertips until damp and fragrant. Toss in the flour, mint, baking powder and salt."
+        },
+        {
+          "do": "Add the cold butter and toss to coat, then smash and pinch it in with your fingertips.",
+          "cue": "Moist crumbs that clump when squeezed"
+        },
+        {
+          "do": "Scatter the crumbs in the pan and press into an even layer, right into the corners and against the sides. Bake at 350°F (175°C).",
+          "wait": "25 to 30 min",
+          "cue": "Lightly golden"
+        },
+        {
+          "do": "Lower the oven to 300°F (150°C) and let the crust cool while you make the curd."
+        }
+      ]
+    },
+    {
+      "group": "Curd",
+      "items": [
+        {
+          "do": "In a small saucepan, combine the lime juice, lemon juice, cornstarch, salt and half the sugar (100 g). Heat over medium, whisking now and then to dissolve the sugar. Once boiling, whisk constantly for about 1 min until slightly thickened, then take off the heat."
+        },
+        {
+          "do": "Only once the citrus is boiling, whisk the yolks, whole egg and remaining 100 g sugar hard for about 1 min. Combining them any earlier can make the curd lumpy.",
+          "cue": "Smooth, thick and a couple of shades paler"
+        },
+        {
+          "do": "Whisking the whole time, drizzle the hot citrus into the eggs a tablespoon at a time until about half of it is in."
+        },
+        {
+          "do": "Whisk everything back into the saucepan and cook over medium-low, whisking constantly, 3 to 5 min.",
+          "cue": "Opaque, coats a spoon, holds whisk marks, 170°F (77°C)"
+        },
+        {
+          "do": "Off the heat, whisk in the butter one piece at a time, letting each melt before adding the next, until smooth."
+        }
+      ]
+    },
+    {
+      "group": "Bake and finish",
+      "items": [
+        {
+          "do": "Pour the hot curd over the crust and shake the pan to level it. Bake at 300°F (150°C).",
+          "wait": "30 to 35 min",
+          "cue": "Sides puffed, center set but still slightly wobbly"
+        },
+        {
+          "do": "Cool completely in the pan, then refrigerate.",
+          "wait": "About 1 hr in the fridge",
+          "cue": "The bottom of the pan is cold"
+        },
+        {
+          "do": "Lift the slab out by the foil, peel the sides down and slide a spatula underneath to free the crust. Cut into 16 squares. Dust with powdered sugar and lime zest just before serving."
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Bars keep airtight in the fridge up to 5 days, best on day 1 or 2. Add the sugar and zest only at serving.",
+        "The crust can be baked a day ahead and kept wrapped at room temperature.",
+        "The curd can be made up to 3 days ahead. Store it in plastic or glass, not stainless (it picks up a tinny taste), with wrap pressed onto the surface. Bring to room temperature and whisk loose before using."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "As a tart: press the shortbread into the bottom and up the sides of a buttered, unlined 9-inch removable-bottom tart pan, smoothing it with the base of a 1-cup measure. It will feel crumbly; just close any gaps. Parbake as written, fill (there may be curd left over) and bake 35 to 40 min, until set with a slight wobble in the center.",
+        "Sweet Tart Dough, parbaked, also works as the tart shell."
+      ]
+    },
+    {
+      "group": "Pairs with",
+      "items": [
+        "Chocolate Pavlova (a use for the 5 leftover whites)"
+      ]
+    },
+    {
+      "group": "My notes",
+      "items": [
+        "Made 7/4/26. So good with about 10 mint leaves.",
+        "The curd is easy; just prep everything ahead.",
+        "Try lemon zest in the shortbread for less tartness."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Dessert Person by Claire Saffitz, pp. 155 to 156"
+  }
+}

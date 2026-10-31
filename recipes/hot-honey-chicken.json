@@ -1,0 +1,124 @@
+{
+  "title": "Hot Honey Chicken",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Floured chicken cutlets seared, then glazed in honey, butter and hot sauce.",
+  "tags": [],
+  "added": "2026-09-28",
+  "yield": "Serves 4",
+  "times": [
+    [
+      "Active",
+      "25 min"
+    ],
+    [
+      "Total",
+      "25 min"
+    ]
+  ],
+  "time": {
+    "total": 25
+  },
+  "ingredients": [
+    {
+      "group": "Chicken",
+      "items": [
+        {
+          "qty": "1 lb",
+          "item": "boneless skinless chicken breasts (2)"
+        },
+        {
+          "item": "salt and pepper"
+        },
+        {
+          "qty": "1/3 cup",
+          "item": "flour"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "cooking oil"
+        },
+        {
+          "qty": "2 tbsp",
+          "item": "cold unsalted butter, divided"
+        }
+      ]
+    },
+    {
+      "group": "Glaze",
+      "items": [
+        {
+          "qty": "4 cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "soy sauce"
+        },
+        {
+          "qty": "1 1/2 tbsp",
+          "item": "chili paste, Sriracha or Frank's RedHot"
+        },
+        {
+          "qty": "1/3 cup",
+          "item": "honey"
+        },
+        {
+          "qty": "3/4 tsp",
+          "item": "cayenne, to taste"
+        },
+        {
+          "qty": "1/2 tsp",
+          "item": "garlic powder"
+        },
+        {
+          "qty": "1/2 tsp",
+          "item": "red chili flakes, or 1/4 tsp chili powder"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Halve each breast horizontally into 4 cutlets, then pound between plastic wrap to an even 1/2 inch. Even thickness lets lean breast cook through in minutes without drying out."
+    },
+    {
+      "do": "Pat the cutlets completely dry; wet chicken steams instead of browning. Season both sides with salt and pepper."
+    },
+    {
+      "do": "Dredge in the flour and shake off the excess. A thin coat is all you want: it crisps and shields the meat."
+    },
+    {
+      "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Sear the chicken 2 to 3 minutes per side until golden, then move to a plate."
+    },
+    {
+      "do": "Add the remaining butter to the pan and cook the garlic until fragrant, about 1 minute."
+    },
+    {
+      "do": "Turn the heat to low before the honey goes in, since honey scorches fast. Stir in the soy sauce, chili paste, honey, cayenne and garlic powder."
+    },
+    {
+      "do": "Return the chicken and turn it in the sauce for 30 seconds to coat. Finish with chili flakes, salt and pepper to taste. If the glaze tightens toward toffee, loosen it with 1 to 2 tbsp warm water."
+    },
+    {
+      "do": "Pull off the heat right away. Slice into strips and spoon the pan sauce over. Serve immediately; the glaze softens the crust as it sits."
+    }
+  ],
+  "notes": [
+    "Hot sauce: the author prefers Frank's RedHot, whose vinegar tang cuts the sweetness. Plain clover honey is fine; raw honey's subtler flavor cooks off.",
+    "Glaze: the butter is what turns thin honey into something that clings. If yours runs off the chicken, swirl in a small knob of cold butter off the heat.",
+    "Less heat: drop the cayenne to a pinch or swap in sweet paprika, and halve the chili paste. Already too hot? Whisk in another 1 tbsp butter and a little more honey.",
+    "Thighs work and stay juicier; give them a little longer per side.",
+    "Gluten-free: cornstarch or a GF blend for the flour, tamari for the soy. Coconut aminos also replace soy.",
+    "Leftovers: keep airtight. Skip the microwave, which turns it rubbery. Recrisp in a hot skillet, in an air fryer at 380F (195C) for 3 to 4 minutes, or in a 350F (180C) oven for 5 to 6 minutes."
+  ],
+  "aroma": "smoke_sugar_vinegar",
+  "role": "protein_main",
+  "technique": "Pan-sear, medium-high",
+  "region": "United States and Canada",
+  "nutrition": "Per serving: 398 cal · 31 g carbs · 26 g protein · 19 g fat · 19 g sugar · 481 mg sodium",
+  "source": {
+    "name": "Karina Carrel, Cafe Delites",
+    "url": "https://cafedelites.com/hot-honey-butter-chicken"
+  }
+}

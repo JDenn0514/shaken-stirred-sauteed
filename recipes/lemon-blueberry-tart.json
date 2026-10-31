@@ -1,0 +1,219 @@
+{
+  "title": "Lemon Blueberry Tart",
+  "category": "baking",
+  "kind": "dish",
+  "description": "Lemon condensed-milk filling with a blueberry swirl on shortbread.",
+  "tags": [
+    "citrus",
+    "fruit",
+    "tangy",
+    "make-ahead",
+    "freezer-friendly"
+  ],
+  "added": "2026-10-26",
+  "bakeCategory": "Pies & Tarts",
+  "flavor": "sweet",
+  "yield": "Serves 8 to 10",
+  "times": [
+    [
+      "Active",
+      "1 hr"
+    ],
+    [
+      "Total",
+      "About 4 hr with chilling"
+    ]
+  ],
+  "time": {
+    "total": 240
+  },
+  "pan": "9 in tart pan",
+  "heat": "350°F (175°C)",
+  "heatLabel": "Oven",
+  "beforeYouStart": [
+    "Make the blueberry sauce first. Once the crust is in the oven, everything moves fast.",
+    "Preheat the oven to 350°F (175°C) while the sauce cooks.",
+    "Check the condensed milk: it must be full-fat sweetened, and a full 14 oz can. Evaporated, fat-free or a short can leaves the filling runny.",
+    "Don't use a springform pan; the crust leaks."
+  ],
+  "ingredients": [
+    {
+      "group": "Blueberry sauce",
+      "items": [
+        {
+          "qty": "1 tsp",
+          "item": "Cornstarch"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "Lemon juice",
+          "note": "or water"
+        },
+        {
+          "grams": 140,
+          "qty": "1 cup",
+          "item": "Blueberries",
+          "note": "fresh or frozen, not thawed"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "Granulated sugar"
+        }
+      ]
+    },
+    {
+      "group": "Shortbread crust",
+      "items": [
+        {
+          "grams": 113,
+          "qty": "1/2 cup",
+          "item": "Unsalted butter",
+          "note": "melted"
+        },
+        {
+          "grams": 50,
+          "qty": "1/4 cup",
+          "item": "Granulated sugar"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Pure vanilla extract"
+        },
+        {
+          "qty": "1/4 tsp",
+          "item": "Salt"
+        },
+        {
+          "grams": 125,
+          "qty": "1 cup",
+          "item": "All-purpose flour",
+          "note": "spooned and leveled"
+        }
+      ]
+    },
+    {
+      "group": "Filling",
+      "items": [
+        {
+          "grams": 397,
+          "qty": "1 can",
+          "item": "Sweetened condensed milk",
+          "note": "14 oz, full-fat"
+        },
+        {
+          "qty": "6 Tbsp",
+          "item": "Lemon juice",
+          "note": "about 2 lemons"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Lemon zest",
+          "note": "about 1 lemon"
+        },
+        {
+          "qty": "1",
+          "item": "Large egg yolk"
+        }
+      ]
+    },
+    {
+      "group": "To serve (optional)",
+      "items": [
+        {
+          "item": "Lemon slices, blueberries, leftover sauce, whipped cream"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "group": "Blueberry sauce",
+      "items": [
+        {
+          "do": "Stir the cornstarch into the lemon juice with a fork until dissolved; set aside."
+        },
+        {
+          "do": "Warm the blueberries and sugar in a small saucepan over medium heat for 3 min, stirring now and then and mashing the berries against the pan to break them down."
+        },
+        {
+          "do": "Stir in the slurry and cook 2 min more, then take off the heat and leave at room temperature until the filling goes in. It makes 1/2 to 2/3 cup; about half goes in the tart and the rest is for serving.",
+          "cue": "Thickened"
+        }
+      ]
+    },
+    {
+      "group": "Crust",
+      "items": [
+        {
+          "do": "In a medium bowl, stir together the melted butter, sugar, vanilla and salt. Add the flour and mix until fully combined.",
+          "cue": "Thick and a little greasy, as it should be"
+        },
+        {
+          "do": "Press firmly and evenly into an ungreased 9-inch tart pan, across the bottom and up the sides. It looks like too little but it stretches. The base of a measuring cup helps, though it can stick."
+        },
+        {
+          "do": "Bake at 350°F (175°C).",
+          "wait": "15 min",
+          "cue": "Edges just barely browned"
+        },
+        {
+          "do": "Poke a few fork holes across the warm crust, not all the way through, so the filling has something to grip. Leave the oven on."
+        }
+      ]
+    },
+    {
+      "group": "Filling and bake",
+      "items": [
+        {
+          "do": "Whisk the condensed milk, lemon juice, zest and egg yolk until smooth. Pour into the still-warm crust."
+        },
+        {
+          "do": "Stir the sauce to loosen it, since it thickens as it sits; give it 5 to 10 sec in the microwave if needed (warm is fine). Spoon about half over the filling and swirl with a toothpick or knife, then shimmy the pan back and forth two or three times to settle it."
+        },
+        {
+          "do": "Bake at 350°F (175°C). Err toward underbaking; it keeps firming in the fridge, and overbaked filling turns rubbery.",
+          "wait": "17 to 19 min",
+          "cue": "Center stops jiggling when you tap the pan; top still a little tacky"
+        }
+      ]
+    },
+    {
+      "group": "Chill and serve",
+      "items": [
+        {
+          "do": "Cool completely on a rack, then refrigerate uncovered. Cover it if chilling longer than 2 hr, up to 1 day.",
+          "wait": "At least 2 hr in the fridge"
+        },
+        {
+          "do": "Remove the pan sides, slice, and serve with the reserved sauce and any garnishes."
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Leftovers keep tightly covered in the fridge up to 1 week.",
+        "The whole tart can be baked and chilled a day ahead. It also freezes up to 3 months; thaw overnight in the fridge.",
+        "The sauce and filling can be made ahead and refrigerated (rewarm the sauce to loosen it), but don't prebake the crust. The filling needs a warm crust to stick."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Pan: a 9-inch pie dish works with the same bake times but slices less cleanly. A graham crust doesn't work; it collapses under this filling.",
+        "Smooth sauce: strain it through a fine-mesh sieve to remove skins and lumps.",
+        "Lime: swap lime juice and zest for the lemon. The swirl is optional.",
+        "Strawberry: 1 cup chopped fresh or frozen strawberries in place of the blueberries.",
+        "Raspberry or blackberry: 1 cup berries plus 1 extra tsp sugar in the sauce (3 tsp total). Strain out the seeds.",
+        "Mini tarts: divide the crust among about 10 mini tart pans, pressing it into the bottoms only. Bake 8 min on a sheet pan and skip the fork holes. Fill the warm crusts, dot and swirl with sauce, and bake 9 to 10 min until the centers set. Cool, then chill at least 1 hr.",
+        "Orange isn't recommended (too sweet without the tang). Grapefruit is untested."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Sally McKenney",
+    "url": "https://sallysbakingaddiction.com/lemon-blueberry-tart"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "title": "Spicy Thai Peanut Sauce",
+  "category": "cooking",
+  "kind": "component",
+  "description": "Peanut butter, soy, sesame and fresh ginger blended smooth.",
+  "tags": [],
+  "added": "2026-10-08",
+  "yield": "Makes about 2 3/4 cups",
+  "aroma": "soy_ginger_ferment",
+  "role": "sauce_condiment",
+  "technique": "No cook, food processor",
+  "ingredients": [
+    {
+      "qty": "1 cup",
+      "item": "smooth peanut butter"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "soy sauce or tamari"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "toasted sesame oil"
+    },
+    {
+      "qty": "3 tbsp",
+      "item": "rice vinegar"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "fresh ginger, chopped"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "garlic, chopped"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "hot sauce"
+    },
+    {
+      "qty": "1 tbsp",
+      "item": "hoisin sauce"
+    },
+    {
+      "qty": "1 tbsp",
+      "item": "fresh lime juice"
+    },
+    {
+      "qty": "3/4 cup",
+      "item": "water"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Put everything in a food processor. Blend until completely smooth, stopping to scrape down the sides a few times so no peanut butter hides at the bottom, about 1 to 2 minutes."
+    },
+    {
+      "do": "Taste and adjust: more hot sauce for heat, a squeeze of lime to brighten, or a splash of water if it's thicker than you want."
+    }
+  ],
+  "notes": [
+    "Use tamari to make it gluten-free; check the hoisin too, since many brands contain wheat.",
+    "\"Oriental sesame oil\" in older recipes means the dark, toasted kind, not plain cold-pressed sesame oil.",
+    "The sauce firms up in the fridge. Loosen with warm water, a spoonful at a time.",
+    "Keeps about 1 week refrigerated in a sealed jar.",
+    "Good with satay, cold noodles, spring rolls, or thinned as a slaw dressing."
+  ],
+  "source": {
+    "name": "Food.com",
+    "url": "https://food.com/recipe/spicy-thai-peanut-sauce-9388"
+  }
+}

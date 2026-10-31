@@ -1,0 +1,78 @@
+{
+  "title": "Painkiller",
+  "category": "cocktails",
+  "kind": "dish",
+  "description": "Dark rum, pineapple, orange and coconut cream, shaken.",
+  "tags": [],
+  "added": "2026-10-30",
+  "flavor": "fruity_tropical",
+  "family": "tiki_punch",
+  "base": "Dark rum",
+  "origin": "Soggy Dollar Bar, British Virgin Islands, 1970s",
+  "yield": "Makes 1 drink",
+  "abv": "~7%",
+  "standardDrinks": 1.3,
+  "glass": "Highball",
+  "ice": "Cubes or crushed",
+  "garnish": "Grated nutmeg, pineapple wedge",
+  "method": "Shaken, double strained",
+  "ingredients": [
+    {
+      "qty": "2 oz",
+      "ml": 60,
+      "item": "Dark rum"
+    },
+    {
+      "qty": "4 oz",
+      "ml": 120,
+      "item": "Pineapple juice"
+    },
+    {
+      "qty": "1 oz",
+      "ml": 30,
+      "item": "Orange juice"
+    },
+    {
+      "qty": "1 oz",
+      "ml": 30,
+      "item": "Sweetened coconut cream",
+      "note": "or see Substitutions"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Combine everything in a shaker tin, fill with ice and shake hard. The shake whips air into the coconut cream."
+    },
+    {
+      "do": "Double strain (Hawthorne plus fine strainer) into the glass to keep the foam, then add fresh ice, cubed or crushed."
+    },
+    {
+      "do": "Grate nutmeg over the top and add a pineapple wedge."
+    }
+  ],
+  "notes": [
+    {
+      "group": "Riffs",
+      "items": [
+        "Essentially a Piña Colada with orange juice and nutmeg added."
+      ]
+    },
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Homemade sweetened coconut cream keeps about 1 week, refrigerated. It separates and thickens when cold: shake or stir, and let it loosen at room temperature before measuring."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Unsweetened canned coconut milk: warm 1/2 cup full-fat coconut milk with 1/2 cup sugar, stirring just until dissolved, then cool. Use 1 oz in place of the sweetened coconut cream.",
+        "One drink, no batch: shake 1 oz full-fat coconut milk with 1/2 oz 2:1 simple syrup in place of the sweetened coconut cream.",
+        "Carton coconut milk (the thin drinking kind) won't work well. It makes a watery drink with little foam."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Cocktail book (title needed), p. 171"
+  }
+}

@@ -35,17 +35,33 @@ A GitHub Action re-runs the index check on every push and flags any recipe with 
 |---|---|---|
 | `title` | yes | |
 | `category` | yes | `baking`, `cooking`, or `cocktails` |
-| `ingredients` | yes | List of strings, or `{ "group": "For the sauce", "items": [...] }` sections |
-| `steps` | yes | Same format as ingredients |
+| `ingredients` | yes | List of ingredients, or `{ "group": "For the sauce", "items": [...] }` sections. An ingredient is a string, or `{ "grams": 150, "qty": "3/4 cup", "ml": 60, "item": "Sugar", "note": "softened" }` (only `item` is required) |
+| `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges" }` |
+| `kind` | | `dish` (the default) or `component`, for things made to go into other recipes: sauces, curds, syrups, homemade pasta |
 | `description` | | Short blurb shown on the card |
 | `tags` | | e.g. `["weeknight", "gin", "holiday"]` |
 | `added` | | Date added (`YYYY-MM-DD`), used by "Newest" sort |
-| `yield` | | e.g. `"24 cookies"`, `"1 drink"` |
-| `time` | | `{ "prep": 15, "cook": 30, "chill": 60 }` in minutes; `total` is optional and is otherwise added up |
-| `glass`, `method`, `garnish` | | Handy for cocktails, e.g. `"coupe"`, `"shaken"`, `"lemon twist"` |
-| `notes` | | List of tips or tweaks |
+| `yield` | | e.g. `"Makes 24 cookies"`, `"Serves 6"` |
+| `times` | | Times as written, e.g. `[["Active", "15 min"], ["Marinate", "4 to 8 hours"]]` |
+| `time` | | `{ "prep": 15, "cook": 30, "chill": 60 }` in minutes; `total` is optional and is otherwise added up. Used by "Quickest" sort, and shown when there's no `times` |
+| `beforeYouStart` | | List of prep to do before step 1 |
+| `notes` | | List of tips, or `{ "group": "Substitutions", "items": [...] }` sections |
 | `image` | | Path like `images/brown-butter-cookies.jpg` |
 | `source` | | `{ "name": "Grandma", "url": "" }` |
+
+Labels from the recipe cards, shown under the title:
+
+| Category | Fields |
+|---|---|
+| Cooking | `aroma` (e.g. `chile_lime_corn`), `role` (e.g. `protein_main`), `technique`, `region`, `nutrition` |
+| Baking | `bakeCategory` (e.g. `Pies & Tarts`), `flavor` (`sweet`, `savory`, or `both`), `pan`, `heat` with `heatLabel` (`Oven` or `Heat`) |
+| Cocktails | `flavor` (e.g. `bright_tart`), `family` (e.g. `sour`), `base`, `origin`, `glass`, `ice`, `garnish`, `method`, `keeps`, `abv`, `standardDrinks` |
+
+The aroma, role, flavor and family keys are listed with their display names in `assets/common.js`.
+
+### Source PDFs
+
+`source-pdfs/` holds the original phone-sized recipe cards each recipe was converted from.
 
 ## Running locally
 

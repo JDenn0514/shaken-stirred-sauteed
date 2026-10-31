@@ -1,0 +1,82 @@
+{
+  "title": "Lemon Butter Parmesan Asparagus",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Oven-roasted asparagus finished under the broiler with lemon, butter, and parmesan.",
+  "tags": [],
+  "added": "2026-09-29",
+  "yield": "Serves 8, as a side",
+  "times": [
+    [
+      "Active",
+      "10 min"
+    ],
+    [
+      "Total",
+      "25 min"
+    ]
+  ],
+  "time": {
+    "total": 25
+  },
+  "aroma": "olive_tomato_herb",
+  "role": "vegetable_main",
+  "technique": "Roast, then broil, 400F",
+  "region": "United States and Canada",
+  "ingredients": [
+    {
+      "qty": "2 lb",
+      "item": "asparagus, trimmed"
+    },
+    {
+      "qty": "1",
+      "item": "lemon, half juiced and half sliced into rings"
+    },
+    {
+      "qty": "4 tbsp",
+      "item": "unsalted butter, cut into pats"
+    },
+    {
+      "qty": "1 tbsp",
+      "item": "olive oil"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "sea salt, or to taste"
+    },
+    {
+      "qty": "1/2 tsp",
+      "item": "black pepper, freshly ground, or to taste"
+    },
+    {
+      "qty": "1/2 cup",
+      "item": "shredded parmesan cheese, or to taste"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Arrange the trimmed asparagus in a single layer on a rimmed baking sheet. Drizzle with the olive oil, season with the salt and pepper, and roll to coat evenly."
+    },
+    {
+      "do": "Squeeze the juice of half the lemon over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center."
+    },
+    {
+      "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes. Pull the pan and switch the oven to broil."
+    },
+    {
+      "do": "Scatter the parmesan over the center of the asparagus and broil 2 to 3 minutes, until melted and golden."
+    }
+  ],
+  "notes": [
+    "To trim: hold each spear at the base, bend until it snaps naturally (usually 1 to 2 inches from the base); for thick stalks, peel the fibrous skin off the bottom half instead.",
+    "Bake time scales with thickness: thin spears about 8 minutes, medium about 10 minutes, thick about 12 minutes, all followed by the same broil.",
+    "Make-ahead: bake fully, cover, and refrigerate; reheat gently in the oven before serving (per the author, replying to readers).",
+    "Several readers report good results in an air fryer, though this isn't a technique the author has tested herself — start checking a few minutes early.",
+    "Good without the parmesan if you want it dairy-light; a scatter of lemon zest in its place is a reader favorite."
+  ],
+  "nutrition": "Per serving: 109 cal · 6 g carbs · 4 g protein · 9 g fat",
+  "source": {
+    "name": "Natasha's Kitchen",
+    "url": "https://natashaskitchen.com"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "title": "Israeli Salad",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Finely diced tomato, cucumber and peppers with herbs and lemon.",
+  "tags": [],
+  "added": "2026-10-08",
+  "yield": "Serves 4 to 6",
+  "times": [
+    [
+      "Total",
+      "30 min"
+    ]
+  ],
+  "time": {
+    "total": 30
+  },
+  "aroma": "olive_tomato_herb",
+  "role": "salad_raw_side",
+  "technique": "No cook",
+  "region": "West Asia and the Levant",
+  "ingredients": [
+    {
+      "qty": "2",
+      "item": "extra-large tomatoes"
+    },
+    {
+      "qty": "1",
+      "item": "English cucumber"
+    },
+    {
+      "qty": "1 cup",
+      "item": "red onion (about 1/2 medium)"
+    },
+    {
+      "qty": "1",
+      "item": "red bell pepper"
+    },
+    {
+      "qty": "1",
+      "item": "yellow bell pepper"
+    },
+    {
+      "qty": "1 cup",
+      "item": "fresh herbs: parsley, mint, cilantro or a mix"
+    },
+    {
+      "qty": "1",
+      "item": "lemon, zested, then juiced to taste (start with half)"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "olive oil"
+    },
+    {
+      "item": "salt and pepper"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Cut the tomatoes, cucumber, onion and both peppers into a very small, even dice, and chop the herbs. The finer the cut, the better the salad, so take your time and use your sharpest knife."
+    },
+    {
+      "do": "Toss everything in a large bowl with the zest, olive oil, half the lemon's juice, salt and pepper."
+    },
+    {
+      "do": "Taste and adjust. If it seems flat, it usually wants more salt, then more lemon."
+    }
+  ],
+  "notes": [
+    "Watery salad: salt the diced cucumber and tomato and drain in a colander for 30 minutes before mixing.",
+    "Keeps 3 to 4 days in the fridge, best in the first two. Ripe summer tomatoes make the biggest difference.",
+    "Variations: dill works in place of the other herbs. A can of chickpeas, or some cooked quinoa, turns it into a main.",
+    "Serve over a smear of hummus, in warm pita, or alongside Sheet Pan Chicken Shawarma with either tahini sauce."
+  ],
+  "nutrition": "Per 1 cup: 83 cal · 1.4 g protein · 7.1 g carbs · 1.6 g fiber · 4 g sugar · 5.8 g fat · 0.9 g sat fat · 11.4 mg sodium",
+  "source": {
+    "name": "Sylvia Fountaine, Feasting at Home",
+    "url": "https://feastingathome.com/israeli-salad"
+  }
+}

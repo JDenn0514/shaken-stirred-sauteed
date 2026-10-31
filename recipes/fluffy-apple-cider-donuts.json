@@ -1,0 +1,168 @@
+{
+  "title": "Fluffy Apple Cider Donuts",
+  "category": "baking",
+  "kind": "dish",
+  "description": "Creamed-butter cake donuts with cider and nutmeg, brushed in cinnamon sugar.",
+  "tags": [
+    "apple",
+    "spiced",
+    "fall"
+  ],
+  "added": "2026-10-26",
+  "bakeCategory": "Breakfast Bakes",
+  "flavor": "sweet",
+  "yield": "Makes 12 donuts",
+  "pan": "2 six-cavity donut pans",
+  "heat": "350F",
+  "heatLabel": "Oven",
+  "beforeYouStart": [
+    "Butter and eggs at room temperature. You need 2 sticks of butter in all: 10 Tbsp soft for the batter, 6 Tbsp melted for the coating.",
+    "Preheat to 350F and lightly grease both donut pans with nonstick spray.",
+    "Stand mixer with the paddle attachment."
+  ],
+  "ingredients": [
+    {
+      "group": "Batter",
+      "items": [
+        {
+          "grams": 225,
+          "qty": "1 3/4 cups",
+          "item": "All-purpose flour"
+        },
+        {
+          "qty": "1 1/4 tsp",
+          "item": "Baking powder"
+        },
+        {
+          "qty": "3/4 tsp",
+          "item": "Fine sea salt"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Ground cinnamon"
+        },
+        {
+          "qty": "1/2 tsp",
+          "item": "Nutmeg",
+          "note": "freshly grated"
+        },
+        {
+          "grams": 140,
+          "qty": "10 Tbsp",
+          "item": "Unsalted butter",
+          "note": "room temperature"
+        },
+        {
+          "grams": 165,
+          "qty": "3/4 cup",
+          "item": "Light brown sugar"
+        },
+        {
+          "grams": 50,
+          "qty": "1/4 cup",
+          "item": "Granulated sugar"
+        },
+        {
+          "qty": "2 large",
+          "item": "Eggs",
+          "note": "room temperature"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Vanilla extract"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "Apple cider",
+          "note": "120 ml"
+        }
+      ]
+    },
+    {
+      "group": "Topping",
+      "items": [
+        {
+          "grams": 100,
+          "qty": "1/2 cup",
+          "item": "Granulated sugar"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Ground cinnamon"
+        },
+        {
+          "grams": 85,
+          "qty": "6 Tbsp",
+          "item": "Unsalted butter",
+          "note": "melted"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "group": "Batter",
+      "items": [
+        {
+          "do": "Whisk the flour, baking powder, salt, 1 tsp cinnamon and the nutmeg in a medium bowl."
+        },
+        {
+          "do": "In the mixer, beat the 10 Tbsp butter with the brown sugar and the 1/4 cup granulated sugar on medium for 3 to 4 minutes. The air beaten in here is what makes these lighter than a one-bowl donut.",
+          "cue": "Light and fluffy"
+        },
+        {
+          "do": "Beat in the eggs one at a time, letting each mix in fully and scraping the bowl as needed. Beat in the vanilla."
+        },
+        {
+          "do": "On low, mix in the flour mixture until incorporated. With the mixer still running, pour in the cider in a slow, steady stream. Scrape the bowl well so the batter is even throughout."
+        },
+        {
+          "do": "Spoon the batter into the pans, or pipe it from a zip-top bag with a 1/2-inch corner snipped off, filling each cavity about 2/3 full."
+        }
+      ]
+    },
+    {
+      "group": "Bake",
+      "items": [
+        {
+          "do": "Bake, rotating the pans halfway through.",
+          "wait": "12 to 15 min",
+          "cue": "Evenly golden brown; a toothpick in the thickest part comes out clean"
+        },
+        {
+          "do": "While they bake, whisk the 1/2 cup sugar and 1 tsp cinnamon in a small bowl, and melt the 6 Tbsp butter in another."
+        }
+      ]
+    },
+    {
+      "group": "Coat",
+      "items": [
+        {
+          "do": "Cool in the pans, then turn the donuts out.",
+          "wait": "5 min"
+        },
+        {
+          "do": "While they're still warm, brush each donut with melted butter and dredge it in the cinnamon sugar."
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Best right after coating, but fine once cooled to room temperature."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "No donut pans: divide the batter among a greased 12-cup muffin tin and bake for 15 to 20 minutes, rotating halfway."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Erin Jeanne McDowell, NYT Cooking",
+    "url": "https://cooking.nytimes.com/recipes/1019593-baked-apple-cider-doughnuts"
+  }
+}

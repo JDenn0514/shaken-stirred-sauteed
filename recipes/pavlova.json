@@ -1,0 +1,167 @@
+{
+  "title": "Pavlova",
+  "category": "baking",
+  "kind": "dish",
+  "description": "Crisp meringue shell with a soft center, dried low and slow.",
+  "tags": [
+    "gluten-free",
+    "fruit",
+    "make-ahead",
+    "uses egg whites",
+    "summer"
+  ],
+  "added": "2026-09-27",
+  "bakeCategory": "Cakes",
+  "flavor": "sweet",
+  "yield": "Serves 8–10",
+  "times": [
+    [
+      "Active",
+      "20 min"
+    ],
+    [
+      "Total",
+      "4 hr"
+    ]
+  ],
+  "time": {
+    "total": 240
+  },
+  "pan": "Baking sheet (8–9 in round)",
+  "heat": "350°F → 200°F",
+  "heatLabel": "Oven",
+  "beforeYouStart": [
+    "Egg whites at room temperature; bowl and whisk totally free of fat or yolk",
+    "No superfine sugar? Pulse granulated sugar in a food processor a few times",
+    "Line the sheet with parchment or a silicone mat; don't grease it",
+    "Save the 4 yolks for lemon curd"
+  ],
+  "ingredients": [
+    {
+      "group": "Meringue",
+      "items": [
+        {
+          "grams": 120,
+          "qty": "4 large",
+          "item": "Egg whites",
+          "note": "room temp"
+        },
+        {
+          "grams": 200,
+          "qty": "1 cup",
+          "item": "Superfine sugar"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Pure vanilla extract"
+        },
+        {
+          "qty": "1/2 tsp",
+          "item": "Cream of tartar"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Cornstarch"
+        }
+      ]
+    },
+    {
+      "group": "Toppings",
+      "items": [
+        {
+          "qty": "to taste",
+          "item": "Whipped cream"
+        },
+        {
+          "qty": "optional",
+          "item": "Lemon curd"
+        },
+        {
+          "qty": "to taste",
+          "item": "Fresh berries or fruit"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "group": "Meringue",
+      "items": [
+        {
+          "do": "Heat the oven to 350°F. (You'll drop it to 200°F the moment the pavlova goes in.)"
+        },
+        {
+          "do": "Whip the whites on medium-high to soft peaks.",
+          "wait": "~5 min"
+        },
+        {
+          "do": "Add the sugar in two parts, beating about 30 sec after each. Then go to high speed.",
+          "wait": "~2 min",
+          "cue": "Glossy, stiff peaks that don't move when the whisk is held upright"
+        },
+        {
+          "do": "Beat in the vanilla for 1 minute. If the peaks have softened, keep beating."
+        },
+        {
+          "do": "Gently fold in the cream of tartar and cornstarch with a spatula."
+        }
+      ]
+    },
+    {
+      "group": "Shape & bake",
+      "items": [
+        {
+          "do": "Spread into an 8–9 in circle with tall edges and a clear hollow in the center. Swirl peaks with the back of a spoon if you like."
+        },
+        {
+          "do": "Put it in the oven and immediately turn the heat down to 200°F. Rotate once if spots start browning; otherwise keep the door shut.",
+          "wait": "~90 min",
+          "cue": "Firm and dry to the touch, and still pale"
+        },
+        {
+          "do": "Turn the oven off and let the pavlova cool completely inside it. The slow cool keeps cracking down."
+        }
+      ]
+    },
+    {
+      "group": "Finish",
+      "items": [
+        {
+          "do": "Right before serving, pile on whipped cream, curd, and fruit. Slice and serve."
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Plain, cooled shell keeps up to 2 days at room temp in an airtight container",
+        "Best eaten right after topping; doesn't freeze well"
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Acid: 1 tsp white vinegar, cider vinegar, or lemon juice instead of cream of tartar. The source notes a little more spread with liquid acid.",
+        "Minis: portion into 6 nests with centers hollowed. Same 350°F start, then ~35–40 min at 200°F (readers report they may need longer)."
+      ]
+    },
+    {
+      "group": "Pairs with",
+      "items": [
+        "Lemon Curd (uses the 4 leftover yolks)"
+      ]
+    },
+    {
+      "group": "My notes",
+      "items": [
+        "Humid days slow the whipping and drying; plan extra oven time"
+      ]
+    }
+  ],
+  "source": {
+    "name": "Sally's Baking Addiction",
+    "url": "https://sallysbakingaddiction.com/pavlova"
+  }
+}

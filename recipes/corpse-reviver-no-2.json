@@ -1,0 +1,87 @@
+{
+  "title": "Corpse Reviver No. 2",
+  "category": "cocktails",
+  "kind": "dish",
+  "description": "Equal parts gin, Cocchi, orange liqueur and lemon; absinthe-misted coupe.",
+  "tags": [],
+  "added": "2026-10-30",
+  "flavor": "bright_tart",
+  "family": "sour",
+  "base": "Gin",
+  "origin": "Harry Craddock",
+  "yield": "Makes 1 drink",
+  "abv": "~14%",
+  "standardDrinks": 1.2,
+  "glass": "Coupe or martini glass",
+  "ice": "None, served up",
+  "garnish": "Lemon twist, optional",
+  "method": "Shaken, double strained",
+  "beforeYouStart": [
+    "Chill the coupe.",
+    "Load the atomiser with absinthe. No atomiser? Swirl a few drops in the cold glass and tip out the excess."
+  ],
+  "ingredients": [
+    {
+      "qty": "3/4 oz",
+      "ml": 22.5,
+      "item": "Gin"
+    },
+    {
+      "qty": "3/4 oz",
+      "ml": 22.5,
+      "item": "Cocchi Americano or Lillet Blanc"
+    },
+    {
+      "qty": "3/4 oz",
+      "ml": 22.5,
+      "item": "Curaçao or other orange liqueur"
+    },
+    {
+      "qty": "3/4 oz",
+      "ml": 22.5,
+      "item": "Lemon juice",
+      "note": "fresh"
+    },
+    {
+      "qty": "Rinse",
+      "item": "Absinthe",
+      "note": "sprayed"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Add everything except the absinthe to the shaker tin."
+    },
+    {
+      "do": "Fill with ice and shake hard.",
+      "cue": "Tin frosted over"
+    },
+    {
+      "do": "Mist the chilled coupe with absinthe, so it scents the drink without taking over."
+    },
+    {
+      "do": "Double strain into the glass through the Hawthorne and a fine strainer."
+    },
+    {
+      "do": "Fold the twist over the surface to spray its oils, then drop it in."
+    }
+  ],
+  "notes": [
+    {
+      "group": "Substitutions",
+      "items": [
+        "Craddock's original called for Kina Lillet, which is no longer made. It carried more quinine bite, so Cocchi Americano is the closer match.",
+        "With Lillet Blanc or another white vermouth, pick one with noticeable bitterness, or add a dash of orange bitters to make up for it."
+      ]
+    },
+    {
+      "group": "My notes",
+      "items": [
+        "The book gives 20 ml (2/3 oz) of each. Scaled to 3/4 oz to land on a standard jigger line; keep all four equal and the drink is unchanged."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Harry Craddock's recipe, from a cocktail book (p. 119)"
+  }
+}

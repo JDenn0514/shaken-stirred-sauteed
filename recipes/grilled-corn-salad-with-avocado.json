@@ -1,0 +1,132 @@
+{
+  "title": "Grilled Corn Salad with Avocado",
+  "category": "cooking",
+  "kind": "dish",
+  "tags": [],
+  "added": "2026-09-02",
+  "aroma": "chile_lime_corn",
+  "role": "salad_raw_side",
+  "technique": "Grill, medium (about 400F)",
+  "yield": "Serves 6 (about 6 cups)",
+  "times": [
+    [
+      "Prep",
+      "15 min"
+    ],
+    [
+      "Grill",
+      "7 min"
+    ],
+    [
+      "Total",
+      "25 min"
+    ]
+  ],
+  "time": {
+    "total": 25
+  },
+  "ingredients": [
+    {
+      "group": "Salad",
+      "items": [
+        {
+          "qty": "5 ears",
+          "item": "fresh corn, husked, silks removed"
+        },
+        {
+          "qty": "1 ½ Tbsp",
+          "item": "extra-virgin olive oil"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "¾ tsp",
+          "item": "ground black pepper"
+        },
+        {
+          "qty": "1 pint",
+          "item": "cherry tomatoes, halved (about 2 cups)"
+        },
+        {
+          "qty": "2 cups",
+          "item": "packed arugula"
+        },
+        {
+          "qty": "1",
+          "item": "medium avocado, peeled, pitted, diced"
+        },
+        {
+          "qty": "1",
+          "item": "small red bell pepper, cored and finely chopped"
+        },
+        {
+          "qty": "4",
+          "item": "green onions, finely chopped"
+        },
+        {
+          "qty": "¼ cup",
+          "item": "chopped fresh cilantro"
+        }
+      ]
+    },
+    {
+      "group": "Dressing",
+      "items": [
+        {
+          "qty": "¼ cup",
+          "item": "fresh lime juice (about 2 limes)"
+        },
+        {
+          "qty": "2 Tbsp",
+          "item": "extra-virgin olive oil"
+        },
+        {
+          "qty": "1 Tbsp",
+          "item": "honey"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "paprika"
+        },
+        {
+          "qty": "¾ tsp",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "¼ tsp",
+          "item": "ground black pepper"
+        },
+        {
+          "qty": "¼ tsp",
+          "item": "onion powder"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl."
+    },
+    {
+      "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape."
+    },
+    {
+      "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table."
+    }
+  ],
+  "notes": [
+    "Early-season corn. If it isn't at peak sweetness, blanch the ears 3–5 minutes in salted boiling water before grilling. Optional, but it plumps and tenderizes the kernels.",
+    "No grill — oven. Cut the kernels off raw, spread on a rimmed sheet, toss with 1 Tbsp olive oil, roast at 350°F for 15–20 minutes. Broil about 3 minutes at the end to brown; watch closely so they don't burn.",
+    "No grill — stovetop. Cut kernels off raw and sauté in 1 Tbsp olive oil over medium heat, stirring, 10–12 minutes until browned.",
+    "Swaps. Chopped spinach or kale for the arugula (add extra black pepper to make up for the missing bite). Basil or parsley for the cilantro. Lemon juice for lime works if that's what's on hand.",
+    "Variations. Crumbled feta over the finished salad. Or stir in one 15-oz can of black beans, rinsed and drained, for a Southwest version.",
+    "Make ahead & leftovers. Keeps 2–3 days refrigerated; the arugula wilts and the avocado browns slightly but it still tastes good. If you're eating it across several meals, add avocado only to the portion you're serving now.",
+    "Other uses. Scales up or down freely. Also good as a chunky salsa with chips or spooned over tacos."
+  ],
+  "source": {
+    "name": "Erin Clarke, Well Plated",
+    "url": "https://wellplated.com/grilled-corn-salad"
+  }
+}

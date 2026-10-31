@@ -1,0 +1,109 @@
+{
+  "title": "Carne Asada",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Citrus and soy marinated flank steak, grilled hot and fast.",
+  "tags": [],
+  "added": "2026-10-14",
+  "yield": "Serves 6",
+  "times": [
+    [
+      "Marinate",
+      "4 to 8 hours"
+    ],
+    [
+      "Rest",
+      "5 min"
+    ]
+  ],
+  "ingredients": [
+    {
+      "qty": "1 1/2 lb",
+      "item": "flank steak (or skirt or flap)"
+    },
+    {
+      "qty": "1/2 cup",
+      "item": "chopped fresh cilantro leaves"
+    },
+    {
+      "qty": "1/3 cup",
+      "item": "olive oil"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "reduced-sodium soy sauce"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "fresh orange juice"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "fresh lime juice"
+    },
+    {
+      "qty": "4 cloves",
+      "item": "garlic, minced"
+    },
+    {
+      "qty": "1",
+      "item": "jalapeño, seeded and diced"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "ground cumin"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "freshly ground black pepper, plus more for seasoning"
+    },
+    {
+      "item": "Kosher salt, to taste"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Whisk the cilantro, olive oil, soy sauce, orange juice, lime juice, garlic, jalapeño, cumin and 1 tsp pepper in a medium bowl. Take out 1/2 cup and refrigerate it as the finishing sauce. It has to come out now, before anything touches raw meat."
+    },
+    {
+      "do": "Put the steak and the rest of the marinade in a gallon zip bag or bowl. Chill 4 to 8 hours, ideally the full 8 hours overnight, turning now and then. Stop at 8 hours: the citrus acid keeps breaking down the muscle and the texture turns mushy rather than tender."
+    },
+    {
+      "do": "Heat the grill to high, about 450F (230C), and scrape the grates clean so the steak doesn't stick and tear off its crust. Indoors, get a cast iron grill pan or skillet very hot; nonstick can't hold enough heat to sear."
+    },
+    {
+      "do": "Drain the steak and discard the used marinade. Pat both sides completely dry, since any film left on the surface steams instead of charring. Season with salt and pepper."
+    },
+    {
+      "do": "Grill 3 to 6 minutes per side, flipping once, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated."
+    },
+    {
+      "do": "Rest at least 5 minutes so the juices settle back into the meat instead of running onto the board."
+    },
+    {
+      "do": "Slice thin against the grain, across the direction of the fibers. Shortening the fibers is what makes it tender rather than chewy. For tacos, cut the slices crosswise into small cubes."
+    },
+    {
+      "do": "Serve warm with the reserved sauce spooned over, alongside tortillas, rice, beans and guacamole."
+    }
+  ],
+  "notes": [
+    "Choosing the cut: flank is leanest and easiest to find; skirt is fattier and crisps hardest; flap is thicker, with a looser, more marbled grain. All three take the marinade well.",
+    "Salt goes on last, right before grilling. The soy already seasons the interior during the marinade.",
+    "Use fresh citrus. Bottled juice works in a pinch, but the brightness of the marinade comes from fresh.",
+    "Stick with reduced-sodium soy. A full 1/4 cup of regular soy in this little liquid overpowers everything else.",
+    "The marinade scales cleanly. Make 2x or 3x for extra sauce for tacos or burrito bowls.",
+    "No cilantro: flat-leaf parsley is the closest swap. Ground coriander adds a related flavor but tastes warmer and earthier, not fresh.",
+    "Make ahead: the marinade alone keeps 1 day in the fridge. Or freeze the steak in its marinade up to 3 months; thaw overnight in the fridge and add a few minutes to the grill time.",
+    "Leftovers keep 3 to 4 days airtight. Reheat covered with foil at 250F (120C) so it warms through without cooking further.",
+    "The marinade works as-is on chicken for pollo asado."
+  ],
+  "aroma": "chile_lime_corn",
+  "role": "protein_main",
+  "technique": "Grill or cast iron, 450F",
+  "region": "Northern Mexico",
+  "source": {
+    "name": "Chungah Rhee, Damn Delicious",
+    "url": "https://damndelicious.net/2019/05/05/carne-asada"
+  }
+}

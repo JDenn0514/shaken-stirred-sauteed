@@ -1,0 +1,69 @@
+{
+  "title": "Microwave Applesauce",
+  "category": "cooking",
+  "kind": "dish",
+  "tags": [],
+  "added": "2026-08-29",
+  "aroma": "fruit_sugar",
+  "role": "sweet",
+  "technique": "Microwave",
+  "yield": "Makes about 3 cups",
+  "times": [
+    [
+      "Prep",
+      "10 min"
+    ],
+    [
+      "Microwave",
+      "15 min"
+    ]
+  ],
+  "ingredients": [
+    {
+      "qty": "4",
+      "item": "Honeycrisp apples"
+    },
+    {
+      "qty": "1 cup",
+      "item": "water"
+    },
+    {
+      "qty": "½ cup",
+      "item": "sugar"
+    },
+    {
+      "qty": "½ tsp",
+      "item": "cinnamon"
+    },
+    {
+      "item": "Juice of ½ lemon"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Peel and core the apples. Quarter each one, then cut each quarter crosswise about five times — more or fewer depending on how big the apple is. You want small, even pieces."
+    },
+    {
+      "do": "Put everything in a microwave-safe casserole dish: apples, water, sugar, cinnamon, lemon juice. Stir until every piece is coated."
+    },
+    {
+      "do": "Microwave 7–8 minutes on high. Stir it all around again."
+    },
+    {
+      "do": "Microwave another 7–8 minutes on high."
+    },
+    {
+      "do": "Mash to the texture you want, and eat."
+    }
+  ],
+  "notes": [
+    "Steam. The dish and the liquid come out very hot. Uncover away from your face and use a towel on the sides.",
+    "Texture. Mash lightly for chunky, longer for smooth. If it looks loose, it thickens as it cools.",
+    "Sweetness. Honeycrisp are sweet already — the sugar can come down if you like it tart. Taste after the first mash.",
+    "Keeping it. Refrigerate up to a week. Good warm or cold.",
+    "Other apples. McIntosh and Cortland collapse fastest — check a couple minutes early. Golden Delicious, Fuji, and Gala are sweeter, so cut the sugar to ¼ cup and taste. Granny Smith is firm and tart: full sugar, plus 2–3 extra minutes. Braeburn, Jonagold, and Pink Lady behave like Honeycrisp. A mix of one that falls apart and one that holds gives the best texture."
+  ],
+  "source": {
+    "name": "Jacob's notes"
+  }
+}

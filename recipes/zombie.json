@@ -1,0 +1,102 @@
+{
+  "title": "Zombie",
+  "category": "cocktails",
+  "kind": "dish",
+  "description": "Three rums, lime, Donn’s Mix and falernum, flash-blended over ice.",
+  "tags": [],
+  "added": "2026-10-30",
+  "flavor": "fruity_tropical",
+  "family": "tiki_punch",
+  "base": "Rum",
+  "origin": "Don the Beachcomber, 1930s",
+  "yield": "Makes 1 drink",
+  "standardDrinks": 3.0,
+  "glass": "Highball or tiki mug",
+  "ice": "Crushed or small cubes",
+  "garnish": "Mint sprig",
+  "method": "Flash blended, or shaken and dumped",
+  "beforeYouStart": [
+    "Have Donn’s Mix made and chilled"
+  ],
+  "ingredients": [
+    {
+      "qty": "1 1/2 oz",
+      "ml": 45,
+      "item": "Jamaican aged rum"
+    },
+    {
+      "qty": "1 1/2 oz",
+      "ml": 45,
+      "item": "Puerto Rican aged rum"
+    },
+    {
+      "qty": "1 oz",
+      "ml": 30,
+      "item": "Overproof rum"
+    },
+    {
+      "qty": "1/8 tsp",
+      "item": "Herbsaint or Pernod",
+      "note": "a bitters dasher measures it easily"
+    },
+    {
+      "qty": "3/4 oz",
+      "ml": 22.5,
+      "item": "Lime juice",
+      "note": "fresh"
+    },
+    {
+      "qty": "1/2 oz",
+      "ml": 15,
+      "item": "Donn’s Mix",
+      "note": "see Donn’s Mix card"
+    },
+    {
+      "qty": "1/2 oz",
+      "ml": 15,
+      "item": "Falernum syrup"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "Grenadine"
+    },
+    {
+      "qty": "1 dash",
+      "item": "Angostura bitters"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Blend everything with about 1 cup of ice for about 5 seconds, just long enough to chill and froth.",
+      "cue": "Frothy and cold, ice still in small pieces rather than slush"
+    },
+    {
+      "do": "No blender? Shake everything hard in a tin with ice instead."
+    },
+    {
+      "do": "Dump it all into the glass, ice included. No straining."
+    },
+    {
+      "do": "Top up with more ice if the glass isn’t full, then add the mint sprig."
+    }
+  ],
+  "notes": [
+    {
+      "group": "Substitutions",
+      "items": [
+        "Jamaican aged rum: any big, funky rum with a savory edge fills the same slot.",
+        "Puerto Rican aged rum: any lighter-bodied aged rum works.",
+        "Specs vary widely, and Donn changed it himself over the years. Swap freely with what you have, as long as the tart and sour elements stay."
+      ]
+    },
+    {
+      "group": "Uses",
+      "items": [
+        "Donn’s Mix"
+      ]
+    }
+  ],
+  "source": {
+    "name": "Jeff “Beachbum” Berry’s 1930s spec, cocktail book p. 158"
+  }
+}

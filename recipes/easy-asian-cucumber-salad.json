@@ -1,0 +1,85 @@
+{
+  "title": "Easy Asian Cucumber Salad",
+  "category": "cooking",
+  "kind": "dish",
+  "tags": [],
+  "added": "2026-08-31",
+  "aroma": "soy_ginger_ferment",
+  "role": "salad_raw_side",
+  "technique": "No cook",
+  "yield": "Serves 4",
+  "times": [
+    [
+      "Active",
+      "5 min"
+    ],
+    [
+      "Chill",
+      "20 min"
+    ]
+  ],
+  "ingredients": [
+    {
+      "qty": "5",
+      "item": "Persian cucumbers"
+    },
+    {
+      "qty": "1/2 tsp",
+      "item": "salt (for sweating)"
+    },
+    {
+      "qty": "1/2 tbsp",
+      "item": "sesame oil"
+    },
+    {
+      "qty": "3/4 tbsp",
+      "item": "light soy sauce"
+    },
+    {
+      "qty": "1/2 to 1 tbsp",
+      "item": "sugar"
+    },
+    {
+      "qty": "3/4 tbsp",
+      "item": "rice vinegar"
+    },
+    {
+      "qty": "1 tbsp",
+      "item": "chili oil"
+    },
+    {
+      "qty": "1/2 tbsp",
+      "item": "sesame seeds"
+    },
+    {
+      "qty": "1/2 tbsp",
+      "item": "garlic, minced (optional)"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Slice the cucumbers on a steep bias so the pieces come out oval rather than round. Thickness is up to you."
+    },
+    {
+      "do": "Toss the slices with 1/2 tsp salt and refrigerate at least 20 minutes (up to an hour) to pull the water out."
+    },
+    {
+      "do": "Drain, rinse under running water about 10 seconds, squeeze gently, and return to the bowl."
+    },
+    {
+      "do": "Add the sesame oil, soy sauce, sugar, rice vinegar, chili oil, sesame seeds, and garlic if using. Toss to coat and serve."
+    }
+  ],
+  "notes": [
+    "The salt step is the whole trick. Salting and chilling sweats out moisture so the cucumbers stay crunchy and the dressing doesn't end up diluted in a pool of water.",
+    "Don't skip the rinse. Soy sauce is doing the seasoning later, so leaving the sweating salt on makes the salad too salty.",
+    "Sugar to taste. Start at 1/2 tbsp, taste, add more if it needs balance. How much depends on how sweet or sharp the chili oil is.",
+    "Chili oil is the dial. Adjust to heat preference or leave it out entirely; the salad still works on vinegar, sesame, and soy.",
+    "Make ahead. Best right after tossing. If needed, keep the sliced cucumbers and the mixed dressing in separate airtight containers and combine at serving; about 2 days in the fridge."
+  ],
+  "nutrition": "Per serving (estimate): 72 cal · 5 g carbs · 1 g protein · 6 g fat · 1 g fiber · 3 g sugar · 481 mg sodium",
+  "source": {
+    "name": "Farah J. Eats",
+    "url": "https://farahjeats.com/recipe/easy-asian-cucumber-salad"
+  }
+}

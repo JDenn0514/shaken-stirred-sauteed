@@ -1,0 +1,84 @@
+{
+  "title": "Tahini Yogurt Sauce",
+  "category": "cooking",
+  "kind": "component",
+  "description": "Yogurt and tahini whisked with garlic into a tangy sauce.",
+  "tags": [],
+  "added": "2026-10-08",
+  "yield": "Makes 1 cup",
+  "times": [
+    [
+      "Total",
+      "10 min"
+    ]
+  ],
+  "time": {
+    "total": 10
+  },
+  "aroma": "sumac_tahini_lemon",
+  "role": "sauce_condiment",
+  "technique": "No cook, whisked",
+  "region": "West Asia and the Levant",
+  "ingredients": [
+    {
+      "qty": "3/4 cup",
+      "item": "plain yogurt, milk kefir or vegan yogurt"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "tahini, stirred"
+    },
+    {
+      "qty": "1 to 2",
+      "item": "garlic cloves, finely minced (or 1/2 tsp granulated)"
+    },
+    {
+      "qty": "1/4 to 1/2 tsp",
+      "item": "salt, plus more to taste"
+    },
+    {
+      "qty": "1/4 tsp",
+      "item": "black pepper"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "lemon juice (optional)"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "olive oil (optional, for fat-free yogurt)"
+    },
+    {
+      "group": "To garnish (optional)",
+      "items": [
+        {
+          "item": "parsley, dill, cilantro or chives"
+        },
+        {
+          "item": "Aleppo chile flakes or Urfa biber"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Whisk the yogurt, tahini, garlic, salt and pepper in a medium bowl until completely smooth."
+    },
+    {
+      "do": "Taste. Add the lemon juice only if your yogurt isn't tangy, since some are sharper than others. With fat-free yogurt, add the olive oil or a little extra tahini for richness. Adjust salt and pepper."
+    },
+    {
+      "do": "Refrigerate until serving, then top with herbs and chile flakes if you like."
+    }
+  ],
+  "notes": [
+    "Keeps 4 days in an airtight container in the fridge, longer if made with granulated garlic instead of fresh.",
+    "Use with Sheet Pan Chicken Shawarma, falafel, lamb, or as a bed for roasted cauliflower and other vegetables. Also good as a dip with pita.",
+    "A pinch of lemon zest is a nice garnish; in winter, pomegranate seeds."
+  ],
+  "nutrition": "Per 2 tbsp: 76 cal · 3.7 g protein · 2.9 g carbs · 0.4 g fiber · 1.1 g sugar · 5.9 g fat · 1.3 g sat fat · 159.6 mg sodium",
+  "source": {
+    "name": "Sylvia Fountaine, Feasting at Home",
+    "url": "https://feastingathome.com/tahini-yogurt-sauce"
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "title": "Lu Rou Fan",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Diced pork belly braised in soy and spices, over rice.",
+  "tags": [],
+  "added": "2026-10-07",
+  "yield": "Serves 4",
+  "times": [
+    [
+      "Active",
+      "20 minutes"
+    ],
+    [
+      "Total",
+      "2 hours"
+    ]
+  ],
+  "time": {
+    "total": 120
+  },
+  "aroma": "soy_ginger_ferment",
+  "role": "protein_main",
+  "technique": "Wok, low braise",
+  "region": "Taiwan",
+  "ingredients": [
+    {
+      "qty": "1 lb (450 g)",
+      "item": "skin-on pork belly, cut into 1/2 in pieces"
+    },
+    {
+      "qty": "2 tsp",
+      "item": "neutral oil"
+    },
+    {
+      "qty": "25 g",
+      "item": "rock sugar (or 1 1/2 tbsp granulated sugar)"
+    },
+    {
+      "qty": "1 small",
+      "item": "onion, diced (or 2 to 3 shallots)"
+    },
+    {
+      "qty": "8",
+      "item": "shiitake mushrooms, fresh or dried, cut into 1/2 in dice"
+    },
+    {
+      "qty": "1/4 cup",
+      "item": "Shaoxing wine (60 ml)"
+    },
+    {
+      "qty": "3 tbsp",
+      "item": "light soy sauce (45 ml)"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "dark soy sauce (30 ml)"
+    },
+    {
+      "qty": "2 cups",
+      "item": "water (475 ml)"
+    },
+    {
+      "qty": "4",
+      "item": "hard-boiled eggs, peeled (optional)"
+    },
+    {
+      "item": "steamed white rice, to serve"
+    },
+    {
+      "group": "Spice bundle",
+      "items": [
+        {
+          "qty": "3",
+          "item": "star anise"
+        },
+        {
+          "qty": "1",
+          "item": "cinnamon stick (Chinese cassia)"
+        },
+        {
+          "qty": "6",
+          "item": "whole cloves"
+        },
+        {
+          "qty": "3",
+          "item": "bay leaves"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "Sichuan peppercorns"
+        },
+        {
+          "qty": "2 pieces",
+          "item": "dried tangerine peel"
+        },
+        {
+          "qty": "2 slices",
+          "item": "fresh ginger"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Tie all the spice bundle ingredients into a square of cheesecloth with kitchen string, so they can be fished out whole before reducing."
+    },
+    {
+      "do": "Bring enough water to cover the pork to a boil. Blanch the pork belly 1 minute, drain, and rinse off any scum."
+    },
+    {
+      "do": "Warm the oil in a wok over low heat and add the sugar. Once it starts to melt, add the onion, raise the heat to medium-high and stir-fry 1 minute. Add the mushrooms and stir-fry 2 minutes more."
+    },
+    {
+      "do": "Add the pork, Shaoxing wine, both soy sauces and the water, and bring to a boil. Drop in the spice bundle and the eggs, then turn the heat to its lowest setting."
+    },
+    {
+      "do": "Simmer 1 1/2 hours, stirring now and then so nothing catches on the bottom. Keep it at the barest simmer so the sauce isn't gone before the final reduction."
+    },
+    {
+      "do": "Once the pork is falling apart, remove the spice bundle. Raise the heat to medium-high and reduce, stirring occasionally, about 5 minutes, until the sauce coats a spoon but there's still plenty to soak the rice."
+    },
+    {
+      "do": "Spoon the pork and sauce over steamed rice, with an egg (halved) in each bowl."
+    }
+  ],
+  "notes": [
+    "Keep the skin and don't trim the fat. They melt into the sauce and give it body; lean pork makes it thin.",
+    "Dried shiitakes taste stronger than fresh. Soak them in warm water until soft, about 30 minutes, before dicing.",
+    "A longer braise only helps, and the dish adapts well to a slow cooker. Reduce the sauce on the stove at the end either way.",
+    "Close cousin of Shanghai red-cooked pork (hong shao rou), but cut small so it becomes a meat sauce for rice rather than chunks."
+  ],
+  "nutrition": "Per serving: 698 cal · 13 g carbs · 20 g protein · 68 g fat · 1167 mg sodium",
+  "source": {
+    "name": "Judy Leung, The Woks of Life",
+    "url": "https://thewoksoflife.com/lu-rou-fan-taiwanese-braised-pork-rice-bowl"
+  }
+}

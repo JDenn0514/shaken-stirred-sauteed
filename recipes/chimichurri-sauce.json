@@ -1,0 +1,78 @@
+{
+  "title": "Chimichurri Sauce",
+  "category": "cooking",
+  "kind": "component",
+  "tags": [],
+  "added": "2026-08-29",
+  "aroma": "olive_tomato_herb",
+  "role": "sauce_condiment",
+  "technique": "No cook",
+  "region": "Argentina",
+  "yield": "Makes about 1 cup",
+  "times": [
+    [
+      "Active",
+      "10 min"
+    ],
+    [
+      "Rest",
+      "30 min"
+    ]
+  ],
+  "ingredients": [
+    {
+      "qty": "¼ cup",
+      "item": "extra virgin olive oil"
+    },
+    {
+      "qty": "¼ cup",
+      "item": "red wine vinegar"
+    },
+    {
+      "qty": "¼ cup",
+      "item": "red onion, minced"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "bell pepper, minced"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "flat leaf parsley, minced"
+    },
+    {
+      "qty": "2 tsp",
+      "item": "fresh oregano, minced"
+    },
+    {
+      "qty": "2 tsp",
+      "item": "fresh garlic, minced"
+    },
+    {
+      "qty": "¼ tsp",
+      "item": "red pepper flakes"
+    },
+    {
+      "item": "Salt and pepper to taste"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Mince the onion, bell pepper, parsley, oregano, and garlic fine, so no single piece dominates a bite."
+    },
+    {
+      "do": "Combine everything in a bowl — oil, vinegar, all the minced ingredients, pepper flakes — and whisk until it comes together."
+    },
+    {
+      "do": "Season with salt and pepper. Let it stand at least 30 minutes before serving so the flavors settle in. Whisk again just before it goes to the table."
+    }
+  ],
+  "notes": [
+    "Timing. The half hour of rest is the source's one instruction, and it matters more than anything else here: raw garlic and vinegar need it to stop tasting sharp and separate.",
+    "Keeping it. Refrigerate in a jar up to about 5 days. The oil will firm up cold — bring it back to room temperature and whisk before serving.",
+    "Serving. Made for grilled beef, but it works on chicken, fish, roasted potatoes, or a fried egg."
+  ],
+  "source": {
+    "name": "Williams Sonoma Grill Master by Fred Thompson, p. 58"
+  }
+}

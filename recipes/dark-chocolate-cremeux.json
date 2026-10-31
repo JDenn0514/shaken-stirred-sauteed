@@ -1,0 +1,167 @@
+{
+  "title": "Dark Chocolate Crémeux",
+  "category": "baking",
+  "kind": "component",
+  "description": "Vanilla custard poured over dark chocolate, blended smooth and chilled until set.",
+  "tags": [
+    "chocolate",
+    "make-ahead",
+    "freezer-friendly",
+    "uses egg yolks"
+  ],
+  "added": "2026-09-29",
+  "bakeCategory": "Components",
+  "flavor": "sweet",
+  "yield": "Makes about 900 to 950 g (3 1/2 to 3 3/4 cups)",
+  "times": [
+    [
+      "Active",
+      "1 hr"
+    ],
+    [
+      "Total",
+      "5 hr, ideally overnight"
+    ]
+  ],
+  "time": {
+    "total": 300
+  },
+  "pan": "Medium saucepan",
+  "heat": "Low, stovetop",
+  "heatLabel": "Heat",
+  "beforeYouStart": [
+    "Chop the chocolate and put it in a large, deep bowl with room for a stick blender. Set a fine sieve over it. The custard has to hit the chocolate hot, so this is ready first.",
+    "Butter at room temperature, if using.",
+    "Have an instant-read thermometer, a rubber spatula and a stick blender to hand.",
+    "Set the yolk bowl on a damp towel so it stays put while you whisk and pour at the same time.",
+    "Use real chocolate whose only fat is cocoa butter. Compound or melting chocolate made with palm or vegetable oil will not set."
+  ],
+  "ingredients": [
+    {
+      "group": "Custard (crème anglaise)",
+      "items": [
+        {
+          "qty": "1 cup",
+          "item": "Whole or 2% milk",
+          "note": "240 ml"
+        },
+        {
+          "qty": "1 cup",
+          "item": "Heavy cream, 35% fat",
+          "note": "240 ml"
+        },
+        {
+          "qty": "4",
+          "item": "Large egg yolks"
+        },
+        {
+          "grams": 100,
+          "qty": "1/2 cup",
+          "item": "Sugar"
+        },
+        {
+          "qty": "1/4 tsp",
+          "item": "Sea salt"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "Vanilla extract"
+        }
+      ]
+    },
+    {
+      "group": "Crémeux",
+      "items": [
+        {
+          "grams": 340,
+          "item": "Dark chocolate",
+          "note": "chopped, at least 55% cacao"
+        },
+        {
+          "grams": 50,
+          "item": "Unsalted butter",
+          "note": "optional, softened"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "group": "Custard (crème anglaise)",
+      "items": [
+        {
+          "do": "Heat the milk and cream over medium, stirring now and then so the bottom doesn't scorch. Take it off the heat once it steams. Don't let it boil."
+        },
+        {
+          "do": "Meanwhile, whisk the yolks, sugar, salt and vanilla until smooth and pale. Dissolving the sugar into the yolks first cushions them against the heat."
+        },
+        {
+          "do": "Pour about half the hot dairy into the yolks in a thin stream, whisking the whole time. Warming the yolks gradually is what keeps them from scrambling. Scrape the bowl and whisk once more."
+        },
+        {
+          "do": "Pour it all back into the saucepan, whisk, and set over low heat. Stir constantly with a spatula, scraping the bottom, sides and corners. If it thickens too fast, lift the pan off the heat and keep stirring to spread the heat out, then return it.",
+          "wait": "4 to 10 min",
+          "cue": "Coats the back of a spoon, 180F to 185F (82C to 85C). Never let it boil."
+        }
+      ]
+    },
+    {
+      "group": "Crémeux",
+      "items": [
+        {
+          "do": "Pour the hot custard through the sieve onto the chocolate. The sieve catches any bits of cooked egg. Cover the bowl with a plate.",
+          "wait": "1 min"
+        },
+        {
+          "do": "Stir until the chocolate is fully melted. Add the butter now, while it's warm, and stir it in."
+        },
+        {
+          "do": "Blend with a stick blender, keeping the blade fully submerged so you don't whip in air. This emulsifies the cocoa butter into the custard, which is where the silky texture comes from.",
+          "cue": "Smooth, thick and glossy"
+        },
+        {
+          "do": "Press plastic wrap directly onto the whole surface to stop a skin forming. Chill until set. For tarts or cups, pour into them first and chill there.",
+          "wait": "4 hr, ideally overnight",
+          "cue": "Firm and scoopable, like soft ganache"
+        },
+        {
+          "do": "To spread or pipe, let the chilled crémeux sit at room temperature until it softens. It also tastes silkier served at room temperature than cold.",
+          "cue": "Spreads easily without tearing"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Airtight in the fridge for 4 to 5 days. It picks up fridge smells, so seal it well.",
+        "Freezes for 2 months, airtight. Thaw in the fridge or at room temperature; the texture may shift a little."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Milk chocolate: cut the sugar to 50 g (1/4 cup).",
+        "White chocolate: cut the sugar to 50 g (1/4 cup). It sets much softer; use one made with cocoa butter and consider gelatin.",
+        "Butter is for mouthfeel only. Leave it out with no loss of structure.",
+        "Mocha: dissolve 3 to 4 tsp instant coffee granules in the hot custard before straining.",
+        "Extra hold (warm room, heavy layers on top): bloom 1 1/2 tsp powdered gelatin in 2 tbsp water and stir into the warm custard. Up to 2 1/2 tsp in 3 tbsp water if it's hot out.",
+        "Dairy-free: plant milk plus unsweetened coconut cream, a vegan dark chocolate, and vegan butter or none.",
+        "Nutella or fruit purée can't replace the chocolate. The chocolate is what sets it; without it you need gelatin."
+      ]
+    },
+    {
+      "group": "Pairs with",
+      "items": [
+        "Chocolate Pavlova: the meringue uses the whites, this uses the 4 yolks. Spread it on the cooled shell just before serving, under the whipped cream, so it doesn't soften the meringue.",
+        "Something sharp to cut the richness: raspberries, cherries or passion fruit.",
+        "Toasted chopped hazelnuts, folded in after blending. They stay crunchy, but go stale after a few days."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Dini Kodippili, The Flavor Bender",
+    "url": "https://theflavorbender.com/creamy-chocolate-cremeux-recipe"
+  }
+}

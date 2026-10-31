@@ -1,0 +1,233 @@
+{
+  "title": "Chicken Shawarma Salad",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Spiced roast chicken over chopped salad, with two tahini sauces.",
+  "tags": [],
+  "added": "2026-10-08",
+  "yield": "Serves 4",
+  "times": [
+    [
+      "Total",
+      "About 1 hour"
+    ]
+  ],
+  "time": {
+    "total": 60
+  },
+  "ingredients": [
+    {
+      "group": "Shawarma",
+      "items": [
+        {
+          "qty": "1 to 1 1/2 lb",
+          "item": "boneless, skinless chicken breasts or thighs"
+        },
+        {
+          "qty": "1",
+          "item": "onion, cut into wedges"
+        },
+        {
+          "qty": "1",
+          "item": "red bell pepper, in strips (optional)"
+        },
+        {
+          "qty": "1 head",
+          "item": "cauliflower, in florets (optional)"
+        },
+        {
+          "item": "olive oil, salt, pepper and lemon zest, for the vegetables"
+        }
+      ]
+    },
+    {
+      "group": "Marinade",
+      "items": [
+        {
+          "qty": "1 tsp",
+          "item": "kosher salt"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "ground cumin"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "ground coriander"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "ground turmeric"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "granulated garlic (or 2 cloves, finely minced)"
+        },
+        {
+          "qty": "2 tbsp",
+          "item": "olive oil"
+        }
+      ]
+    },
+    {
+      "group": "Israeli salad",
+      "items": [
+        {
+          "qty": "2",
+          "item": "extra-large tomatoes"
+        },
+        {
+          "qty": "1",
+          "item": "English cucumber"
+        },
+        {
+          "qty": "1 cup",
+          "item": "red onion (about 1/2 medium)"
+        },
+        {
+          "qty": "1",
+          "item": "red bell pepper"
+        },
+        {
+          "qty": "1",
+          "item": "yellow bell pepper"
+        },
+        {
+          "qty": "1 cup",
+          "item": "fresh herbs: parsley, mint, cilantro or a mix"
+        },
+        {
+          "qty": "1",
+          "item": "lemon, zested, then juiced to taste (start with half)"
+        },
+        {
+          "qty": "1/4 cup",
+          "item": "olive oil"
+        },
+        {
+          "item": "salt and pepper"
+        }
+      ]
+    },
+    {
+      "group": "Tahini yogurt sauce (makes 1 cup)",
+      "items": [
+        {
+          "qty": "3/4 cup",
+          "item": "plain yogurt, milk kefir or vegan yogurt"
+        },
+        {
+          "qty": "1/4 cup",
+          "item": "tahini, stirred"
+        },
+        {
+          "qty": "1 to 2",
+          "item": "garlic cloves, finely minced (or 1/2 tsp granulated)"
+        },
+        {
+          "qty": "1/4 to 1/2 tsp",
+          "item": "salt, plus more to taste"
+        },
+        {
+          "qty": "1/4 tsp",
+          "item": "black pepper"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "lemon juice (optional)"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "olive oil (optional, for fat-free yogurt)"
+        }
+      ]
+    },
+    {
+      "group": "Green tahini sauce (makes 1 1/2 cups)",
+      "items": [
+        {
+          "qty": "1/2 cup",
+          "item": "water"
+        },
+        {
+          "qty": "2 tbsp",
+          "item": "lemon juice"
+        },
+        {
+          "qty": "3 tbsp",
+          "item": "olive oil"
+        },
+        {
+          "qty": "2 large",
+          "item": "garlic cloves"
+        },
+        {
+          "qty": "3/4 cup",
+          "item": "fresh herbs: cilantro, parsley, mint, dill or basil"
+        },
+        {
+          "qty": "2 to 3 slices",
+          "item": "jalapeño (optional)"
+        },
+        {
+          "qty": "1/2 to 1 tsp",
+          "item": "salt, starting with 1/2 tsp"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "tahini, stirred"
+        }
+      ]
+    },
+    {
+      "group": "To serve",
+      "items": [
+        {
+          "item": "greens, such as arugula or spinach"
+        },
+        {
+          "item": "quick-pickled onions and warm pita (optional)"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Heat the oven to 400F (205C) and line a large sheet pan with parchment. Whisk the marinade ingredients together in a small bowl."
+    },
+    {
+      "do": "Lay the chicken and vegetables on the pan, keeping them apart. Brush the chicken heavily with marinade. Dress the vegetables with olive oil, salt, pepper and a little lemon zest, or with any marinade left over."
+    },
+    {
+      "do": "Roast and check at 20 minutes; breasts finish before thighs. Toss the vegetables and keep roasting until the chicken is cooked through, 165F (74C) inside, and the vegetables are tender, 20 to 30 minutes in all."
+    },
+    {
+      "do": "While it roasts, make the salad. Cut the tomatoes, cucumber, onion and both peppers into a very small, even dice; the finer the cut, the better the salad, so use your sharpest knife. Chop the herbs and toss everything with the zest, olive oil, half the lemon's juice, salt and pepper. Taste: if it seems flat, it usually wants more salt, then more lemon."
+    },
+    {
+      "do": "Tahini yogurt: whisk the yogurt, tahini, garlic, salt and pepper until completely smooth. Add the lemon juice only if your yogurt isn't tangy; with fat-free yogurt, add the olive oil or a little extra tahini for richness. Refrigerate until serving."
+    },
+    {
+      "do": "Green tahini: blend everything except the tahini until combined but still a little rough. It will look far too thin; add the tahini and blend until creamy and it thickens, leaving flecks of herb. Adjust salt, lemon and chile, and loosen with water if needed."
+    },
+    {
+      "do": "Slice the chicken. Spoon a little sauce onto each plate, pile on greens and the Israeli salad, then top with the chicken, roasted vegetables and pickled onions. Drizzle with either sauce or both, with warm pita alongside."
+    }
+  ],
+  "notes": [
+    "Make ahead: the chicken can sit in the marinade, sealed, for up to 48 hours. Cooked shawarma keeps 4 days in the fridge or 3 months frozen; reheat in a warm oven or a skillet.",
+    "Watery salad: salt the diced cucumber and tomato and drain in a colander for 30 minutes before mixing. The salad keeps 3 to 4 days but is best in the first two.",
+    "Sauces keep: tahini yogurt 4 days (longer made with granulated garlic); green tahini 5 days in a sealed jar. A spoonful or two of za'atar is a good addition to the green sauce. For an oil-free version, swap the oil for water and a little more tahini.",
+    "Swaps: tofu can share the pan and needs the full 30 minutes to crust. Shrimp cooks fast; add it only once the vegetables are nearly done, or sear it in the marinade in a skillet. Readers often double the marinade.",
+    "Wraps or bowls instead: tuck everything into warm 10 to 12 in wraps, or serve over rice or quinoa. For low-carb bowls, roast riced cauliflower on a second pan with olive oil, salt, pepper, lemon zest and a pinch of cumin, tossing every 10 minutes until crisp in spots."
+  ],
+  "aroma": "sumac_tahini_lemon",
+  "role": "protein_main",
+  "technique": "Sheet pan, 400F (205C)",
+  "region": "Egypt",
+  "nutrition": "Shawarma bowl (chicken breast, riced cauliflower, no sauce): 380 cal, 50.5 g protein, 15.2 g carbs, 13.2 g fat. Israeli salad: 83 cal per cup. Per 2 tbsp: tahini yogurt 76 cal, green tahini 95 cal.",
+  "source": {
+    "name": "Sylvia Fountaine, Feasting at Home: Sheet Pan Shawarma, Israeli Salad, Tahini Yogurt Sauce and Green Tahini Sauce",
+    "url": "https://feastingathome.com"
+  }
+}

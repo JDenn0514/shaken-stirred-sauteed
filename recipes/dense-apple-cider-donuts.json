@@ -1,0 +1,215 @@
+{
+  "title": "Dense Apple Cider Donuts",
+  "category": "baking",
+  "kind": "dish",
+  "description": "Baked cake donuts flavored with reduced cider, dipped in spiced sugar.",
+  "tags": [
+    "apple",
+    "spiced",
+    "fall",
+    "freezer-friendly"
+  ],
+  "added": "2026-10-30",
+  "bakeCategory": "Breakfast Bakes",
+  "flavor": "sweet",
+  "yield": "Makes 12 to 14 donuts",
+  "times": [
+    [
+      "Total",
+      "1 hr"
+    ]
+  ],
+  "time": {
+    "total": 60
+  },
+  "pan": "Donut pan",
+  "heat": "350F",
+  "heatLabel": "Oven",
+  "beforeYouStart": [
+    "Reduce the cider at least 30 minutes ahead, or the night before, so it has time to cool.",
+    "Egg and milk at room temperature.",
+    "Preheat to 350F and coat the donut pan with nonstick spray.",
+    "Two donut pans let you bake everything at once; with one, bake in batches."
+  ],
+  "ingredients": [
+    {
+      "group": "Cider reduction",
+      "items": [
+        {
+          "qty": "1 1/2 cups",
+          "item": "Apple cider",
+          "note": "360 ml; fresh, not powdered mix"
+        }
+      ]
+    },
+    {
+      "group": "Dry bowl",
+      "items": [
+        {
+          "grams": 250,
+          "qty": "2 cups",
+          "item": "All-purpose flour",
+          "note": "spooned and leveled"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Baking soda"
+        },
+        {
+          "qty": "3/4 tsp",
+          "item": "Baking powder"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Ground cinnamon"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Apple pie spice"
+        },
+        {
+          "qty": "1/4 tsp",
+          "item": "Salt"
+        }
+      ]
+    },
+    {
+      "group": "Wet bowl",
+      "items": [
+        {
+          "grams": 28,
+          "qty": "2 Tbsp",
+          "item": "Unsalted butter",
+          "note": "melted"
+        },
+        {
+          "qty": "1 large",
+          "item": "Egg",
+          "note": "room temperature"
+        },
+        {
+          "grams": 100,
+          "qty": "1/2 cup",
+          "item": "Brown sugar",
+          "note": "packed, light or dark"
+        },
+        {
+          "grams": 100,
+          "qty": "1/2 cup",
+          "item": "Granulated sugar"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "Milk",
+          "note": "120 ml, room temperature"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "Pure vanilla extract"
+        }
+      ]
+    },
+    {
+      "group": "Topping",
+      "items": [
+        {
+          "grams": 200,
+          "qty": "1 cup",
+          "item": "Granulated sugar"
+        },
+        {
+          "qty": "3/4 tsp",
+          "item": "Ground cinnamon"
+        },
+        {
+          "qty": "3/4 tsp",
+          "item": "Apple pie spice"
+        },
+        {
+          "grams": 85,
+          "qty": "6 Tbsp",
+          "item": "Unsalted butter",
+          "note": "melted"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "group": "Cider reduction",
+      "items": [
+        {
+          "do": "Simmer the cider in a small saucepan over low heat, stirring now and then. Start measuring at 10 minutes, then every 3 to 5 minutes. Leave any spices or solids that rise to the top; they go into the batter too.",
+          "wait": "About 20 min",
+          "cue": "Down to 1/2 cup (120 ml), thick and concentrated"
+        },
+        {
+          "do": "Take off the heat and let it cool before it goes into the batter.",
+          "wait": "10 min or more"
+        }
+      ]
+    },
+    {
+      "group": "Batter",
+      "items": [
+        {
+          "do": "Whisk the flour, baking soda, baking powder, cinnamon, apple pie spice and salt in a large bowl."
+        },
+        {
+          "do": "In a second bowl, whisk the melted butter, egg, both sugars, milk and vanilla. Pour into the dry ingredients, add the cooled cider reduction, and whisk until smooth. The batter should be a little thick; that's what makes the crumb dense and cakey."
+        },
+        {
+          "do": "Scrape the batter into a large zip-top bag, snip off a corner, and pipe into the pan, filling each cavity about halfway."
+        }
+      ]
+    },
+    {
+      "group": "Bake",
+      "items": [
+        {
+          "do": "Bake the donuts.",
+          "wait": "10 to 11 min",
+          "cue": "Edges and tops lightly browned; the top springs back when poked"
+        },
+        {
+          "do": "Cool in the pan, then turn out onto a wire rack. Re-grease the pan and bake the remaining batter.",
+          "wait": "2 min"
+        }
+      ]
+    },
+    {
+      "group": "Coat",
+      "items": [
+        {
+          "do": "Stir the sugar, cinnamon and apple pie spice together in a medium bowl."
+        },
+        {
+          "do": "Once the donuts are cool enough to handle, dip both sides quickly in the melted butter, then coat generously in the spiced sugar. Don't let them soak: they drink butter fast, and if the bowl runs low, brush it on instead."
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Best the day they're made. Keeps covered at room temperature up to 2 days, or in the fridge up to 5 days.",
+        "Freeze, coated or plain, up to 2 months. Thaw overnight in the fridge and rewarm in the microwave.",
+        "The cider reduction can be made the night before. The batter can't: the leaveners start working once wet meets dry, so bake soon after mixing."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Apple pie spice: mix 4 parts cinnamon, 2 parts nutmeg and 1 part cardamom.",
+        "Milk: the author usually uses buttermilk, but any dairy or nondairy milk works. 1/2 cup plain yogurt or sour cream gives a denser crumb.",
+        "No donut pan: use a greased or lined 12-cup muffin pan, fill each cup 3/4 full, and bake at 350F for 18 to 20 minutes, until a toothpick comes out clean. Makes 10 to 12. With more cake and less coating per bite, they eat more like a muffin; the minis below come closest to a donut.",
+        "Minis: grease a mini donut or mini muffin pan, fill 3/4 full, and bake at 350F for 8 to 9 minutes."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Sally's Baking Addiction",
+    "url": "https://sallysbakingaddiction.com/baked-apple-cider-donuts"
+  }
+}

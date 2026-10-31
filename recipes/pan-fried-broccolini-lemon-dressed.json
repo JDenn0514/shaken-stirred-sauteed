@@ -1,0 +1,92 @@
+{
+  "title": "Pan-Fried Broccolini, Lemon-Dressed",
+  "category": "cooking",
+  "kind": "dish",
+  "tags": [],
+  "added": "2026-08-29",
+  "aroma": "olive_tomato_herb",
+  "role": "vegetable_main",
+  "technique": "Cast-iron skillet, medium-high",
+  "yield": "Serves 4",
+  "times": [
+    [
+      "Total",
+      "About 15 minutes"
+    ]
+  ],
+  "time": {
+    "total": 15
+  },
+  "ingredients": [
+    {
+      "qty": "1 lb",
+      "item": "broccolini"
+    },
+    {
+      "group": "For the pan",
+      "items": [
+        {
+          "qty": "1 tsp",
+          "item": "olive oil"
+        },
+        {
+          "item": "Salt, black pepper, red pepper flakes"
+        }
+      ]
+    },
+    {
+      "group": "Finishing dressing, off heat",
+      "items": [
+        {
+          "qty": "2 tbsp",
+          "item": "extra-virgin olive oil"
+        },
+        {
+          "item": "Juice of ½ lemon"
+        },
+        {
+          "item": "Zest of 1 lemon"
+        },
+        {
+          "qty": "¼ tsp",
+          "item": "garlic powder"
+        },
+        {
+          "item": "Pinch each salt, black pepper, red pepper flakes"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Prep. Cut away the dried ends. Any stalk thicker than a pencil gets halved lengthwise. Dry the broccolini well — water caught in the florets will steam it instead of browning it."
+    },
+    {
+      "do": "Season. Toss with 1 tsp oil, salt, pepper, and flakes. Go light; the dressing adds plenty more."
+    },
+    {
+      "do": "Pan fry. Heat cast iron over medium-high until it just begins to smoke. Lay the broccolini in a single layer, cut side down. Leave it undisturbed 2–3 minutes, until the stalks have real color, then toss and cook 2 minutes more. A knife tip should slide into the stem with slight resistance, not none."
+    },
+    {
+      "do": "Dress. Take the pan off the heat. Whisk the dressing ingredients together in a bowl, add the broccolini, and toss to coat. Serve warm."
+    }
+  ],
+  "notes": [
+    "Zest first, juice second — a whole lemon is far easier to grate.",
+    "Two batches beat one crowded pan. Crowded broccolini steams.",
+    "Dress it just before it goes to the table; it wilts if it sits in the lemon.",
+    {
+      "group": "If the pan just cooked steak",
+      "items": [
+        "Pour off all but a thin film of fat and skip the oil in step 2.",
+        "Rest the pan off heat a minute, then cook over medium — post-sear cast iron will scorch the fond.",
+        "Keep golden fond; wipe out anything blackened.",
+        "Salt lightly. The rendered fat and leftover seasoning carry their own.",
+        "Whisk the steak's resting juices into the dressing."
+      ]
+    }
+  ],
+  "source": {
+    "name": "a recipe supplied by the cook (source unattributed)"
+  }
+}

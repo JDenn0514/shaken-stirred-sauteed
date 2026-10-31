@@ -1,0 +1,54 @@
+{
+  "title": "Garlic Paste",
+  "category": "cooking",
+  "kind": "component",
+  "tags": [],
+  "added": "2026-08-30",
+  "aroma": "salt_fat_fire",
+  "role": "sauce_condiment",
+  "technique": "No blender — muddler or knife",
+  "yield": "Makes about 3 tablespoons",
+  "ingredients": [
+    {
+      "qty": "8",
+      "item": "garlic cloves, peeled"
+    },
+    {
+      "qty": "1/2 tsp",
+      "item": "coarse kosher salt"
+    },
+    {
+      "qty": "2 tsp",
+      "item": "olive oil (optional, for storage)"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Trim the tough root end off each clove. If a clove has a green sprout running through it, halve it lengthwise and pull the sprout out — bitter, and it won't break down."
+    },
+    {
+      "do": "Chop the cloves into rough lentil-sized pieces. Precision doesn't matter; smaller pieces just can't dodge the muddler."
+    },
+    {
+      "do": "Scatter the salt over the garlic. The coarse crystals are the abrasive doing the work — fine salt dissolves and grinds nothing."
+    },
+    {
+      "do": "Tip it all into a narrow, heavy bowl (better than wide and shallow — the garlic stays under the muddler). Press and twist against the bottom and lower sides, scraping the sides down every 30 seconds, until it's sticky and mostly smooth."
+    },
+    {
+      "do": "If the bowl fights you, move to a cutting board. Hold the chef's knife nearly flat and drag it across the pile at an angle, pressing as you go. Re-gather, chop through once, smear again. Repeat until smooth."
+    },
+    {
+      "do": "Use immediately, or stir in the olive oil until the paste is coated, jar it, and refrigerate."
+    }
+  ],
+  "notes": [
+    "Timing: sharpest in the first hour, mellows after that.",
+    "Storage: refrigerate and use within about 4 days, or freeze in a small ice cube tray. Never leave oil-covered garlic at room temperature.",
+    "The salt counts. It's part of the recipe, not a seasoning — subtract it from whatever dish this goes into.",
+    "Why paste at all: for high-heat roasting (hasselback potatoes, anything basted and returned to the oven) paste coats evenly instead of leaving exposed minced bits to scorch. For a quantity this small, a microplane straight into the butter or oil is faster than either method here."
+  ],
+  "source": {
+    "name": "Jacob's notes"
+  }
+}

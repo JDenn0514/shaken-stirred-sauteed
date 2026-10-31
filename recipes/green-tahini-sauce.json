@@ -1,0 +1,78 @@
+{
+  "title": "Green Tahini Sauce",
+  "category": "cooking",
+  "kind": "component",
+  "description": "Tahini blended with fresh herbs, garlic, lemon and green chile.",
+  "tags": [],
+  "added": "2026-10-08",
+  "yield": "Makes 1 1/2 cups",
+  "times": [
+    [
+      "Total",
+      "5 min"
+    ]
+  ],
+  "time": {
+    "total": 5
+  },
+  "ingredients": [
+    {
+      "qty": "1/2 cup",
+      "item": "water"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "lemon juice"
+    },
+    {
+      "qty": "3 tbsp",
+      "item": "olive oil"
+    },
+    {
+      "qty": "2 large",
+      "item": "garlic cloves"
+    },
+    {
+      "qty": "3/4 cup",
+      "item": "fresh herbs: cilantro, parsley, mint, dill or basil"
+    },
+    {
+      "qty": "2 to 3 slices",
+      "item": "jalapeño (optional)"
+    },
+    {
+      "qty": "1/2 to 1 tsp",
+      "item": "salt, starting with 1/2 tsp"
+    },
+    {
+      "qty": "1/2 cup",
+      "item": "tahini, stirred"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Blend everything except the tahini until combined but still a little rough."
+    },
+    {
+      "do": "It will look far too thin. Add the tahini and blend until creamy and it thickens, leaving flecks of herb."
+    },
+    {
+      "do": "Taste and adjust salt, lemon and chile. Loosen with a little more water if you want a pourable sauce."
+    }
+  ],
+  "notes": [
+    "Herbs: a mix of two or three is best (parsley, mint and cilantro is the author's favorite), but one works. Thin stems are fine.",
+    "Add 1 to 2 tsp za'atar if you like. Readers who like it sharper double the lemon; if the garlic is too strong for you, cut it back.",
+    "Oil-free: swap the olive oil for water and a little more tahini.",
+    "Keeps 5 days in a sealed jar in the fridge. Good with Sheet Pan Chicken Shawarma, falafel, Israeli Salad and mezze platters, or as a raw-vegetable dip."
+  ],
+  "aroma": "sumac_tahini_lemon",
+  "role": "sauce_condiment",
+  "technique": "No cook, blender",
+  "region": "West Asia and the Levant",
+  "nutrition": "Per 2 tbsp: 95 cal · 1.9 g protein · 3.5 g carbs · 0.9 g fiber · 0.7 g sugar · 8.9 g fat · 1.3 g sat fat · 198.7 mg sodium",
+  "source": {
+    "name": "Sylvia Fountaine, Feasting at Home",
+    "url": "https://feastingathome.com/green-tahini-sauce"
+  }
+}

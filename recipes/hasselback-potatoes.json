@@ -1,0 +1,90 @@
+{
+  "title": "Hasselback Potatoes",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Fanned potatoes basted twice in garlic butter — crisp edges, soft centre.",
+  "tags": [],
+  "added": "2026-08-29",
+  "aroma": "salt_fat_fire",
+  "role": "vegetable_main",
+  "technique": "Bake, 400F (200C)",
+  "region": "Sweden",
+  "yield": "Serves 4",
+  "times": [
+    [
+      "Prep",
+      "15 min"
+    ],
+    [
+      "Bake",
+      "55–60 min"
+    ]
+  ],
+  "ingredients": [
+    {
+      "qty": "8",
+      "item": "medium potatoes",
+      "note": "Maris Piper, King Edward, Desiree, Yukon Gold or russet all work"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "garlic paste",
+      "note": "or garlic powder"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "salted butter, melted"
+    },
+    {
+      "qty": "1/3 cup",
+      "item": "vegetable oil",
+      "note": "any neutral high-smoke-point oil"
+    },
+    {
+      "item": "Salt and freshly ground black pepper"
+    },
+    {
+      "item": "Chopped parsley, to finish"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Heat the oven to 200°C / 400°F. Line a baking tray with parchment or grease it."
+    },
+    {
+      "do": "Scrub the potatoes under cold water and dry them."
+    },
+    {
+      "do": "Working one at a time on a board, hold a potato between thumb and finger and cut crosswise slices about 4 mm apart, stopping short of the base so the slices stay joined. Laying chopsticks along both sides makes this foolproof — the blade stops on the wood."
+    },
+    {
+      "do": "Set the potatoes on the tray, cut side up."
+    },
+    {
+      "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl. Hold back roughly half for later."
+    },
+    {
+      "do": "Brush the mixture over each potato, pushing it down into the cuts. Bake 40 minutes."
+    },
+    {
+      "do": "Pull the tray out, baste with the reserved garlic butter, and return to the oven for a further 15–20 minutes, until cooked through and crisp at the edges."
+    },
+    {
+      "do": "Scatter with parsley and serve hot."
+    }
+  ],
+  "notes": [
+    "Slice slowly. No fast fingers — the whole thing depends on not cutting through the base.",
+    "Skip garlic granules. They scorch over an hour in the oven and turn the dish bitter. Paste or powder only.",
+    "Size matters. Medium potatoes cook in the stated time; large ones will need longer.",
+    "Seasoning variations. Rosemary, smoked paprika or oregano all suit the butter.",
+    "Cheese. Tuck grated cheddar or mozzarella into the cuts near the end — wrap each potato in foil first, or it runs everywhere.",
+    "The oil looks like a lot. It is, but most of it stays on the tray rather than in the potato.",
+    "Storing. Cool completely, then refrigerate. Reheat 10 minutes at 170°C / 340°F, or use an air fryer — faster and crisper."
+  ],
+  "nutrition": "Per serving (estimate): 471 kcal · 60 g carbs · 7 g protein · 24 g fat (19 g sat) · 7 g fibre · 1431 mg potassium · 71 mg sodium",
+  "source": {
+    "name": "Ájọkẹ, “Hasselback Potatoes Recipe,” The Dinner Bite",
+    "url": "https://thedinnerbite.com/hasselback-potatoes-recipe/"
+  }
+}

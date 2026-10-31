@@ -1,0 +1,184 @@
+{
+  "title": "Sheet Pan Chicken Shawarma Havarti Sandwich",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Yogurt-marinated roast chicken and two cheeses, baked inside folded naan.",
+  "tags": [],
+  "added": "2026-09-28",
+  "yield": "Serves 6",
+  "times": [
+    [
+      "Active",
+      "30 min"
+    ],
+    [
+      "Marinate",
+      "15 min"
+    ],
+    [
+      "Total",
+      "1 hr 15 min"
+    ]
+  ],
+  "time": {
+    "total": 75
+  },
+  "aroma": "sumac_tahini_lemon",
+  "role": "protein_main",
+  "technique": "Sheet pan, 425F (220C), broil",
+  "region": "United States (shawarma-inspired)",
+  "ingredients": [
+    {
+      "group": "Chicken",
+      "items": [
+        {
+          "qty": "1 1/2 lb",
+          "item": "chicken breasts or thighs, thinly sliced"
+        },
+        {
+          "qty": "1/3 cup",
+          "item": "full-fat plain Greek yogurt"
+        },
+        {
+          "qty": "1/4 cup",
+          "item": "extra virgin olive oil"
+        },
+        {
+          "qty": "6 cloves",
+          "item": "garlic, chopped"
+        },
+        {
+          "qty": "2",
+          "item": "shallots, chopped"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "smoked paprika"
+        },
+        {
+          "qty": "2 tsp",
+          "item": "dried oregano"
+        },
+        {
+          "qty": "1/2 tsp",
+          "item": "turmeric"
+        },
+        {
+          "item": "chili flakes, to taste"
+        },
+        {
+          "item": "kosher salt"
+        }
+      ]
+    },
+    {
+      "group": "Green tahini (or see notes)",
+      "items": [
+        {
+          "qty": "1/2 cup",
+          "item": "tahini"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "mixed fresh herbs: parsley, dill, basil or cilantro"
+        },
+        {
+          "qty": "1/4 cup",
+          "item": "water, plus more to thin"
+        },
+        {
+          "qty": "2 tbsp",
+          "item": "lemon juice"
+        },
+        {
+          "qty": "1",
+          "item": "jalapeño, seeded if you want it milder"
+        },
+        {
+          "qty": "1 to 2",
+          "item": "garlic cloves, grated"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "honey"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "kosher salt, plus more to taste"
+        }
+      ]
+    },
+    {
+      "group": "Sandwiches",
+      "items": [
+        {
+          "qty": "4 pieces",
+          "item": "naan"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "green tahini, Caesar or mayo, plus extra to serve"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "oil-packed sun-dried tomatoes, sliced"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "sliced dill pickles and/or pepperoncini"
+        },
+        {
+          "qty": "6 slices",
+          "item": "Havarti"
+        },
+        {
+          "qty": "6 slices",
+          "item": "gouda"
+        },
+        {
+          "qty": "2 cups",
+          "item": "sprouts or microgreens"
+        },
+        {
+          "qty": "1/2 cup",
+          "item": "pickled red onions (optional)"
+        },
+        {
+          "item": "olive oil and sesame seeds, for the top"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Toss the chicken with the yogurt, oil, garlic, shallots, paprika, oregano, turmeric, chili flakes and a good pinch of salt. Let it sit 15 minutes while you prep; the yogurt tenderizes and helps the spices cling. Heat the oven to 425F (220C)."
+    },
+    {
+      "do": "Spread the chicken in one layer on a sheet pan and roast 20 minutes, until cooked through. Switch to broil for 1 to 2 minutes to char the edges, then set the oven back to 425F (220C) for the sandwiches."
+    },
+    {
+      "do": "While the chicken roasts, blend all the tahini ingredients until smooth. Add water a spoonful at a time until it pours, then taste for salt; it needs some."
+    },
+    {
+      "do": "Lay the naan flat on a sheet pan. Spread dressing over one half of each, then layer sun-dried tomatoes, pickles, both cheeses and the chicken. Cover with foil and bake 15 minutes, until the cheese melts; the foil keeps the naan soft while the filling heats."
+    },
+    {
+      "do": "Uncover. Pile on the sprouts and onions, drizzle with more dressing, and fold the bare half of each naan over the top, pressing gently. Rub the tops with oil, sprinkle with sesame seeds, and bake uncovered 5 to 10 minutes until toasted. Check at 5 minutes: naan overbrowns quickly."
+    },
+    {
+      "do": "Slice and serve warm, with extra dressing on the side."
+    }
+  ],
+  "notes": [
+    "Thick homemade naan may not fold cleanly. Sandwich the filling between two pieces instead, or use a split loaf of ciabatta.",
+    "No time for the tahini: use a good store-bought Caesar, garlic mayo, or mayo stirred with basil pesto.",
+    "Make ahead: roast the chicken and blend the dressing in advance, and assembly to table is about 25 minutes. Wrapped, the sandwiches travel fine still slightly warm.",
+    "Cod or halibut can replace the chicken; roast only until it just flakes.",
+    "Good with sweet potato fries or a sharp green salad."
+  ],
+  "nutrition": "Per serving: 714 cal (source estimate)",
+  "source": {
+    "name": "Tieghan Gerard, Half Baked Harvest",
+    "url": "https://halfbakedharvest.com/chicken-shawarma-havarti-sandwich"
+  }
+}

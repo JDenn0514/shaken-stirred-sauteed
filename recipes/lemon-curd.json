@@ -1,0 +1,143 @@
+{
+  "title": "Lemon Curd",
+  "category": "baking",
+  "kind": "component",
+  "description": "Stovetop curd of whole eggs and yolks, tempered and strained.",
+  "tags": [
+    "tangy",
+    "citrus",
+    "gluten-free",
+    "make-ahead",
+    "freezer-friendly",
+    "uses egg yolks"
+  ],
+  "added": "2026-09-27",
+  "bakeCategory": "Components",
+  "flavor": "sweet",
+  "yield": "Makes 2 cups",
+  "times": [
+    [
+      "Active",
+      "15 min"
+    ],
+    [
+      "Total",
+      "About 2 hr (to cold)"
+    ]
+  ],
+  "time": {
+    "total": 120
+  },
+  "pan": "Medium saucepan",
+  "heat": "Medium, direct",
+  "heatLabel": "Heat",
+  "beforeYouStart": [
+    "Zest all 6 lemons before juicing them; they cover both the zest and the full cup of juice.",
+    "Fresh juice only. Bottled juice flattens the flavor, and nearly all of the curd's flavor comes from the juice.",
+    "Soften the butter. Set out an instant-read thermometer, whisk, fine-mesh strainer and plastic wrap."
+  ],
+  "ingredients": [
+    {
+      "grams": 28,
+      "qty": "1/3 cup",
+      "item": "Lemon zest",
+      "note": "from 6 medium lemons"
+    },
+    {
+      "grams": 150,
+      "qty": "3/4 cup",
+      "item": "Granulated sugar"
+    },
+    {
+      "qty": "1 cup",
+      "item": "Fresh lemon juice",
+      "note": "240 ml, from the same lemons"
+    },
+    {
+      "qty": "3",
+      "item": "Large eggs"
+    },
+    {
+      "grams": 56,
+      "qty": "4",
+      "item": "Large egg yolks"
+    },
+    {
+      "qty": "1/4 tsp",
+      "item": "Diamond Crystal kosher salt",
+      "note": "or 1/8 tsp table salt"
+    },
+    {
+      "grams": 70,
+      "qty": "5 tbsp",
+      "item": "Unsalted butter",
+      "note": "softened"
+    }
+  ],
+  "steps": [
+    {
+      "do": "In a medium bowl, rub the zest into the sugar with your fingertips until fragrant, about 30 seconds, then leave it. The sugar draws the oils out of the peel, which is where the deeper lemon aroma comes from.",
+      "wait": "10 min"
+    },
+    {
+      "do": "Meanwhile, fill a large bowl partway with ice and cold water for chilling the curd later."
+    },
+    {
+      "do": "Bring the juice to a simmer in the saucepan over medium heat, about 3 minutes. While it heats, whisk the eggs, yolks and salt into the zest-sugar until smooth. Whole eggs plus yolks gives richness without the heavy, eggy thickness of an all-yolk curd."
+    },
+    {
+      "do": "Temper by drizzling the hot juice slowly into the egg mixture, whisking constantly, so the eggs warm gradually instead of scrambling."
+    },
+    {
+      "do": "Pour it all back into the saucepan and cook over medium heat, whisking slowly but often. Direct heat is fine as long as you keep whisking and don't raise the flame; no double boiler needed.",
+      "wait": "About 6 min",
+      "cue": "Slightly thickened, 170F (77C) on an instant-read thermometer"
+    },
+    {
+      "do": "Off the heat, whisk in the butter until melted and the curd is smooth."
+    },
+    {
+      "do": "Strain through the fine-mesh strainer into a medium bowl, scraping the underside of the mesh with a spatula. Straining catches any bits of cooked egg, so a few lumps are nothing to worry about."
+    },
+    {
+      "do": "Press plastic wrap directly onto the surface to stop a skin forming. Set the bowl in the ice bath for 30 minutes, then refrigerate.",
+      "wait": "30 min ice bath, then about 1 hr fridge",
+      "cue": "Cold all the way through"
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Refrigerate airtight up to 5 days.",
+        "Freeze airtight up to 3 months; thaw overnight in the fridge."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Meyer lemons: a longtime reader cuts the sugar somewhat, since they are sweeter and less acidic.",
+        "No zester: peel strips with a vegetable peeler and pulse them with some of the sugar in a mini processor. The strainer catches any larger bits."
+      ]
+    },
+    {
+      "group": "Pairs with",
+      "items": [
+        "Pavlova, once built: spend the 4 leftover whites on it and top it with the curd.",
+        "Also: thumbprint cookies, tart shells, lemon bars over a buttery crust, crepes, pancakes, vanilla ice cream, swirled into plain yogurt."
+      ]
+    },
+    {
+      "group": "My notes",
+      "items": [
+        "The source lists 41 min total, which leaves out the 10 min zest rest and the 1 hr fridge. Plan on about 2 hours to cold.",
+        "Salt is not optional. It seasons the curd without making it taste salty.",
+        "Published nutrition, per 1 cup: 776 cal, 43 g fat, 85 g carbs, 18 g protein."
+      ]
+    }
+  ],
+  "source": {
+    "name": "Genevieve Yam, Serious Eats",
+    "url": "https://seriouseats.com/lemon-curd-recipe-8683021"
+  }
+}

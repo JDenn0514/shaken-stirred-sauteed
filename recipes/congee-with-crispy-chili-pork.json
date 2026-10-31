@@ -1,0 +1,147 @@
+{
+  "title": "Congee with Crispy Chili Pork",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Savory rice porridge under crisped chili-garlic ground pork.",
+  "tags": [],
+  "added": "2026-09-21",
+  "yield": "Serves 2 to 4",
+  "times": [
+    [
+      "Total",
+      "55 minutes"
+    ]
+  ],
+  "time": {
+    "total": 55
+  },
+  "ingredients": [
+    {
+      "group": "Congee",
+      "items": [
+        {
+          "qty": "1 2/3 cups",
+          "item": "chicken broth (400 g)"
+        },
+        {
+          "qty": "1 1/4 cups",
+          "item": "cooked rice, preferably day-old (200 g)"
+        },
+        {
+          "qty": "1",
+          "item": "carrot, grated"
+        },
+        {
+          "qty": "1/4",
+          "item": "onion, grated"
+        },
+        {
+          "qty": "2 cloves",
+          "item": "garlic, grated"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "neutral oil"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "toasted sesame oil"
+        },
+        {
+          "item": "salt, to taste"
+        }
+      ]
+    },
+    {
+      "group": "Chili garlic pork",
+      "items": [
+        {
+          "qty": "1 lb",
+          "item": "ground pork (454 g)"
+        },
+        {
+          "qty": "2",
+          "item": "green bird's eye chilies, minced"
+        },
+        {
+          "qty": "5 cloves",
+          "item": "garlic, minced"
+        },
+        {
+          "qty": "1",
+          "item": "scallion, whites minced, greens saved"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "neutral oil"
+        },
+        {
+          "qty": "2 tbsp",
+          "item": "water"
+        },
+        {
+          "qty": "1 tbsp",
+          "item": "soy sauce"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "hoisin"
+        },
+        {
+          "item": "salt, a sprinkle"
+        }
+      ]
+    },
+    {
+      "group": "To finish",
+      "items": [
+        {
+          "item": "chili crisp"
+        },
+        {
+          "item": "fresh ginger, thinly sliced"
+        },
+        {
+          "item": "scallion greens, thinly sliced"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Grate the carrot, onion and 2 garlic cloves. Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes."
+    },
+    {
+      "do": "Stir in the cooked rice to coat, pour in the broth, and bring to a boil. Drop the heat to a simmer."
+    },
+    {
+      "do": "Simmer 20 to 30 minutes, stirring occasionally, until the grains collapse and it thickens to porridge. Loosen with more broth or reduce further to suit. Salt to taste."
+    },
+    {
+      "do": "Meanwhile, mince the chilies, 5 garlic cloves and scallion whites. Heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned."
+    },
+    {
+      "do": "Turn the heat to high and add the pork with a sprinkle of salt. Break it into small pebbles with a potato masher; the extra surface area is what lets the rendering fat crisp it, 3 to 5 minutes."
+    },
+    {
+      "do": "Splash in the water and scrape up the browned bits. Once it has cooked off, add the soy sauce and hoisin and toss until the pork is coated and slightly sticky. Taste and adjust with salt, soy or hoisin."
+    },
+    {
+      "do": "Ladle congee into bowls, spoon the pork over, and finish with ginger, scallion greens and chili crisp."
+    }
+  ],
+  "notes": [
+    "Day-old rice is the point of the dish. Chilled grains have dried and retrograded, so they drink up broth and break down cleanly instead of turning gluey.",
+    "No hoisin: a little oyster sauce, or soy sauce with a pinch of brown sugar.",
+    "No bird's eye chilies: serrano, or an extra spoonful of chili crisp stirred into the pork at the end.",
+    "Meatless: swap in mushroom or vegetable broth and finely chopped mushrooms or crumbled firm tofu, browned hard in the same way.",
+    "The congee keeps 3 days in the fridge and thickens as it sits; thin with broth or water when reheating. Store the pork separately so it stays crisp, and re-crisp it in a dry pan."
+  ],
+  "aroma": "soy_ginger_ferment",
+  "role": "grain_noodle",
+  "technique": "Simmer, then high-heat wok",
+  "region": "East Asia",
+  "source": {
+    "name": "Ethan Chlebowski, Cook Well"
+  }
+}

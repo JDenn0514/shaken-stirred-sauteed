@@ -1,0 +1,120 @@
+{
+  "title": "Best Lentil Soup",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Cumin-spiced vegan lentil soup with greens, partly blended.",
+  "tags": [],
+  "added": "2026-10-26",
+  "yield": "Serves 4 large or 6 modest",
+  "times": [
+    [
+      "Active",
+      "10 min"
+    ],
+    [
+      "Total",
+      "55 min"
+    ]
+  ],
+  "time": {
+    "total": 55
+  },
+  "ingredients": [
+    {
+      "qty": "1/4 cup",
+      "item": "extra virgin olive oil"
+    },
+    {
+      "qty": "1 medium",
+      "item": "yellow or white onion, chopped"
+    },
+    {
+      "qty": "2",
+      "item": "carrots, peeled and chopped"
+    },
+    {
+      "qty": "4 cloves",
+      "item": "garlic, pressed or minced"
+    },
+    {
+      "qty": "2 tsp",
+      "item": "ground cumin"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "curry powder"
+    },
+    {
+      "qty": "1/2 tsp",
+      "item": "dried thyme"
+    },
+    {
+      "qty": "28 oz can",
+      "item": "diced tomatoes, lightly drained"
+    },
+    {
+      "qty": "1 cup",
+      "item": "brown or green lentils, picked over and rinsed"
+    },
+    {
+      "qty": "4 cups",
+      "item": "vegetable broth"
+    },
+    {
+      "qty": "2 cups",
+      "item": "water"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "salt, plus more to taste"
+    },
+    {
+      "qty": "pinch",
+      "item": "red pepper flakes"
+    },
+    {
+      "item": "black pepper, freshly ground, to taste"
+    },
+    {
+      "qty": "1 cup",
+      "item": "collard greens or kale, chopped, tough ribs removed"
+    },
+    {
+      "qty": "1 to 2 tbsp",
+      "item": "lemon juice (1/2 to 1 medium lemon), to taste"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Heat the oil over medium in a Dutch oven or heavy stainless pot of 5 quarts or more until it shimmers. Add the onion and carrot and cook, stirring often, about 5 minutes, until the onion is soft and translucent."
+    },
+    {
+      "do": "Add the garlic, cumin, curry powder and thyme and stir constantly about 30 seconds, just until fragrant; stainless scorches spices fast, so keep stirring. Add the tomatoes and cook a few minutes more, stirring often."
+    },
+    {
+      "do": "Add the lentils, broth, water, 1 tsp salt, the pepper flakes and plenty of black pepper. Bring to a boil, partially cover, and simmer gently 25 to 30 minutes, until the lentils are tender but still hold their shape."
+    },
+    {
+      "do": "Blend 2 cups of the soup until smooth and stir it back in; this is what makes it creamy without cream. Lock the blender lid and hold a towel over it against the steam. An immersion blender used briefly in the pot works too."
+    },
+    {
+      "do": "Add the greens and simmer 5 minutes more, until as tender as you like."
+    },
+    {
+      "do": "Off the heat, stir in 1 tbsp lemon juice. Taste and adjust with more salt, pepper or lemon. Serve hot."
+    }
+  ],
+  "notes": [
+    "Prep everything before you start; the spice step moves fast.",
+    "The 1/4 cup oil is deliberate. It's where the soup's richness comes from, so don't cut it back.",
+    "For more heat, stir in another pinch or two of pepper flakes at the end.",
+    "Keeps about 4 days in the fridge and tastes better the next day. Freezes for several months; thaw before reheating."
+  ],
+  "aroma": "toasted_spice_ghee",
+  "role": "vegetable_main",
+  "technique": "Stovetop simmer",
+  "source": {
+    "name": "Cookie and Kate (Kathryne Taylor)",
+    "url": "https://cookieandkate.com/best-lentil-soup-recipe"
+  }
+}

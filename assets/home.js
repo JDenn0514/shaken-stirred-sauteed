@@ -4,13 +4,14 @@
   const $ = (id) => document.getElementById(id);
   const els = {
     search: $("search"), tabs: $("tabs"), tags: $("tags"),
-    sort: $("sort"), count: $("count"), grid: $("grid"), empty: $("empty"),
+    sort: $("sort"), kind: $("kind"), count: $("count"), grid: $("grid"), empty: $("empty"),
   };
 
-  // Filter state lives in the URL (?cat=&tag=&q=&sort=) so Back and shared links work.
+  // Filter state lives in the URL (?cat=&kind=&tag=&q=&sort=) so Back and shared links work.
   const params = new URLSearchParams(location.search);
   const state = {
     cat: params.get("cat") || "all",
+    kind: params.get("kind") || "all",
     tag: params.get("tag") || "",
     q: params.get("q") || "",
     sort: params.get("sort") || "az",
@@ -21,6 +22,7 @@
   function syncURL() {
     const p = new URLSearchParams();
     if (state.cat !== "all") p.set("cat", state.cat);
+    if (state.kind !== "all") p.set("kind", state.kind);
     if (state.tag) p.set("tag", state.tag);
     if (state.q) p.set("q", state.q);
     if (state.sort !== "az") p.set("sort", state.sort);
@@ -30,6 +32,7 @@
 
   function matches(r, { ignoreCat = false, ignoreTag = false } = {}) {
     if (!ignoreCat && state.cat !== "all" && r.category !== state.cat) return false;
+    if (state.kind !== "all" && (r.kind || "dish") !== state.kind) return false;
     if (!ignoreTag && state.tag && !(r.tags || []).includes(state.tag)) return false;
     if (state.q) {
       const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -75,7 +78,10 @@
     return `<li><a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}">
       ${r.image ? `<img class="card-img" src="${esc(r.image)}" alt="" loading="lazy">` : ""}
       <div class="card-body">
-        <span class="badge ${esc(r.category)}">${esc(c.label)}</span>
+        <div class="badges">
+          <span class="badge ${esc(r.category)}">${esc(c.label)}</span>
+          ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
+        </div>
         <h2>${esc(r.title)}</h2>
         ${r.description ? `<p>${esc(r.description)}</p>` : ""}
         ${meta ? `<div class="card-meta">${meta}</div>` : ""}
@@ -113,9 +119,11 @@
   });
   els.search.addEventListener("input", () => { state.q = els.search.value.trim(); render(); });
   els.sort.addEventListener("change", () => { state.sort = els.sort.value; render(); });
+  els.kind.addEventListener("change", () => { state.kind = els.kind.value; render(); });
 
   els.search.value = state.q;
   els.sort.value = state.sort;
+  els.kind.value = state.kind;
 
   getJSON("recipes/index.json")
     .then((data) => { recipes = data; render(); })

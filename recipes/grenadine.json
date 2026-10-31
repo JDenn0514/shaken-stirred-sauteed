@@ -1,0 +1,86 @@
+{
+  "title": "Grenadine",
+  "category": "cocktails",
+  "kind": "component",
+  "description": "Pomegranate juice, sugar and lemon, warmed just until the sugar dissolves.",
+  "tags": [],
+  "added": "2026-10-30",
+  "flavor": "fruity_tropical",
+  "family": "component",
+  "yield": "Makes about 3 cups",
+  "times": [
+    [
+      "Active",
+      "8 min"
+    ],
+    [
+      "Total",
+      "38 min"
+    ]
+  ],
+  "time": {
+    "total": 38
+  },
+  "keeps": "About 1 month, refrigerated",
+  "beforeYouStart": [
+    "Have a clean airtight bottle and a funnel ready"
+  ],
+  "ingredients": [
+    {
+      "qty": "16 oz",
+      "ml": 480,
+      "item": "Pomegranate juice",
+      "note": "100% juice"
+    },
+    {
+      "qty": "2 cups",
+      "item": "Granulated sugar"
+    },
+    {
+      "qty": "2 Tbsp",
+      "item": "Lemon juice"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Combine everything in a medium saucepan over medium heat, about 8 min. Whisk as it warms so the sugar doesn't settle and catch on the bottom. Take it off before it boils.",
+      "cue": "Sugar fully dissolved, small bubbles just starting at the edges"
+    },
+    {
+      "do": "Pull from the heat and cool to room temperature, then funnel into the bottle and refrigerate."
+    }
+  ],
+  "notes": [
+    {
+      "group": "Riffs",
+      "items": [
+        "Thicker: it comes out thinner than bottled grenadine (usually corn syrup and dye). Add more sugar, or hold it at a bare simmer a few minutes longer to reduce.",
+        "A pinch of salt or a splash of vanilla, stirred in after cooking (reader tip)."
+      ]
+    },
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Airtight bottle in the fridge, about 1 month.",
+        "For a longer life, stir a couple tablespoons of vodka into the cooled syrup. It's no longer alcohol-free once you do."
+      ]
+    },
+    {
+      "group": "Substitutions",
+      "items": [
+        "Classic grenadine is pomegranate juice, water and sugar. This version uses all juice in place of the water, plus lemon for brightness.",
+        "In a pinch, maraschino cherry juice is sometimes used in place of grenadine, though it won't taste of pomegranate."
+      ]
+    },
+    {
+      "group": "Used in",
+      "items": [
+        "Clover Club, Shirley Temple, Tequila Sunrise, Rum Punch"
+      ]
+    }
+  ],
+  "source": {
+    "name": "Sugar and Soul",
+    "url": "https://sugarandsoul.co/grenadine-syrup"
+  }
+}

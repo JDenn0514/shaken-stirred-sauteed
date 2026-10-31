@@ -1,0 +1,76 @@
+{
+  "title": "Homemade Acini di Pepe",
+  "category": "cooking",
+  "kind": "component",
+  "description": "Stiff semolina dough, rolled into thin ropes and cut into tiny beads.",
+  "tags": [],
+  "added": "2026-10-30",
+  "yield": "Makes enough to replace 1 cup dry",
+  "times": [
+    [
+      "Active",
+      "45 to 60 min"
+    ],
+    [
+      "Rest",
+      "30 min"
+    ]
+  ],
+  "ingredients": [
+    {
+      "qty": "180 g",
+      "item": "semolina (about 1 cup)"
+    },
+    {
+      "qty": "85 g",
+      "item": "warm water (about 1/3 cup)"
+    },
+    {
+      "item": "extra semolina, for dusting"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Stir the semolina and water together with a fork until shaggy, then knead on the counter 8 to 10 minutes into a smooth, stiff dough. Add water a teaspoon at a time only if it won't come together; a firm, dry dough holds the tiny shape and doesn't smear when cut."
+    },
+    {
+      "do": "Wrap and rest 30 minutes at room temperature so the semolina hydrates and the dough relaxes."
+    },
+    {
+      "do": "Cut off a small piece, keeping the rest wrapped so it doesn't dry out. Roll it under your palms into a rope about 1/8 inch thick."
+    },
+    {
+      "do": "Line up a few ropes and cut them crosswise into 1/8 inch pieces with a sharp knife or bench scraper. Toss right away in semolina so they don't stick, and spread on a dusted tray. Repeat with the rest of the dough."
+    },
+    {
+      "do": "Use fresh, or leave uncovered on the tray, stirring now and then, until hard all the way through, about 8 to 24 hours depending on humidity."
+    },
+    {
+      "do": "Cook in boiling salted water or simmering soup: fresh beads take 3 to 5 minutes; dried take a few minutes longer, so start tasting at 5 minutes."
+    }
+  ],
+  "notes": [
+    {
+      "group": "Make ahead & storage",
+      "items": [
+        "Fresh: keeps 1 day refrigerated in a semolina-dusted container. Or freeze on the tray, then bag; cook from frozen, adding about 1 minute.",
+        "Fully dried: keeps up to 1 month airtight at room temperature."
+      ]
+    },
+    {
+      "group": "Pairs with",
+      "items": [
+        "Italian Wedding Soup with Acini di Pepe. Stir fresh beads in for the last 5 minutes."
+      ]
+    },
+    {
+      "group": "Tips",
+      "items": [
+        "Hand-cut pieces are tiny cubes, not the smooth beads of store-bought. They cook and eat the same."
+      ]
+    }
+  ],
+  "aroma": "salt_fat_fire",
+  "role": "grain_noodle",
+  "technique": "Hand-rolled, boil"
+}

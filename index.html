@@ -35,13 +35,22 @@
 
       <div class="result-bar">
         <span id="count" aria-live="polite"></span>
-        <label class="sort">Sort
-          <select id="sort">
-            <option value="az">A–Z</option>
-            <option value="new">Newest</option>
-            <option value="quick">Quickest</option>
-          </select>
-        </label>
+        <div class="result-controls">
+          <label class="sort">Show
+            <select id="kind">
+              <option value="all">Everything</option>
+              <option value="dish">Dishes</option>
+              <option value="component">Components</option>
+            </select>
+          </label>
+          <label class="sort">Sort
+            <select id="sort">
+              <option value="az">A–Z</option>
+              <option value="new">Newest</option>
+              <option value="quick">Quickest</option>
+            </select>
+          </label>
+        </div>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 (() => {
-  const { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON } = window.SSS;
+  const { CATEGORIES, LABELS, esc, fmtMinutes, totalMinutes, getJSON } = window.SSS;
   const root = document.getElementById("recipe");
   const slug = new URLSearchParams(location.search).get("r") || "";
 
@@ -22,19 +22,48 @@
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
   const save = (p) => { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch {} };
 
-  // Ingredients and steps may be a flat list of strings, or a list of
+  // Ingredients, steps and notes may be a flat list of entries, or a list of
   // { "group": "For the sauce", "items": [...] } sections (or a mix).
   const toGroups = (list = []) => {
     const groups = [];
     for (const entry of list) {
-      if (typeof entry === "string") {
+      if (entry && Array.isArray(entry.items)) {
+        groups.push({ group: entry.group || "", items: entry.items });
+      } else if (entry) {
         if (!groups.length || groups[groups.length - 1].group) groups.push({ group: "", items: [] });
         groups[groups.length - 1].items.push(entry);
-      } else if (entry && Array.isArray(entry.items)) {
-        groups.push({ group: entry.group || "", items: entry.items });
       }
     }
     return groups;
+  };
+
+  // An ingredient is a plain string, or { grams, qty, ml, item, note }.
+  const ingredientHTML = (it) => {
+    if (typeof it === "string") return esc(it);
+    const amount = [it.grams != null && `${it.grams} g`, it.qty].filter(Boolean).join(" · ");
+    return `${amount ? `<b class="qty">${esc(amount)}</b> ` : ""}${esc(it.item)}`
+      + `${it.ml != null ? ` <span class="muted">${esc(it.ml)} ml</span>` : ""}`
+      + `${it.note ? ` <span class="muted">${esc(it.note)}</span>` : ""}`;
+  };
+
+  // A step is a plain string, or { do, wait, cue }.
+  const stepHTML = (s) => typeof s === "string" ? esc(s) : esc(s.do)
+    + (s.wait ? `<span class="step-wait">⏱ ${esc(s.wait)}</span>` : "")
+    + (s.cue ? `<span class="step-cue">✓ ${esc(s.cue)}</span>` : "");
+
+  // The classification printed in the strip at the bottom of each recipe card.
+  const labelsFor = (r) => {
+    const name = (table, key) => key && (LABELS[table][key] || key);
+    if (r.category === "cooking") {
+      return [["Aroma", name("aroma", r.aroma)], ["Role", name("role", r.role)],
+        ["Technique", r.technique], ["Region", r.region]];
+    }
+    if (r.category === "baking") return [["Category", r.bakeCategory], ["Flavor", name("bakeFlavor", r.flavor)]];
+    if (r.category === "cocktails") {
+      return [["Flavor", name("drinkFlavor", r.flavor)], ["Family", name("family", r.family)],
+        ["Base", r.base], ["Origin", r.origin]];
+    }
+    return [];
   };
 
   function render(r) {
@@ -43,36 +72,59 @@
     const t = r.time || {};
     const total = totalMinutes(t);
 
-    const facts = [
-      ["Makes", r.yield],
+    // Cards list their times as printed ("times"); older recipes use minutes ("time").
+    const timeFacts = r.times ? r.times : [
       ["Prep", t.prep != null && fmtMinutes(t.prep)],
       ["Cook", t.cook != null && fmtMinutes(t.cook)],
       ["Chill", t.chill != null && fmtMinutes(t.chill)],
       ["Total", total != null && fmtMinutes(total)],
+    ];
+    // "Serves 6 · Makes about 12 cups" -> [Serves, 6], [Makes, about 12 cups]
+    const yieldFacts = (r.yield || "").split(" · ").filter(Boolean).map((y) => {
+      const m = /^(makes|serves)\s+(.+)$/i.exec(y);
+      return m ? [m[1][0].toUpperCase() + m[1].slice(1).toLowerCase(), m[2]] : ["Makes", y];
+    });
+    const facts = [
+      ...yieldFacts,
+      ...timeFacts,
+      ["Pan", r.pan],
+      [r.heatLabel || "Heat", r.heat],
+      ["ABV", r.abv],
+      ["Std drinks", r.standardDrinks],
+      ["Keeps", r.keeps],
       ["Glass", r.glass],
+      ["Ice", r.ice],
       ["Method", r.method],
       ["Garnish", r.garnish],
-    ].filter(([, v]) => v);
+      ["Nutrition", r.nutrition],
+    ].filter(([, v]) => v != null && v !== false && v !== "");
+    const labels = labelsFor(r).filter(([, v]) => v);
 
     let ingIdx = 0, stepIdx = 0;
     const ingHTML = toGroups(r.ingredients).map((g) => `
       ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
       <ul class="ingredients">${g.items.map((it) => `
-        <li><label><input type="checkbox" data-ing="${ingIdx++}"><span>${esc(it)}</span></label></li>`).join("")}
+        <li><label><input type="checkbox" data-ing="${ingIdx++}"><span>${ingredientHTML(it)}</span></label></li>`).join("")}
       </ul>`).join("");
-    const stepHTML = toGroups(r.steps).map((g) => `
+    const stepsHTML = toGroups(r.steps).map((g) => `
       ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
       <ol class="steps" data-start="${stepIdx}">${g.items.map((s) => `
-        <li data-step="${stepIdx++}" tabindex="0">${esc(s)}</li>`).join("")}
+        <li data-step="${stepIdx++}" tabindex="0">${stepHTML(s)}</li>`).join("")}
       </ol>`).join("");
+    const notesHTML = toGroups(r.notes).map((g) => `
+      ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
+      <ul class="notes">${g.items.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`).join("");
 
     root.innerHTML = `
       <a class="back" href="./?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
       ${r.image ? `<img class="recipe-hero" src="${esc(r.image)}" alt="">` : ""}
+      ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
       <h1>${esc(r.title)}</h1>
       ${r.description ? `<p class="lede">${esc(r.description)}</p>` : ""}
       ${facts.length ? `<dl class="facts">${facts.map(([k, v]) =>
-        `<div class="fact"><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+        `<div class="fact"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+      ${labels.length ? `<dl class="labels">${labels.map(([k, v]) =>
+        `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
 
       <div class="toolbar">
         <button class="btn" id="wake" aria-pressed="false" hidden>☀️ Keep screen on</button>
@@ -80,10 +132,11 @@
         <button class="btn" id="print">🖨 Print</button>
       </div>
 
-      <section class="section"><h2>Ingredients</h2>${ingHTML}</section>
-      <section class="section"><h2>${r.category === "cocktails" ? "Method" : "Steps"}</h2>${stepHTML}</section>
-      ${r.notes && r.notes.length ? `<section class="section"><h2>Notes</h2>
-        <ul class="notes">${r.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></section>` : ""}
+      ${r.beforeYouStart && r.beforeYouStart.length ? `<section class="section before"><h2>Before you start</h2>
+        <ul class="notes">${r.beforeYouStart.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></section>` : ""}
+      <section class="section"><h2>${r.category === "cocktails" ? "Spec" : "Ingredients"}</h2>${ingHTML}</section>
+      <section class="section"><h2>${r.category === "cocktails" ? "Method" : "Steps"}</h2>${stepsHTML}</section>
+      ${notesHTML ? `<section class="section"><h2>Notes</h2>${notesHTML}</section>` : ""}
       ${r.tags && r.tags.length ? `<div class="tag-list">${r.tags.map((tg) =>
         `<a class="chip" href="./?tag=${encodeURIComponent(tg)}">#${esc(tg)}</a>`).join("")}</div>` : ""}
       ${r.source && (r.source.name || r.source.url) ? `<p class="source">Source: ${safeURL(r.source.url)

@@ -1,0 +1,119 @@
+{
+  "title": "Risotto Milanese",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "Arborio rice simmered in broth, tinted and perfumed with bloomed saffron.",
+  "tags": [],
+  "added": "2026-09-28",
+  "yield": "Serves 2",
+  "times": [
+    [
+      "Total",
+      "50 min"
+    ]
+  ],
+  "time": {
+    "total": 50
+  },
+  "aroma": "butter_cream_wine",
+  "role": "grain_noodle",
+  "technique": "Stovetop, gentle simmer",
+  "region": "Milan, Italy",
+  "ingredients": [
+    {
+      "group": "Aromatic base",
+      "items": [
+        {
+          "qty": "28 g",
+          "item": "butter (2 tbsp)"
+        },
+        {
+          "qty": "1",
+          "item": "shallot, minced"
+        },
+        {
+          "qty": "~100 g",
+          "item": "dry white wine (about 3 oz)"
+        }
+      ]
+    },
+    {
+      "group": "Rice and liquid",
+      "items": [
+        {
+          "qty": "120 g",
+          "item": "arborio rice"
+        },
+        {
+          "qty": "~360 g",
+          "item": "broth (about 1 1/2 cups), 3 parts liquid to 1 part rice"
+        }
+      ]
+    },
+    {
+      "group": "To finish",
+      "items": [
+        {
+          "qty": "0.25 g",
+          "item": "saffron (a pinch)"
+        },
+        {
+          "qty": "splash",
+          "item": "water, to bloom the saffron"
+        },
+        {
+          "qty": "~40 g",
+          "item": "Parmigiano Reggiano, finely grated, plus more to taste"
+        },
+        {
+          "qty": "knob",
+          "item": "cold butter"
+        },
+        {
+          "item": "salt, to taste"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "do": "Melt the butter in a wide pan over medium heat. Cook the shallot 1 to 2 minutes, until soft and fragrant."
+    },
+    {
+      "do": "Stir in the rice and keep it moving until every grain is glossy with fat and lightly toasted; this helps the grains hold their shape."
+    },
+    {
+      "do": "Pour in the wine and scrape up the bottom of the pan. Let it cook down until almost gone, so its acidity stays and the raw alcohol edge doesn't."
+    },
+    {
+      "do": "Add about 80% of the broth, holding the rest back for adjusting at the end. Bring to a simmer over medium-high, stir once so nothing sticks, then drop to low."
+    },
+    {
+      "do": "Simmer about 20 minutes, stirring now and then, until most of the liquid is absorbed. Constant stirring isn't needed."
+    },
+    {
+      "do": "While it cooks, drop the saffron into a little water to bloom. Crumble or grind it first, or use warm water, for a stronger infusion."
+    },
+    {
+      "do": "Taste a grain. If it's still chalky, add reserved broth and keep simmering until the rice and texture are where you want them."
+    },
+    {
+      "do": "Near the end, stir in the saffron and its water so the whole pot turns gold."
+    },
+    {
+      "do": "Off the heat, add the Parmigiano and cold butter and stir or toss hard until creamy and emulsified. Salt to taste, loosen with broth or enrich with butter or cheese, and serve right away."
+    }
+  ],
+  "notes": [
+    "No wine: deglaze with the same amount of broth instead, then finish with 1 tsp lemon juice or 1/2 tsp white wine vinegar, added with the cheese. The wine's job is acidity to cut the butter and parm; add the acid at the end so it stays bright, then taste and adjust.",
+    "Dry vermouth swaps 1:1 for the wine and keeps well once opened. Skip grape juice or cooking wine: too sweet or too salty.",
+    "Other rice: carnaroli is the best swap and holds its shape even better; vialone nano and short-grain rices like Calrose or sushi rice also work. Avoid long-grain rice like jasmine or basmati: it has less of the starch that makes risotto creamy, so it stays loose and separate, and jasmine's floral scent competes with the saffron.",
+    "If jasmine is all you have: don't rinse it, start tasting at 12 minutes since it cooks faster and drinks less broth, and lean on the cheese and butter for body.",
+    "Scale by ratio: 1 part rice to about 3 parts liquid by weight.",
+    "Risotto tightens as it sits, so serve it slightly looser than you think it should be."
+  ],
+  "source": {
+    "name": "Ethan Chlebowski, Cook Well",
+    "url": "https://cookwell.com/recipe/risotto-milanese"
+  }
+}

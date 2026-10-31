@@ -6,6 +6,55 @@ window.SSS = (() => {
     cocktails: { label: "Cocktails", emoji: "🍸" },
   };
 
+  // Display names for the classification keys printed on the recipe cards
+  // (see the card generator's AROMAS / ROLES / FLAVORS / FAMILIES tables).
+  const LABELS = {
+    aroma: {
+      soy_ginger_ferment: "Soy, ginger & ferment",
+      fish_sauce_lime_lemongrass: "Fish sauce, lime & lemongrass",
+      toasted_spice_ghee: "Toasted spice & ghee",
+      sumac_tahini_lemon: "Sumac, tahini & preserved lemon",
+      berbere_peanut_chile: "Berbere, peanut & smoked chile",
+      chile_lime_corn: "Chile, lime & corn",
+      olive_tomato_herb: "Olive oil, tomato & herb",
+      butter_cream_wine: "Butter, cream & wine",
+      smoke_sugar_vinegar: "Smoke, sugar & vinegar",
+      sugar_butter_flour: "Sugar, butter & flour",
+      salt_fat_fire: "Salt, fat & fire",
+      fruit_sugar: "Fruit & sugar",
+    },
+    role: {
+      protein_main: "Protein main",
+      vegetable_main: "Vegetable main",
+      grain_noodle: "Grain & noodle",
+      salad_raw_side: "Salad & raw side",
+      sauce_condiment: "Sauce & condiment",
+      bread_baked: "Bread & baked",
+      sweet: "Sweet",
+    },
+    bakeFlavor: { sweet: "Sweet", savory: "Savory", both: "Sweet & savory" },
+    drinkFlavor: {
+      bright_tart: "Bright & tart",
+      rich_boozy: "Rich & boozy",
+      dry_aromatic: "Dry & aromatic",
+      bitter: "Bitter",
+      fresh_herbal: "Fresh & herbal",
+      fruity_tropical: "Fruity & tropical",
+      light_bubbly: "Light & bubbly",
+      smoke_spice: "Smoke & spice",
+      creamy_dessert: "Creamy & dessert",
+      simple_sweet: "Simple & sweet",
+    },
+    family: {
+      sour: "Sour",
+      stirred: "Stirred",
+      highball_sparkling: "Highball & sparkling",
+      tiki_punch: "Tiki & punch",
+      flip_cream: "Flip & cream",
+      component: "Component",
+    },
+  };
+
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   }[c]));
@@ -37,5 +86,5 @@ window.SSS = (() => {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON };
+  return { CATEGORIES, LABELS, esc, fmtMinutes, totalMinutes, getJSON };
 })();
