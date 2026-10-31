@@ -30,6 +30,8 @@ for (const file of readdirSync(DIR).sort()) {
   if (!CATEGORIES.includes(r.category)) errors.push(`${where}: "category" must be one of ${CATEGORIES.join(", ")}`);
   if (!flatten(r.ingredients).length) errors.push(`${where}: no ingredients`);
   if (!flatten(r.steps).length) errors.push(`${where}: no steps`);
+  if (r.source?.url && !/^https?:\/\//i.test(r.source.url)) errors.push(`${where}: "source.url" must start with https:// or http://`);
+  if (r.image && !/^(https:\/\/|images\/)/.test(r.image)) errors.push(`${where}: "image" must be an images/ path or an https:// URL`);
   if (r.added && !/^\d{4}-\d{2}-\d{2}$/.test(r.added)) errors.push(`${where}: "added" should look like 2026-10-31`);
 
   const t = r.time || {};

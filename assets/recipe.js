@@ -3,6 +3,14 @@
   const root = document.getElementById("recipe");
   const slug = new URLSearchParams(location.search).get("r") || "";
 
+  // Only allow ordinary web links (blocks javascript:, data:, etc.).
+  const safeURL = (u) => {
+    try {
+      const url = new URL(u);
+      return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+    } catch { return ""; }
+  };
+
   const fail = (msg) => {
     root.innerHTML = `<a class="back" href="./">← All recipes</a><p class="error">${esc(msg)}</p>`;
   };
@@ -54,7 +62,7 @@
       </ul>`).join("");
     const stepHTML = toGroups(r.steps).map((g) => `
       ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
-      <ol class="steps" style="counter-reset: step ${stepIdx}">${g.items.map((s) => `
+      <ol class="steps" data-start="${stepIdx}">${g.items.map((s) => `
         <li data-step="${stepIdx++}" tabindex="0">${esc(s)}</li>`).join("")}
       </ol>`).join("");
 
@@ -69,7 +77,7 @@
       <div class="toolbar">
         <button class="btn" id="wake" aria-pressed="false" hidden>☀️ Keep screen on</button>
         <button class="btn" id="reset">↺ Reset checkmarks</button>
-        <button class="btn" onclick="window.print()">🖨 Print</button>
+        <button class="btn" id="print">🖨 Print</button>
       </div>
 
       <section class="section"><h2>Ingredients</h2>${ingHTML}</section>
@@ -78,14 +86,21 @@
         <ul class="notes">${r.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></section>` : ""}
       ${r.tags && r.tags.length ? `<div class="tag-list">${r.tags.map((tg) =>
         `<a class="chip" href="./?tag=${encodeURIComponent(tg)}">#${esc(tg)}</a>`).join("")}</div>` : ""}
-      ${r.source ? `<p class="source">Source: ${r.source.url
-        ? `<a href="${esc(r.source.url)}" rel="noopener" target="_blank">${esc(r.source.name || r.source.url)}</a>`
-        : esc(r.source.name)}</p>` : ""}
+      ${r.source && (r.source.name || r.source.url) ? `<p class="source">Source: ${safeURL(r.source.url)
+        ? `<a href="${esc(safeURL(r.source.url))}" rel="noopener noreferrer" target="_blank">${esc(r.source.name || r.source.url)}</a>`
+        : esc(r.source.name || r.source.url)}</p>` : ""}
     `;
     wire();
   }
 
   function wire() {
+    // Numbering continues across step groups (set here, not inline, so the
+    // page's Content-Security-Policy can forbid inline styles).
+    root.querySelectorAll("ol.steps[data-start]").forEach((ol) => {
+      ol.style.counterReset = `step ${ol.dataset.start}`;
+    });
+    document.getElementById("print").addEventListener("click", () => window.print());
+
     const progress = Object.assign({ ing: [], steps: [] }, load());
     const boxes = [...root.querySelectorAll("[data-ing]")];
     const steps = [...root.querySelectorAll("[data-step]")];
