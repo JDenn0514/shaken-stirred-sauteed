@@ -466,7 +466,7 @@
     <div class="g-prev">
       <a class="g-phone" href="preview/index.html"><figure><img class="shot" src="shots/home-mobile-dark.png" alt="Home page on a phone, dark mode" width="390" height="700" loading="lazy"><figcaption><b>The evening’s card</b><small>Home · search, tabs, filters</small></figcaption></figure></a>
       <a class="g-phone" href="preview/recipe.html?r=painkiller"><figure><img class="shot" src="shots/recipe-mobile-dark.png" alt="Painkiller recipe on a phone, dark mode" width="390" height="700" loading="lazy"><figcaption><b>Painkiller</b><small>Cocktails · spec &amp; method</small></figcaption></figure></a>
-      <a class="g-phone" href="preview/recipe.html?r=pavlova"><figure><img class="shot" src="shots/recipe-pavlova-mobile-dark.png" alt="Pavlova recipe on a phone, dark mode" width="390" height="700" loading="lazy"><figcaption><b>Pavlova</b><small>Baking · before you start</small></figcaption></figure></a>
+      <a class="g-phone" href="preview/recipe.html?r=pavlova"><figure><img class="shot" src="shots/recipe-pavlova-mobile-dark.png" alt="Pavlova recipe on a phone, dark mode" width="390" height="700" loading="lazy"><figcaption><b>Pavlova</b><small>Baking · the bill of fare</small></figcaption></figure></a>
       <a class="g-phone" href="preview/recipe.html?r=risotto-milanese"><figure><img class="shot" src="shots/recipe-risotto-mobile-light.png" alt="Risotto Milanese recipe on a phone, light mode" width="390" height="700" loading="lazy"><figcaption><b>Risotto Milanese</b><small>Cooking · the printed card (light)</small></figcaption></figure></a>
     </div>
     <div class="g-big-links">
@@ -498,19 +498,25 @@
         <p class="g-note">theme.css loads its fonts from <code>./fonts/</code>, which resolves to <code>assets/fonts/</code> once it lives at <code>assets/style.css</code>.</p></li>
       <li>In <code>index.html</code> and <code>recipe.html</code>, replace the brand inside <code>&lt;header class="site-header"&gt;</code>:
 <pre><code>&lt;a class="brand" href="./"&gt;
-  &lt;svg class="brand-mark" viewBox="0 0 120 128" aria-hidden="true" focusable="false"&gt;
+  &lt;svg class="brand-mark" viewBox="0 0 120 128"
+       aria-hidden="true" focusable="false"&gt;
     &lt;!-- paste the &lt;defs&gt;, .gh-line and .gh-fill paths from
          style-guides/gilt-hour/preview/index.html --&gt;
   &lt;/svg&gt;
   &lt;span class="brand-name"&gt;
-    &lt;span class="brand-line"&gt;Shaken&lt;span class="brand-sep" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="visually-hidden"&gt;, &lt;/span&gt;Stirred&lt;/span&gt;
-    &lt;span class="brand-script"&gt;&lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; Sautéed&lt;/span&gt;
+    &lt;span class="brand-line"&gt;Shaken&lt;span
+      class="brand-sep" aria-hidden="true"&gt;&lt;/span&gt;&lt;span
+      class="visually-hidden"&gt;, &lt;/span&gt;Stirred&lt;/span&gt;
+    &lt;span class="brand-script"&gt;&lt;span
+      class="amp"&gt;&amp;amp;&lt;/span&gt; Sautéed&lt;/span&gt;
   &lt;/span&gt;
 &lt;/a&gt;</code></pre>
         <p class="g-note">The inline SVG is coloured by the theme (<code>.gh-line</code>, <code>.gh-fill</code>), so it turns deep gilt on the paper card. <code>&lt;img class="brand-mark" src="assets/icon.svg"&gt;</code> also works.</p></li>
       <li>Swap the theme colour so the phone’s browser chrome matches:
-<pre><code>&lt;meta name="theme-color" content="#0B1020" media="(prefers-color-scheme: dark)"&gt;
-&lt;meta name="theme-color" content="#F6F3EC" media="(prefers-color-scheme: light)"&gt;</code></pre></li>
+<pre><code>&lt;meta name="theme-color" content="#0B1020"
+      media="(prefers-color-scheme: dark)"&gt;
+&lt;meta name="theme-color" content="#F6F3EC"
+      media="(prefers-color-scheme: light)"&gt;</code></pre></li>
       <li>Optional: regenerate <code>icon-192.png</code> and <code>icon-512.png</code> from <code>icon.svg</code>, set <code>background_color</code> and <code>theme_color</code> in <code>manifest.webmanifest</code> to <code>#0B1020</code>, add <code>assets/fonts/*</code> to the service-worker cache, and adopt the microcopy in section VIII.</li>
     </ol>
     <p class="g-note">The theme keeps to the site’s Content-Security-Policy: no inline styles, no external hosts, and all ornament comes from data-URI SVGs. It honours <code>prefers-reduced-motion</code>, <code>prefers-color-scheme</code>, safe-area insets and print.</p>

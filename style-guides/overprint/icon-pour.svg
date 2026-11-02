@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
+  <title id="t">Coupe glass (pour)</title>
+  <defs><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><g fill="#fff" stroke="#fff"><path d="M8 14h48c0 14-10 24-24 24S8 28 8 14z"/><rect x="29.5" y="36" width="5" height="16"/><rect x="18" y="52" width="28" height="6" rx="3"/></g></mask></defs>
+  <g fill="#FF48B0" transform="translate(3 -2)"><path d="M8 14h48c0 14-10 24-24 24S8 28 8 14z"/><rect x="29.5" y="36" width="5" height="16"/><rect x="18" y="52" width="28" height="6" rx="3"/></g>
+  <g fill="#0078BF"><path d="M8 14h48c0 14-10 24-24 24S8 28 8 14z"/><rect x="29.5" y="36" width="5" height="16"/><rect x="18" y="52" width="28" height="6" rx="3"/></g>
+  <g mask="url(#m)"><g fill="#6A3C9C" transform="translate(3 -2)"><path d="M8 14h48c0 14-10 24-24 24S8 28 8 14z"/><rect x="29.5" y="36" width="5" height="16"/><rect x="18" y="52" width="28" height="6" rx="3"/></g></g>
+</svg>

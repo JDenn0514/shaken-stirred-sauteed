@@ -958,7 +958,8 @@ body.sheet-open { overflow: hidden; }
   .ingredients li label { min-height: 0; padding: 4px 0; }
   .steps li { padding: 6px 0 6px 40px; border: 0; box-shadow: none; break-inside: avoid; }
   .steps li::before { color: #000; width: 32px; font-size: 13pt; top: 6px; }
-  .steps li.current { background: none; margin: 0; }
+  .steps li.current { background: none; margin: 0; border-color: transparent; box-shadow: none; }
+  .steps li.current::before { text-shadow: none; }
   .steps li.current::after { display: none; }
   .steps li.done, .ingredients input:checked + span, .ingredients input:checked + span .qty { color: #000; text-decoration: none; }
   .steps li.done::before { content: counter(step, upper-roman); color: #000; font-weight: 500; }

@@ -374,14 +374,14 @@ body { overflow-x: clip; }
 }
 
 /* ---------- Components ---------- */
-.g-comp { display: grid; gap: 34px 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.g-comp { display: grid; gap: 34px 20px; align-items: start; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); }
 .g-comp > .g-stage { padding-top: 34px; }
 .g-wide { grid-column: 1 / -1; }
 .g-stage .tabs { margin-top: 0; }
 .g-stage .filter-row { margin: 0; padding: 0; flex-wrap: wrap; justify-content: center; overflow: visible; }
 .g-stage .filter-row > :first-child, .g-stage .filter-row > :last-child { margin: 0; }
 .g-stage .grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); }
-.g-sheet { padding: 0 !important; overflow: hidden; background: transparent !important; }
+.g-sheet { padding: 16px 0 0 !important; background: var(--raised) !important; }
 .g-sheet .sheet {
   position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto;
   width: auto; max-height: none; z-index: auto;
@@ -390,7 +390,9 @@ body { overflow-x: clip; }
 .g-stage .result-bar { margin: 0; }
 .g-stage .steps, .g-stage .ingredients { margin-top: 4px; }
 .g-stage .facts { margin: 0; }
-.g-stage .toolbar { margin: 0; }
+.g-stage .toolbar { margin: 18px 0; }
+.g-stage .section { margin-top: 0; }
+.g-stage > .section > h2 { margin-bottom: 0; }
 .g-stage .site-header { position: relative; margin: -34px -22px 0; }
 .g-states { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
 
@@ -462,7 +464,7 @@ body { overflow-x: clip; }
 }
 .g-phone figure { margin: 0; }
 .g-phone .shot {
-  display: block; width: 100%; aspect-ratio: 390 / 700; object-fit: cover; object-position: top;
+  display: block; width: 100%; height: auto; aspect-ratio: 390 / 700; object-fit: cover; object-position: top;
   border: 1px solid var(--rule-2); outline: 1px solid var(--rule-2); outline-offset: 5px;
   border-radius: 18px;
   margin-bottom: 20px;
@@ -471,7 +473,7 @@ body { overflow-x: clip; }
 .g-phone:hover .shot { transform: translateY(-4px); box-shadow: 0 24px 50px -24px var(--glow), 0 0 0 1px var(--gilt); }
 .g-phone b { display: block; font: italic 500 1.4rem/1.2 var(--serif); }
 .g-phone small { display: block; margin-top: 6px; color: var(--gilt); font: 600 10.5px/1.4 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
-.g-big-links { display: grid; gap: 14px; margin-top: 40px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.g-big-links { display: grid; gap: 14px; margin-top: 44px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
 .g-big-links .g-btn { width: 100%; }
 
 /* ---------- Adopt ---------- */
