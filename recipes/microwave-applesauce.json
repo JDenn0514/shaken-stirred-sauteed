@@ -2,6 +2,7 @@
   "title": "Microwave Applesauce",
   "category": "cooking",
   "kind": "dish",
+  "description": "Honeycrisp apples cooked with cinnamon and lemon in the microwave, then mashed.",
   "tags": {
     "course": ["sweet", "side"],
     "cuisine": ["american"],

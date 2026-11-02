@@ -2,6 +2,7 @@
   "title": "Garlic Paste",
   "category": "cooking",
   "kind": "component",
+  "description": "Garlic ground smooth with coarse salt using a muddler or the flat of a knife. No blender needed.",
   "tags": {
     "course": ["sauce"],
     "method": ["no-cook"],
