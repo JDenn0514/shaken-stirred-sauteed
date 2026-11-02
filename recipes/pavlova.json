@@ -3,16 +3,16 @@
   "category": "baking",
   "kind": "dish",
   "description": "Crisp meringue shell with a soft center, dried low and slow.",
-  "tags": [
-    "gluten-free",
-    "fruit",
-    "make-ahead",
-    "uses egg whites",
-    "summer"
-  ],
+  "tags": {
+    "type": ["cakes"],
+    "flavor": ["sweet", "light", "fruity"],
+    "usesUp": ["egg-whites"],
+    "ingredients": ["berries", "eggs", "cream"],
+    "occasion": ["entertaining", "make-ahead"],
+    "season": ["summer"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
   "added": "2026-09-27",
-  "bakeCategory": "Cakes",
-  "flavor": "sweet",
   "yield": "Serves 8–10",
   "times": [
     [

@@ -1,0 +1,308 @@
+{
+  "_about": "The fixed list of filters, in display order. \"sections\" says which of Baking / Cooking / Cocktails show the filter; \"shared\" filters also appear on the All page. Each recipe \"tags\" object may only use these dimensions (for its section) and these values; scripts/build-index.mjs checks this. Dimensions marked \"computed\" are worked out by the build and must not be tagged by hand.",
+  "dimensions": [
+    {
+      "key": "course",
+      "label": "Course",
+      "sections": ["cooking"],
+      "values": [
+        { "key": "full-meal", "label": "Full meal" },
+        { "key": "protein", "label": "Main protein" },
+        { "key": "side", "label": "Side" },
+        { "key": "salad", "label": "Salad" },
+        { "key": "soup", "label": "Soup" },
+        { "key": "starter", "label": "Starter & snack" },
+        { "key": "sauce", "label": "Sauce & condiment" },
+        { "key": "base", "label": "Base (pasta, grains, stock)" },
+        { "key": "breakfast", "label": "Breakfast" },
+        { "key": "sweet", "label": "Sweet" },
+        { "key": "drink", "label": "Drink" }
+      ]
+    },
+    {
+      "key": "type",
+      "label": "Type",
+      "sections": ["baking"],
+      "values": [
+        { "key": "cakes", "label": "Cakes" },
+        { "key": "cookies-bars", "label": "Cookies & bars" },
+        { "key": "pies-tarts", "label": "Pies & tarts" },
+        { "key": "breads", "label": "Breads" },
+        { "key": "pastry", "label": "Pastry & enriched doughs" },
+        { "key": "breakfast-bakes", "label": "Breakfast bakes" },
+        { "key": "fillings-creams", "label": "Fillings & creams" }
+      ]
+    },
+    {
+      "key": "spirit",
+      "label": "Base spirit",
+      "sections": ["cocktails"],
+      "values": [
+        { "key": "gin", "label": "Gin" },
+        { "key": "rum", "label": "Rum" },
+        { "key": "vodka", "label": "Vodka" },
+        { "key": "tequila-mezcal", "label": "Tequila & mezcal" },
+        { "key": "whiskey", "label": "Whiskey" },
+        { "key": "brandy", "label": "Brandy" },
+        { "key": "liqueur", "label": "Amaro & liqueur" },
+        { "key": "non-alcoholic", "label": "Non-alcoholic" }
+      ]
+    },
+    {
+      "key": "cuisine",
+      "label": "Cuisine",
+      "sections": ["cooking"],
+      "values": [
+        { "key": "american", "label": "American" },
+        { "key": "mexican", "label": "Mexican" },
+        { "key": "latin-american", "label": "Latin American" },
+        { "key": "italian", "label": "Italian" },
+        { "key": "mediterranean", "label": "Mediterranean" },
+        { "key": "middle-eastern", "label": "Middle Eastern" },
+        { "key": "chinese-taiwanese", "label": "Chinese & Taiwanese" },
+        { "key": "thai", "label": "Thai" },
+        { "key": "southeast-asian", "label": "Southeast Asian" },
+        { "key": "indian", "label": "Indian" },
+        { "key": "nordic", "label": "Nordic" }
+      ]
+    },
+    {
+      "key": "style",
+      "label": "Style",
+      "sections": ["cocktails"],
+      "values": [
+        { "key": "sour", "label": "Sour" },
+        { "key": "stirred", "label": "Stirred" },
+        { "key": "highball", "label": "Highball" },
+        { "key": "fizz-spritz", "label": "Fizz & spritz" },
+        { "key": "tiki", "label": "Tiki" },
+        { "key": "hot", "label": "Hot drink" },
+        { "key": "syrup-mixer", "label": "Syrup & mixer" }
+      ]
+    },
+    {
+      "key": "flavor",
+      "label": "Flavor",
+      "sections": ["baking", "cooking", "cocktails"],
+      "valuesBySection": {
+        "cooking": [
+          { "key": "bright", "label": "Bright & tangy" },
+          { "key": "herby", "label": "Fresh & herby" },
+          { "key": "rich", "label": "Rich & savory" },
+          { "key": "spicy", "label": "Spicy" },
+          { "key": "smoky", "label": "Smoky & charred" },
+          { "key": "umami", "label": "Umami & salty" },
+          { "key": "sweet-savory", "label": "Sweet & savory" },
+          { "key": "sweet", "label": "Sweet" }
+        ],
+        "baking": [
+          { "key": "sweet", "label": "Sweet" },
+          { "key": "savory", "label": "Savory" },
+          { "key": "bright-tart", "label": "Bright & tart" },
+          { "key": "fruity", "label": "Fruity" },
+          { "key": "spiced", "label": "Warm & spiced" },
+          { "key": "nutty", "label": "Nutty & toasty" },
+          { "key": "rich", "label": "Rich & decadent" },
+          { "key": "light", "label": "Light & airy" }
+        ],
+        "cocktails": [
+          { "key": "bright-tart", "label": "Bright & tart" },
+          { "key": "fruity", "label": "Fruity & tropical" },
+          { "key": "bitter", "label": "Bitter" },
+          { "key": "herbal", "label": "Herbal" },
+          { "key": "sweet", "label": "Sweet" },
+          { "key": "spirit-forward", "label": "Spirit-forward" },
+          { "key": "smoky", "label": "Smoky" }
+        ]
+      }
+    },
+    {
+      "key": "strength",
+      "label": "Strength",
+      "sections": ["cocktails"],
+      "values": [
+        { "key": "light", "label": "Light" },
+        { "key": "medium", "label": "Medium" },
+        { "key": "strong", "label": "Strong" }
+      ],
+      "computed": "From standardDrinks: under 1 is light, 1 to 2 is medium, over 2 is strong."
+    },
+    {
+      "key": "method",
+      "label": "Method",
+      "sections": ["cooking"],
+      "values": [
+        { "key": "no-cook", "label": "No-cook" },
+        { "key": "saute", "label": "Sauté & pan-sear" },
+        { "key": "simmer-braise", "label": "Simmer & braise" },
+        { "key": "roast-bake", "label": "Roast & bake" },
+        { "key": "sheet-pan", "label": "Sheet pan" },
+        { "key": "grill", "label": "Grill" },
+        { "key": "wok", "label": "Wok" },
+        { "key": "boil", "label": "Boil" },
+        { "key": "slow-cooker", "label": "Slow cooker" },
+        { "key": "microwave", "label": "Microwave" }
+      ]
+    },
+    {
+      "key": "usesUp",
+      "label": "Uses up",
+      "sections": ["baking"],
+      "values": [
+        { "key": "egg-yolks", "label": "Egg yolks" },
+        { "key": "egg-whites", "label": "Egg whites" },
+        { "key": "buttermilk", "label": "Buttermilk" },
+        { "key": "ripe-bananas", "label": "Ripe bananas" },
+        { "key": "heavy-cream", "label": "Heavy cream" },
+        { "key": "sourdough-discard", "label": "Sourdough discard" }
+      ]
+    },
+    {
+      "key": "ingredients",
+      "label": "Ingredients",
+      "sections": ["baking", "cooking", "cocktails"],
+      "groups": [
+        {
+          "label": "Proteins",
+          "values": [
+            { "key": "chicken", "label": "Chicken" },
+            { "key": "pork", "label": "Pork" },
+            { "key": "beef", "label": "Beef" },
+            { "key": "lamb", "label": "Lamb" },
+            { "key": "fish", "label": "Fish" },
+            { "key": "shrimp", "label": "Shrimp" },
+            { "key": "tofu", "label": "Tofu" },
+            { "key": "beans-lentils", "label": "Beans & lentils" }
+          ]
+        },
+        {
+          "label": "Citrus",
+          "values": [
+            { "key": "lemon", "label": "Lemon" },
+            { "key": "lime", "label": "Lime" },
+            { "key": "orange", "label": "Orange" },
+            { "key": "grapefruit", "label": "Grapefruit" }
+          ]
+        },
+        {
+          "label": "Fruit",
+          "values": [
+            { "key": "apple", "label": "Apple" },
+            { "key": "apple-cider", "label": "Apple cider" },
+            { "key": "berries", "label": "Berries" },
+            { "key": "stone-fruit", "label": "Stone fruit" },
+            { "key": "banana", "label": "Banana" },
+            { "key": "pineapple", "label": "Pineapple" },
+            { "key": "coconut", "label": "Coconut" },
+            { "key": "pomegranate", "label": "Pomegranate" }
+          ]
+        },
+        {
+          "label": "Dairy & eggs",
+          "values": [
+            { "key": "eggs", "label": "Eggs" },
+            { "key": "butter", "label": "Butter" },
+            { "key": "cream", "label": "Cream" },
+            { "key": "cheese", "label": "Cheese" },
+            { "key": "yogurt", "label": "Yogurt" }
+          ]
+        },
+        {
+          "label": "Vegetables & herbs",
+          "values": [
+            { "key": "tomato", "label": "Tomato" },
+            { "key": "cucumber", "label": "Cucumber" },
+            { "key": "corn", "label": "Corn" },
+            { "key": "avocado", "label": "Avocado" },
+            { "key": "potato", "label": "Potato" },
+            { "key": "asparagus", "label": "Asparagus" },
+            { "key": "greens", "label": "Greens & broccolini" },
+            { "key": "mushrooms", "label": "Mushrooms" },
+            { "key": "garlic", "label": "Garlic" },
+            { "key": "fresh-herbs", "label": "Fresh herbs" },
+            { "key": "mint", "label": "Mint" }
+          ]
+        },
+        {
+          "label": "Pantry",
+          "values": [
+            { "key": "rice", "label": "Rice" },
+            { "key": "pasta", "label": "Pasta" },
+            { "key": "chocolate", "label": "Chocolate" },
+            { "key": "tahini", "label": "Tahini & sesame" },
+            { "key": "peanut", "label": "Peanut" },
+            { "key": "nuts", "label": "Nuts" },
+            { "key": "honey", "label": "Honey" },
+            { "key": "chile", "label": "Chile" },
+            { "key": "soy-sauce", "label": "Soy sauce" },
+            { "key": "coconut-milk", "label": "Coconut milk" }
+          ]
+        }
+      ],
+      "shared": true
+    },
+    {
+      "key": "time",
+      "label": "Time",
+      "sections": ["baking", "cooking", "cocktails"],
+      "shared": true,
+      "computed": "From the recipe total time.",
+      "values": [
+        { "key": "under-30", "label": "Under 30 min" },
+        { "key": "under-60", "label": "Under 1 hr" }
+      ]
+    },
+    {
+      "key": "occasion",
+      "label": "Occasion",
+      "sections": ["baking", "cooking", "cocktails"],
+      "values": [
+        { "key": "weeknight", "label": "Weeknight" },
+        { "key": "entertaining", "label": "Entertaining" },
+        { "key": "holiday", "label": "Holiday" },
+        { "key": "brunch", "label": "Brunch" },
+        { "key": "cookout", "label": "Cookout & picnic" },
+        { "key": "meal-prep", "label": "Meal prep" },
+        { "key": "make-ahead", "label": "Make-ahead" },
+        { "key": "freezer-friendly", "label": "Freezer-friendly" }
+      ],
+      "shared": true
+    },
+    {
+      "key": "season",
+      "label": "Season",
+      "sections": ["baking", "cooking", "cocktails"],
+      "values": [
+        { "key": "spring", "label": "Spring" },
+        { "key": "summer", "label": "Summer" },
+        { "key": "fall", "label": "Fall" },
+        { "key": "winter", "label": "Winter" },
+        { "key": "year-round", "label": "Year-round" }
+      ],
+      "shared": true
+    },
+    {
+      "key": "diet",
+      "label": "Diet",
+      "sections": ["baking", "cooking", "cocktails"],
+      "values": [
+        { "key": "vegetarian", "label": "Vegetarian" },
+        { "key": "vegan", "label": "Vegan" },
+        { "key": "gluten-free", "label": "Gluten-free" },
+        { "key": "dairy-free", "label": "Dairy-free" }
+      ],
+      "shared": true
+    },
+    {
+      "key": "kind",
+      "label": "Dish or component",
+      "sections": ["baking", "cooking", "cocktails"],
+      "shared": true,
+      "computed": "From the recipe kind field.",
+      "values": [
+        { "key": "dish", "label": "Dishes" },
+        { "key": "component", "label": "Components" }
+      ]
+    }
+  ]
+}

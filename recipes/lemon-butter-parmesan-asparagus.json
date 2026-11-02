@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Oven-roasted asparagus finished under the broiler with lemon, butter, and parmesan.",
-  "tags": [],
+  "tags": {
+    "course": ["side"],
+    "cuisine": ["american"],
+    "method": ["roast-bake"],
+    "flavor": ["bright", "rich"],
+    "ingredients": ["asparagus", "lemon", "cheese", "butter"],
+    "occasion": ["weeknight", "entertaining"],
+    "season": ["spring"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
   "added": "2026-09-29",
   "yield": "Serves 8, as a side",
   "times": [
@@ -19,10 +28,6 @@
   "time": {
     "total": 25
   },
-  "aroma": "olive_tomato_herb",
-  "role": "vegetable_main",
-  "technique": "Roast, then broil, 400F",
-  "region": "United States and Canada",
   "ingredients": [
     {
       "qty": "2 lb",

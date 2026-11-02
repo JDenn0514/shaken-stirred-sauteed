@@ -3,7 +3,17 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Arborio rice simmered in broth, tinted and perfumed with bloomed saffron.",
-  "tags": [],
+  "origin": "Milan, Italy",
+  "tags": {
+    "course": ["full-meal", "side"],
+    "cuisine": ["italian"],
+    "method": ["simmer-braise"],
+    "flavor": ["rich", "umami"],
+    "ingredients": ["rice", "cheese", "butter"],
+    "occasion": ["entertaining"],
+    "season": ["fall", "winter"],
+    "diet": ["gluten-free"]
+  },
   "added": "2026-09-28",
   "yield": "Serves 2",
   "times": [
@@ -15,10 +25,6 @@
   "time": {
     "total": 50
   },
-  "aroma": "butter_cream_wine",
-  "role": "grain_noodle",
-  "technique": "Stovetop, gentle simmer",
-  "region": "Milan, Italy",
   "ingredients": [
     {
       "group": "Aromatic base",

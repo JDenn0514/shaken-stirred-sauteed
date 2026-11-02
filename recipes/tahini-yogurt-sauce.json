@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "component",
   "description": "Yogurt and tahini whisked with garlic into a tangy sauce.",
-  "tags": [],
+  "tags": {
+    "course": ["sauce"],
+    "cuisine": ["middle-eastern"],
+    "method": ["no-cook"],
+    "flavor": ["bright", "herby"],
+    "ingredients": ["tahini", "yogurt", "garlic"],
+    "occasion": ["weeknight", "make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
   "added": "2026-10-08",
   "yield": "Makes 1 cup",
   "times": [
@@ -15,10 +24,6 @@
   "time": {
     "total": 10
   },
-  "aroma": "sumac_tahini_lemon",
-  "role": "sauce_condiment",
-  "technique": "No cook, whisked",
-  "region": "West Asia and the Levant",
   "ingredients": [
     {
       "qty": "3/4 cup",

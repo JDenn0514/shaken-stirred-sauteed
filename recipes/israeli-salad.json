@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Finely diced tomato, cucumber and peppers with herbs and lemon.",
-  "tags": [],
+  "tags": {
+    "course": ["salad", "side"],
+    "cuisine": ["middle-eastern"],
+    "method": ["no-cook"],
+    "flavor": ["bright", "herby"],
+    "ingredients": ["tomato", "cucumber", "fresh-herbs", "lemon"],
+    "occasion": ["weeknight", "cookout"],
+    "season": ["summer"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-10-08",
   "yield": "Serves 4 to 6",
   "times": [
@@ -15,10 +24,6 @@
   "time": {
     "total": 30
   },
-  "aroma": "olive_tomato_herb",
-  "role": "salad_raw_side",
-  "technique": "No cook",
-  "region": "West Asia and the Levant",
   "ingredients": [
     {
       "qty": "2",

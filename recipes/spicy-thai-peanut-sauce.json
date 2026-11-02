@@ -3,12 +3,18 @@
   "category": "cooking",
   "kind": "component",
   "description": "Peanut butter, soy, sesame and fresh ginger blended smooth.",
-  "tags": [],
+  "tags": {
+    "course": ["sauce"],
+    "cuisine": ["thai"],
+    "method": ["no-cook"],
+    "flavor": ["spicy", "umami"],
+    "ingredients": ["peanut", "soy-sauce", "lime", "chile"],
+    "occasion": ["weeknight", "make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegan", "vegetarian", "dairy-free"]
+  },
   "added": "2026-10-08",
   "yield": "Makes about 2 3/4 cups",
-  "aroma": "soy_ginger_ferment",
-  "role": "sauce_condiment",
-  "technique": "No cook, food processor",
   "ingredients": [
     {
       "qty": "1 cup",
@@ -69,5 +75,8 @@
   "source": {
     "name": "Food.com",
     "url": "https://food.com/recipe/spicy-thai-peanut-sauce-9388"
+  },
+  "time": {
+    "total": 5
   }
 }

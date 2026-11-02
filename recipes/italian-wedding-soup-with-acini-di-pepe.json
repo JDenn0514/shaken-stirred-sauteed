@@ -3,7 +3,15 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Beef and pork meatballs, vegetables, tiny pasta and spinach.",
-  "tags": [],
+  "tags": {
+    "course": ["soup", "full-meal"],
+    "cuisine": ["italian"],
+    "method": ["simmer-braise"],
+    "flavor": ["rich", "herby"],
+    "ingredients": ["beef", "pork", "pasta", "greens"],
+    "occasion": ["meal-prep", "freezer-friendly"],
+    "season": ["fall", "winter"]
+  },
   "added": "2026-10-30",
   "yield": "Serves 6 · Makes about 12 cups",
   "times": [
@@ -15,9 +23,6 @@
   "time": {
     "total": 50
   },
-  "aroma": "olive_tomato_herb",
-  "role": "protein_main",
-  "technique": "Brown, then simmer",
   "ingredients": [
     {
       "group": "Meatballs",

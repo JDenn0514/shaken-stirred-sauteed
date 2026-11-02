@@ -2,11 +2,17 @@
   "title": "Microwave Applesauce",
   "category": "cooking",
   "kind": "dish",
-  "tags": [],
+  "tags": {
+    "course": ["sweet", "side"],
+    "cuisine": ["american"],
+    "method": ["microwave"],
+    "flavor": ["sweet"],
+    "ingredients": ["apple", "lemon"],
+    "occasion": ["weeknight"],
+    "season": ["fall"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-08-29",
-  "aroma": "fruit_sugar",
-  "role": "sweet",
-  "technique": "Microwave",
   "yield": "Makes about 3 cups",
   "times": [
     [
@@ -65,5 +71,8 @@
   ],
   "source": {
     "name": "Jacob's notes"
+  },
+  "time": {
+    "total": 25
   }
 }

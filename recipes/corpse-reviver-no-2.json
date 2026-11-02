@@ -3,11 +3,15 @@
   "category": "cocktails",
   "kind": "dish",
   "description": "Equal parts gin, Cocchi, orange liqueur and lemon; absinthe-misted coupe.",
-  "tags": [],
+  "tags": {
+    "spirit": ["gin"],
+    "style": ["sour"],
+    "flavor": ["bright-tart", "herbal"],
+    "ingredients": ["lemon"],
+    "occasion": ["entertaining"],
+    "season": ["year-round"]
+  },
   "added": "2026-10-30",
-  "flavor": "bright_tart",
-  "family": "sour",
-  "base": "Gin",
   "origin": "Harry Craddock",
   "yield": "Makes 1 drink",
   "abv": "~14%",
@@ -83,5 +87,8 @@
   ],
   "source": {
     "name": "Harry Craddock's recipe, from Strong, Sweet and Bitter: Your Guide to All Things Cocktails, Bartending and Booze from Behind the Bar by Cara Devine, p. 119"
+  },
+  "time": {
+    "total": 5
   }
 }

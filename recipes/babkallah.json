@@ -3,15 +3,16 @@
   "category": "baking",
   "kind": "dish",
   "description": "Chocolate-cinnamon babka, rolled into three logs and braided like challah.",
-  "tags": [
-    "chocolate",
-    "spiced",
-    "uses egg yolks",
-    "make-ahead"
-  ],
+  "tags": {
+    "type": ["pastry"],
+    "flavor": ["sweet", "spiced", "rich"],
+    "usesUp": ["egg-yolks"],
+    "ingredients": ["chocolate", "butter", "eggs"],
+    "occasion": ["holiday", "brunch", "make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegetarian"]
+  },
   "added": "2026-10-26",
-  "bakeCategory": "Pastry & Enriched Doughs",
-  "flavor": "sweet",
   "yield": "Makes 1 loaf / 12 servings",
   "times": [
     [

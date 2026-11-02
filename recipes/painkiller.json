@@ -3,11 +3,15 @@
   "category": "cocktails",
   "kind": "dish",
   "description": "Dark rum, pineapple, orange and coconut cream, shaken.",
-  "tags": [],
+  "tags": {
+    "spirit": ["rum"],
+    "style": ["tiki"],
+    "flavor": ["fruity", "sweet"],
+    "ingredients": ["pineapple", "orange", "coconut"],
+    "occasion": ["cookout"],
+    "season": ["summer"]
+  },
   "added": "2026-10-30",
-  "flavor": "fruity_tropical",
-  "family": "tiki_punch",
-  "base": "Dark rum",
   "origin": "Soggy Dollar Bar, British Virgin Islands, 1970s",
   "yield": "Makes 1 drink",
   "abv": "~7%",
@@ -74,5 +78,8 @@
   ],
   "source": {
     "name": "Strong, Sweet and Bitter: Your Guide to All Things Cocktails, Bartending and Booze from Behind the Bar by Cara Devine, p. 171"
+  },
+  "time": {
+    "total": 5
   }
 }

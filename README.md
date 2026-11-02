@@ -7,7 +7,7 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 ## Features
 
 - Search by name, ingredient, or tag
-- Filter by category (Baking / Cooking / Cocktails) and by tag; sort A–Z, newest, or quickest
+- Baking, Cooking and Cocktails sections, each with its own filters (cuisine, flavor, base spirit…), plus shared ones (ingredients, time, occasion, season, diet). Pick several options in a filter to widen it; combine filters to narrow down. Sort A–Z, newest, or quickest
 - Tap ingredients to check them off and tap steps to mark them done. Your progress is saved on your phone.
 - "Keep screen on" button so the phone doesn't lock mid-recipe
 - Add it to your phone's home screen and it opens like an app. Recipes you've already opened also work offline.
@@ -39,7 +39,7 @@ A GitHub Action re-runs the index check on every push and flags any recipe with 
 | `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges" }` |
 | `kind` | | `dish` (the default) or `component`, for things made to go into other recipes: sauces, curds, syrups, homemade pasta |
 | `description` | | Short blurb shown on the card |
-| `tags` | | e.g. `["weeknight", "gin", "holiday"]` |
+| `tags` | | Filter tags, e.g. `{ "cuisine": ["thai"], "ingredients": ["chicken", "lime"] }`. See "Tags" below |
 | `added` | | Date added (`YYYY-MM-DD`), used by "Newest" sort |
 | `yield` | | e.g. `"Makes 24 cookies"`, `"Serves 6"` |
 | `times` | | Times as written, e.g. `[["Active", "15 min"], ["Marinate", "4 to 8 hours"]]` |
@@ -49,15 +49,40 @@ A GitHub Action re-runs the index check on every push and flags any recipe with 
 | `image` | | Path like `images/brown-butter-cookies.jpg` |
 | `source` | | `{ "name": "Grandma", "url": "" }` |
 
-Labels from the recipe cards, shown under the title:
+Category-specific display fields:
 
 | Category | Fields |
 |---|---|
-| Cooking | `aroma` (e.g. `chile_lime_corn`), `role` (e.g. `protein_main`), `technique`, `region`, `nutrition` |
-| Baking | `bakeCategory` (e.g. `Pies & Tarts`), `flavor` (`sweet`, `savory`, or `both`), `pan`, `heat` with `heatLabel` (`Oven` or `Heat`) |
-| Cocktails | `flavor` (e.g. `bright_tart`), `family` (e.g. `sour`), `base`, `origin`, `glass`, `ice`, `garnish`, `method`, `keeps`, `abv`, `standardDrinks` |
+| Any | `origin` (e.g. `Milan, Italy`), `nutrition` |
+| Baking | `pan`, `heat` with `heatLabel` (`Oven` or `Heat`) |
+| Cocktails | `glass`, `ice`, `garnish`, `method`, `keeps`, `abv`, `standardDrinks` |
 
-The aroma, role, flavor and family keys are listed with their display names in `assets/common.js`.
+### Tags
+
+Every filter and its allowed values live in `recipes/vocabulary.json`. To tag a recipe, list values by filter key:
+
+```json
+"tags": {
+  "course": ["full-meal"],
+  "cuisine": ["chinese-taiwanese"],
+  "flavor": ["umami", "sweet-savory"],
+  "ingredients": ["pork", "soy-sauce", "rice"],
+  "occasion": ["meal-prep"],
+  "season": ["fall", "winter"],
+  "diet": ["dairy-free"]
+}
+```
+
+| Section | Filters |
+|---|---|
+| All sections | `ingredients` (1–4 key ingredients), `occasion`, `season`, `diet` |
+| Cooking | `course`, `cuisine`, `flavor`, `method` |
+| Baking | `type`, `flavor`, `usesUp` |
+| Cocktails | `spirit`, `style`, `flavor` |
+
+Time, cocktail strength and dish/component are worked out automatically from `time`, `standardDrinks` and `kind`, so don't tag them.
+
+The build fails if a recipe uses a value that isn't in the vocabulary, or a filter from another section. It warns about recipes with no total time or no key ingredients, and about vocabulary values no recipe uses yet. To add a new value (a new cuisine, say), add it to `recipes/vocabulary.json` first.
 
 ### Source PDFs
 

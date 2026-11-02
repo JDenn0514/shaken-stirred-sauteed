@@ -3,17 +3,16 @@
   "category": "baking",
   "kind": "component",
   "description": "Stovetop curd of whole eggs and yolks, tempered and strained.",
-  "tags": [
-    "tangy",
-    "citrus",
-    "gluten-free",
-    "make-ahead",
-    "freezer-friendly",
-    "uses egg yolks"
-  ],
+  "tags": {
+    "type": ["fillings-creams"],
+    "flavor": ["bright-tart"],
+    "usesUp": ["egg-yolks"],
+    "ingredients": ["lemon", "eggs", "butter"],
+    "occasion": ["make-ahead", "freezer-friendly"],
+    "season": ["year-round"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
   "added": "2026-09-27",
-  "bakeCategory": "Components",
-  "flavor": "sweet",
   "yield": "Makes 2 cups",
   "times": [
     [

@@ -2,12 +2,17 @@
   "title": "Chimichurri Sauce",
   "category": "cooking",
   "kind": "component",
-  "tags": [],
+  "tags": {
+    "course": ["sauce"],
+    "cuisine": ["latin-american"],
+    "method": ["no-cook"],
+    "flavor": ["herby", "bright"],
+    "ingredients": ["fresh-herbs", "garlic"],
+    "occasion": ["cookout", "make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-08-29",
-  "aroma": "olive_tomato_herb",
-  "role": "sauce_condiment",
-  "technique": "No cook",
-  "region": "Argentina",
   "yield": "Makes about 1 cup",
   "times": [
     [
@@ -74,5 +79,9 @@
   ],
   "source": {
     "name": "Williams Sonoma Grill Master by Fred Thompson, p. 58"
+  },
+  "origin": "Argentina",
+  "time": {
+    "total": 40
   }
 }

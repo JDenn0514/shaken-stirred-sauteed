@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "component",
   "description": "Tahini blended with fresh herbs, garlic, lemon and green chile.",
-  "tags": [],
+  "tags": {
+    "course": ["sauce"],
+    "cuisine": ["middle-eastern"],
+    "method": ["no-cook"],
+    "flavor": ["herby", "bright"],
+    "ingredients": ["tahini", "fresh-herbs", "lemon", "garlic"],
+    "occasion": ["make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-10-08",
   "yield": "Makes 1 1/2 cups",
   "times": [
@@ -66,10 +75,6 @@
     "Oil-free: swap the olive oil for water and a little more tahini.",
     "Keeps 5 days in a sealed jar in the fridge. Good with Sheet Pan Chicken Shawarma, falafel, Israeli Salad and mezze platters, or as a raw-vegetable dip."
   ],
-  "aroma": "sumac_tahini_lemon",
-  "role": "sauce_condiment",
-  "technique": "No cook, blender",
-  "region": "West Asia and the Levant",
   "nutrition": "Per 2 tbsp: 95 cal · 1.9 g protein · 3.5 g carbs · 0.9 g fiber · 0.7 g sugar · 8.9 g fat · 1.3 g sat fat · 198.7 mg sodium",
   "source": {
     "name": "Sylvia Fountaine, Feasting at Home",

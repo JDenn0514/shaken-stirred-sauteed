@@ -3,7 +3,15 @@
   "category": "cooking",
   "kind": "component",
   "description": "Stiff semolina dough, rolled into thin ropes and cut into tiny beads.",
-  "tags": [],
+  "tags": {
+    "course": ["base"],
+    "cuisine": ["italian"],
+    "method": ["boil"],
+    "ingredients": ["pasta"],
+    "occasion": ["make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegan", "vegetarian", "dairy-free"]
+  },
   "added": "2026-10-30",
   "yield": "Makes enough to replace 1 cup dry",
   "times": [
@@ -70,7 +78,7 @@
       ]
     }
   ],
-  "aroma": "salt_fat_fire",
-  "role": "grain_noodle",
-  "technique": "Hand-rolled, boil"
+  "time": {
+    "total": 90
+  }
 }
