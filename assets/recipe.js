@@ -12,7 +12,7 @@
   };
 
   const fail = (msg) => {
-    root.innerHTML = `<a class="back" href="./">← All recipes</a><p class="error">${esc(msg)}</p>`;
+    root.innerHTML = `<a class="back" href="recipes.html">← All recipes</a><p class="error">${esc(msg)}</p>`;
   };
 
   if (!/^[a-z0-9-]+$/.test(slug)) return fail("Recipe not found.");
@@ -59,7 +59,7 @@
         : d.values || (d.groups || []).flatMap((g) => g.values);
       const label = (k) => (all.find((v) => v.key === k) || { label: k }).label;
       const links = r.tags[d.key].map((v) =>
-        `<a class="chip" href="./?cat=${encodeURIComponent(r.category)}&amp;${encodeURIComponent(d.key)}=${encodeURIComponent(v)}">${esc(label(v))}</a>`).join("");
+        `<a class="chip" href="recipes.html?cat=${encodeURIComponent(r.category)}&amp;${encodeURIComponent(d.key)}=${encodeURIComponent(v)}">${esc(label(v))}</a>`).join("");
       return `<div><dt>${esc(d.label)}</dt><dd>${links}</dd></div>`;
     });
     return rows.length ? `<dl class="tag-groups">${rows.join("")}</dl>` : "";
@@ -119,7 +119,7 @@
     if (icon) root.dataset.icon = icon; else delete root.dataset.icon;
 
     root.innerHTML = `
-      <a class="back" href="./?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
+      <a class="back" href="recipes.html?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
       ${r.image ? `<img class="recipe-hero" src="${esc(r.image)}" alt="">` : ""}
       ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
       ${icon ? `<span class="recipe-icon" aria-hidden="true"></span>` : ""}

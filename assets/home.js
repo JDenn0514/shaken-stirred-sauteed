@@ -185,7 +185,7 @@
     if (recipes.length === 0) {
       els.empty.innerHTML = `<span class="big">🧑‍🍳</span>No recipes yet. Add one to the <code>recipes/</code> folder to get started.`;
     } else if (list.length === 0) {
-      els.empty.innerHTML = `<span class="big">🔍</span>Nothing matches that. <a href="./">Clear filters</a>`;
+      els.empty.innerHTML = `<span class="big">🔍</span>Nothing matches that. <a href="recipes.html">Clear filters</a>`;
     }
     els.empty.hidden = list.length > 0;
     syncURL();

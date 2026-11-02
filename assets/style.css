@@ -4,11 +4,11 @@
    inks, like a modern botanical print. Same layout, type, drawings and
    behaviour as Field Guide (final); only the colour has changed. Every
    recipe is a specimen sheet with its own drawing; each section is a family
-   with its own ink, its own plate drawing and a short Latin name:
+   with its own ink and its own plate drawing:
 
-     Baking     Persimmon  #bf440f / dark #f6a466   Fam. Pistoriaceae  (pistor: baker)
-     Cooking    Holly      #00512f / dark #4fbd88   Fam. Culinaceae    (culina: kitchen)
-     Cocktails  Gentian    #0056bd / dark #5f97ea   Fam. Mixtaceae     (mixtus: mixed)
+     Baking     Persimmon  #bf440f / dark #f6a466
+     Cooking    Holly      #00512f / dark #4fbd88
+     Cocktails  Gentian    #0056bd / dark #5f97ea
 
    Paper is near-white with only a whisper of tint; colour comes from the
    ink, not from tinted backgrounds. The inks differ in lightness as well
@@ -111,7 +111,6 @@
   --section-fill: var(--text);
   --on-section: var(--accent-contrast);
   --on-section-fill: var(--accent-contrast);
-  --family: "Herbarium";
 
   /* Drawings: how much of the family ink a drawing takes (the rest is page ink).
      100% in light mode; 86% after dark, a touch softer. */
@@ -183,21 +182,18 @@ body:has(.tab[data-cat="baking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=baking"]) {
   --section: var(--baking); --section-wash: var(--baking-wash); --section-paper: var(--baking-paper);
   --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
-  --family: "Fam. Pistoriaceae";
 }
 .tab[data-cat="cooking"], .badge.cooking, .card:has(.badge.cooking), .fam-cooking,
 body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cooking"]) {
   --section: var(--cooking); --section-wash: var(--cooking-wash); --section-paper: var(--cooking-paper);
   --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
-  --family: "Fam. Culinaceae";
 }
 .tab[data-cat="cocktails"], .badge.cocktails, .card:has(.badge.cocktails), .fam-cocktails,
 body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cocktails"]) {
   --section: var(--cocktails); --section-wash: var(--cocktails-wash); --section-paper: var(--cocktails-paper);
   --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
-  --family: "Fam. Mixtaceae";
 }
 .tab[data-cat="all"], .fam-all {
   --section: var(--text); --section-wash: var(--surface-2); --section-fill: var(--text);
@@ -323,12 +319,6 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
   font-size: 1.2rem; font-weight: 650; letter-spacing: -.012em; line-height: 1.15;
 }
 .amp { font-style: italic; font-weight: 500; color: var(--section); padding: 0 .04em; }
-.brand-sub {
-  display: none; margin-left: auto;
-  font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--muted);
-}
-@media (min-width: 600px) { .brand-sub { display: inline; } }
 
 /* ===== Home controls ===== */
 .controls { padding-top: 18px; }
@@ -349,80 +339,55 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
 .search input::placeholder { color: var(--muted); opacity: 1; }
 .search input::-webkit-search-cancel-button { filter: grayscale(1); }
 
-/* Sections: three big family plates under a slim "All" bar. */
+/* Sections: one slim row of tabs, each lettered in its family ink. The chosen
+   one gets a light wash and an ink underline ("All": the tricolour band). */
 .tabs {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px; margin-top: 14px;
+  display: flex; gap: 2px; margin-top: 12px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
+.tabs::-webkit-scrollbar { display: none; }
 .tab {
-  position: relative;
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
-  min-width: 0; min-height: 112px;
-  border: var(--rule) solid var(--section);
-  background: var(--section-wash);
-  color: var(--section);
-  border-radius: var(--radius-ctl);
-  padding: 10px 11px 9px;
-  cursor: pointer;
+  flex: 1 0 auto;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-height: 46px; padding: 8px 6px 7px;
+  border: 0; border-bottom: 3px solid transparent;
+  border-radius: var(--radius-ctl) var(--radius-ctl) 0 0;
+  background: transparent; color: var(--section);
   font-family: var(--display); font-variation-settings: var(--soft);
-  font-weight: 600; font-size: 1.16rem; line-height: 1.05; letter-spacing: -.012em;
-  text-align: left;
-  transition: background-color .15s ease, color .15s ease;
+  font-weight: 600; font-size: 1.04rem; line-height: 1.1; letter-spacing: -.01em;
+  white-space: nowrap; cursor: pointer;
+  transition: background-color .15s ease;
 }
 .tab > span[aria-hidden="true"] { display: none; }
 .tab::before {
-  content: "";
-  position: absolute; left: 8px; top: 9px;
-  width: 42px; height: 42px;
+  content: ""; flex: none; display: none;
+  width: 22px; height: 22px;
   background: currentColor;
   -webkit-mask-position: center; mask-position: center;
   -webkit-mask-size: contain; mask-size: contain;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
 }
 .tab .n {
-  position: absolute; top: 9px; right: 10px;
-  font-family: var(--mono); font-weight: 500; font-size: .78rem; letter-spacing: .02em; line-height: 1.3;
-  color: inherit;
+  font-family: var(--mono); font-weight: 500; font-size: .76rem; letter-spacing: .02em;
+  color: var(--muted);
 }
-.tab[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); }
-/* After dark the chosen family is a deep fill edged and lettered in its glowing ink, not a bright slab. */
-@media (prefers-color-scheme: dark) {
-  .tab:not([data-cat="all"])[aria-pressed="true"] { color: var(--section); box-shadow: inset 0 0 0 1px var(--section); }
-}
-.tab[data-cat="all"] {
-  grid-column: 1 / -1;
-  flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
-  min-height: 46px; padding: 8px 12px 8px 42px;
-  font-size: 1.08rem;
-  background: transparent; border-color: var(--rule-strong);
-}
-/* "All" chosen: the sheet with an ink edge and the tricolour band along its
-   foot (all three families), rather than a heavy solid slab. */
+.tab[aria-pressed="true"] { background-color: var(--section-wash); border-bottom-color: var(--section); }
+.tab[aria-pressed="true"] .n { color: var(--section); }
 .tab[data-cat="all"][aria-pressed="true"] {
-  color: var(--text); border-color: var(--text);
-  background: var(--surface) linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%) left bottom / 100% 5px no-repeat;
-  padding-bottom: 13px;
+  border-bottom-color: transparent;
+  background-image: linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%);
+  background-position: left bottom; background-size: 100% 3px; background-repeat: no-repeat;
+  padding-bottom: 10px; border-bottom-width: 0;
 }
-.tab[data-cat="all"]::before { top: 50%; left: 11px; width: 22px; height: 22px; margin-top: -11px; }
-.tab[data-cat="all"] .n { position: static; margin-left: auto; }
-@media (max-width: 359px) {
-  .tabs { gap: 5px; }
-  .tab { padding: 8px 7px 8px; font-size: .9rem; min-height: 100px; }
-  .tab::before { width: 34px; height: 34px; left: 6px; }
-  .tab .n { right: 7px; font-size: .72rem; }
+@media (max-width: 374px) {
+  .tabs { gap: 0; }
+  .tab { padding-inline: 4px; font-size: .9rem; gap: 3px; }
+  .tab .n { font-size: .68rem; letter-spacing: 0; }
 }
-@media (min-width: 720px) {
-  .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-  .tab { min-height: 128px; padding: 12px 16px 12px; font-size: 1.62rem; }
-  .tab::before { width: 56px; height: 56px; left: 12px; top: 12px; }
-  .tab .n { top: 12px; right: 14px; font-size: .82rem; }
-  .tab[data-cat="all"] {
-    grid-column: auto; flex-direction: column; align-items: flex-start; justify-content: flex-end;
-    min-height: 128px; padding: 12px 16px; font-size: 1.62rem;
-  }
-  .tab[data-cat="all"][aria-pressed="true"] { padding-bottom: 12px; }
-  .tab[data-cat="all"]::before { top: 12px; left: 12px; width: 56px; height: 56px; margin-top: 0; }
-  .tab[data-cat="all"] .n { position: absolute; margin: 0; }
+@media (min-width: 600px) {
+  .tab { flex: 0 0 auto; justify-content: flex-start; padding: 8px 16px 7px 12px; gap: 8px; font-size: 1.2rem; }
+  .tab::before { display: block; }
 }
 
 /* Filter buttons: one row that scrolls sideways on a phone. */
@@ -628,8 +593,6 @@ body.sheet-open { overflow: hidden; }
 @media (prefers-color-scheme: dark) {
   /* After dark the stamp is a deep fill lettered in the glowing ink. */
   .badge:not(.component) { background: var(--section-fill); color: var(--section); }
-  .tab:not([data-cat="all"]) { border-color: color-mix(in srgb, var(--section) 62%, var(--surface)); }
-  .tab:not([data-cat="all"])[aria-pressed="true"] { border-color: var(--section); }
   .opt[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--section); }
 }
 .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -698,13 +661,6 @@ body.sheet-open { overflow: hidden; }
   font-size: clamp(2.25rem, 9vw, 3.4rem); line-height: 1; letter-spacing: -.025em;
   margin-top: 4px; text-wrap: balance; color: var(--section);
   font-variation-settings: "SOFT" 100, "WONK" 1;
-}
-/* The family line above the title: the section's mock-Latin name. */
-.recipe h1::before {
-  content: var(--family) / "";
-  display: block; margin-bottom: 8px;
-  font-style: italic; font-weight: 450; font-size: 1.02rem; letter-spacing: 0; line-height: 1.2;
-  color: var(--muted);
 }
 .recipe > .badge { margin-bottom: 4px; }
 .recipe .lede { color: var(--muted); font-size: 1.1rem; line-height: 1.5; margin: 12px 0 0; max-width: 36em; }
@@ -954,10 +910,80 @@ body.sheet-open { overflow: hidden; }
   body:has(.recipe) .brand { max-width: 1080px; }
 }
 
+/* ===== Welcome page =====
+   A calm front door: a headline, one search box, the three families as
+   large plates, and a way into the full index. Search and the doors hand
+   off to recipes.html (?q= / ?cat=), where all the filtering lives. */
+.welcome { max-width: 1000px; }
+.hero { padding: 36px 0 22px; }
+.hero h1 {
+  font-size: clamp(2.1rem, 9vw, 3.8rem); line-height: 1.02; letter-spacing: -.022em;
+  max-width: 13ch; margin-bottom: 24px;
+}
+.hero-search { min-height: 54px; margin: 0; }
+.hero-search input { font-size: 1.05rem; }
+
+.doors { display: grid; gap: 10px; }
+.door {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto;
+  align-content: center; align-items: center; column-gap: 12px;
+  min-height: 104px; padding: 12px 14px 12px 20px;
+  border: var(--rule) solid var(--section); border-radius: var(--radius-ctl);
+  background: var(--section-wash); color: var(--section);
+  text-decoration: none;
+  transition: background-color .15s ease;
+}
+.door-name, .door-count { grid-column: 1; }
+.door-name {
+  grid-row: 1; align-self: end;
+  font-family: var(--display); font-variation-settings: var(--soft);
+  font-weight: 600; font-size: 2.05rem; line-height: 1.05; letter-spacing: -.016em;
+}
+.door-count {
+  grid-row: 2; align-self: start; margin-top: 6px;
+  font-family: var(--mono); font-weight: 500; font-size: .8rem; letter-spacing: .03em;
+  color: var(--muted); min-height: 1.3em;
+}
+.door-count:not(:empty)::after { content: "  →"; color: var(--section); }
+.door .plate {
+  grid-column: 2; grid-row: 1 / span 2;
+  width: 72px; height: 72px;
+  background: color-mix(in srgb, var(--section) var(--draw-mix), var(--text));
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+
+/* "Browse all": the sheet with the tricolour band along its foot, like the All tab. */
+.browse-all {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 10px; min-height: 58px; padding: 10px 18px 15px;
+  border: var(--rule) solid var(--text); border-radius: var(--radius-ctl);
+  background: var(--surface) linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%) left bottom / 100% 5px no-repeat;
+  color: var(--text); text-decoration: none;
+  font-family: var(--display); font-variation-settings: var(--soft);
+  font-weight: 600; font-size: 1.2rem; letter-spacing: -.01em;
+}
+.browse-all .arrow { font-family: var(--sans); font-weight: 500; }
+
+@media (min-width: 720px) {
+  .hero { padding: 64px 0 34px; }
+  .hero h1 { margin-bottom: 30px; }
+  .hero-search { max-width: 640px; }
+  .doors { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .door {
+    grid-template-columns: 1fr; grid-template-rows: auto auto auto; align-content: start;
+    min-height: 0; padding: 24px 24px 22px;
+  }
+  .door .plate { grid-column: 1; grid-row: 1; width: 104px; height: 104px; margin-bottom: 28px; }
+  .door-name { grid-row: 2; font-size: 2.6rem; }
+  .door-count { grid-row: 3; }
+  .browse-all { margin-top: 14px; min-height: 64px; font-size: 1.35rem; padding-inline: 22px; }
+}
+
 /* ===== Hover (pointer devices only, so taps don't leave sticky states) ===== */
 @media (hover: hover) {
-  .tab:not([aria-pressed="true"]):hover { background: var(--surface); }
-  .tab[data-cat="all"]:not([aria-pressed="true"]):hover { background: var(--section-wash); }
+  .tab:not([aria-pressed="true"]):hover { background-color: var(--section-wash); }
   .filter-btn:hover { border-color: var(--section); }
   .chip:hover { border-color: var(--section); color: var(--section); }
   .clear:hover { color: var(--text); }
@@ -968,6 +994,9 @@ body.sheet-open { overflow: hidden; }
   .ingredients label:hover input:not(:checked) { border-color: var(--section); }
   .steps li:not(.current):hover { background: var(--surface); border-color: var(--border); }
   .back:hover { background: var(--section-fill); color: var(--on-section-fill); }
+  .door:hover { background: var(--surface); }
+  .door:hover .door-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .12em; }
+  .browse-all:hover { background-color: var(--surface-2); }
   a:hover { text-decoration-thickness: 2px; }
 }
 
