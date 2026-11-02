@@ -3,6 +3,10 @@
 // each recipe for mistakes. Run from the repo root:  node scripts/build-index.mjs
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { createRequire } from "node:module";
+
+// The recipe drawings: the same chooser the site uses (assets/recipe-icons.js).
+const { KEYS: ICONS, iconFor } = createRequire(import.meta.url)("../assets/recipe-icons.js");
 
 const DIR = "recipes";
 const CATEGORIES = ["baking", "cooking", "cocktails"];
@@ -67,6 +71,7 @@ for (const file of readdirSync(DIR).sort()) {
   if (r.source?.url && !/^https?:\/\//i.test(r.source.url)) errors.push(`${where}: "source.url" must start with https:// or http://`);
   if (r.image && !/^(https:\/\/|images\/)/.test(r.image)) errors.push(`${where}: "image" must be an images/ path or an https:// URL`);
   if (r.added && !/^\d{4}-\d{2}-\d{2}$/.test(r.added)) errors.push(`${where}: "added" should look like 2026-10-31`);
+  if (r.icon != null && !ICONS.includes(r.icon)) errors.push(`${where}: "icon" must be one of ${ICONS.join(", ")}`);
 
   // Filter tags: { dimension: [values] }, checked against the vocabulary.
   const tags = r.tags ?? {};
@@ -107,6 +112,7 @@ for (const file of readdirSync(DIR).sort()) {
     description: r.description || "",
     yield: r.yield || "",
     image: r.image || "",
+    icon: iconFor(r),
     added: r.added || "",
     facets,
     totalMinutes: total,

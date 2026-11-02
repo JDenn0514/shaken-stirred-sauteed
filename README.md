@@ -12,6 +12,8 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 - "Keep screen on" button so the phone doesn't lock mid-recipe
 - Add it to your phone's home screen and it opens like an app. Recipes you've already opened also work offline.
 - Clean print layout
+- Each section has its own colour (baking persimmon, cooking holly green, cocktails cobalt), and every recipe has its own drawing: its glass for cocktails, its dish for food
+- A designed dark mode for cooking at night
 
 No frameworks and no build step: it's plain HTML, CSS, and JavaScript served by GitHub Pages.
 
@@ -47,6 +49,7 @@ A GitHub Action re-runs the index check on every push and flags any recipe with 
 | `beforeYouStart` | | List of prep to do before step 1 |
 | `notes` | | List of tips, or `{ "group": "Substitutions", "items": [...] }` sections |
 | `image` | | Path like `images/brown-butter-cookies.jpg` |
+| `icon` | | The drawing on the card and recipe page. Usually leave it out: it's picked from the cocktail's `glass`, the baking `type` or the cooking `course`. Set it when that guess is wrong, e.g. `"icon": "donut"`. Allowed values are listed in `assets/recipe-icons.js` |
 | `source` | | `{ "name": "Grandma", "url": "" }` |
 
 Category-specific display fields:
@@ -87,6 +90,12 @@ The build fails if a recipe uses a value that isn't in the vocabulary, or a filt
 ### Source PDFs
 
 `source-pdfs/` holds the original phone-sized recipe cards each recipe was converted from.
+
+## Look and feel
+
+The site uses the **Field Guide** style (Vivid botanical colours, warm night): `assets/style.css`, with fonts in `assets/fonts/`, recipe drawings in `assets/icons/` and botanical plates in `assets/*.svg`. The full style guide is at `style-guides/field-guide-vivid-warm/` (open its `index.html`).
+
+Two alternative styles are kept in case you change your mind: `style-guides/field-guide-spice/` (Spice cabinet colours) and `style-guides/order-up-hybrid/` (Order Up). Each has its own style guide and a `preview/` that runs the real site in that style. See `style-guides/README.md` for how to switch.
 
 ## Running locally
 

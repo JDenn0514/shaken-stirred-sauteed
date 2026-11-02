@@ -7,6 +7,7 @@
     "description": "Chocolate-cinnamon babka, rolled into three logs and braided like challah.",
     "yield": "Makes 1 loaf / 12 servings",
     "image": "",
+    "icon": "loaf",
     "added": "2026-10-26",
     "facets": {
       "type": [
@@ -51,6 +52,7 @@
     "description": "Cumin-spiced vegan lentil soup with greens, partly blended.",
     "yield": "Serves 4 large or 6 modest",
     "image": "",
+    "icon": "soup",
     "added": "2026-10-26",
     "facets": {
       "course": [
@@ -106,6 +108,7 @@
     "description": "Citrus and soy marinated flank steak, grilled hot and fast.",
     "yield": "Serves 6",
     "image": "",
+    "icon": "grill",
     "added": "2026-10-14",
     "facets": {
       "course": [
@@ -152,6 +155,7 @@
     "description": "Spiced roast chicken over chopped salad, with two tahini sauces.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "salad",
     "added": "2026-10-08",
     "facets": {
       "course": [
@@ -202,6 +206,7 @@
     "description": "Parsley, oregano and garlic in olive oil and red wine vinegar, rested so the raw edges mellow.",
     "yield": "Makes about 1 cup",
     "image": "",
+    "icon": "sauce",
     "added": "2026-08-29",
     "facets": {
       "course": [
@@ -252,6 +257,7 @@
     "description": "Savory rice porridge under crisped chili-garlic ground pork.",
     "yield": "Serves 2 to 4",
     "image": "",
+    "icon": "rice-bowl",
     "added": "2026-09-21",
     "facets": {
       "course": [
@@ -301,6 +307,7 @@
     "description": "Equal parts gin, Cocchi, orange liqueur and lemon; absinthe-misted coupe.",
     "yield": "Makes 1 drink",
     "image": "",
+    "icon": "coupe",
     "added": "2026-10-30",
     "facets": {
       "spirit": [
@@ -344,6 +351,7 @@
     "description": "Vanilla custard poured over dark chocolate, blended smooth and chilled until set.",
     "yield": "Makes about 900 to 950 g (3 1/2 to 3 3/4 cups)",
     "image": "",
+    "icon": "ramekin",
     "added": "2026-09-29",
     "facets": {
       "type": [
@@ -389,6 +397,7 @@
     "description": "Baked cake donuts flavored with reduced cider, dipped in spiced sugar.",
     "yield": "Makes 12 to 14 donuts",
     "image": "",
+    "icon": "donut",
     "added": "2026-10-30",
     "facets": {
       "type": [
@@ -430,6 +439,7 @@
     "description": "Salted, crunchy Persian cucumbers tossed in soy, rice vinegar, sesame and chili oil.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "salad",
     "added": "2026-08-31",
     "facets": {
       "course": [
@@ -482,6 +492,7 @@
     "description": "Creamed-butter cake donuts with cider and nutmeg, brushed in cinnamon sugar.",
     "yield": "Makes 12 donuts",
     "image": "",
+    "icon": "donut",
     "added": "2026-10-26",
     "facets": {
       "type": [
@@ -523,6 +534,7 @@
     "description": "Garlic ground smooth with coarse salt using a muddler or the flat of a knife. No blender needed.",
     "yield": "Makes about 3 tablespoons",
     "image": "",
+    "icon": "garlic",
     "added": "2026-08-30",
     "facets": {
       "course": [
@@ -565,6 +577,7 @@
     "description": "Tahini blended with fresh herbs, garlic, lemon and green chile.",
     "yield": "Makes 1 1/2 cups",
     "image": "",
+    "icon": "sauce",
     "added": "2026-10-08",
     "facets": {
       "course": [
@@ -617,6 +630,7 @@
     "description": "Pomegranate juice, sugar and lemon, warmed just until the sugar dissolves.",
     "yield": "Makes about 3 cups",
     "image": "",
+    "icon": "bottle",
     "added": "2026-10-30",
     "facets": {
       "spirit": [
@@ -657,6 +671,7 @@
     "description": "Grilled corn, tomatoes, avocado and arugula in a honey-lime dressing.",
     "yield": "Serves 6 (about 6 cups)",
     "image": "",
+    "icon": "corn",
     "added": "2026-09-02",
     "facets": {
       "course": [
@@ -709,6 +724,7 @@
     "description": "Fanned potatoes basted twice in garlic butter — crisp edges, soft centre.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "potato",
     "added": "2026-08-29",
     "facets": {
       "course": [
@@ -754,6 +770,7 @@
     "description": "Stiff semolina dough, rolled into thin ropes and cut into tiny beads.",
     "yield": "Makes enough to replace 1 cup dry",
     "image": "",
+    "icon": "pasta",
     "added": "2026-10-30",
     "facets": {
       "course": [
@@ -794,6 +811,7 @@
     "description": "Apples, orange and spices slow-cooked, mashed and strained.",
     "yield": "Makes about 1 1/2 quarts",
     "image": "",
+    "icon": "mug",
     "added": "2026-10-26",
     "facets": {
       "course": [
@@ -842,6 +860,7 @@
     "description": "Floured chicken cutlets seared, then glazed in honey, butter and hot sauce.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "chicken",
     "added": "2026-09-28",
     "facets": {
       "course": [
@@ -888,6 +907,7 @@
     "description": "Finely diced tomato, cucumber and peppers with herbs and lemon.",
     "yield": "Serves 4 to 6",
     "image": "",
+    "icon": "salad",
     "added": "2026-10-08",
     "facets": {
       "course": [
@@ -942,6 +962,7 @@
     "description": "Beef and pork meatballs, vegetables, tiny pasta and spinach.",
     "yield": "Serves 6 · Makes about 12 cups",
     "image": "",
+    "icon": "soup",
     "added": "2026-10-30",
     "facets": {
       "course": [
@@ -990,6 +1011,7 @@
     "description": "Lemon condensed-milk filling with a blueberry swirl on shortbread.",
     "yield": "Serves 8 to 10",
     "image": "",
+    "icon": "tart",
     "added": "2026-10-26",
     "facets": {
       "type": [
@@ -1031,6 +1053,7 @@
     "description": "Oven-roasted asparagus finished under the broiler with lemon, butter, and parmesan.",
     "yield": "Serves 8, as a side",
     "image": "",
+    "icon": "greens",
     "added": "2026-09-29",
     "facets": {
       "course": [
@@ -1082,6 +1105,7 @@
     "description": "Stovetop curd of whole eggs and yolks, tempered and strained.",
     "yield": "Makes 2 cups",
     "image": "",
+    "icon": "jar",
     "added": "2026-09-27",
     "facets": {
       "type": [
@@ -1124,6 +1148,7 @@
     "description": "Diced pork belly braised in soy and spices, over rice.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "rice-bowl",
     "added": "2026-10-07",
     "facets": {
       "course": [
@@ -1172,6 +1197,7 @@
     "description": "Honeycrisp apples cooked with cinnamon and lemon in the microwave, then mashed.",
     "yield": "Makes about 3 cups",
     "image": "",
+    "icon": "apple",
     "added": "2026-08-29",
     "facets": {
       "course": [
@@ -1222,6 +1248,7 @@
     "description": "Lime-mint shortbread under baked lime curd, chilled and cut.",
     "yield": "Makes 16 bars",
     "image": "",
+    "icon": "bars",
     "added": "2026-10-26",
     "facets": {
       "type": [
@@ -1264,6 +1291,7 @@
     "description": "Dark rum, pineapple, orange and coconut cream, shaken.",
     "yield": "Makes 1 drink",
     "image": "",
+    "icon": "highball",
     "added": "2026-10-30",
     "facets": {
       "spirit": [
@@ -1309,6 +1337,7 @@
     "description": "Broccolini charred in cast iron, then tossed in lemon zest, juice and olive oil.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "greens",
     "added": "2026-08-29",
     "facets": {
       "course": [
@@ -1358,6 +1387,7 @@
     "description": "Crisp meringue shell with a soft center, dried low and slow.",
     "yield": "Serves 8–10",
     "image": "",
+    "icon": "cake",
     "added": "2026-09-27",
     "facets": {
       "type": [
@@ -1402,6 +1432,7 @@
     "description": "Arborio rice simmered in broth, tinted and perfumed with bloomed saffron.",
     "yield": "Serves 2",
     "image": "",
+    "icon": "rice-bowl",
     "added": "2026-09-28",
     "facets": {
       "course": [
@@ -1451,6 +1482,7 @@
     "description": "Cumin, coriander and turmeric chicken roasted with vegetables.",
     "yield": "Serves 4",
     "image": "",
+    "icon": "sheet-pan",
     "added": "2026-10-08",
     "facets": {
       "course": [
@@ -1498,6 +1530,7 @@
     "description": "Yogurt-marinated roast chicken and two cheeses, baked inside folded naan.",
     "yield": "Serves 6",
     "image": "",
+    "icon": "sandwich",
     "added": "2026-09-28",
     "facets": {
       "course": [
@@ -1541,6 +1574,7 @@
     "description": "Peanut butter, soy, sesame and fresh ginger blended smooth.",
     "yield": "Makes about 2 3/4 cups",
     "image": "",
+    "icon": "sauce",
     "added": "2026-10-08",
     "facets": {
       "course": [
@@ -1593,6 +1627,7 @@
     "description": "Yogurt and tahini whisked with garlic into a tangy sauce.",
     "yield": "Makes 1 cup",
     "image": "",
+    "icon": "sauce",
     "added": "2026-10-08",
     "facets": {
       "course": [
@@ -1643,6 +1678,7 @@
     "description": "Three rums, lime, Donn’s Mix and falernum, flash-blended over ice.",
     "yield": "Makes 1 drink",
     "image": "",
+    "icon": "tiki-mug",
     "added": "2026-10-30",
     "facets": {
       "spirit": [

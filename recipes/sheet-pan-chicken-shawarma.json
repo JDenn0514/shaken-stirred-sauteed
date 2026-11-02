@@ -1,6 +1,7 @@
 {
   "title": "Sheet Pan Chicken Shawarma",
   "category": "cooking",
+  "icon": "sheet-pan",
   "kind": "dish",
   "description": "Cumin, coriander and turmeric chicken roasted with vegetables.",
   "tags": {

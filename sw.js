@@ -1,6 +1,6 @@
 // Network-first service worker: always tries for the latest version, and falls
 // back to the last copy it saw so recipes you've opened still work offline.
-const CACHE = "sss-v1";
+const CACHE = "sss-v2";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
