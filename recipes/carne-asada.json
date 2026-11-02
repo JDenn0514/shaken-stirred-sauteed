@@ -1,6 +1,7 @@
 {
   "title": "Carne Asada",
   "category": "cooking",
+  "icon": "grill",
   "kind": "dish",
   "description": "Citrus and soy marinated flank steak, grilled hot and fast.",
   "origin": "Northern Mexico",

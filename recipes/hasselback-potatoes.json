@@ -1,6 +1,7 @@
 {
   "title": "Hasselback Potatoes",
   "category": "cooking",
+  "icon": "potato",
   "kind": "dish",
   "description": "Fanned potatoes basted twice in garlic butter — crisp edges, soft centre.",
   "origin": "Sweden",

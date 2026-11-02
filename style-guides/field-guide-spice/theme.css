@@ -1,0 +1,1011 @@
+/* ==========================================================================
+   Field Guide · Spice cabinet: a drop-in theme for Shaken, Stirred & Sautéed
+   The final Field Guide with a new palette drawn from the spice cabinet:
+   deep, earthy inks on plain stone-grey paper instead of tinted washes.
+   The collection as a kitchen herbarium in three spice inks. Every
+   recipe is a specimen sheet with its own drawing; each section is a family
+   with its own ink, its own plate drawing and a short Latin name:
+
+     Baking     Turmeric    #955a00 / #f2b24c   Fam. Pistoriaceae  (pistor: baker)
+     Cooking    Sumac       #7a1d18 / #e2684f   Fam. Culinaceae    (culina: kitchen)
+     Cocktails  Cardamom    #006162 / #53b3b5   Fam. Mixtaceae     (mixtus: mixed)
+
+   The inks step in lightness as well as hue (turmeric lightest, cardamom
+   in the middle, sumac darkest) in both modes, so they stay apart in
+   greyscale and for red-green colour blindness.
+
+   One custom property, --section, carries the family ink. It is set on
+   tabs, cards, badges and the whole page (body:has(...)), and every
+   coloured part reads it, so a recipe page turns its family colour.
+
+   Per-recipe drawings: 29 single-line icons in ./icons, shown with CSS
+   masks keyed on [data-icon]. They sit in each card's spine and large in
+   the recipe header. The family plates stay on the tabs and empty state.
+
+   Dark mode is "the spice cabinet after dark": warm charcoal board, sheets
+   lifted a step, inks raised to saturated mid-tones (saffron, paprika,
+   cardamom), drawings softened toward the page ink.
+
+   Flat colour and crisp lines only: no shadows that fake depth, no
+   gradients that pretend to be light, no hatching, no grain.
+
+   Type: Fraunces (titles only), Schibsted Grotesk (all reading text),
+   IBM Plex Mono (small label fields). All SIL OFL, in ./fonts.
+   ========================================================================== */
+
+@font-face {
+  font-family: "FGP Fraunces";
+  src: url("./fonts/fraunces-latin-full-normal.woff2") format("woff2-variations"),
+       url("./fonts/fraunces-latin-full-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "FGP Fraunces";
+  src: url("./fonts/fraunces-latin-full-italic.woff2") format("woff2-variations"),
+       url("./fonts/fraunces-latin-full-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "FGP Schibsted";
+  src: url("./fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2-variations"),
+       url("./fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "FGP Plex Mono";
+  src: url("./fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "FGP Plex Mono";
+  src: url("./fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== Tokens ===== */
+:root {
+  /* Paper and ink */
+  --bg: #e5e8ea;            /* mounting board: cool stone grey */
+  --surface: #fafbfc;       /* the specimen sheet */
+  --surface-2: #dbe1e3;     /* pressed / sunken */
+  --text: #231c18;          /* peppercorn ink */
+  --muted: #605852;         /* graphite */
+  --border: #cdd2d5;        /* hairline rule */
+  --rule-strong: #757c7f;   /* control edges, 3:1 on board */
+  --accent: #231c18;        /* neutral "chosen": plain ink */
+  --accent-contrast: #fafbfc;
+  --lime: #ddd0b0;          /* masking tape (fill only, never text); name kept for drop-in */
+  --on-lime: #231c18;
+  --focus: #231c18;
+  --scrim: rgba(35, 28, 24, .4);
+
+  /* The three families: ink (text-safe), wash (tint behind ink), paper (page tint),
+     fill (solid "chosen" state) and the text that sits on that fill.
+     Washes and papers carry only a breath of the spice, so paper reads as paper. */
+  --baking: #955a00;    --baking-wash: #faf2eb;    --baking-paper: #f0edea;    --baking-fill: #955a00;
+  --cooking: #7a1d18;   --cooking-wash: #fdf1ef;   --cooking-paper: #f1ecec;   --cooking-fill: #7a1d18;
+  --cocktails: #006162; --cocktails-wash: #edf6f6; --cocktails-paper: #eaefef; --cocktails-fill: #006162;
+  --on-family: #ffffff;     /* text on a small solid ink stamp (badge, tick, step number) */
+  --on-fill: #ffffff;       /* text on the larger "chosen" fill (tab, option, button) */
+  /* Inside a family, the sheet and its hairlines take a faint family tint. */
+  --baking-sheet: #fefbf9;    --baking-line: #dfcebd;
+  --cooking-sheet: #fefbfa;   --cooking-line: #e4cac6;
+  --cocktails-sheet: #f9fdfd; --cocktails-line: #c1d6d6;
+
+  /* Neutral defaults, overridden per family below */
+  --section: var(--text);
+  --section-wash: var(--surface-2);
+  --section-paper: var(--bg);
+  --section-fill: var(--text);
+  --on-section: var(--accent-contrast);
+  --on-section-fill: var(--accent-contrast);
+  --family: "Herbarium";
+
+  /* Drawings: how much of the family ink a drawing takes (the rest is page ink).
+     100% in light mode; paler after dark. */
+  --draw-mix: 100%;
+  /* Done lines: a clear strike in the family ink, over readable graphite. */
+  --strike: 2px;
+
+  /* Shape */
+  --radius: 4px;
+  --radius-ctl: 6px;
+  --rule: 1.5px;
+
+  /* Type */
+  --display: "FGP Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans: "FGP Schibsted", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: var(--display);
+  --mono: "FGP Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --soft: "SOFT" 100, "WONK" 0;
+
+  /* Glyphs (data URIs are allowed by img-src data:) */
+  --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --ico-clock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cg fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='9' r='5.6'/%3E%3Cpath d='M8 6v3.2l2 1.3M6.4 1.8h3.2'/%3E%3C/g%3E%3C/svg%3E");
+  --ico-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+  color-scheme: light dark;
+}
+
+/* ===== Dark: the spice cabinet after dark =====
+   Warm charcoal board (never pure black), sheets lifted one step, the
+   three inks raised to saturated mid-tones, not pastels. Body text is a
+   soft warm white at 12-14:1, not paper-white. Shading stays flat. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15120f;
+    --surface: #1d1b17;
+    --surface-2: #27231f;
+    --text: #e4dfd6;
+    --muted: #afa89e;
+    --border: #312d29;
+    --rule-strong: #6f6963;
+    --accent: #e4dfd6;
+    --accent-contrast: #15120f;
+    --lime: #b2a381;
+    --on-lime: #15120f;
+    --focus: #e4dfd6;
+    --scrim: rgba(8, 6, 4, .62);
+
+    --baking: #f2b24c;    --baking-wash: #291e10;    --baking-paper: #161310;    --baking-fill: #2f1f06;
+    --cooking: #e2684f;   --cooking-wash: #2d1b17;   --cooking-paper: #171311;   --cooking-fill: #351a14;
+    --cocktails: #53b3b5; --cocktails-wash: #0d2525; --cocktails-paper: #101515; --cocktails-fill: #00292a;
+    --on-family: #15120f;
+    --on-fill: #e4dfd6;
+    --baking-sheet: #201c16;    --baking-line: #3e3324;
+    --cooking-sheet: #221a19;   --cooking-line: #44302b;
+    --cocktails-sheet: #161e1e; --cocktails-line: #223a3b;
+
+    --draw-mix: 85%;
+
+    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%2315120f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* ===== Families: one switch per section =====
+   Tabs, cards, badges, and the whole page when a section is chosen on the
+   home page or a recipe of that section is open. */
+.tab[data-cat="baking"], .badge.baking, .card:has(.badge.baking), .fam-baking,
+body:has(.tab[data-cat="baking"][aria-pressed="true"]),
+body:has(.recipe > .back[href*="cat=baking"]) {
+  --section: var(--baking); --section-wash: var(--baking-wash); --section-paper: var(--baking-paper);
+  --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
+  --family: "Fam. Pistoriaceae";
+}
+.tab[data-cat="cooking"], .badge.cooking, .card:has(.badge.cooking), .fam-cooking,
+body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
+body:has(.recipe > .back[href*="cat=cooking"]) {
+  --section: var(--cooking); --section-wash: var(--cooking-wash); --section-paper: var(--cooking-paper);
+  --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
+  --family: "Fam. Culinaceae";
+}
+.tab[data-cat="cocktails"], .badge.cocktails, .card:has(.badge.cocktails), .fam-cocktails,
+body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
+body:has(.recipe > .back[href*="cat=cocktails"]) {
+  --section: var(--cocktails); --section-wash: var(--cocktails-wash); --section-paper: var(--cocktails-paper);
+  --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
+  --family: "Fam. Mixtaceae";
+}
+.tab[data-cat="all"], .fam-all {
+  --section: var(--text); --section-wash: var(--surface-2); --section-fill: var(--text);
+  --on-section: var(--accent-contrast); --on-section-fill: var(--accent-contrast);
+}
+
+/* The page itself: sheet and hairlines pick up the family tint too. */
+body:has(.tab[data-cat="baking"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=baking"]), .fam-baking.g-sheet { --surface: var(--baking-sheet); --border: var(--baking-line); }
+body:has(.tab[data-cat="cooking"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=cooking"]), .fam-cooking.g-sheet { --surface: var(--cooking-sheet); --border: var(--cooking-line); }
+body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=cocktails"]), .fam-cocktails.g-sheet { --surface: var(--cocktails-sheet); --border: var(--cocktails-line); }
+
+/* Each family's plate drawing, used as a mask so it takes the family ink.
+   (Cards use their recipe's own drawing; the plate is only a fallback.) */
+.tab[data-cat="all"]::before, .fam-all .plate { -webkit-mask-image: url("./plate-leaf.svg"); mask-image: url("./plate-leaf.svg"); }
+.tab[data-cat="baking"]::before, .card:has(.badge.baking)::after, .fam-baking .plate { -webkit-mask-image: url("./plate-baking.svg"); mask-image: url("./plate-baking.svg"); }
+.tab[data-cat="cooking"]::before, .card:has(.badge.cooking)::after, .fam-cooking .plate { -webkit-mask-image: url("./plate-cooking.svg"); mask-image: url("./plate-cooking.svg"); }
+.tab[data-cat="cocktails"]::before, .card:has(.badge.cocktails)::after, .fam-cocktails .plate { -webkit-mask-image: url("./plate-cocktails.svg"); mask-image: url("./plate-cocktails.svg"); }
+
+/* ===== Recipe drawings (per-recipe icons) =====
+   [data-icon] is set on each card and on the recipe page. Each key names a
+   single-line drawing in ./icons; .card-icon and .recipe-icon show it as a
+   mask, so it takes the family ink (paler after dark). */
+[data-icon="loaf"] { --icon: url("./icons/loaf.svg"); }
+[data-icon="donut"] { --icon: url("./icons/donut.svg"); }
+[data-icon="tart"] { --icon: url("./icons/tart.svg"); }
+[data-icon="bars"] { --icon: url("./icons/bars.svg"); }
+[data-icon="cake"] { --icon: url("./icons/cake.svg"); }
+[data-icon="ramekin"] { --icon: url("./icons/ramekin.svg"); }
+[data-icon="jar"] { --icon: url("./icons/jar.svg"); }
+[data-icon="soup"] { --icon: url("./icons/soup.svg"); }
+[data-icon="salad"] { --icon: url("./icons/salad.svg"); }
+[data-icon="sauce"] { --icon: url("./icons/sauce.svg"); }
+[data-icon="rice-bowl"] { --icon: url("./icons/rice-bowl.svg"); }
+[data-icon="grill"] { --icon: url("./icons/grill.svg"); }
+[data-icon="sheet-pan"] { --icon: url("./icons/sheet-pan.svg"); }
+[data-icon="sandwich"] { --icon: url("./icons/sandwich.svg"); }
+[data-icon="chicken"] { --icon: url("./icons/chicken.svg"); }
+[data-icon="potato"] { --icon: url("./icons/potato.svg"); }
+[data-icon="greens"] { --icon: url("./icons/greens.svg"); }
+[data-icon="corn"] { --icon: url("./icons/corn.svg"); }
+[data-icon="pasta"] { --icon: url("./icons/pasta.svg"); }
+[data-icon="garlic"] { --icon: url("./icons/garlic.svg"); }
+[data-icon="apple"] { --icon: url("./icons/apple.svg"); }
+[data-icon="mug"] { --icon: url("./icons/mug.svg"); }
+[data-icon="highball"] { --icon: url("./icons/highball.svg"); }
+[data-icon="coupe"] { --icon: url("./icons/coupe.svg"); }
+[data-icon="nick-nora"] { --icon: url("./icons/nick-nora.svg"); }
+[data-icon="rocks"] { --icon: url("./icons/rocks.svg"); }
+[data-icon="martini"] { --icon: url("./icons/martini.svg"); }
+[data-icon="tiki-mug"] { --icon: url("./icons/tiki-mug.svg"); }
+[data-icon="bottle"] { --icon: url("./icons/bottle.svg"); }
+
+.card-icon, .recipe-icon {
+  display: block; flex: none;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+  background: color-mix(in srgb, var(--section) var(--draw-mix), var(--text));
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--section-paper);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color .25s ease;
+}
+a { color: var(--section); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+h1, h2, h3 {
+  font-family: var(--display); font-variation-settings: var(--soft);
+  line-height: 1.12; margin: 0; font-weight: 600; letter-spacing: -.01em;
+}
+button, input, select { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+code { font-family: var(--mono); font-size: .88em; }
+::selection { background: var(--lime); color: var(--on-lime); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-right)) calc(64px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/* ===== Header ===== */
+/* The tricolour rule: the three family inks, flat, end to end. On a
+   section page it becomes that one ink. */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--section-paper);
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%) 1;
+  padding: 10px max(16px, env(safe-area-inset-right)) 9px max(16px, env(safe-area-inset-left));
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+body:has(.tab:not([data-cat="all"])[aria-pressed="true"]) .site-header,
+body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color: var(--section); }
+.brand {
+  display: flex; align-items: center; gap: 11px;
+  max-width: 1048px; margin: 0 auto;
+  text-decoration: none; color: var(--text);
+  min-height: 38px;
+}
+.brand-mark { font-size: 1.5rem; flex: none; display: block; width: 27px; height: 32px; }
+.brand-mark .lg-sheet { fill: var(--surface); stroke: var(--text); }
+.brand-mark .lg-stem { stroke: var(--text); }
+.brand-mark .lg-b { fill: var(--baking); }
+.brand-mark .lg-c { fill: var(--cooking); }
+.brand-mark .lg-k { fill: var(--cocktails); }
+.brand-mark .lg-tape { fill: var(--lime); }
+.brand-name {
+  font-family: var(--display); font-variation-settings: var(--soft);
+  font-size: 1.2rem; font-weight: 650; letter-spacing: -.012em; line-height: 1.15;
+}
+.amp { font-style: italic; font-weight: 500; color: var(--section); padding: 0 .04em; }
+.brand-sub {
+  display: none; margin-left: auto;
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted);
+}
+@media (min-width: 600px) { .brand-sub { display: inline; } }
+
+/* ===== Home controls ===== */
+.controls { padding-top: 18px; }
+.search {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-ctl);
+  padding: 0 14px;
+  min-height: 48px;
+  color: var(--muted);
+}
+.search:focus-within { border-color: var(--section); box-shadow: 0 0 0 1px var(--section); }
+.search input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  color: var(--text); font-size: 1rem; padding: 12px 0;
+}
+.search input::placeholder { color: var(--muted); opacity: 1; }
+.search input::-webkit-search-cancel-button { filter: grayscale(1); }
+
+/* Sections: three big family plates under a slim "All" bar. */
+.tabs {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px; margin-top: 14px;
+}
+.tab {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+  min-width: 0; min-height: 112px;
+  border: var(--rule) solid var(--section);
+  background: var(--section-wash);
+  color: var(--section);
+  border-radius: var(--radius-ctl);
+  padding: 10px 11px 9px;
+  cursor: pointer;
+  font-family: var(--display); font-variation-settings: var(--soft);
+  font-weight: 600; font-size: 1.16rem; line-height: 1.05; letter-spacing: -.012em;
+  text-align: left;
+  transition: background-color .15s ease, color .15s ease;
+}
+.tab > span[aria-hidden="true"] { display: none; }
+.tab::before {
+  content: "";
+  position: absolute; left: 8px; top: 9px;
+  width: 42px; height: 42px;
+  background: currentColor;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.tab .n {
+  position: absolute; top: 9px; right: 10px;
+  font-family: var(--mono); font-weight: 500; font-size: .78rem; letter-spacing: .02em; line-height: 1.3;
+  color: inherit;
+}
+.tab[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); }
+/* After dark the chosen family is a deep fill edged and lettered in its mid-tone ink, not a bright slab. */
+@media (prefers-color-scheme: dark) {
+  .tab:not([data-cat="all"])[aria-pressed="true"] { color: var(--section); box-shadow: inset 0 0 0 1px var(--section); }
+}
+.tab[data-cat="all"] {
+  grid-column: 1 / -1;
+  flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
+  min-height: 46px; padding: 8px 12px 8px 42px;
+  font-size: 1.08rem;
+  background: transparent; border-color: var(--rule-strong);
+}
+/* "All" chosen: the sheet with an ink edge and the tricolour band along its
+   foot (all three families), rather than a heavy solid slab. */
+.tab[data-cat="all"][aria-pressed="true"] {
+  color: var(--text); border-color: var(--text);
+  background: var(--surface) linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%) left bottom / 100% 5px no-repeat;
+  padding-bottom: 13px;
+}
+.tab[data-cat="all"]::before { top: 50%; left: 11px; width: 22px; height: 22px; margin-top: -11px; }
+.tab[data-cat="all"] .n { position: static; margin-left: auto; }
+@media (max-width: 359px) {
+  .tabs { gap: 5px; }
+  .tab { padding: 8px 7px 8px; font-size: .9rem; min-height: 100px; }
+  .tab::before { width: 34px; height: 34px; left: 6px; }
+  .tab .n { right: 7px; font-size: .72rem; }
+}
+@media (min-width: 720px) {
+  .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .tab { min-height: 128px; padding: 12px 16px 12px; font-size: 1.62rem; }
+  .tab::before { width: 56px; height: 56px; left: 12px; top: 12px; }
+  .tab .n { top: 12px; right: 14px; font-size: .82rem; }
+  .tab[data-cat="all"] {
+    grid-column: auto; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+    min-height: 128px; padding: 12px 16px; font-size: 1.62rem;
+  }
+  .tab[data-cat="all"][aria-pressed="true"] { padding-bottom: 12px; }
+  .tab[data-cat="all"]::before { top: 12px; left: 12px; width: 56px; height: 56px; margin-top: 0; }
+  .tab[data-cat="all"] .n { position: absolute; margin: 0; }
+}
+
+/* Filter buttons: one row that scrolls sideways on a phone. */
+.filter-host { position: relative; }
+.filter-row {
+  display: flex; gap: 6px; margin: 14px -16px 0; padding: 2px 16px 4px;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-row:empty { display: none; }
+@media (min-width: 720px) { .filter-row { flex-wrap: wrap; overflow: visible; margin: 14px 0 0; padding: 0; } }
+.filter-btn {
+  flex: none; display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--rule-strong); background: var(--surface);
+  border-radius: 999px; padding: 0 13px; min-height: 38px;
+  cursor: pointer; font-size: .92rem; font-weight: 500; white-space: nowrap; color: var(--text);
+}
+.filter-btn .caret { color: var(--muted); font-size: .7rem; }
+.filter-btn .n {
+  min-width: 1.5em; padding: 0 5px; border-radius: 999px; text-align: center;
+  background: var(--section); color: var(--on-section);
+  font-family: var(--mono); font-size: .74rem; font-weight: 500; line-height: 1.55;
+}
+.filter-btn[data-on="true"] { border-color: var(--section); color: var(--section); font-weight: 650; box-shadow: inset 0 0 0 1px var(--section); }
+.filter-btn[aria-expanded="true"] { background: var(--section-wash); border-color: var(--section); }
+
+.active-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; }
+.active-row:empty { display: none; }
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  border-radius: 999px;
+  padding: 3px 11px;
+  font-size: .86rem;
+  line-height: 1.4;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] { border-color: var(--section); color: var(--section); background: var(--surface); font-weight: 600; }
+.clear {
+  border: 0; background: none; color: var(--muted); text-decoration: underline; text-underline-offset: .18em;
+  cursor: pointer; font-size: .86rem; padding: 3px 4px;
+}
+
+/* Option panel: a bottom sheet on phones, a dropdown under its button on wider screens. */
+.backdrop { position: fixed; inset: 0; z-index: 20; background: var(--scrim); }
+.sheet {
+  position: fixed; z-index: 21; left: 0; right: 0; bottom: 0;
+  max-height: 75vh; display: flex; flex-direction: column;
+  background: var(--surface); border-radius: 14px 14px 0 0;
+  border-top: 4px solid var(--section);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+.sheet[hidden], .backdrop[hidden] { display: none; }
+.sheet-head {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 14px 16px 12px; border-bottom: 1px solid var(--border);
+}
+.sheet-head h2 { font-size: 1.4rem; color: var(--section); }
+.sheet-head .btn { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section-fill); }
+.sheet-body { overflow-y: auto; overscroll-behavior: contain; padding: 4px 16px 22px; }
+.sheet-body h3 {
+  font-family: var(--mono); font-variation-settings: normal;
+  font-size: .72rem; font-weight: 500; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--muted); margin: 16px 0 8px;
+}
+.opts { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 12px; }
+.sheet-body h3 + .opts { padding-top: 0; }
+.opt {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--rule-strong); background: var(--surface);
+  border-radius: 999px; padding: 0 13px; min-height: 40px;
+  cursor: pointer; font-size: .92rem; color: var(--text);
+}
+.opt .n { font-family: var(--mono); color: var(--muted); font-size: .76rem; }
+.opt[aria-pressed="true"] { background: var(--section-fill); border-color: var(--section); color: var(--on-section-fill); font-weight: 600; }
+.opt[aria-pressed="true"] .n { color: inherit; }
+/* A chosen option also carries a tick, so the choice never rests on colour alone. */
+.opt[aria-pressed="true"]::before {
+  content: ""; width: 14px; height: 14px; margin-left: -3px; flex: none;
+  background: currentColor;
+  -webkit-mask: var(--ico-tick) center / contain no-repeat;
+  mask: var(--ico-tick) center / contain no-repeat;
+}
+.opt:disabled { opacity: .45; cursor: default; border-style: dashed; }
+body.sheet-open { overflow: hidden; }
+@media (min-width: 720px) {
+  .backdrop { background: transparent; }
+  .sheet {
+    position: absolute; left: 0; right: auto; bottom: auto; top: 100%;
+    width: min(420px, 100%); max-height: 60vh;
+    padding: 0;
+    border: 1px solid var(--section); border-top-width: 4px; border-radius: var(--radius-ctl);
+  }
+  body.sheet-open { overflow: auto; }
+}
+
+.result-bar {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin: 20px 0 12px; padding-top: 12px; border-top: var(--rule) solid var(--section);
+  color: var(--muted);
+  font-family: var(--mono); font-size: .76rem; letter-spacing: .07em; text-transform: uppercase;
+}
+.sort { display: inline-flex; align-items: center; }
+.sort select {
+  margin-left: 8px; border: 1px solid var(--rule-strong); border-radius: var(--radius-ctl);
+  background: var(--surface); color: var(--text); padding: 6px 8px; min-height: 36px;
+  font-family: var(--sans); font-size: .9rem; letter-spacing: 0; text-transform: none;
+}
+
+/* ===== Cards: specimen sheets with a coloured family spine ===== */
+.grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  counter-reset: specimen;
+}
+.grid > li { counter-increment: specimen; min-width: 0; }
+.card {
+  position: relative;
+  display: grid; grid-template-columns: 60px minmax(0, 1fr); grid-template-rows: auto 1fr;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none; color: inherit;
+  overflow: hidden;
+  transition: border-color .15s ease;
+}
+/* The spine: family wash, family rule and the accession number. */
+.card::before {
+  content: "No. " counter(specimen, decimal-leading-zero) / "";
+  grid-column: 1; grid-row: 1 / -1;
+  background: var(--section-wash);
+  border-left: var(--rule) solid var(--section); /* the spine is turned 180deg, so this is its right edge */
+  color: var(--section);
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  padding: 12px 0; text-align: left;
+  display: flex; align-items: center;
+  font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+}
+/* The family plate at the head of the spine: only a fallback for a card
+   that has no drawing of its own yet. */
+.card::after {
+  content: "";
+  position: absolute; left: 9px; top: 12px; width: 40px; height: 40px;
+  background: color-mix(in srgb, var(--section) var(--draw-mix), var(--text));
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.card:has(.card-icon)::after { content: none; }
+/* The recipe's own drawing, at the head of the spine. */
+.card .card-icon {
+  position: absolute; left: 8px; top: 12px;
+  width: 42px; height: 42px;
+}
+.card:focus-visible { outline-offset: 3px; }
+.card-img { grid-column: 2; aspect-ratio: 16 / 10; object-fit: cover; width: 100%; display: block; background: var(--surface-2); }
+.card-body { grid-column: 2; padding: 13px 15px 15px; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.card-img + .card-body { grid-row: 2; }
+.card h2 { font-size: 1.36rem; line-height: 1.12; letter-spacing: -.014em; text-wrap: balance; color: var(--text); }
+.card p { margin: 0; color: var(--muted); font-size: .94rem; line-height: 1.5; }
+
+/* The specimen label: a small ruled box with Time and Yield fields. */
+.card-meta {
+  margin-top: auto;
+  display: grid; grid-template-columns: auto minmax(0, 1fr);
+  border: 1px solid var(--border); border-radius: 2px;
+  font-size: .9rem; font-weight: 600; line-height: 1.3; color: var(--text);
+}
+.card-meta span {
+  position: relative; display: block; min-width: 0;
+  padding: 21px 10px 7px;
+  text-indent: -.26em;
+}
+.card-meta span + span { border-left: 1px solid var(--border); }
+.card-meta span:only-child { grid-column: 1 / -1; }
+.card-meta span::first-letter { font-size: 0; }
+.card-meta span::before {
+  position: absolute; left: 10px; top: 6px;
+  text-indent: 0;
+  font-family: var(--mono); font-size: .64rem; font-weight: 400; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted);
+}
+.card-meta span:first-child::before { content: "Time" / ""; }
+.card-meta span:last-child:not(:first-child)::before { content: "Yield" / ""; }
+.card-meta span:only-child::before { content: "Field notes" / ""; }
+
+/* Badges: a solid family stamp. */
+.badge {
+  display: inline-block; align-self: flex-start;
+  font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  line-height: 1.5;
+  padding: 2px 8px 1px; border-radius: 3px;
+  background: var(--section); color: var(--on-section);
+}
+.badge.component { color: var(--muted); background: transparent; box-shadow: inset 0 0 0 1px var(--rule-strong); }
+@media (prefers-color-scheme: dark) {
+  /* After dark the stamp is a deep fill lettered in the mid-tone ink. */
+  .badge:not(.component) { background: var(--section-fill); color: var(--section); }
+  .tab:not([data-cat="all"]) { border-color: color-mix(in srgb, var(--section) 62%, var(--surface)); }
+  .tab:not([data-cat="all"])[aria-pressed="true"] { border-color: var(--section); }
+  .opt[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--section); }
+}
+.badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+/* Empty: a little still life of specimens. */
+.empty { text-align: center; color: var(--muted); padding: 36px 16px 56px; }
+.empty .big {
+  display: block; width: 180px; height: 60px; margin: 0 auto 16px;
+  font-size: 0; color: transparent;
+  /* Three specimens, one per family ink: flat hard stops, no blending. */
+  background: linear-gradient(90deg, var(--baking) 0 33.4%, var(--cooking) 33.4% 66.6%, var(--cocktails) 66.6% 100%);
+  -webkit-mask: url("./spec-cinnamon.svg") left center / 60px 60px no-repeat, url("./spec-chili.svg") center / 60px 60px no-repeat, url("./spec-lemon.svg") right center / 60px 60px no-repeat;
+  mask: url("./spec-cinnamon.svg") left center / 60px 60px no-repeat, url("./spec-chili.svg") center / 60px 60px no-repeat, url("./spec-lemon.svg") right center / 60px 60px no-repeat;
+}
+.empty a { font-weight: 600; }
+.empty code { color: var(--text); }
+
+/* ===== Recipe page: the specimen sheet ===== */
+.recipe { max-width: 760px; padding-top: 18px; }
+
+/* The plate: the family drawing with one ingredient specimen beside it. */
+.recipe::before {
+  content: "";
+  float: right;
+  width: 112px; height: 112px;
+  margin: 2px -4px 6px 10px;
+  background: color-mix(in srgb, var(--section) var(--draw-mix), var(--text));
+  -webkit-mask: url("./plate-leaf.svg") right top / 74% no-repeat;
+  mask: url("./plate-leaf.svg") right top / 74% no-repeat;
+}
+.recipe:has(> .loading)::before, .recipe:has(> .error)::before { content: none; }
+/* A recipe with a photo lets the photo be the plate (the family drawing still closes the sheet). */
+.recipe:has(> .recipe-hero)::before { content: none; }
+.recipe:has(> .back[href*="cat=baking"])::before {
+  -webkit-mask: url("./plate-baking.svg") right top / 78% no-repeat, url("./spec-cinnamon.svg") left bottom / 48% no-repeat;
+  mask: url("./plate-baking.svg") right top / 78% no-repeat, url("./spec-cinnamon.svg") left bottom / 48% no-repeat;
+}
+.recipe:has(> .back[href*="cat=cooking"])::before {
+  -webkit-mask: url("./plate-cooking.svg") right top / 78% no-repeat, url("./spec-chili.svg") left bottom / 46% no-repeat;
+  mask: url("./plate-cooking.svg") right top / 78% no-repeat, url("./spec-chili.svg") left bottom / 46% no-repeat;
+}
+.recipe:has(> .back[href*="cat=cocktails"])::before {
+  -webkit-mask: url("./plate-cocktails.svg") right top / 80% no-repeat, url("./spec-mint.svg") left bottom / 48% no-repeat;
+  mask: url("./plate-cocktails.svg") right top / 80% no-repeat, url("./spec-mint.svg") left bottom / 48% no-repeat;
+}
+/* The recipe's own drawing replaces the generic family plate: large, in the
+   family ink, beside the family line and title. */
+.recipe:has(> .recipe-icon)::before { content: none; }
+.recipe > .recipe-icon {
+  float: right;
+  width: 104px; height: 104px;
+  margin: -2px -2px 8px 14px;
+  -webkit-mask: var(--icon) right top / contain no-repeat;
+  mask: var(--icon) right top / contain no-repeat;
+}
+
+.back {
+  display: inline-flex; align-items: center; gap: 8px; width: fit-content; margin-bottom: 16px;
+  text-decoration: none; color: var(--section);
+  font-family: var(--mono); font-size: .78rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  padding: 5px 10px 4px 8px; min-height: 32px;
+  border: 1px solid var(--section); border-radius: 999px;
+}
+.recipe-hero { width: 100%; border-radius: var(--radius); aspect-ratio: 16 / 9; object-fit: cover; margin-bottom: 16px; display: block; }
+.recipe h1 {
+  font-size: clamp(2.25rem, 9vw, 3.4rem); line-height: 1; letter-spacing: -.025em;
+  margin-top: 4px; text-wrap: balance; color: var(--section);
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+}
+/* The family line above the title: the section's mock-Latin name. */
+.recipe h1::before {
+  content: var(--family) / "";
+  display: block; margin-bottom: 8px;
+  font-style: italic; font-weight: 450; font-size: 1.02rem; letter-spacing: 0; line-height: 1.2;
+  color: var(--muted);
+}
+.recipe > .badge { margin-bottom: 4px; }
+.recipe .lede { color: var(--muted); font-size: 1.1rem; line-height: 1.5; margin: 12px 0 0; max-width: 36em; }
+
+/* Facts: the archival specimen label, edged in the family ink. */
+.facts {
+  clear: both;
+  position: relative;
+  display: flex; flex-wrap: wrap;
+  gap: 1px; background: var(--border);
+  border: var(--rule) solid var(--section); border-radius: 2px;
+  margin: 24px 0 18px;
+}
+.facts::before {
+  content: "Specimen label" / "";
+  flex: 1 1 100%;
+  background: var(--section-wash);
+  padding: 9px 12px 8px;
+  font-family: var(--mono); font-size: .64rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--section); text-align: center;
+  text-wrap: balance;
+  border-bottom: 1px solid var(--section);
+  margin-bottom: -1px;
+}
+/* Specimen tape: one short strip of masking tape holding the label's top edge. */
+.facts::after {
+  content: "";
+  position: absolute; top: -7px; left: 20px;
+  width: 50px; height: 13px;
+  background: var(--lime);
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+.fact { flex: 1 1 140px; background: var(--surface); padding: 9px 12px 10px; min-width: 0; }
+.fact dt {
+  font-family: var(--mono); font-size: .64rem; font-weight: 400; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted);
+}
+.fact dd { margin: 2px 0 0; font-weight: 600; font-size: .98rem; line-height: 1.35; overflow-wrap: anywhere; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--rule-strong); background: var(--surface); color: var(--text);
+  border-radius: 999px; padding: 0 15px; min-height: 40px;
+  cursor: pointer; font-size: .92rem; font-weight: 600; line-height: 1.2;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.btn[hidden] { display: none; }
+/* The toolbar labels start with an emoji; hide it and let the words speak. */
+.toolbar .btn { display: inline-block; padding: 9px 12px; font-size: .86rem; min-height: 38px; text-indent: -.24em; }
+.toolbar .btn[hidden] { display: none; }
+.toolbar .btn::first-letter { font-size: 0; }
+.btn[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
+
+.section { margin-top: 34px; }
+.section > h2 {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  font-size: 1.7rem; letter-spacing: -.018em;
+  padding-bottom: 7px; border-bottom: 2px solid var(--section); margin-bottom: 4px;
+}
+/* A quiet catalogue caption at the right end of each section rule. */
+.section > h2::after {
+  font-family: var(--mono); font-size: .66rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--section); font-variation-settings: normal; white-space: nowrap;
+}
+.section:has(> .ingredients) > h2::after { content: "Specimen list" / ""; }
+.section:has(> .steps) > h2::after { content: "Procedure" / ""; }
+.section.before > h2::after { content: "Read first" / ""; }
+.section:not(.before):has(> .notes) > h2::after { content: "Field notes" / ""; }
+.section h3 {
+  font-family: var(--mono); font-variation-settings: normal;
+  font-size: .72rem; font-weight: 500; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--muted); margin: 22px 0 4px;
+}
+.section > h2 + h3 { margin-top: 14px; }
+.section.before .notes { margin-top: 12px; }
+
+/* Ingredients: a lettered specimen list, ticked off as they go in. */
+.section:has(> .ingredients) { counter-reset: ing; }
+.ingredients { list-style: none; margin: 0; padding: 0; }
+.ingredients li { counter-increment: ing; }
+.ingredients li label {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 11px 2px; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.ingredients li label::before {
+  content: counter(ing, lower-alpha) "." / "";
+  flex: none; width: 1.35em; margin-top: -1px;
+  font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.02rem;
+  color: var(--section); text-align: right;
+}
+.ingredients li:last-child label { border-bottom: 0; }
+.ingredients input {
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; margin: 1px 0 0; flex: none;
+  border: var(--rule) solid var(--rule-strong); border-radius: 4px;
+  background: var(--surface) center / 16px 16px no-repeat;
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+.ingredients input:checked { background-color: var(--section); border-color: var(--section); background-image: var(--chk); }
+.ingredients input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ingredients input + span { min-width: 0; overflow-wrap: anywhere; }
+.ingredients input:checked + span {
+  color: var(--muted);
+  text-decoration: line-through; text-decoration-thickness: var(--strike); text-decoration-color: var(--section);
+  text-decoration-skip-ink: none;
+}
+.ingredients input:checked + span .qty { color: inherit; }
+.ingredients li:has(input:checked) label::before { opacity: .55; }
+
+/* Steps: numbered boxes; done = filled family box with a tick, current = family panel tagged "Now". */
+.steps { list-style: none; margin: 10px 0 0; padding: 0; counter-reset: step; }
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 13px 14px 13px 58px;
+  margin-bottom: 6px;
+  border-radius: var(--radius-ctl);
+  cursor: pointer;
+  border: var(--rule) solid transparent;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute; left: 11px; top: 11px;
+  width: 32px; height: 32px; border-radius: 4px;
+  display: grid; place-items: center;
+  border: var(--rule) solid var(--section);
+  background: var(--surface) center / 18px 18px no-repeat;
+  color: var(--section);
+  font-family: var(--display); font-variation-settings: var(--soft); font-weight: 600; font-size: 1.05rem; line-height: 1;
+}
+/* Done: the line is struck through in the family ink, over graphite text
+   that stays readable (6:1 or better), so you can still glance back at it. */
+.steps li.done {
+  color: var(--muted);
+  text-decoration: line-through; text-decoration-thickness: var(--strike); text-decoration-color: var(--section);
+  text-decoration-skip-ink: none;
+}
+.steps li.done::before { content: ""; background-color: var(--section); background-image: var(--chk); }
+.steps li.current { background: var(--section-wash); border-color: var(--section); color: var(--text); }
+.steps li.current::before { background: var(--section); color: var(--on-section); }
+.steps li.current::after {
+  content: "Now" / "";
+  position: absolute; top: -9px; right: 12px;
+  padding: 1px 7px; border-radius: 3px;
+  background: var(--section); color: var(--on-section);
+  font-family: var(--mono); font-size: .64rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; line-height: 1.5;
+}
+.steps li:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.muted { color: var(--muted); }
+/* Quantities stay in the reading face (bold, lining figures), not mono:
+   they are read mid-stir, so they must be as easy as the words beside them. */
+.qty { font-weight: 680; font-variant-numeric: lining-nums; word-spacing: .14em; }
+.step-wait, .step-cue { position: relative; display: block; margin-top: 6px; padding-left: 22px; font-size: .92rem; line-height: 1.45; text-indent: -.3em; }
+.step-wait::first-letter, .step-cue::first-letter { font-size: 0; }
+.step-wait::before, .step-cue::before {
+  content: ""; position: absolute; left: 0; top: .2em;
+  width: 15px; height: 15px; background: currentColor;
+  -webkit-mask: var(--ico-clock) center / contain no-repeat;
+  mask: var(--ico-clock) center / contain no-repeat;
+}
+.step-wait { color: var(--muted); font-weight: 600; }
+.step-cue { color: var(--section); font-weight: 600; }
+.step-cue::before { -webkit-mask-image: var(--ico-tick); mask-image: var(--ico-tick); }
+.steps li.done .step-cue, .steps li.done .step-wait { color: inherit; }
+
+.notes { padding-left: 1.15em; margin: 10px 0 0; }
+.notes li { margin-bottom: 7px; padding-left: 2px; }
+.notes li::marker { color: var(--section); }
+
+.tag-groups {
+  margin: 38px 0 0; display: grid; gap: 10px; font-size: .9rem;
+  padding-top: 14px; border-top: 1px solid var(--border);
+}
+.tag-groups div { display: grid; grid-template-columns: 7.2em minmax(0, 1fr); align-items: baseline; gap: 8px; }
+.tag-groups dt {
+  color: var(--muted);
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
+}
+.tag-groups dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-groups a { text-decoration: none; }
+.tag-groups .chip { border-color: color-mix(in srgb, var(--section) 55%, var(--rule-strong)); background: var(--surface); }
+.source { color: var(--muted); font-size: .92rem; margin-top: 24px; }
+.loading, .error { color: var(--muted); padding: 40px 0; }
+
+/* Colophon: the family plate closes the sheet. */
+.recipe:has(> .back)::after {
+  content: "";
+  display: block; clear: both;
+  width: 34px; height: 34px; margin: 40px auto 0;
+  background: color-mix(in srgb, var(--section) var(--draw-mix), var(--text));
+  -webkit-mask: url("./plate-leaf.svg") center / contain no-repeat;
+  mask: url("./plate-leaf.svg") center / contain no-repeat;
+}
+.recipe:has(> .back[href*="cat=baking"])::after { -webkit-mask-image: url("./plate-baking.svg"); mask-image: url("./plate-baking.svg"); }
+.recipe:has(> .back[href*="cat=cooking"])::after { -webkit-mask-image: url("./plate-cooking.svg"); mask-image: url("./plate-cooking.svg"); }
+.recipe:has(> .back[href*="cat=cocktails"])::after { -webkit-mask-image: url("./plate-cocktails.svg"); mask-image: url("./plate-cocktails.svg"); }
+
+@media (max-width: 359px) {
+  .recipe::before { width: 88px; height: 88px; }
+  .recipe > .recipe-icon { width: 80px; height: 80px; margin-left: 8px; }
+  .card { grid-template-columns: 52px minmax(0, 1fr); }
+  .card .card-icon { left: 7px; width: 36px; height: 36px; }
+  .recipe h1 { font-size: 2rem; }
+  .steps li { padding-left: 50px; padding-right: 10px; }
+  .steps li::before { left: 7px; }
+  .facts::before { letter-spacing: .07em; padding-left: 8px; padding-right: 8px; }
+  .section > h2::after { display: none; }
+}
+
+/* Desktop: a mounted sheet with the list and the procedure side by side. */
+@media (min-width: 960px) {
+  .recipe {
+    max-width: none; width: min(1080px, 100% - 32px);
+    margin-top: 28px; padding: 34px 48px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border); border-top: 6px solid var(--section); border-radius: var(--radius);
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 40px; align-content: start;
+  }
+  .recipe > * { grid-column: 1 / -1; }
+  .recipe::before {
+    float: none; grid-column: 9 / -1; grid-row: 1 / span 3;
+    justify-self: end; align-self: start;
+    width: 176px; height: 176px; margin: 0;
+  }
+  .recipe > .recipe-icon {
+    float: none; grid-column: 9 / -1; grid-row: 1 / span 3;
+    justify-self: end; align-self: start;
+    width: 168px; height: 168px; margin: -4px -6px 0 0;
+  }
+  .recipe > .back, .recipe > h1, .recipe > .lede, .recipe > .badge { grid-column: 1 / 9; }
+  .recipe > .back { justify-self: start; }
+  .recipe h1 { font-size: 3.6rem; }
+  .facts { margin-top: 28px; }
+  .fact { background: var(--surface); }
+  .recipe > .section:has(> .ingredients) {
+    grid-column: 1 / 6; grid-row: span 2; align-self: start;
+    position: sticky; top: 76px;
+  }
+  .recipe > .section:has(> .steps), .recipe > .section:not(.before):has(> .notes) { grid-column: 6 / -1; }
+  .recipe::after { grid-column: 1 / -1; }
+  .container.recipe { margin-bottom: 64px; }
+  body:has(.recipe) .brand { max-width: 1080px; }
+}
+
+/* ===== Hover (pointer devices only, so taps don't leave sticky states) ===== */
+@media (hover: hover) {
+  .tab:not([aria-pressed="true"]):hover { background: var(--surface); }
+  .tab[data-cat="all"]:not([aria-pressed="true"]):hover { background: var(--section-wash); }
+  .filter-btn:hover { border-color: var(--section); }
+  .chip:hover { border-color: var(--section); color: var(--section); }
+  .clear:hover { color: var(--text); }
+  .opt:hover:not(:disabled) { border-color: var(--section); }
+  .card:hover { border-color: var(--section); }
+  .card:hover h2 { color: var(--section); }
+  .btn:not([aria-pressed="true"]):hover { border-color: var(--section); }
+  .ingredients label:hover input:not(:checked) { border-color: var(--section); }
+  .steps li:not(.current):hover { background: var(--surface); border-color: var(--border); }
+  .back:hover { background: var(--section-fill); color: var(--on-section-fill); }
+  a:hover { text-decoration-thickness: 2px; }
+}
+
+/* ===== Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* ===== Print: a clean specimen sheet on white ===== */
+@media print {
+  :root {
+    --bg: #fff; --surface: #fff; --surface-2: #f2f2f2; --text: #000; --muted: #333;
+    --border: #bbb; --rule-strong: #666; --accent: #000; --lime: #fff;
+    --baking: #000; --cooking: #000; --cocktails: #000;
+    --baking-wash: #fff; --cooking-wash: #fff; --cocktails-wash: #fff;
+    --baking-paper: #fff; --cooking-paper: #fff; --cocktails-paper: #fff;
+  }
+  @page { margin: 14mm 14mm 16mm; }
+  .site-header, .back, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
+  body { background: #fff; color: #000; font-size: 11pt; line-height: 1.45; }
+  .container { padding: 0; max-width: none; }
+  .recipe { padding: 0; margin: 0; max-width: none; display: block; border: 0; background: #fff; }
+  .recipe::before, .recipe > .recipe-icon { float: right; width: 72px; height: 72px; background: #000; margin: 0 0 6px 12px; }
+  .card-icon { background: #000; }
+  .recipe:has(> .back)::after { width: 22px; height: 22px; margin-top: 18px; background: #000; }
+  .recipe h1 { font-size: 26pt; color: #000; }
+  .recipe h1::before { color: #333; }
+  .facts::after { display: none; }
+  .facts, .fact, .facts::before { background: #fff; color: #000; }
+  .facts { border-color: #000; break-inside: avoid; }
+  .section > h2 { border-color: #000; break-after: avoid; }
+  .section > h2::after { color: #333; }
+  .ingredients li label { padding: 5px 2px; break-inside: avoid; }
+  .ingredients input { width: 14px; height: 14px; border: 1px solid #000; background: #fff !important; }
+  .ingredients input:checked + span, .steps li.done { text-decoration: none; }
+  .ingredients li:has(input:checked) label::before { opacity: 1; }
+  .steps li { padding: 6px 0 6px 40px; border: 0; background: none; break-inside: avoid; }
+  .steps li::before { left: 0; top: 5px; width: 26px; height: 26px; border-color: #000; color: #000; font-size: .86rem; letter-spacing: -.04em; }
+  .steps li.current::after { display: none; }
+  .steps li.done, .ingredients input:checked + span { color: #000; }
+  .steps li.done::before, .steps li.current::before { content: counter(step); background: #fff; border-color: #000; color: #000; }
+  .step-cue, .step-wait { color: #000; }
+  a { color: #000; text-decoration: none; }
+}

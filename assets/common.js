@@ -26,7 +26,12 @@ window.SSS = (() => {
     return parts.length ? parts.reduce((a, b) => a + b, 0) : null;
   }
 
+  // Pages that live in a subfolder (e.g. style-guide previews) set
+  // <html data-root="../../"> so data still loads from the site root.
+  const ROOT = document.documentElement.dataset.root || "";
+
   async function getJSON(url) {
+    url = ROOT + url;
     const res = await fetch(url, { cache: "no-cache" });
     if (!res.ok) throw new Error(`${res.status} loading ${url}`);
     return res.json();

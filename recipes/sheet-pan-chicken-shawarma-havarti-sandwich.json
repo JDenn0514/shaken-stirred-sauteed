@@ -1,6 +1,7 @@
 {
   "title": "Sheet Pan Chicken Shawarma Havarti Sandwich",
   "category": "cooking",
+  "icon": "sandwich",
   "kind": "dish",
   "description": "Yogurt-marinated roast chicken and two cheeses, baked inside folded naan.",
   "tags": {

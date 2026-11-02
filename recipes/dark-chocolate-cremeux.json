@@ -1,6 +1,7 @@
 {
   "title": "Dark Chocolate Crémeux",
   "category": "baking",
+  "icon": "ramekin",
   "kind": "component",
   "description": "Vanilla custard poured over dark chocolate, blended smooth and chilled until set.",
   "tags": {

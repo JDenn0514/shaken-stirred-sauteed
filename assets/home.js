@@ -158,9 +158,11 @@
       r.totalMinutes != null ? `⏱ ${fmtMinutes(r.totalMinutes)}` : "",
       r.yield ? `🍽 ${esc(r.yield)}` : "",
     ].filter(Boolean).map((m) => `<span>${m}</span>`).join("");
-    return `<li><a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}">
+    const icon = r.icon ? ` data-icon="${esc(r.icon)}"` : "";
+    return `<li><a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}"${icon}>
       ${r.image ? `<img class="card-img" src="${esc(r.image)}" alt="" loading="lazy">` : ""}
       <div class="card-body">
+        ${r.icon ? `<span class="card-icon" aria-hidden="true"></span>` : ""}
         <div class="badges">
           <span class="badge ${esc(r.category)}">${esc(c.label)}</span>
           ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}

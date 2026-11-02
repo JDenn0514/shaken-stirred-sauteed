@@ -114,10 +114,15 @@
       ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
       <ul class="notes">${g.items.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`).join("");
 
+    // The recipe's drawing (assets/recipe-icons.js), shown by the stylesheet.
+    const icon = window.SSSIcons ? window.SSSIcons.iconFor(Object.assign({ slug }, r)) : null;
+    if (icon) root.dataset.icon = icon; else delete root.dataset.icon;
+
     root.innerHTML = `
       <a class="back" href="./?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
       ${r.image ? `<img class="recipe-hero" src="${esc(r.image)}" alt="">` : ""}
       ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
+      ${icon ? `<span class="recipe-icon" aria-hidden="true"></span>` : ""}
       <h1>${esc(r.title)}</h1>
       ${r.description ? `<p class="lede">${esc(r.description)}</p>` : ""}
       ${facts.length ? `<dl class="facts">${facts.map(([k, v]) =>
