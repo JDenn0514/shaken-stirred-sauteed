@@ -1,5 +1,5 @@
 (() => {
-  const { CATEGORIES, LABELS, esc, fmtMinutes, totalMinutes, getJSON } = window.SSS;
+  const { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON } = window.SSS;
   const root = document.getElementById("recipe");
   const slug = new URLSearchParams(location.search).get("r") || "";
 
@@ -51,22 +51,21 @@
     + (s.wait ? `<span class="step-wait">⏱ ${esc(s.wait)}</span>` : "")
     + (s.cue ? `<span class="step-cue">✓ ${esc(s.cue)}</span>` : "");
 
-  // The classification printed in the strip at the bottom of each recipe card.
-  const labelsFor = (r) => {
-    const name = (table, key) => key && (LABELS[table][key] || key);
-    if (r.category === "cooking") {
-      return [["Aroma", name("aroma", r.aroma)], ["Role", name("role", r.role)],
-        ["Technique", r.technique], ["Region", r.region]];
-    }
-    if (r.category === "baking") return [["Category", r.bakeCategory], ["Flavor", name("bakeFlavor", r.flavor)]];
-    if (r.category === "cocktails") {
-      return [["Flavor", name("drinkFlavor", r.flavor)], ["Family", name("family", r.family)],
-        ["Base", r.base], ["Origin", r.origin]];
-    }
-    return [];
+  // The recipe's filter tags as links that open its section with that filter on.
+  const tagGroupsHTML = (r, vocab) => {
+    if (!vocab || !r.tags || typeof r.tags !== "object") return "";
+    const rows = vocab.dimensions.filter((d) => !d.computed && (r.tags[d.key] || []).length).map((d) => {
+      const all = d.valuesBySection ? d.valuesBySection[r.category] || []
+        : d.values || (d.groups || []).flatMap((g) => g.values);
+      const label = (k) => (all.find((v) => v.key === k) || { label: k }).label;
+      const links = r.tags[d.key].map((v) =>
+        `<a class="chip" href="./?cat=${encodeURIComponent(r.category)}&amp;${encodeURIComponent(d.key)}=${encodeURIComponent(v)}">${esc(label(v))}</a>`).join("");
+      return `<div><dt>${esc(d.label)}</dt><dd>${links}</dd></div>`;
+    });
+    return rows.length ? `<dl class="tag-groups">${rows.join("")}</dl>` : "";
   };
 
-  function render(r) {
+  function render(r, vocab) {
     const cat = CATEGORIES[r.category] || { label: r.category };
     document.title = `${r.title} · Shaken, Stirred & Sautéed`;
     const t = r.time || {};
@@ -97,8 +96,8 @@
       ["Method", r.method],
       ["Garnish", r.garnish],
       ["Nutrition", r.nutrition],
+      ["Origin", r.origin],
     ].filter(([, v]) => v != null && v !== false && v !== "");
-    const labels = labelsFor(r).filter(([, v]) => v);
 
     let ingIdx = 0, stepIdx = 0;
     const ingHTML = toGroups(r.ingredients).map((g) => `
@@ -123,8 +122,6 @@
       ${r.description ? `<p class="lede">${esc(r.description)}</p>` : ""}
       ${facts.length ? `<dl class="facts">${facts.map(([k, v]) =>
         `<div class="fact"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-      ${labels.length ? `<dl class="labels">${labels.map(([k, v]) =>
-        `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
 
       <div class="toolbar">
         <button class="btn" id="wake" aria-pressed="false" hidden>☀️ Keep screen on</button>
@@ -137,8 +134,7 @@
       <section class="section"><h2>${r.category === "cocktails" ? "Spec" : "Ingredients"}</h2>${ingHTML}</section>
       <section class="section"><h2>${r.category === "cocktails" ? "Method" : "Steps"}</h2>${stepsHTML}</section>
       ${notesHTML ? `<section class="section"><h2>Notes</h2>${notesHTML}</section>` : ""}
-      ${r.tags && r.tags.length ? `<div class="tag-list">${r.tags.map((tg) =>
-        `<a class="chip" href="./?tag=${encodeURIComponent(tg)}">#${esc(tg)}</a>`).join("")}</div>` : ""}
+      ${tagGroupsHTML(r, vocab)}
       ${r.source && (r.source.name || r.source.url) ? `<p class="source">Source: ${safeURL(r.source.url)
         ? `<a href="${esc(safeURL(r.source.url))}" rel="noopener noreferrer" target="_blank">${esc(r.source.name || r.source.url)}</a>`
         : esc(r.source.name || r.source.url)}</p>` : ""}
@@ -199,5 +195,8 @@
     }
   }
 
-  getJSON(`recipes/${slug}.json`).then(render).catch(() => fail("Recipe not found."));
+  // The tag list only adds the tag links, so the recipe still shows if it fails to load.
+  Promise.all([getJSON(`recipes/${slug}.json`), getJSON("recipes/vocabulary.json").catch(() => null)])
+    .then(([r, vocab]) => render(r, vocab))
+    .catch(() => fail("Recipe not found."));
 })();

@@ -3,15 +3,16 @@
   "category": "baking",
   "kind": "component",
   "description": "Vanilla custard poured over dark chocolate, blended smooth and chilled until set.",
-  "tags": [
-    "chocolate",
-    "make-ahead",
-    "freezer-friendly",
-    "uses egg yolks"
-  ],
+  "tags": {
+    "type": ["fillings-creams"],
+    "flavor": ["sweet", "rich"],
+    "usesUp": ["egg-yolks", "heavy-cream"],
+    "ingredients": ["chocolate", "cream", "eggs"],
+    "occasion": ["entertaining", "make-ahead", "freezer-friendly"],
+    "season": ["year-round"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
   "added": "2026-09-29",
-  "bakeCategory": "Components",
-  "flavor": "sweet",
   "yield": "Makes about 900 to 950 g (3 1/2 to 3 3/4 cups)",
   "times": [
     [

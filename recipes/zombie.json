@@ -3,14 +3,18 @@
   "category": "cocktails",
   "kind": "dish",
   "description": "Three rums, lime, Donn’s Mix and falernum, flash-blended over ice.",
-  "tags": [],
+  "tags": {
+    "spirit": ["rum"],
+    "style": ["tiki"],
+    "flavor": ["fruity", "bright-tart"],
+    "ingredients": ["lime"],
+    "occasion": ["entertaining"],
+    "season": ["summer"]
+  },
   "added": "2026-10-30",
-  "flavor": "fruity_tropical",
-  "family": "tiki_punch",
-  "base": "Rum",
   "origin": "Don the Beachcomber, 1930s",
   "yield": "Makes 1 drink",
-  "standardDrinks": 3.0,
+  "standardDrinks": 3,
   "glass": "Highball or tiki mug",
   "ice": "Crushed or small cubes",
   "garnish": "Mint sprig",
@@ -98,5 +102,8 @@
   ],
   "source": {
     "name": "Jeff “Beachbum” Berry’s 1930s spec, from Strong, Sweet and Bitter: Your Guide to All Things Cocktails, Bartending and Booze from Behind the Bar by Cara Devine, p. 158"
+  },
+  "time": {
+    "total": 5
   }
 }

@@ -2,11 +2,17 @@
   "title": "Pan-Fried Broccolini, Lemon-Dressed",
   "category": "cooking",
   "kind": "dish",
-  "tags": [],
+  "tags": {
+    "course": ["side"],
+    "cuisine": ["italian"],
+    "method": ["saute"],
+    "flavor": ["bright"],
+    "ingredients": ["greens", "lemon"],
+    "occasion": ["weeknight"],
+    "season": ["year-round"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-08-29",
-  "aroma": "olive_tomato_herb",
-  "role": "vegetable_main",
-  "technique": "Cast-iron skillet, medium-high",
   "yield": "Serves 4",
   "times": [
     [

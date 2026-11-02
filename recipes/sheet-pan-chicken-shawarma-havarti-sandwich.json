@@ -3,7 +3,15 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Yogurt-marinated roast chicken and two cheeses, baked inside folded naan.",
-  "tags": [],
+  "tags": {
+    "course": ["main"],
+    "cuisine": ["american", "middle-eastern"],
+    "method": ["sheet-pan"],
+    "flavor": ["rich", "herby"],
+    "ingredients": ["chicken", "cheese", "yogurt", "tahini"],
+    "occasion": ["entertaining"],
+    "season": ["year-round"]
+  },
   "added": "2026-09-28",
   "yield": "Serves 6",
   "times": [
@@ -23,10 +31,6 @@
   "time": {
     "total": 75
   },
-  "aroma": "sumac_tahini_lemon",
-  "role": "protein_main",
-  "technique": "Sheet pan, 425F (220C), broil",
-  "region": "United States (shawarma-inspired)",
   "ingredients": [
     {
       "group": "Chicken",

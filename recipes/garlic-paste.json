@@ -2,11 +2,15 @@
   "title": "Garlic Paste",
   "category": "cooking",
   "kind": "component",
-  "tags": [],
+  "tags": {
+    "course": ["sauce"],
+    "method": ["no-cook"],
+    "ingredients": ["garlic"],
+    "occasion": ["make-ahead"],
+    "season": ["year-round"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-08-30",
-  "aroma": "salt_fat_fire",
-  "role": "sauce_condiment",
-  "technique": "No blender — muddler or knife",
   "yield": "Makes about 3 tablespoons",
   "ingredients": [
     {
@@ -50,5 +54,8 @@
   ],
   "source": {
     "name": "Jacob's notes"
+  },
+  "time": {
+    "total": 10
   }
 }

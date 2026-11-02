@@ -3,7 +3,17 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Diced pork belly braised in soy and spices, over rice.",
-  "tags": [],
+  "origin": "Taiwan",
+  "tags": {
+    "course": ["main"],
+    "cuisine": ["chinese-taiwanese"],
+    "method": ["simmer-braise", "wok"],
+    "flavor": ["umami", "sweet-savory"],
+    "ingredients": ["pork", "soy-sauce", "rice", "mushrooms"],
+    "occasion": ["meal-prep", "make-ahead"],
+    "season": ["fall", "winter"],
+    "diet": ["dairy-free"]
+  },
   "added": "2026-10-07",
   "yield": "Serves 4",
   "times": [
@@ -19,10 +29,6 @@
   "time": {
     "total": 120
   },
-  "aroma": "soy_ginger_ferment",
-  "role": "protein_main",
-  "technique": "Wok, low braise",
-  "region": "Taiwan",
   "ingredients": [
     {
       "qty": "1 lb (450 g)",

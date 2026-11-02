@@ -3,16 +3,16 @@
   "category": "baking",
   "kind": "dish",
   "description": "Lime-mint shortbread under baked lime curd, chilled and cut.",
-  "tags": [
-    "citrus",
-    "tangy",
-    "mint",
-    "make-ahead",
-    "uses egg yolks"
-  ],
+  "tags": {
+    "type": ["cookies-bars"],
+    "flavor": ["bright-tart", "light"],
+    "usesUp": ["egg-yolks"],
+    "ingredients": ["lime", "mint"],
+    "occasion": ["entertaining", "make-ahead"],
+    "season": ["spring", "summer"],
+    "diet": ["vegetarian"]
+  },
   "added": "2026-10-26",
-  "bakeCategory": "Cookies & Bars",
-  "flavor": "sweet",
   "yield": "Makes 16 bars",
   "times": [
     [

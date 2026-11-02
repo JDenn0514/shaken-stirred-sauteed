@@ -3,7 +3,15 @@
   "category": "cooking",
   "kind": "component",
   "description": "Apples, orange and spices slow-cooked, mashed and strained.",
-  "tags": [],
+  "tags": {
+    "course": ["drink"],
+    "cuisine": ["american"],
+    "method": ["slow-cooker", "simmer-braise"],
+    "ingredients": ["apple", "orange"],
+    "occasion": ["holiday", "make-ahead"],
+    "season": ["fall", "winter"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-10-26",
   "yield": "Makes about 1 1/2 quarts",
   "times": [
@@ -72,10 +80,6 @@
     "Storage: refrigerate up to 5 to 7 days and rewarm on the stove, or drink it cold. Freezes up to 3 months; ice cube trays make single servings. Thaw in the fridge.",
     "Leftover mash: use it like spiced applesauce in apple cake or muffins, trimming that recipe's sugar a little. Simmer it to thicken if it's watery."
   ],
-  "aroma": "fruit_sugar",
-  "role": "sweet",
-  "technique": "Slow cooker or stovetop simmer",
-  "region": "United States",
   "source": {
     "name": "Sally's Baking Addiction",
     "url": "https://sallysbakingaddiction.com/homemade-apple-cider"

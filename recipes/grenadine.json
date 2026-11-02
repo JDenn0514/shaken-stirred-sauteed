@@ -3,10 +3,15 @@
   "category": "cocktails",
   "kind": "component",
   "description": "Pomegranate juice, sugar and lemon, warmed just until the sugar dissolves.",
-  "tags": [],
+  "tags": {
+    "spirit": ["non-alcoholic"],
+    "style": ["syrup-mixer"],
+    "flavor": ["fruity", "sweet"],
+    "ingredients": ["pomegranate", "lemon"],
+    "occasion": ["make-ahead"],
+    "season": ["year-round"]
+  },
   "added": "2026-10-30",
-  "flavor": "fruity_tropical",
-  "family": "component",
   "yield": "Makes about 3 cups",
   "times": [
     [

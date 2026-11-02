@@ -3,7 +3,15 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Floured chicken cutlets seared, then glazed in honey, butter and hot sauce.",
-  "tags": [],
+  "tags": {
+    "course": ["main"],
+    "cuisine": ["american"],
+    "method": ["saute"],
+    "flavor": ["spicy", "sweet-savory"],
+    "ingredients": ["chicken", "honey", "chile", "butter"],
+    "occasion": ["weeknight"],
+    "season": ["year-round"]
+  },
   "added": "2026-09-28",
   "yield": "Serves 4",
   "times": [
@@ -112,10 +120,6 @@
     "Gluten-free: cornstarch or a GF blend for the flour, tamari for the soy. Coconut aminos also replace soy.",
     "Leftovers: keep airtight. Skip the microwave, which turns it rubbery. Recrisp in a hot skillet, in an air fryer at 380F (195C) for 3 to 4 minutes, or in a 350F (180C) oven for 5 to 6 minutes."
   ],
-  "aroma": "smoke_sugar_vinegar",
-  "role": "protein_main",
-  "technique": "Pan-sear, medium-high",
-  "region": "United States and Canada",
   "nutrition": "Per serving: 398 cal · 31 g carbs · 26 g protein · 19 g fat · 19 g sugar · 481 mg sodium",
   "source": {
     "name": "Karina Carrel, Cafe Delites",

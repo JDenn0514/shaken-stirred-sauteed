@@ -3,12 +3,18 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Fanned potatoes basted twice in garlic butter — crisp edges, soft centre.",
-  "tags": [],
+  "origin": "Sweden",
+  "tags": {
+    "course": ["side"],
+    "cuisine": ["nordic"],
+    "method": ["roast-bake"],
+    "flavor": ["rich"],
+    "ingredients": ["potato", "garlic", "butter"],
+    "occasion": ["entertaining", "holiday"],
+    "season": ["year-round"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
   "added": "2026-08-29",
-  "aroma": "salt_fat_fire",
-  "role": "vegetable_main",
-  "technique": "Bake, 400F (200C)",
-  "region": "Sweden",
   "yield": "Serves 4",
   "times": [
     [
@@ -86,5 +92,8 @@
   "source": {
     "name": "Ájọkẹ, “Hasselback Potatoes Recipe,” The Dinner Bite",
     "url": "https://thedinnerbite.com/hasselback-potatoes-recipe/"
+  },
+  "time": {
+    "total": 75
   }
 }

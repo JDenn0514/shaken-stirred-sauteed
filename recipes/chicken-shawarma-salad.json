@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Spiced roast chicken over chopped salad, with two tahini sauces.",
-  "tags": [],
+  "tags": {
+    "course": ["main", "salad"],
+    "cuisine": ["middle-eastern"],
+    "method": ["sheet-pan"],
+    "flavor": ["bright", "herby"],
+    "ingredients": ["chicken", "tahini", "cucumber", "tomato"],
+    "occasion": ["weeknight", "meal-prep"],
+    "season": ["year-round"],
+    "diet": ["gluten-free"]
+  },
   "added": "2026-10-08",
   "yield": "Serves 4",
   "times": [
@@ -221,10 +230,6 @@
     "Swaps: tofu can share the pan and needs the full 30 minutes to crust. Shrimp cooks fast; add it only once the vegetables are nearly done, or sear it in the marinade in a skillet. Readers often double the marinade.",
     "Wraps or bowls instead: tuck everything into warm 10 to 12 in wraps, or serve over rice or quinoa. For low-carb bowls, roast riced cauliflower on a second pan with olive oil, salt, pepper, lemon zest and a pinch of cumin, tossing every 10 minutes until crisp in spots."
   ],
-  "aroma": "sumac_tahini_lemon",
-  "role": "protein_main",
-  "technique": "Sheet pan, 400F (205C)",
-  "region": "Egypt",
   "nutrition": "Shawarma bowl (chicken breast, riced cauliflower, no sauce): 380 cal, 50.5 g protein, 15.2 g carbs, 13.2 g fat. Israeli salad: 83 cal per cup. Per 2 tbsp: tahini yogurt 76 cal, green tahini 95 cal.",
   "source": {
     "name": "Sylvia Fountaine, Feasting at Home: Sheet Pan Shawarma, Israeli Salad, Tahini Yogurt Sauce and Green Tahini Sauce",

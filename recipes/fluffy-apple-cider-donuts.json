@@ -3,14 +3,15 @@
   "category": "baking",
   "kind": "dish",
   "description": "Creamed-butter cake donuts with cider and nutmeg, brushed in cinnamon sugar.",
-  "tags": [
-    "apple",
-    "spiced",
-    "fall"
-  ],
+  "tags": {
+    "type": ["breakfast-bakes"],
+    "flavor": ["sweet", "spiced", "light"],
+    "ingredients": ["apple"],
+    "occasion": ["brunch"],
+    "season": ["fall"],
+    "diet": ["vegetarian"]
+  },
   "added": "2026-10-26",
-  "bakeCategory": "Breakfast Bakes",
-  "flavor": "sweet",
   "yield": "Makes 12 donuts",
   "pan": "2 six-cavity donut pans",
   "heat": "350F",
@@ -164,5 +165,8 @@
   "source": {
     "name": "Erin Jeanne McDowell, NYT Cooking",
     "url": "https://cooking.nytimes.com/recipes/1019593-baked-apple-cider-doughnuts"
+  },
+  "time": {
+    "total": 45
   }
 }

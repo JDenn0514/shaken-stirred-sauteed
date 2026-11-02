@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Cumin-spiced vegan lentil soup with greens, partly blended.",
-  "tags": [],
+  "tags": {
+    "course": ["soup", "main"],
+    "cuisine": ["middle-eastern"],
+    "method": ["simmer-braise"],
+    "flavor": ["rich", "bright"],
+    "ingredients": ["beans-lentils", "tomato", "greens", "lemon"],
+    "occasion": ["weeknight", "meal-prep", "freezer-friendly"],
+    "season": ["fall", "winter"],
+    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-10-26",
   "yield": "Serves 4 large or 6 modest",
   "times": [
@@ -110,9 +119,6 @@
     "For more heat, stir in another pinch or two of pepper flakes at the end.",
     "Keeps about 4 days in the fridge and tastes better the next day. Freezes for several months; thaw before reheating."
   ],
-  "aroma": "toasted_spice_ghee",
-  "role": "vegetable_main",
-  "technique": "Stovetop simmer",
   "source": {
     "name": "Cookie and Kate (Kathryne Taylor)",
     "url": "https://cookieandkate.com/best-lentil-soup-recipe"

@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Savory rice porridge under crisped chili-garlic ground pork.",
-  "tags": [],
+  "tags": {
+    "course": ["main"],
+    "cuisine": ["chinese-taiwanese"],
+    "method": ["simmer-braise", "wok"],
+    "flavor": ["umami", "spicy"],
+    "ingredients": ["rice", "pork", "chile"],
+    "occasion": ["weeknight"],
+    "season": ["fall", "winter"],
+    "diet": ["dairy-free"]
+  },
   "added": "2026-09-21",
   "yield": "Serves 2 to 4",
   "times": [
@@ -137,10 +146,6 @@
     "Meatless: swap in mushroom or vegetable broth and finely chopped mushrooms or crumbled firm tofu, browned hard in the same way.",
     "The congee keeps 3 days in the fridge and thickens as it sits; thin with broth or water when reheating. Store the pork separately so it stays crisp, and re-crisp it in a dry pan."
   ],
-  "aroma": "soy_ginger_ferment",
-  "role": "grain_noodle",
-  "technique": "Simmer, then high-heat wok",
-  "region": "East Asia",
   "source": {
     "name": "Ethan Chlebowski, Cook Well"
   }

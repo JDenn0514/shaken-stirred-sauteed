@@ -2,11 +2,17 @@
   "title": "Grilled Corn Salad with Avocado",
   "category": "cooking",
   "kind": "dish",
-  "tags": [],
+  "tags": {
+    "course": ["salad", "side"],
+    "cuisine": ["american"],
+    "method": ["grill"],
+    "flavor": ["bright", "smoky"],
+    "ingredients": ["corn", "avocado", "tomato", "lime"],
+    "occasion": ["cookout"],
+    "season": ["summer"],
+    "diet": ["vegetarian", "gluten-free", "dairy-free"]
+  },
   "added": "2026-09-02",
-  "aroma": "chile_lime_corn",
-  "role": "salad_raw_side",
-  "technique": "Grill, medium (about 400F)",
   "yield": "Serves 6 (about 6 cups)",
   "times": [
     [

@@ -3,15 +3,15 @@
   "category": "baking",
   "kind": "dish",
   "description": "Baked cake donuts flavored with reduced cider, dipped in spiced sugar.",
-  "tags": [
-    "apple",
-    "spiced",
-    "fall",
-    "freezer-friendly"
-  ],
+  "tags": {
+    "type": ["breakfast-bakes"],
+    "flavor": ["sweet", "spiced"],
+    "ingredients": ["apple"],
+    "occasion": ["brunch", "freezer-friendly"],
+    "season": ["fall"],
+    "diet": ["vegetarian"]
+  },
   "added": "2026-10-30",
-  "bakeCategory": "Breakfast Bakes",
-  "flavor": "sweet",
   "yield": "Makes 12 to 14 donuts",
   "times": [
     [

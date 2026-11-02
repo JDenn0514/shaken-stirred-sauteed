@@ -3,7 +3,16 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Cumin, coriander and turmeric chicken roasted with vegetables.",
-  "tags": [],
+  "tags": {
+    "course": ["main"],
+    "cuisine": ["middle-eastern"],
+    "method": ["sheet-pan"],
+    "flavor": ["rich", "bright"],
+    "ingredients": ["chicken"],
+    "occasion": ["weeknight", "meal-prep"],
+    "season": ["year-round"],
+    "diet": ["gluten-free", "dairy-free"]
+  },
   "added": "2026-10-08",
   "yield": "Serves 4",
   "times": [
@@ -19,10 +28,6 @@
   "time": {
     "total": 45
   },
-  "aroma": "sumac_tahini_lemon",
-  "role": "protein_main",
-  "technique": "Sheet pan, 400F (205C)",
-  "region": "Egypt",
   "ingredients": [
     {
       "qty": "1 to 1 1/2 lb",

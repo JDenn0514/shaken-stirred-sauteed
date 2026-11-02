@@ -29,28 +29,31 @@
         <input id="search" type="search" placeholder="Search by name, ingredient, or tag…" autocomplete="off">
       </label>
 
-      <nav class="tabs" id="tabs" aria-label="Categories"></nav>
+      <nav class="tabs" id="tabs" aria-label="Sections"></nav>
 
-      <div class="tag-row" id="tags" aria-label="Filter by tag"></div>
+      <div class="filter-host">
+        <div class="filter-row" id="filters" aria-label="Filters"></div>
+        <div class="active-row" id="active" aria-label="Active filters"></div>
+
+        <div class="backdrop" id="backdrop" hidden></div>
+        <div class="sheet" id="sheet" role="dialog" aria-labelledby="sheet-title" hidden>
+          <div class="sheet-head">
+            <h2 id="sheet-title"></h2>
+            <button class="btn" id="sheet-done">Done</button>
+          </div>
+          <div class="sheet-body" id="sheet-body"></div>
+        </div>
+      </div>
 
       <div class="result-bar">
         <span id="count" aria-live="polite"></span>
-        <div class="result-controls">
-          <label class="sort">Show
-            <select id="kind">
-              <option value="all">Everything</option>
-              <option value="dish">Dishes</option>
-              <option value="component">Components</option>
-            </select>
-          </label>
-          <label class="sort">Sort
-            <select id="sort">
-              <option value="az">A–Z</option>
-              <option value="new">Newest</option>
-              <option value="quick">Quickest</option>
-            </select>
-          </label>
-        </div>
+        <label class="sort">Sort
+          <select id="sort">
+            <option value="az">A–Z</option>
+            <option value="new">Newest</option>
+            <option value="quick">Quickest</option>
+          </select>
+        </label>
       </div>
     </div>
 

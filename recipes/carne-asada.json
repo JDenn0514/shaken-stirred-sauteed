@@ -3,7 +3,17 @@
   "category": "cooking",
   "kind": "dish",
   "description": "Citrus and soy marinated flank steak, grilled hot and fast.",
-  "tags": [],
+  "origin": "Northern Mexico",
+  "tags": {
+    "course": ["main"],
+    "cuisine": ["mexican"],
+    "method": ["grill"],
+    "flavor": ["smoky", "bright"],
+    "ingredients": ["beef", "lime", "orange", "fresh-herbs"],
+    "occasion": ["cookout", "entertaining"],
+    "season": ["summer"],
+    "diet": ["dairy-free"]
+  },
   "added": "2026-10-14",
   "yield": "Serves 6",
   "times": [
@@ -98,12 +108,11 @@
     "Leftovers keep 3 to 4 days airtight. Reheat covered with foil at 250F (120C) so it warms through without cooking further.",
     "The marinade works as-is on chicken for pollo asado."
   ],
-  "aroma": "chile_lime_corn",
-  "role": "protein_main",
-  "technique": "Grill or cast iron, 450F",
-  "region": "Northern Mexico",
   "source": {
     "name": "Chungah Rhee, Damn Delicious",
     "url": "https://damndelicious.net/2019/05/05/carne-asada"
+  },
+  "time": {
+    "total": 275
   }
 }
