@@ -6,6 +6,9 @@ const PORT = 8123;
 
 export default defineConfig({
   testDir: "tests/e2e",
+  // Lets CI split the tests evenly across machines (--shard), test by test
+  // rather than file by file.
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",

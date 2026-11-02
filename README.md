@@ -30,7 +30,7 @@ No frameworks and no build step: it's plain HTML, CSS, and JavaScript served by 
 
 4. Commit and push. The site updates within a minute or two.
 
-A GitHub Action re-runs the index check on every push and flags any recipe with a mistake.
+GitHub Actions re-runs the index check on every pull request and push to main, and flags any recipe with a mistake.
 
 ### Recipe fields
 
@@ -114,11 +114,12 @@ npm install   # once
 npm test
 ```
 
-- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index.
+- `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, and the tests in `tests/unit/`. After `npm install` it also runs before every `git push`, and stops the push if something fails.
+- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index. It also checks the link checker.
 - `tests/e2e/` opens the site in Chrome. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
   - light and dark mode
   - an automated accessibility scan of every page in both modes
 
-The GitHub Action runs them on every push. Dependabot opens a pull request when the test tools have a new version.
+GitHub Actions runs all of them on every pull request and every push to main (`.github/workflows/ci.yml`). The quick checks and the browser tests run side by side, and the browser tests are split across several machines, so a run takes about as long as one slice of the browser tests. Dependabot opens a pull request when the test tools or the GitHub Actions have a new version.

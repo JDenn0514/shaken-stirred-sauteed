@@ -1,0 +1,8 @@
+#!/bin/sh
+# Runs the quick checks before every push: lint, links, recipes and the recipe
+# checker tests (npm run check). Takes a few seconds; the browser tests are left
+# to CI. Turned on by `npm install`. To skip it once: git push --no-verify
+npm run --silent check || {
+  echo "pre-push: a check failed, so nothing was pushed. Fix it, or skip once with git push --no-verify." >&2
+  exit 1
+}

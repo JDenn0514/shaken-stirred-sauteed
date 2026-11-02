@@ -1,0 +1,74 @@
+# Checks every pull request and every push to main. The jobs run side by side,
+# so a run takes as long as the slowest one: the browser tests, which are split
+# across several machines.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A new push to a pull request cancels its run that's still going.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Lint, links and recipes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - id: install
+        run: npm ci
+      # Each check runs even if an earlier one failed, so one run shows every problem.
+      - name: Lint
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run lint
+      - name: Broken links
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run check:links
+      - name: Validate recipes and confirm index.json is up to date
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: |
+          npm run check:recipes || {
+            echo "::error::A recipe has a problem, or recipes/index.json is out of date. Run 'node scripts/build-index.mjs' and commit the result."
+            exit 1
+          }
+      - name: Recipe checker and link checker tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run test:unit
+
+  browser:
+    name: Browser tests (${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 4 was fastest when timed on GitHub's runners (1 to 4 machines, 2 or 4
+        # workers each). The total comes from this list.
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Uses the Google Chrome already installed on GitHub's runners.
+      - name: Browser tests
+        run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces-${{ matrix.shard }}
+          path: test-results/
+          retention-days: 7
