@@ -1,12 +1,19 @@
 /* ==========================================================================
-   Field Guide: a drop-in theme for Shaken, Stirred & Sautéed (final)
-   The collection as a kitchen herbarium in three botanical inks. Every
+   Field Guide · Order Up inks: a drop-in theme for Shaken, Stirred & Sautéed
+   A colour variant of the final Field Guide. Layout, type, drawings and
+   behaviour are unchanged; the three family inks are Order Up's station
+   colours (ochre, brick, slate), the washes are a whisper, and the pages
+   are plain paper, so colour comes from ink rather than tinted grounds.
+   The collection as a kitchen herbarium in three confident inks. Every
    recipe is a specimen sheet with its own drawing; each section is a family
    with its own ink, its own plate drawing and a short Latin name:
 
-     Baking     Elderberry  #6c1f43   Fam. Pistoriaceae   (pistor: baker)
-     Cooking    Bay laurel  #3c7125   Fam. Culinaceae     (culina: kitchen)
-     Cocktails  Juniper     #1b5a86   Fam. Mixtaceae      (mixtus: mixed)
+     Baking     Ochre   ink #8e5a08  fill #d29b3c  Fam. Pistoriaceae  (pistor: baker)
+     Cooking    Brick   ink #87351f  fill #a9462e  Fam. Culinaceae    (culina: kitchen)
+     Cocktails  Slate   ink #213e53  fill #2d4a5c  Fam. Mixtaceae     (mixtus: mixed)
+
+   Light inks step light > mid > dark (ochre, brick, slate). After dark the
+   inks are lifted, saturated mid-tones: ochre lightest, slate, then brick.
 
    One custom property, --section, carries the family ink. It is set on
    tabs, cards, badges and the whole page (body:has(...)), and every
@@ -16,8 +23,9 @@
    masks keyed on [data-icon]. They sit in each card's spine and large in
    the recipe header. The family plates stay on the tabs and empty state.
 
-   Dark mode is "the herbarium cabinet after dark": deep green-black board,
-   sheets lifted a step, inks raised to a soft glow, drawings in pale ink.
+   Dark mode is "the herbarium cabinet after dark", in Order Up's graphite
+   kitchen calm: a graphite board with a faint green lean, sheets lifted a
+   step, inks lifted but still saturated, deep fills, no bright slabs.
 
    Flat colour and crisp lines only: no shadows that fake depth, no
    gradients that pretend to be light, no hatching, no grain.
@@ -68,31 +76,35 @@
 /* ===== Tokens ===== */
 :root {
   /* Paper and ink */
-  --bg: #e8ede6;            /* mounting board: cool green-grey */
-  --surface: #fbfcf9;       /* the specimen sheet */
-  --surface-2: #dfe6dc;     /* pressed / sunken */
+  --bg: #e6e8e0;            /* mounting board: green-grey, warmed a touch toward putty */
+  --surface: #fbfbf8;       /* the specimen sheet */
+  --surface-2: #dfe3da;     /* pressed / sunken */
   --text: #15241b;          /* botanical ink */
   --muted: #4a5a4f;         /* graphite */
-  --border: #c6d0c3;        /* hairline rule */
-  --rule-strong: #788a7c;   /* control edges, 3:1 on board */
+  --border: #c9cec3;        /* hairline rule */
+  --rule-strong: #788279;   /* control edges, 3:1 on board */
   --accent: #15241b;        /* neutral "chosen": plain ink */
-  --accent-contrast: #fbfcf9;
-  --lime: #cadd4c;          /* specimen tape (fill only, never text) */
+  --accent-contrast: #fbfbf8;
+  --lime: #bfcf6c;          /* specimen tape (fill only, never text) */
   --on-lime: #15241b;
   --focus: #15241b;
   --scrim: rgba(12, 22, 16, .4);
 
-  /* The three families: ink (text-safe), wash (tint behind ink), paper (page tint),
-     fill (solid "chosen" state) and the text that sits on that fill. */
-  --baking: #6c1f43;    --baking-wash: #f5e4eb;    --baking-paper: #f1e8eb;    --baking-fill: #6c1f43;
-  --cooking: #3c7125;   --cooking-wash: #e2eed8;   --cooking-paper: #e6eddf;   --cooking-fill: #3c7125;
-  --cocktails: #1b5a86; --cocktails-wash: #dcebf4; --cocktails-paper: #e2eaee; --cocktails-fill: #1b5a86;
+  /* The three families, in Order Up's station colours: ink (text-safe), wash
+     (a whisper behind ink), paper (page tone), fill (solid "chosen" state, the
+     station colour itself) and the text that sits on that fill. */
+  --baking: #8e5a08;    --baking-wash: #f6f1e4;    --baking-paper: #f0f0ea;    --baking-fill: #d29b3c;
+  --cooking: #87351f;   --cooking-wash: #f4ede9;   --cooking-paper: #eff0eb;   --cooking-fill: #a9462e;
+  --cocktails: #213e53; --cocktails-wash: #e8eef1; --cocktails-paper: #edf0ed; --cocktails-fill: #2d4a5c;
   --on-family: #ffffff;     /* text on a small solid ink stamp (badge, tick, step number) */
   --on-fill: #ffffff;       /* text on the larger "chosen" fill (tab, option, button) */
+  --baking-on-fill: #15241b; /* ochre is a light fill, so it is lettered in ink */
+  --cooking-on-fill: var(--on-fill);
+  --cocktails-on-fill: var(--on-fill);
   /* Inside a family, the sheet and its hairlines take a faint family tint. */
-  --baking-sheet: #fdfafb;    --baking-line: #dccbd3;
-  --cooking-sheet: #fbfcf9;   --cooking-line: #c6d0c3;
-  --cocktails-sheet: #f9fbfc; --cocktails-line: #c3d1db;
+  --baking-sheet: #fcfbf7;    --baking-line: #dcd4c2;
+  --cooking-sheet: #fbfbf8;   --cooking-line: #dccfc8;
+  --cocktails-sheet: #f9fbfb; --cocktails-line: #c6d1d6;
 
   /* Neutral defaults, overridden per family below */
   --section: var(--text);
@@ -104,7 +116,7 @@
   --family: "Herbarium";
 
   /* Drawings: how much of the family ink a drawing takes (the rest is page ink).
-     100% in light mode; paler after dark. */
+     100% in light mode; a little softer after dark. */
   --draw-mix: 100%;
   /* Done lines: a clear strike in the family ink, over readable graphite. */
   --strike: 2px;
@@ -130,37 +142,39 @@
 }
 
 /* ===== Dark: the herbarium cabinet after dark =====
-   Deep green-black board (never pure black), sheets lifted one step, the
-   three inks raised to a soft glow, drawings in pale ink. Body text is a
-   soft green-white at 12-14:1, not paper-white. Shading stays flat. */
+   Graphite board with a green lean (never pure black), sheets lifted one
+   step, the three station inks lifted to saturated mid-tones (no pastels,
+   no neon), deep fills for chosen states. Body text is a soft green-white
+   at 12.8-14:1, not paper-white. Shading stays flat. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #111a15;
-    --surface: #19231e;
-    --surface-2: #222e28;
-    --text: #dde6dc;
-    --muted: #a0b1a6;
-    --border: #2a3832;
-    --rule-strong: #5f7368;
-    --accent: #dde6dc;
-    --accent-contrast: #111a15;
-    --lime: #b9cc55;
-    --on-lime: #111a15;
-    --focus: #c9da7c;
-    --scrim: rgba(4, 8, 6, .62);
+    --bg: #131715;
+    --surface: #1b201e;
+    --surface-2: #242a27;
+    --text: #dfe4dc;
+    --muted: #a2aca4;
+    --border: #2c3330;
+    --rule-strong: #66716a;
+    --accent: #dfe4dc;
+    --accent-contrast: #131715;
+    --lime: #a8b95e;
+    --on-lime: #131715;
+    --focus: #c9d27c;
+    --scrim: rgba(4, 6, 5, .62);
 
-    --baking: #e6a7c2;    --baking-wash: #352630;    --baking-paper: #121a16;    --baking-fill: #4d3141;
-    --cooking: #a8d48b;   --cooking-wash: #223424;   --cooking-paper: #111b15;   --cooking-fill: #304a2c;
-    --cocktails: #93c7e6; --cocktails-wash: #1a3140; --cocktails-paper: #101a17; --cocktails-fill: #24435a;
-    --on-family: #111a15;
-    --on-fill: #eef3ec;
-    --baking-sheet: #1e2221;    --baking-line: #3d3239;
-    --cooking-sheet: #1a251e;   --cooking-line: #2e4231;
-    --cocktails-sheet: #182429; --cocktails-line: #2b3f4a;
+    --baking: #e4b45a;    --baking-wash: #2a261b;    --baking-paper: #141714;    --baking-fill: #3d3320;
+    --cooking: #d96b4d;   --cooking-wash: #281d19;   --cooking-paper: #151614;   --cooking-fill: #331c16;
+    --cocktails: #7aadd5; --cocktails-wash: #1b2830; --cocktails-paper: #121716; --cocktails-fill: #22394a;
+    --on-family: #131715;
+    --on-fill: #eceee7;
+    --baking-on-fill: var(--on-fill);
+    --baking-sheet: #1e201c;    --baking-line: #3a3428;
+    --cooking-sheet: #1f1f1c;   --cooking-line: #3d2f29;
+    --cocktails-sheet: #1a2022; --cocktails-line: #2b3a43;
 
-    --draw-mix: 72%;
+    --draw-mix: 82%;
 
-    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23111a15' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23131715' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 }
 
@@ -171,21 +185,21 @@
 body:has(.tab[data-cat="baking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=baking"]) {
   --section: var(--baking); --section-wash: var(--baking-wash); --section-paper: var(--baking-paper);
-  --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
+  --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--baking-on-fill);
   --family: "Fam. Pistoriaceae";
 }
 .tab[data-cat="cooking"], .badge.cooking, .card:has(.badge.cooking), .fam-cooking,
 body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cooking"]) {
   --section: var(--cooking); --section-wash: var(--cooking-wash); --section-paper: var(--cooking-paper);
-  --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
+  --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--cooking-on-fill);
   --family: "Fam. Culinaceae";
 }
 .tab[data-cat="cocktails"], .badge.cocktails, .card:has(.badge.cocktails), .fam-cocktails,
 body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cocktails"]) {
   --section: var(--cocktails); --section-wash: var(--cocktails-wash); --section-paper: var(--cocktails-paper);
-  --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
+  --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--cocktails-on-fill);
   --family: "Fam. Mixtaceae";
 }
 .tab[data-cat="all"], .fam-all {

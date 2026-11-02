@@ -1,12 +1,18 @@
 /* ==========================================================================
-   Field Guide: a drop-in theme for Shaken, Stirred & Sautéed (final)
-   The collection as a kitchen herbarium in three botanical inks. Every
+   Field Guide · Spice cabinet: a drop-in theme for Shaken, Stirred & Sautéed
+   The final Field Guide with a new palette drawn from the spice cabinet:
+   deep, earthy inks on plain stone-grey paper instead of tinted washes.
+   The collection as a kitchen herbarium in three spice inks. Every
    recipe is a specimen sheet with its own drawing; each section is a family
    with its own ink, its own plate drawing and a short Latin name:
 
-     Baking     Elderberry  #6c1f43   Fam. Pistoriaceae   (pistor: baker)
-     Cooking    Bay laurel  #3c7125   Fam. Culinaceae     (culina: kitchen)
-     Cocktails  Juniper     #1b5a86   Fam. Mixtaceae      (mixtus: mixed)
+     Baking     Turmeric    #955a00 / #f2b24c   Fam. Pistoriaceae  (pistor: baker)
+     Cooking    Sumac       #7a1d18 / #e2684f   Fam. Culinaceae    (culina: kitchen)
+     Cocktails  Cardamom    #006162 / #53b3b5   Fam. Mixtaceae     (mixtus: mixed)
+
+   The inks step in lightness as well as hue (turmeric lightest, cardamom
+   in the middle, sumac darkest) in both modes, so they stay apart in
+   greyscale and for red-green colour blindness.
 
    One custom property, --section, carries the family ink. It is set on
    tabs, cards, badges and the whole page (body:has(...)), and every
@@ -16,8 +22,9 @@
    masks keyed on [data-icon]. They sit in each card's spine and large in
    the recipe header. The family plates stay on the tabs and empty state.
 
-   Dark mode is "the herbarium cabinet after dark": deep green-black board,
-   sheets lifted a step, inks raised to a soft glow, drawings in pale ink.
+   Dark mode is "the spice cabinet after dark": warm charcoal board, sheets
+   lifted a step, inks raised to saturated mid-tones (saffron, paprika,
+   cardamom), drawings softened toward the page ink.
 
    Flat colour and crisp lines only: no shadows that fake depth, no
    gradients that pretend to be light, no hatching, no grain.
@@ -68,31 +75,32 @@
 /* ===== Tokens ===== */
 :root {
   /* Paper and ink */
-  --bg: #e8ede6;            /* mounting board: cool green-grey */
-  --surface: #fbfcf9;       /* the specimen sheet */
-  --surface-2: #dfe6dc;     /* pressed / sunken */
-  --text: #15241b;          /* botanical ink */
-  --muted: #4a5a4f;         /* graphite */
-  --border: #c6d0c3;        /* hairline rule */
-  --rule-strong: #788a7c;   /* control edges, 3:1 on board */
-  --accent: #15241b;        /* neutral "chosen": plain ink */
-  --accent-contrast: #fbfcf9;
-  --lime: #cadd4c;          /* specimen tape (fill only, never text) */
-  --on-lime: #15241b;
-  --focus: #15241b;
-  --scrim: rgba(12, 22, 16, .4);
+  --bg: #e5e8ea;            /* mounting board: cool stone grey */
+  --surface: #fafbfc;       /* the specimen sheet */
+  --surface-2: #dbe1e3;     /* pressed / sunken */
+  --text: #231c18;          /* peppercorn ink */
+  --muted: #605852;         /* graphite */
+  --border: #cdd2d5;        /* hairline rule */
+  --rule-strong: #757c7f;   /* control edges, 3:1 on board */
+  --accent: #231c18;        /* neutral "chosen": plain ink */
+  --accent-contrast: #fafbfc;
+  --lime: #ddd0b0;          /* masking tape (fill only, never text); name kept for drop-in */
+  --on-lime: #231c18;
+  --focus: #231c18;
+  --scrim: rgba(35, 28, 24, .4);
 
   /* The three families: ink (text-safe), wash (tint behind ink), paper (page tint),
-     fill (solid "chosen" state) and the text that sits on that fill. */
-  --baking: #6c1f43;    --baking-wash: #f5e4eb;    --baking-paper: #f1e8eb;    --baking-fill: #6c1f43;
-  --cooking: #3c7125;   --cooking-wash: #e2eed8;   --cooking-paper: #e6eddf;   --cooking-fill: #3c7125;
-  --cocktails: #1b5a86; --cocktails-wash: #dcebf4; --cocktails-paper: #e2eaee; --cocktails-fill: #1b5a86;
+     fill (solid "chosen" state) and the text that sits on that fill.
+     Washes and papers carry only a breath of the spice, so paper reads as paper. */
+  --baking: #955a00;    --baking-wash: #faf2eb;    --baking-paper: #f0edea;    --baking-fill: #955a00;
+  --cooking: #7a1d18;   --cooking-wash: #fdf1ef;   --cooking-paper: #f1ecec;   --cooking-fill: #7a1d18;
+  --cocktails: #006162; --cocktails-wash: #edf6f6; --cocktails-paper: #eaefef; --cocktails-fill: #006162;
   --on-family: #ffffff;     /* text on a small solid ink stamp (badge, tick, step number) */
   --on-fill: #ffffff;       /* text on the larger "chosen" fill (tab, option, button) */
   /* Inside a family, the sheet and its hairlines take a faint family tint. */
-  --baking-sheet: #fdfafb;    --baking-line: #dccbd3;
-  --cooking-sheet: #fbfcf9;   --cooking-line: #c6d0c3;
-  --cocktails-sheet: #f9fbfc; --cocktails-line: #c3d1db;
+  --baking-sheet: #fefbf9;    --baking-line: #dfcebd;
+  --cooking-sheet: #fefbfa;   --cooking-line: #e4cac6;
+  --cocktails-sheet: #f9fdfd; --cocktails-line: #c1d6d6;
 
   /* Neutral defaults, overridden per family below */
   --section: var(--text);
@@ -129,38 +137,38 @@
   color-scheme: light dark;
 }
 
-/* ===== Dark: the herbarium cabinet after dark =====
-   Deep green-black board (never pure black), sheets lifted one step, the
-   three inks raised to a soft glow, drawings in pale ink. Body text is a
-   soft green-white at 12-14:1, not paper-white. Shading stays flat. */
+/* ===== Dark: the spice cabinet after dark =====
+   Warm charcoal board (never pure black), sheets lifted one step, the
+   three inks raised to saturated mid-tones, not pastels. Body text is a
+   soft warm white at 12-14:1, not paper-white. Shading stays flat. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #111a15;
-    --surface: #19231e;
-    --surface-2: #222e28;
-    --text: #dde6dc;
-    --muted: #a0b1a6;
-    --border: #2a3832;
-    --rule-strong: #5f7368;
-    --accent: #dde6dc;
-    --accent-contrast: #111a15;
-    --lime: #b9cc55;
-    --on-lime: #111a15;
-    --focus: #c9da7c;
-    --scrim: rgba(4, 8, 6, .62);
+    --bg: #15120f;
+    --surface: #1d1b17;
+    --surface-2: #27231f;
+    --text: #e4dfd6;
+    --muted: #afa89e;
+    --border: #312d29;
+    --rule-strong: #6f6963;
+    --accent: #e4dfd6;
+    --accent-contrast: #15120f;
+    --lime: #b2a381;
+    --on-lime: #15120f;
+    --focus: #e4dfd6;
+    --scrim: rgba(8, 6, 4, .62);
 
-    --baking: #e6a7c2;    --baking-wash: #352630;    --baking-paper: #121a16;    --baking-fill: #4d3141;
-    --cooking: #a8d48b;   --cooking-wash: #223424;   --cooking-paper: #111b15;   --cooking-fill: #304a2c;
-    --cocktails: #93c7e6; --cocktails-wash: #1a3140; --cocktails-paper: #101a17; --cocktails-fill: #24435a;
-    --on-family: #111a15;
-    --on-fill: #eef3ec;
-    --baking-sheet: #1e2221;    --baking-line: #3d3239;
-    --cooking-sheet: #1a251e;   --cooking-line: #2e4231;
-    --cocktails-sheet: #182429; --cocktails-line: #2b3f4a;
+    --baking: #f2b24c;    --baking-wash: #291e10;    --baking-paper: #161310;    --baking-fill: #2f1f06;
+    --cooking: #e2684f;   --cooking-wash: #2d1b17;   --cooking-paper: #171311;   --cooking-fill: #351a14;
+    --cocktails: #53b3b5; --cocktails-wash: #0d2525; --cocktails-paper: #101515; --cocktails-fill: #00292a;
+    --on-family: #15120f;
+    --on-fill: #e4dfd6;
+    --baking-sheet: #201c16;    --baking-line: #3e3324;
+    --cooking-sheet: #221a19;   --cooking-line: #44302b;
+    --cocktails-sheet: #161e1e; --cocktails-line: #223a3b;
 
-    --draw-mix: 72%;
+    --draw-mix: 85%;
 
-    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23111a15' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%2315120f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 }
 
@@ -374,7 +382,7 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
   color: inherit;
 }
 .tab[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); }
-/* After dark the chosen family is a deep fill edged and lettered in its glowing ink, not a bright slab. */
+/* After dark the chosen family is a deep fill edged and lettered in its mid-tone ink, not a bright slab. */
 @media (prefers-color-scheme: dark) {
   .tab:not([data-cat="all"])[aria-pressed="true"] { color: var(--section); box-shadow: inset 0 0 0 1px var(--section); }
 }
@@ -615,7 +623,7 @@ body.sheet-open { overflow: hidden; }
 }
 .badge.component { color: var(--muted); background: transparent; box-shadow: inset 0 0 0 1px var(--rule-strong); }
 @media (prefers-color-scheme: dark) {
-  /* After dark the stamp is a deep fill lettered in the glowing ink. */
+  /* After dark the stamp is a deep fill lettered in the mid-tone ink. */
   .badge:not(.component) { background: var(--section-fill); color: var(--section); }
   .tab:not([data-cat="all"]) { border-color: color-mix(in srgb, var(--section) 62%, var(--surface)); }
   .tab:not([data-cat="all"])[aria-pressed="true"] { border-color: var(--section); }
@@ -718,7 +726,7 @@ body.sheet-open { overflow: hidden; }
   border-bottom: 1px solid var(--section);
   margin-bottom: -1px;
 }
-/* Specimen tape: one short strip of lime holding the label's top edge. */
+/* Specimen tape: one short strip of masking tape holding the label's top edge. */
 .facts::after {
   content: "";
   position: absolute; top: -7px; left: 20px;

@@ -1,12 +1,19 @@
 /* ==========================================================================
-   Field Guide: a drop-in theme for Shaken, Stirred & Sautéed (final)
-   The collection as a kitchen herbarium in three botanical inks. Every
+   Field Guide: a drop-in theme for Shaken, Stirred & Sautéed (Vivid botanical)
+   The collection as a kitchen herbarium printed in three clear, saturated
+   inks, like a modern botanical print. Same layout, type, drawings and
+   behaviour as Field Guide (final); only the colour has changed. Every
    recipe is a specimen sheet with its own drawing; each section is a family
    with its own ink, its own plate drawing and a short Latin name:
 
-     Baking     Elderberry  #6c1f43   Fam. Pistoriaceae   (pistor: baker)
-     Cooking    Bay laurel  #3c7125   Fam. Culinaceae     (culina: kitchen)
-     Cocktails  Juniper     #1b5a86   Fam. Mixtaceae      (mixtus: mixed)
+     Baking     Persimmon  #bf440f / dark #ec7c4c   Fam. Pistoriaceae  (pistor: baker)
+     Cooking    Holly      #00512f / dark #52c08e   Fam. Culinaceae    (culina: kitchen)
+     Cocktails  Gentian    #0056bd / dark #5091e7   Fam. Mixtaceae     (mixtus: mixed)
+
+   Paper is near-white with only a whisper of tint; colour comes from the
+   ink, not from tinted backgrounds. The inks differ in lightness as well
+   as hue (light: persimmon 46, gentian 38, holly 30 L*; dark: holly 70,
+   persimmon 64, gentian 60 L*), so they stay apart for colour-blind eyes.
 
    One custom property, --section, carries the family ink. It is set on
    tabs, cards, badges and the whole page (body:has(...)), and every
@@ -16,8 +23,9 @@
    masks keyed on [data-icon]. They sit in each card's spine and large in
    the recipe header. The family plates stay on the tabs and empty state.
 
-   Dark mode is "the herbarium cabinet after dark": deep green-black board,
-   sheets lifted a step, inks raised to a soft glow, drawings in pale ink.
+   Dark mode is "the herbarium cabinet after dark": deep ink-blue-black
+   board, sheets lifted a step, inks as clear saturated mid-tones (never
+   neon, never pastel), drawings 86% ink.
 
    Flat colour and crisp lines only: no shadows that fake depth, no
    gradients that pretend to be light, no hatching, no grain.
@@ -68,31 +76,31 @@
 /* ===== Tokens ===== */
 :root {
   /* Paper and ink */
-  --bg: #e8ede6;            /* mounting board: cool green-grey */
-  --surface: #fbfcf9;       /* the specimen sheet */
-  --surface-2: #dfe6dc;     /* pressed / sunken */
-  --text: #15241b;          /* botanical ink */
-  --muted: #4a5a4f;         /* graphite */
-  --border: #c6d0c3;        /* hairline rule */
-  --rule-strong: #788a7c;   /* control edges, 3:1 on board */
-  --accent: #15241b;        /* neutral "chosen": plain ink */
-  --accent-contrast: #fbfcf9;
+  --bg: #f3f4f1;            /* mounting board: near-white with a whisper of green */
+  --surface: #fdfdfc;       /* the specimen sheet */
+  --surface-2: #e7e9e5;     /* pressed / sunken */
+  --text: #111715;          /* printer's ink, a hair off black */
+  --muted: #4b524e;         /* graphite */
+  --border: #d4d8d3;        /* hairline rule */
+  --rule-strong: #7c837e;   /* control edges, 3:1 on board */
+  --accent: #111715;        /* neutral "chosen": plain ink */
+  --accent-contrast: #fdfdfc;
   --lime: #cadd4c;          /* specimen tape (fill only, never text) */
-  --on-lime: #15241b;
-  --focus: #15241b;
-  --scrim: rgba(12, 22, 16, .4);
+  --on-lime: #111715;
+  --focus: #111715;
+  --scrim: rgba(10, 14, 16, .4);
 
   /* The three families: ink (text-safe), wash (tint behind ink), paper (page tint),
      fill (solid "chosen" state) and the text that sits on that fill. */
-  --baking: #6c1f43;    --baking-wash: #f5e4eb;    --baking-paper: #f1e8eb;    --baking-fill: #6c1f43;
-  --cooking: #3c7125;   --cooking-wash: #e2eed8;   --cooking-paper: #e6eddf;   --cooking-fill: #3c7125;
-  --cocktails: #1b5a86; --cocktails-wash: #dcebf4; --cocktails-paper: #e2eaee; --cocktails-fill: #1b5a86;
+  --baking: #bf440f;    --baking-wash: #fdf4ef;    --baking-paper: #f7f4f2;    --baking-fill: #bf440f;
+  --cooking: #00512f;   --cooking-wash: #eef7f2;   --cooking-paper: #f2f5f3;   --cooking-fill: #00512f;
+  --cocktails: #0056bd; --cocktails-wash: #f2f5fd; --cocktails-paper: #f3f4f7; --cocktails-fill: #0056bd;
   --on-family: #ffffff;     /* text on a small solid ink stamp (badge, tick, step number) */
   --on-fill: #ffffff;       /* text on the larger "chosen" fill (tab, option, button) */
   /* Inside a family, the sheet and its hairlines take a faint family tint. */
-  --baking-sheet: #fdfafb;    --baking-line: #dccbd3;
-  --cooking-sheet: #fbfcf9;   --cooking-line: #c6d0c3;
-  --cocktails-sheet: #f9fbfc; --cocktails-line: #c3d1db;
+  --baking-sheet: #fffdfc;    --baking-line: #e4d8d1;
+  --cooking-sheet: #fcfefd;   --cooking-line: #d1ddd6;
+  --cocktails-sheet: #fdfdff; --cocktails-line: #d7dae5;
 
   /* Neutral defaults, overridden per family below */
   --section: var(--text);
@@ -104,7 +112,7 @@
   --family: "Herbarium";
 
   /* Drawings: how much of the family ink a drawing takes (the rest is page ink).
-     100% in light mode; paler after dark. */
+     100% in light mode; 86% after dark, a touch softer. */
   --draw-mix: 100%;
   /* Done lines: a clear strike in the family ink, over readable graphite. */
   --strike: 2px;
@@ -130,37 +138,38 @@
 }
 
 /* ===== Dark: the herbarium cabinet after dark =====
-   Deep green-black board (never pure black), sheets lifted one step, the
-   three inks raised to a soft glow, drawings in pale ink. Body text is a
-   soft green-white at 12-14:1, not paper-white. Shading stays flat. */
+   Deep ink-blue-black board (never pure black), sheets lifted one step,
+   the three inks as clear, saturated mid-tones (bright, never neon),
+   drawings slightly softened. Body text is a cool soft white at 12-14:1,
+   not paper-white. Shading stays flat. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #111a15;
-    --surface: #19231e;
-    --surface-2: #222e28;
-    --text: #dde6dc;
-    --muted: #a0b1a6;
-    --border: #2a3832;
-    --rule-strong: #5f7368;
-    --accent: #dde6dc;
-    --accent-contrast: #111a15;
+    --bg: #0e151b;
+    --surface: #161d24;
+    --surface-2: #1e272e;
+    --text: #dde3e7;
+    --muted: #a2adb3;
+    --border: #283238;
+    --rule-strong: #646f76;
+    --accent: #dde3e7;
+    --accent-contrast: #0e151b;
     --lime: #b9cc55;
-    --on-lime: #111a15;
+    --on-lime: #0e151b;
     --focus: #c9da7c;
-    --scrim: rgba(4, 8, 6, .62);
+    --scrim: rgba(3, 6, 9, .62);
 
-    --baking: #e6a7c2;    --baking-wash: #352630;    --baking-paper: #121a16;    --baking-fill: #4d3141;
-    --cooking: #a8d48b;   --cooking-wash: #223424;   --cooking-paper: #111b15;   --cooking-fill: #304a2c;
-    --cocktails: #93c7e6; --cocktails-wash: #1a3140; --cocktails-paper: #101a17; --cocktails-fill: #24435a;
-    --on-family: #111a15;
-    --on-fill: #eef3ec;
-    --baking-sheet: #1e2221;    --baking-line: #3d3239;
-    --cooking-sheet: #1a251e;   --cooking-line: #2e4231;
-    --cocktails-sheet: #182429; --cocktails-line: #2b3f4a;
+    --baking: #ec7c4c;    --baking-wash: #2e231f;    --baking-paper: #181514;    --baking-fill: #4c2617;
+    --cooking: #52c08e;   --cooking-wash: #1a2921;   --cooking-paper: #0e1717;   --cooking-fill: #0d3524;
+    --cocktails: #5091e7; --cocktails-wash: #202632; --cocktails-paper: #0e151c; --cocktails-fill: #00264c;
+    --on-family: #0e151b;
+    --on-fill: #eef1f3;
+    --baking-sheet: #211c1b;    --baking-line: #40322c;
+    --cooking-sheet: #17201e;   --cooking-line: #2a3830;
+    --cocktails-sheet: #191f27; --cocktails-line: #2e3542;
 
-    --draw-mix: 72%;
+    --draw-mix: 86%;
 
-    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23111a15' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%230e151b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
 }
 
@@ -208,7 +217,7 @@ body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe > .b
 /* ===== Recipe drawings (per-recipe icons) =====
    [data-icon] is set on each card and on the recipe page. Each key names a
    single-line drawing in ./icons; .card-icon and .recipe-icon show it as a
-   mask, so it takes the family ink (paler after dark). */
+   mask, so it takes the family ink (slightly softened after dark). */
 [data-icon="loaf"] { --icon: url("./icons/loaf.svg"); }
 [data-icon="donut"] { --icon: url("./icons/donut.svg"); }
 [data-icon="tart"] { --icon: url("./icons/tart.svg"); }
