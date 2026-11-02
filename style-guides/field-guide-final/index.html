@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Field Guide · style guide</title>
+  <meta name="description" content="Field Guide, final: the recipe collection as a kitchen herbarium in three botanical inks, with a drawing for every recipe and a dark mode for cooking at night.">
+  <meta name="theme-color" content="#e8ede6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111a15" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body class="g-guide">
+  <header class="site-header">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg>
+      <span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span>
+      <span class="brand-sub">Style guide · Field Guide, final</span>
+    </a>
+  </header>
+
+  <main class="g-wrap" id="top">
+
+    <section class="g-hero" aria-labelledby="hero-title">
+      <div class="g-hero-text">
+        <p class="tiny">Brand direction · Finalist A</p>
+        <h1 class="g-title" id="hero-title">Field <em>Guide</em></h1>
+        <p class="g-lede">A kitchen herbarium in three botanical inks. Every recipe is a specimen sheet with a drawing of its own, every section is a family with its own ink, and after dark the whole cabinet goes deep green-black with the inks glowing softly. It stays calm and easy to read at the stove.</p>
+      </div>
+      <div class="g-hero-plate" aria-hidden="true">
+        <div class="g-hero-row fam-baking"><span data-icon="loaf"></span><span data-icon="tart"></span><span data-icon="donut"></span><span data-icon="cake"></span></div>
+        <div class="g-hero-row fam-cooking"><span data-icon="soup"></span><span data-icon="garlic"></span><span data-icon="greens"></span><span data-icon="rice-bowl"></span></div>
+        <div class="g-hero-row fam-cocktails"><span data-icon="coupe"></span><span data-icon="highball"></span><span data-icon="martini"></span><span data-icon="tiki-mug"></span></div>
+      </div>
+    </section>
+
+    <ul class="g-go" aria-label="Live previews">
+      <li class="fam-all"><a href="preview/index.html"><span class="g-draw d-leaf" aria-hidden="true"></span><span class="tiny">Home page</span><strong>All recipes</strong><span class="g-arrow" aria-hidden="true">Open the preview &rarr;</span></a></li>
+      <li class="fam-cocktails" data-icon="highball"><a href="preview/recipe.html?r=painkiller"><span class="g-goicon" aria-hidden="true"></span><span class="tiny">Cocktails</span><strong>Painkiller</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+      <li class="fam-baking" data-icon="loaf"><a href="preview/recipe.html?r=babkallah"><span class="g-goicon" aria-hidden="true"></span><span class="tiny">Baking</span><strong>Babkallah</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+      <li class="fam-cooking" data-icon="soup"><a href="preview/recipe.html?r=best-lentil-soup"><span class="g-goicon" aria-hidden="true"></span><span class="tiny">Cooking</span><strong>Best Lentil Soup</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+      <li class="fam-cocktails" data-icon="tiki-mug"><a href="preview/recipe.html?r=zombie"><span class="g-goicon" aria-hidden="true"></span><span class="tiny">Cocktails</span><strong>Zombie</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+    </ul>
+
+    <nav class="g-index" aria-label="Guide sections">
+      <ol>
+        <li><a href="#concept">Concept</a></li>
+        <li><a href="#feedback">What changed</a></li>
+        <li><a href="#icons">Recipe drawings</a></li>
+        <li><a href="#families">Section colours</a></li>
+        <li><a href="#dark">After dark</a></li>
+        <li><a href="#logo">Logo</a></li>
+        <li><a href="#color">Neutral colour</a></li>
+        <li><a href="#type">Type</a></li>
+        <li><a href="#tokens">Spacing &amp; lines</a></li>
+        <li><a href="#components">Components</a></li>
+        <li><a href="#headers">Three recipes</a></li>
+        <li><a href="#voice">Voice</a></li>
+        <li><a href="#screens">Screens</a></li>
+        <li><a href="#adopt">How to adopt</a></li>
+      </ol>
+    </nav>
+
+    <section class="g-sec" id="concept" aria-labelledby="concept-h">
+      <header class="g-sec-head"><span class="tiny">01</span><h2 id="concept-h">Concept</h2></header>
+      <div class="g-cols">
+        <div class="g-prose">
+          <p>A field guide sorts living things into families and shows each one as a plate: a fine-line drawing, a name and a small ruled label. This site works the same way. Baking, cooking and cocktails are three families. Each recipe is a specimen: numbered in the collection, labelled with its facts, drawn in its family's ink, and now given its own drawing, so a babka looks like a loaf and a Painkiller looks like a highball.</p>
+          <p>This is the final round of the Field Guide. It keeps everything you liked (the calm green-grey paper, the flat tonal shading of tabs and cards, the big family tabs, the colour coding and the specimen label) and finishes the three things that were still open: a drawing for every recipe, a dark mode designed for cooking at night, and a clearer strike on finished lines.</p>
+          <p>Everything is flat: solid colour, crisp 1 to 2 px rules, no shadows, bevels, gradients, hatching or grain.</p>
+        </div>
+        <div class="g-label taped">
+          <span class="tiny">Principles</span>
+          <ul class="g-list">
+            <li><b>Colour says where you are</b><span>One custom property, <code>--section</code>, carries the family ink. Tabs, cards, badges and whole recipe pages read it.</span></li>
+            <li><b>A drawing says what it is</b><span>Each recipe's drawing is the fastest way to spot it in the list, before you read a word.</span></li>
+            <li><b>Readable at arm's length</b><span>Schibsted Grotesk for every line you read, at 17 px. Fraunces only for titles. AA contrast or better in both modes.</span></li>
+            <li><b>Rich, not busy</b><span>Character comes from type, drawings and colour, not from trim, texture or ornament.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="feedback" aria-labelledby="feedback-h">
+      <header class="g-sec-head"><span class="tiny">02</span><h2 id="feedback-h">What changed and why</h2></header>
+      <div class="g-diff">
+        <div class="g-label">
+          <p class="g-quote">“I kind of like the shading and the idea of the icons.”</p>
+          <ul class="g-list">
+            <li><b>29 recipe drawings</b><span>Drawn in the same hand as the family plates: one line, round ends, no fills. They are simpler than the plates so that they still read at 28 to 40 px. The line gets finer automatically when a drawing is shown large.</span></li>
+            <li><b>On every card</b><span>The drawing heads each card's tinted spine in the family ink, where the generic family plate used to be. You can scan the list by shape: bowls, glasses, loaves.</span></li>
+            <li><b>Large on the recipe</b><span>The recipe's drawing replaces the family plate in the header, with one small ingredient specimen tucked at its foot (cinnamon, chili or mint), like a botanical plate.</span></li>
+            <li><b>Plates kept where they belong</b><span>The wheat, laurel and coupe plates still mark the three big tabs, and the empty state still shows three specimens.</span></li>
+          </ul>
+        </div>
+        <div class="g-label">
+          <p class="g-quote">Dark mode on the phone, cooking at night: it has to be designed, not inverted.</p>
+          <ul class="g-list">
+            <li><b>The cabinet after dark</b><span>A deep green-black board (<code>#111A15</code>, never pure black) with sheets lifted one step (<code>#19231E</code>). Cards and labels read as paper laid on the board, using tone alone and no shadow.</span></li>
+            <li><b>Inks that glow, calmly</b><span>Rose, sage and sky versions of the three inks, at 7.5 to 8.6:1 on the sheet. Big fills (a chosen tab, a stamp) use a deep tone of the ink instead, so no bright slab lights up the kitchen.</span></li>
+            <li><b>Pale-ink drawings</b><span>Drawings mix 28% page ink into the family ink, so they read as pale pencil rather than neon.</span></li>
+            <li><b>No harsh white</b><span>Body text is a soft green-white at 12.6:1. The current step is a tinted panel with a glowing edge and a “Now” tab.</span></li>
+          </ul>
+        </div>
+        <div class="g-label">
+          <p class="g-quote">The crossed-out done lines are really helpful.</p>
+          <ul class="g-list">
+            <li><b>A clear strike</b><span>Done steps and checked ingredients are struck through with a 2 px line in the family ink. It is clear at a glance from across the counter.</span></li>
+            <li><b>Still readable</b><span>The struck text drops to graphite (6.1:1 in light mode, 6.5:1 or better after dark), so you can still read back what you did.</span></li>
+            <li><b>Done steps get a filled box</b><span>The step number becomes a filled family box with a tick. The next open step becomes the current step.</span></li>
+          </ul>
+        </div>
+        <div class="g-label">
+          <p class="g-quote">Keep the Latin light and charming, but nothing twee.</p>
+          <ul class="g-list">
+            <li><b>Two names kept, one changed</b><span><i class="g-it">Pistoriaceae</i> (pistor, baker) and <i class="g-it">Culinaceae</i> (culina, kitchen) stay. <i class="g-it">Miscellaceae</i> read like “miscellaneous”, so cocktails become <i class="g-it">Mixtaceae</i> (mixtus, mixed).</span></li>
+            <li><b>Once per page</b><span>The Latin appears only as the small italic family line above a recipe title. Tabs, badges and buttons stay in plain English.</span></li>
+            <li><b>Plainer labels</b><span>“Herbarium of Shaken, Stirred &amp; Sautéed” became “Specimen label”, and “Annotations” became “Field notes”. “Specimen list” and “Procedure” stay, because they are short and clear.</span></li>
+            <li><b>Type, unchanged on purpose</b><span>Schibsted Grotesk for every line you read. Fraunces is used only for titles and the family line.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="icons" aria-labelledby="icons-h">
+      <header class="g-sec-head"><span class="tiny">03</span><h2 id="icons-h">Recipe drawings</h2></header>
+      <div class="g-cols">
+        <div class="g-prose">
+          <p>There are 29 drawings, one for every kind of recipe in the collection. Each is drawn on the plates' 48-unit grid, with a single line, round caps and joins, no fills, and one level of detail. Glassware is drawn by its true silhouette: a highball is tall and straight, a coupe is a shallow wide bowl, a Nick &amp; Nora is a small deep bell, and a martini is a V.</p>
+          <p>The line is 2.1 units at icon sizes (about 1.4 px at 32 px). Each SVG carries a small media query that thins the line to 1.45 units from 56 px, 1.15 from 96 px and 0.95 from 150 px. As a result, the big header drawing has the same fine line as the family plates. The drawings are shown as CSS masks, so each takes its family ink (paler after dark).</p>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Mapping rules, in order</span>
+          <ol class="g-rules">
+            <li><b>The recipe's own <code>"icon"</code></b><span>If a recipe file names one of the 29 keys, that wins.</span></li>
+            <li><b>The chosen drawing</b><span>Each current recipe has a hand-picked key (the per-recipe list in <code>icons.js</code>, shown under each drawing below).</span></li>
+            <li><b>Cocktails: the glass</b><span><code>glass</code> containing nick/nora → <code>nick-nora</code>; tiki → <code>tiki-mug</code>; highball or collins → <code>highball</code>; coupe → <code>coupe</code>; martini → <code>martini</code>; rocks or old fashioned → <code>rocks</code>. Components (syrups) → <code>bottle</code>, and anything else → <code>rocks</code>.</span></li>
+            <li><b>Baking: the type</b><span>cakes → <code>cake</code>; cookies-bars → <code>bars</code>; pies-tarts → <code>tart</code>; breads and pastry → <code>loaf</code>; breakfast-bakes → <code>donut</code>; fillings-creams → <code>jar</code>.</span></li>
+            <li><b>Cooking: the course</b><span>soup → <code>soup</code>; salad → <code>salad</code>; sauce → <code>sauce</code>; base → <code>pasta</code>; drink → <code>mug</code>; protein → <code>chicken</code>; side → <code>greens</code>; full-meal → <code>rice-bowl</code>; sweet → <code>apple</code>; breakfast → <code>loaf</code>.</span></li>
+            <li><b>Last resort</b><span><code>loaf</code>, <code>soup</code> or <code>rocks</code> by family.</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="g-sub" id="icon-sheet">
+        <div class="g-icfam fam-baking"><h3 class="g-h3">Baking <span class="tiny">7 drawings</span></h3><div class="g-icons"><figure class="g-ic" data-icon="loaf"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Loaf</b><code>loaf</code><small>Babkallah</small></figcaption></figure><figure class="g-ic" data-icon="donut"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Donut</b><code>donut</code><small>Dense Apple Cider Donuts, Fluffy Apple Cider Donuts</small></figcaption></figure><figure class="g-ic" data-icon="tart"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Tart</b><code>tart</code><small>Lemon Blueberry Tart</small></figcaption></figure><figure class="g-ic" data-icon="bars"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Bars</b><code>bars</code><small>Minty Lime Bars</small></figcaption></figure><figure class="g-ic" data-icon="cake"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Pavlova layers</b><code>cake</code><small>Pavlova</small></figcaption></figure><figure class="g-ic" data-icon="ramekin"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Ramekin</b><code>ramekin</code><small>Dark Chocolate Crémeux</small></figcaption></figure><figure class="g-ic" data-icon="jar"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Jar</b><code>jar</code><small>Lemon Curd</small></figcaption></figure></div></div>
+<div class="g-icfam fam-cooking"><h3 class="g-h3">Cooking <span class="tiny">15 drawings</span></h3><div class="g-icons"><figure class="g-ic" data-icon="soup"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Soup</b><code>soup</code><small>Best Lentil Soup, Italian Wedding Soup with Acini di Pepe</small></figcaption></figure><figure class="g-ic" data-icon="salad"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Salad</b><code>salad</code><small>Chicken Shawarma Salad, Easy Asian Cucumber Salad, Israeli Salad</small></figcaption></figure><figure class="g-ic" data-icon="sauce"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Sauce boat</b><code>sauce</code><small>Chimichurri Sauce, Green Tahini Sauce, Spicy Thai Peanut Sauce, Tahini Yogurt Sauce</small></figcaption></figure><figure class="g-ic" data-icon="rice-bowl"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Rice bowl</b><code>rice-bowl</code><small>Congee with Crispy Chili Pork, Lu Rou Fan, Risotto Milanese</small></figcaption></figure><figure class="g-ic" data-icon="grill"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Grill</b><code>grill</code><small>Carne Asada</small></figcaption></figure><figure class="g-ic" data-icon="sheet-pan"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Sheet pan</b><code>sheet-pan</code><small>Sheet Pan Chicken Shawarma</small></figcaption></figure><figure class="g-ic" data-icon="sandwich"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Sandwich</b><code>sandwich</code><small>Sheet Pan Chicken Shawarma Havarti Sandwich</small></figcaption></figure><figure class="g-ic" data-icon="chicken"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Drumstick</b><code>chicken</code><small>Hot Honey Chicken</small></figcaption></figure><figure class="g-ic" data-icon="potato"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Potato</b><code>potato</code><small>Hasselback Potatoes</small></figcaption></figure><figure class="g-ic" data-icon="greens"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Asparagus</b><code>greens</code><small>Lemon Butter Parmesan Asparagus, Pan-Fried Broccolini, Lemon-Dressed</small></figcaption></figure><figure class="g-ic" data-icon="corn"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Corn</b><code>corn</code><small>Grilled Corn Salad with Avocado</small></figcaption></figure><figure class="g-ic" data-icon="pasta"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Farfalle</b><code>pasta</code><small>Homemade Acini di Pepe</small></figcaption></figure><figure class="g-ic" data-icon="garlic"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Garlic</b><code>garlic</code><small>Garlic Paste</small></figcaption></figure><figure class="g-ic" data-icon="apple"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Apple</b><code>apple</code><small>Microwave Applesauce</small></figcaption></figure><figure class="g-ic" data-icon="mug"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Mug</b><code>mug</code><small>Homemade Apple Cider</small></figcaption></figure></div></div>
+<div class="g-icfam fam-cocktails"><h3 class="g-h3">Cocktails <span class="tiny">7 drawings</span></h3><div class="g-icons"><figure class="g-ic" data-icon="highball"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Highball</b><code>highball</code><small>Painkiller</small></figcaption></figure><figure class="g-ic" data-icon="coupe"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Coupe</b><code>coupe</code><small>Corpse Reviver No. 2</small></figcaption></figure><figure class="g-ic" data-icon="nick-nora"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Nick &amp; Nora</b><code>nick-nora</code><small>Fallback for new recipes</small></figcaption></figure><figure class="g-ic" data-icon="rocks"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Rocks</b><code>rocks</code><small>Fallback for new recipes</small></figcaption></figure><figure class="g-ic" data-icon="martini"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Martini</b><code>martini</code><small>Fallback for new recipes</small></figcaption></figure><figure class="g-ic" data-icon="tiki-mug"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Tiki mug</b><code>tiki-mug</code><small>Zombie</small></figcaption></figure><figure class="g-ic" data-icon="bottle"><div class="g-ic-sizes"><span class="g-ic-64" aria-hidden="true"></span><span class="g-ic-32" aria-hidden="true"></span></div><figcaption><b>Syrup bottle</b><code>bottle</code><small>Grenadine</small></figcaption></figure></div></div>
+      </div>
+      <p class="g-caption">Each drawing at 64 px and 32 px, with the recipes that use it today. For adoption, the preview script <code>_shared/icons.js</code> notes: “On adoption this logic moves into scripts/build-index.mjs (writing an <code>icon</code> field into recipes/index.json) and home.js / recipe.js render the span.” The code is under <a href="#adopt">How to adopt</a>.</p>
+    </section>
+
+    <section class="g-sec" id="families" aria-labelledby="families-h">
+      <header class="g-sec-head"><span class="tiny">04</span><h2 id="families-h">Section colours</h2></header>
+      <p class="g-prose">Each family has an <b>ink</b> for text, rules, ticks, strikes and drawings, a <b>wash</b> that sits behind ink on tabs, spines and label heads, a <b>paper</b> that tints the whole page inside the family, and a <b>fill</b> for chosen states. In light mode the fill is the ink itself, with white text at 5.9:1 or better. After dark it is a deep tone lettered in the ink. Ratios are WCAG 2.1 contrast computed from the hex values. Every pairing used as text passes AA, and most pass AAA.</p>
+      <div class="g-famcards g-sub">
+        <article class="g-famcard fam-baking">
+  <div class="g-famcard-head"><div><span class="tiny">Elderberry</span><b>Baking</b><i>Fam. Pistoriaceae</i><small>pistor, a baker</small></div><span class="g-draw d-baking" aria-hidden="true"></span></div>
+  <div class="g-mode tiny">Light</div><div class="g-famrow"><span class="sw" data-sw="#6c1f43"></span><span><b>--baking</b> <code>#6C1F43</code><small>Ink: tab, spine, stamp, title, ticks, strike</small></span><span class="ratio">10.6:1<small>AAA on sheet</small></span></div><div class="g-famrow"><span class="sw" data-sw="#f5e4eb"></span><span><b>--baking-wash</b> <code>#F5E4EB</code><small>Tint behind ink: tab, spine, label head</small></span><span class="ratio">9.0:1<small>AAA ink on it</small></span></div><div class="g-famrow"><span class="sw" data-sw="#f1e8eb"></span><span><b>--baking-paper</b> <code>#F1E8EB</code><small>The whole recipe page</small></span><span class="ratio">9.1:1<small>AAA ink on it</small></span></div>
+  <div class="g-mode tiny">Dark</div><div class="g-famrow"><span class="sw" data-sw="#e6a7c2"></span><span><b>--baking</b> <code>#E6A7C2</code><small>Ink, raised to a soft glow</small></span><span class="ratio">7.5:1<small>AAA on sheet</small></span></div><div class="g-famrow"><span class="sw" data-sw="#352630"></span><span><b>--baking-wash</b> <code>#352630</code><small>Tint behind ink</small></span><span class="ratio">7.3:1<small>AAA ink on it</small></span></div><div class="g-famrow"><span class="sw" data-sw="#4d3141"></span><span><b>--baking-fill</b> <code>#4D3141</code><small>Chosen tab, option, stamp</small></span><span class="ratio">5.8:1<small>AA ink on it</small></span></div>
+</article><article class="g-famcard fam-cooking">
+  <div class="g-famcard-head"><div><span class="tiny">Bay laurel</span><b>Cooking</b><i>Fam. Culinaceae</i><small>culina, a kitchen</small></div><span class="g-draw d-cooking" aria-hidden="true"></span></div>
+  <div class="g-mode tiny">Light</div><div class="g-famrow"><span class="sw" data-sw="#3c7125"></span><span><b>--cooking</b> <code>#3C7125</code><small>Ink</small></span><span class="ratio">5.7:1<small>AA on sheet</small></span></div><div class="g-famrow"><span class="sw" data-sw="#e2eed8"></span><span><b>--cooking-wash</b> <code>#E2EED8</code><small>Tint behind ink</small></span><span class="ratio">4.9:1<small>AA ink on it</small></span></div><div class="g-famrow"><span class="sw" data-sw="#e6eddf"></span><span><b>--cooking-paper</b> <code>#E6EDDF</code><small>Recipe page</small></span><span class="ratio">4.9:1<small>AA ink on it</small></span></div>
+  <div class="g-mode tiny">Dark</div><div class="g-famrow"><span class="sw" data-sw="#a8d48b"></span><span><b>--cooking</b> <code>#A8D48B</code><small>Ink</small></span><span class="ratio">8.6:1<small>AAA on sheet</small></span></div><div class="g-famrow"><span class="sw" data-sw="#223424"></span><span><b>--cooking-wash</b> <code>#223424</code><small>Tint behind ink</small></span><span class="ratio">7.9:1<small>AAA ink on it</small></span></div><div class="g-famrow"><span class="sw" data-sw="#304a2c"></span><span><b>--cooking-fill</b> <code>#304A2C</code><small>Chosen fill</small></span><span class="ratio">5.8:1<small>AA ink on it</small></span></div>
+</article><article class="g-famcard fam-cocktails">
+  <div class="g-famcard-head"><div><span class="tiny">Juniper</span><b>Cocktails</b><i>Fam. Mixtaceae</i><small>mixtus, mixed</small></div><span class="g-draw d-cocktails" aria-hidden="true"></span></div>
+  <div class="g-mode tiny">Light</div><div class="g-famrow"><span class="sw" data-sw="#1b5a86"></span><span><b>--cocktails</b> <code>#1B5A86</code><small>Ink</small></span><span class="ratio">7.1:1<small>AAA on sheet</small></span></div><div class="g-famrow"><span class="sw" data-sw="#dcebf4"></span><span><b>--cocktails-wash</b> <code>#DCEBF4</code><small>Tint behind ink</small></span><span class="ratio">6.0:1<small>AA ink on it</small></span></div><div class="g-famrow"><span class="sw" data-sw="#e2eaee"></span><span><b>--cocktails-paper</b> <code>#E2EAEE</code><small>Recipe page</small></span><span class="ratio">6.0:1<small>AA ink on it</small></span></div>
+  <div class="g-mode tiny">Dark</div><div class="g-famrow"><span class="sw" data-sw="#93c7e6"></span><span><b>--cocktails</b> <code>#93C7E6</code><small>Ink</small></span><span class="ratio">8.1:1<small>AAA on sheet</small></span></div><div class="g-famrow"><span class="sw" data-sw="#1a3140"></span><span><b>--cocktails-wash</b> <code>#1A3140</code><small>Tint behind ink</small></span><span class="ratio">7.4:1<small>AAA ink on it</small></span></div><div class="g-famrow"><span class="sw" data-sw="#24435a"></span><span><b>--cocktails-fill</b> <code>#24435A</code><small>Chosen fill</small></span><span class="ratio">5.7:1<small>AA ink on it</small></span></div>
+</article>
+      </div>
+      <h3 class="g-h3 g-sub">Telling them apart without colour</h3>
+      <p class="g-prose">The inks differ in lightness as well as hue (elderberry darkest, then juniper, then bay laurel), and the order holds after dark. Colour is never the only cue: the family name is always written out, each tab has its plate, and each card has its recipe's drawing.</p>
+    </section>
+
+    <section class="g-sec" id="dark" aria-labelledby="dark-h">
+      <header class="g-sec-head"><span class="tiny">05</span><h2 id="dark-h">After dark</h2></header>
+      <div class="g-cols">
+        <p class="g-prose">The herbarium cabinet at night. The board is deep green-black and the sheets are lifted one step, so cards, labels and the option sheet read as paper laid on a dark board, using flat tone alone. The inks are raised to a soft glow, the drawings are in pale ink, and nothing is pure white. These specimens are always shown dark, whatever your phone is set to.</p>
+        <ul class="g-donts g-dos" aria-label="Dark-mode rules">
+          <li>Body text <code>#DDE6DC</code> on <code>#19231E</code>, 12.6:1. Never pure white on pure black.</li>
+          <li>Large fills (a chosen tab, a stamp, an option) use the deep <code>-fill</code> tone, not the glowing ink.</li>
+          <li>Drawings are 72% ink and 28% page ink.</li>
+          <li>The current step is the only tinted panel in the method.</li>
+        </ul>
+      </div>
+      <div class="g-dark g-darkbox g-sub">
+        <div class="g-comp">
+          
+        <div class="g-spec">
+          <span class="tiny">Section tabs</span>
+          <nav class="tabs" aria-label="Sections (demo (dark))" data-demo-tabs>
+            <button class="tab" data-cat="all" aria-pressed="false"><span aria-hidden="true">📖</span>All<span class="n">36</span></button>
+            <button class="tab" data-cat="baking" aria-pressed="false"><span aria-hidden="true">🥖</span>Baking<span class="n">8</span></button>
+            <button class="tab" data-cat="cooking" aria-pressed="true"><span aria-hidden="true">🍳</span>Cooking<span class="n">24</span></button>
+            <button class="tab" data-cat="cocktails" aria-pressed="false"><span aria-hidden="true">🍸</span>Cocktails<span class="n">4</span></button>
+          </nav>
+        </div>
+        <div class="g-spec">
+          <span class="tiny">Cards, one per family · the recipe's own drawing heads the spine</span>
+          <ul class="grid">
+            <li><a class="card" href="preview/recipe.html?r=babkallah" data-icon="loaf"><div class="card-body"><span class="card-icon" aria-hidden="true"></span><div class="badges"><span class="badge baking">Baking</span></div><h2>Babkallah</h2><p>Chocolate-cinnamon babka, rolled into three logs and braided like challah.</p><div class="card-meta"><span>⏱ 5 hr</span><span>🍽 Makes 1 loaf / 12 servings</span></div></div></a></li>
+            <li><a class="card" href="preview/recipe.html?r=best-lentil-soup" data-icon="soup"><div class="card-body"><span class="card-icon" aria-hidden="true"></span><div class="badges"><span class="badge cooking">Cooking</span></div><h2>Best Lentil Soup</h2><p>Cumin-spiced vegan lentil soup with greens, partly blended.</p><div class="card-meta"><span>⏱ 55 min</span><span>🍽 Serves 4 large or 6 modest</span></div></div></a></li>
+            <li><a class="card" href="preview/recipe.html?r=painkiller" data-icon="highball"><div class="card-body"><span class="card-icon" aria-hidden="true"></span><div class="badges"><span class="badge cocktails">Cocktails</span></div><h2>Painkiller</h2><p>Dark rum, pineapple, orange and coconut cream, shaken.</p><div class="card-meta"><span>⏱ 5 min</span><span>🍽 Makes 1 drink</span></div></div></a></li>
+          </ul>
+        </div>
+          <div class="g-two">
+            <div class="g-spec fam-baking g-sheet">
+            <span class="tiny">Ingredient checklist and step states</span>
+            <section class="section"><h2>Ingredients</h2>
+              <ul class="ingredients">
+                <li><label><input type="checkbox" checked tabindex="-1"><span><b class="qty">1/4 cup</b> Extra virgin olive oil</span></label></li>
+                <li><label><input type="checkbox" checked tabindex="-1"><span><b class="qty">1</b> Large onion <span class="muted">chopped</span></span></label></li>
+                <li><label><input type="checkbox" tabindex="-1"><span><b class="qty">4</b> Garlic cloves <span class="muted">minced</span></span></label></li>
+              </ul>
+            </section>
+            <section class="section"><h2>Steps</h2>
+              <ol class="steps">
+                <li class="done" tabindex="0">Warm the oil in a large pot over medium-high heat. Add the onion and carrot.<span class="step-wait">⏱ 5 to 7 min</span></li>
+                <li class="current" tabindex="0">Stir in the garlic, cumin and curry powder until fragrant.<span class="step-cue">✓ Smells toasty, about 30 seconds</span></li>
+                <li tabindex="0">Pour in the tomatoes, lentils and broth, and bring to a boil.</li>
+              </ol>
+            </section>
+          </div>
+            <div class="g-spec fam-cocktails g-sheet">
+              <span class="tiny">Recipe header and label</span>
+              <div class="g-rh-inline" data-icon="highball"><span class="g-ricon" aria-hidden="true"></span><span class="fam">Fam. Mixtaceae</span><h3>Painkiller</h3><p>Dark rum, pineapple, orange and coconut cream, shaken.</p></div>
+              <dl class="facts"><div class="fact"><dt>Makes</dt><dd>1 drink</dd></div><div class="fact"><dt>Glass</dt><dd>Highball</dd></div><div class="fact"><dt>ABV</dt><dd>~7%</dd></div></dl>
+              <div class="g-row"><span class="badge baking">Baking</span><span class="badge cooking">Cooking</span><span class="badge cocktails">Cocktails</span><span class="badge component">Component</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="logo" aria-labelledby="logo-h">
+      <header class="g-sec-head"><span class="tiny">06</span><h2 id="logo-h">Logo</h2></header>
+      <div class="g-cols">
+        <p class="g-prose">The mark is a herbarium sheet in miniature: one sprig, pressed and held down by a strip of lime tape. Its three leaf pairs are the three families, from the bottom up: elderberry, laurel and juniper. The leaves are filled so they still read at 16 px. The wordmark is set in Fraunces SemiBold with an italic ampersand. On a family page the ampersand takes that family's ink, and the header's tricolour rule becomes a single colour. After dark the sheet becomes the lifted green-black and the leaves take the glowing inks.</p>
+        <ul class="g-donts" aria-label="Don'ts">
+          <li>Don't outline the leaves or recolour them out of order.</li>
+          <li>Don't add a shadow, bevel or glow.</li>
+          <li>Don't set the wordmark in the grotesk or in all caps.</li>
+          <li>Don't put the mark on a busy photo. Use the sheet as its frame.</li>
+        </ul>
+      </div>
+      <div class="g-logo-row g-sub">
+        <div class="g-tile"><div class="g-stage"><span class="g-clear"><svg class="brand-mark g-mark-xl" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg></span></div><span class="tiny">Mark · logo.svg · clear space dashed</span></div>
+        <div class="g-tile"><div class="g-stage"><svg class="brand-mark g-mark-48" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg><svg class="brand-mark g-mark-32" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg><svg class="brand-mark g-mark-16" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg></div><span class="tiny">48 · 32 · 16 px</span></div>
+        <div class="g-tile"><div class="g-stage"><span class="g-lockup"><svg class="brand-mark" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg><span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span></span></div><div class="g-tricolour" aria-hidden="true"></div><span class="tiny">Header lockup and the tricolour rule</span></div>
+        <div class="g-tile g-dark"><div class="g-stage"><span class="g-lockup"><svg class="brand-mark" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FBFCF9" stroke="#15241B" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#15241B" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#6c1f43"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#3c7125"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1b5a86"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg><span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span></span></div><div class="g-tricolour" aria-hidden="true"></div><span class="tiny">Header lockup after dark</span></div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="color" aria-labelledby="color-h">
+      <header class="g-sec-head"><span class="tiny">07</span><h2 id="color-h">Neutral colour</h2></header>
+      <p class="g-prose">The neutrals are botanical ink and graphite on green-grey paper by day, and soft green-white on green-black by night. Anything not tied to a family (the “All” tab, sort, search) uses plain ink. Lime appears only as tape and is never used for text. Focus rings are ink by day and pale lime by night.</p>
+      <div class="g-swatches g-sub">
+        <div class="g-pal light"><h3>Light</h3><ul><li class="g-sw"><span class="g-chip" data-sw="#e8ede6"></span><span><b>--bg</b> <code>#E8EDE6</code><span class="role">Mounting board. Home page.</span></span><span class="ratio">13.6:1<small>AAA · ink on it</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#fbfcf9"></span><span><b>--surface</b> <code>#FBFCF9</code><span class="role">Specimen sheet. Cards, labels, sheet.</span></span><span class="ratio">15.7:1<small>AAA · ink on it</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#dfe6dc"></span><span><b>--surface-2</b> <code>#DFE6DC</code><span class="role">Pressed. Neutral wash, code.</span></span><span class="ratio">12.7:1<small>AAA · ink on it</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#15241b"></span><span><b>--text</b> <code>#15241B</code><span class="role">Botanical ink. Body, headings.</span></span><span class="ratio">15.7:1<small>AAA · on sheet</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#4a5a4f"></span><span><b>--muted</b> <code>#4A5A4F</code><span class="role">Graphite. Ledes, labels, done lines.</span></span><span class="ratio">6.1:1<small>AA · on board</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#c6d0c3"></span><span><b>--border</b> <code>#C6D0C3</code><span class="role">Hairlines between things.</span></span><span class="ratio">—<small>decorative</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#788a7c"></span><span><b>--rule-strong</b> <code>#788A7C</code><span class="role">Control edges: inputs, chips, buttons.</span></span><span class="ratio">3.1:1<small>UI 3:1 · on board</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#cadd4c"></span><span><b>--lime</b> <code>#CADD4C</code><span class="role">Specimen tape. Fill only, never text.</span></span><span class="ratio">10.7:1<small>AAA · ink on it</small></span></li></ul></div>
+        <div class="g-pal dark"><h3>Dark</h3><ul><li class="g-sw"><span class="g-chip" data-sw="#111a15"></span><span><b>--bg</b> <code>#111A15</code><span class="role">Deep green-black board.</span></span><span class="ratio">13.9:1<small>AAA · ink on it</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#19231e"></span><span><b>--surface</b> <code>#19231E</code><span class="role">Lifted sheet, one step up.</span></span><span class="ratio">12.6:1<small>AAA · ink on it</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#222e28"></span><span><b>--surface-2</b> <code>#222E28</code><span class="role">Pressed.</span></span><span class="ratio">11.2:1<small>AAA · ink on it</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#dde6dc"></span><span><b>--text</b> <code>#DDE6DC</code><span class="role">Soft green-white. Never pure white.</span></span><span class="ratio">12.6:1<small>AAA · on sheet</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#a0b1a6"></span><span><b>--muted</b> <code>#A0B1A6</code><span class="role">Graphite. Done lines stay at 6.5:1+.</span></span><span class="ratio">7.2:1<small>AAA · on sheet</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#2a3832"></span><span><b>--border</b> <code>#2A3832</code><span class="role">Hairlines.</span></span><span class="ratio">—<small>decorative</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#5f7368"></span><span><b>--rule-strong</b> <code>#5F7368</code><span class="role">Control edges.</span></span><span class="ratio">3.2:1<small>UI 3:1 · on sheet</small></span></li><li class="g-sw"><span class="g-chip" data-sw="#b9cc55"></span><span><b>--lime</b> <code>#B9CC55</code><span class="role">Tape, softened for night.</span></span><span class="ratio">10.4:1<small>AAA · board on it</small></span></li></ul></div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="type" aria-labelledby="type-h">
+      <header class="g-sec-head"><span class="tiny">08</span><h2 id="type-h">Type</h2></header>
+      <div class="g-type">
+        <div class="g-face display"><span class="tiny">Titles · Fraunces</span><span class="big">Aa&amp;</span><span class="ital">Fam. Culinaceae</span><p>A soft old-style serif, set at 600 with SOFT 100, so it reads as warm and well-fed rather than formal. It has no hairlines. It is used only for titles: the wordmark, tabs, card and recipe titles, section heads, and the italic family line.</p></div>
+        <div class="g-face sans"><span class="tiny">Reading · Schibsted Grotesk</span><span class="big">Aa</span><p>Every line you read while cooking is set in this: ingredients, steps, notes, ledes, buttons. It is open, sturdy and calm at 17 px, and its figures are clear for quantities and temperatures. You found monospace hard to read, so mono never carries a sentence.</p></div>
+        <div class="g-face mono"><span class="tiny">Label · IBM Plex Mono</span><span class="big">No.01</span><p>Used only for the herbarium label: small caps for field names, counts, accession numbers and captions, plus quantities in the ingredient list. It is never used for prose.</p></div>
+      </div>
+      <table class="g-scale">
+        <thead><tr><th scope="col">Role</th><th scope="col">Sample</th><th scope="col">Spec</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Recipe title</th><td class="s-h1">Painkiller</td><td>Fraunces 600 · clamp(36–54 px) · SOFT 100 WONK 1 · family ink</td></tr>
+          <tr><th scope="row">Family line</th><td class="s-fam">Fam. Mixtaceae</td><td>Fraunces italic 450 · 17 px · graphite</td></tr>
+          <tr><th scope="row">Section head</th><td class="s-h2">Ingredients</td><td>Fraunces 600 · 27 px · 2 px family rule</td></tr>
+          <tr><th scope="row">Card title</th><td class="s-card">Lu Rou Fan</td><td>Fraunces 600 · 22 px</td></tr>
+          <tr><th scope="row">Body</th><td class="s-body">Whisk in the sugar, yolks and vanilla.</td><td>Schibsted 400 · 17 px / 1.55</td></tr>
+          <tr><th scope="row">Done line</th><td class="s-done">Warm the milk to 105F.</td><td>Schibsted 400 · graphite · 2 px strike in family ink</td></tr>
+          <tr><th scope="row">Label field</th><td class="s-label">Std drinks · Glass</td><td>Plex Mono 400 · 11 px · caps +.09em</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="g-sec" id="tokens" aria-labelledby="tokens-h">
+      <header class="g-sec-head"><span class="tiny">09</span><h2 id="tokens-h">Spacing, shape, lines and plates</h2></header>
+      <div class="g-tokens">
+        <div class="g-token"><span class="tiny">Space</span><div class="g-row"><span class="bar s4"></span><span class="bar s8"></span><span class="bar s12"></span><span class="bar s16"></span><span class="bar s24"></span><span class="bar s34"></span><span class="bar s48"></span></div><span>4 · 8 · 12 · 16 · 24 · 34 · 48 px. The page gutter is 16 px plus the safe-area inset.</span></div>
+        <div class="g-token"><span class="tiny">Radius</span><div class="g-row"><span class="box r2"></span><span class="box r4"></span><span class="box r6"></span><span class="box rp"></span></div><span>2 px labels · 4 px cards · 6 px tabs · pill for chips and buttons</span></div>
+        <div class="g-token"><span class="tiny">Lines</span><div class="ln"></div><div class="ln ctl"></div><div class="ln ink"></div><div class="ln fam"></div><span>1 px hairline · 1 px control edge · 1.5 px label · 2 px family rule and strike</span></div>
+        <div class="g-token"><span class="tiny">Drawing sizes</span><span>42 px in a card spine · 116 px on a phone recipe header · 172 px on desktop · 28 to 40 px minimum anywhere else.</span></div>
+        <div class="g-token"><span class="tiny">Tap targets</span><span>38 px minimum for chips and buttons, 46 px for “All”, 112 px for the family tabs and 48 px for search.</span></div>
+      </div>
+      <h3 class="g-h3 g-sub">Family plates and specimens</h3>
+      <p class="g-prose">The plates are the finer, more detailed drawings: one per family (on the tabs), a pressed leaf for “All”, and five ingredient specimens. Recipe headers pair the recipe's drawing with one specimen, and the empty state shows three.</p>
+      <div class="g-plates g-sub">
+        <figure class="fam-baking"><span class="g-draw lg d-baking" aria-hidden="true"></span><figcaption>Ear of wheat<span class="tiny">plate-baking.svg</span></figcaption></figure>
+        <figure class="fam-cooking"><span class="g-draw lg d-cooking" aria-hidden="true"></span><figcaption>Bay laurel<span class="tiny">plate-cooking.svg</span></figcaption></figure>
+        <figure class="fam-cocktails"><span class="g-draw lg d-cocktails" aria-hidden="true"></span><figcaption>Coupe, lime wheel<span class="tiny">plate-cocktails.svg</span></figcaption></figure>
+        <figure class="ink"><span class="g-draw lg d-leaf" aria-hidden="true"></span><figcaption>Pressed leaf · All<span class="tiny">plate-leaf.svg</span></figcaption></figure>
+        <figure class="ink"><span class="g-draw lg d-cinnamon" aria-hidden="true"></span><figcaption>Cinnamon · baking<span class="tiny">spec-cinnamon.svg</span></figcaption></figure>
+        <figure class="ink"><span class="g-draw lg d-chili" aria-hidden="true"></span><figcaption>Chili · cooking<span class="tiny">spec-chili.svg</span></figcaption></figure>
+        <figure class="ink"><span class="g-draw lg d-mint" aria-hidden="true"></span><figcaption>Mint · cocktails<span class="tiny">spec-mint.svg</span></figcaption></figure>
+        <figure class="ink"><span class="g-draw lg d-lemon" aria-hidden="true"></span><figcaption>Lemon · empty state<span class="tiny">spec-lemon.svg</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="g-sec" id="components" aria-labelledby="components-h">
+      <header class="g-sec-head"><span class="tiny">10</span><h2 id="components-h">Components</h2></header>
+      <div class="g-comp">
+        
+        <div class="g-spec">
+          <span class="tiny">Section tabs · try them: choosing a family re-inks this specimen</span>
+          <nav class="tabs" aria-label="Sections (demo)" data-demo-tabs>
+            <button class="tab" data-cat="all" aria-pressed="false"><span aria-hidden="true">📖</span>All<span class="n">36</span></button>
+            <button class="tab" data-cat="baking" aria-pressed="false"><span aria-hidden="true">🥖</span>Baking<span class="n">8</span></button>
+            <button class="tab" data-cat="cooking" aria-pressed="true"><span aria-hidden="true">🍳</span>Cooking<span class="n">24</span></button>
+            <button class="tab" data-cat="cocktails" aria-pressed="false"><span aria-hidden="true">🍸</span>Cocktails<span class="n">4</span></button>
+          </nav>
+        </div>
+        <div class="g-spec">
+          <span class="tiny">Cards, one per family · the recipe's own drawing heads the spine</span>
+          <ul class="grid">
+            <li><a class="card" href="preview/recipe.html?r=babkallah" data-icon="loaf"><div class="card-body"><span class="card-icon" aria-hidden="true"></span><div class="badges"><span class="badge baking">Baking</span></div><h2>Babkallah</h2><p>Chocolate-cinnamon babka, rolled into three logs and braided like challah.</p><div class="card-meta"><span>⏱ 5 hr</span><span>🍽 Makes 1 loaf / 12 servings</span></div></div></a></li>
+            <li><a class="card" href="preview/recipe.html?r=best-lentil-soup" data-icon="soup"><div class="card-body"><span class="card-icon" aria-hidden="true"></span><div class="badges"><span class="badge cooking">Cooking</span></div><h2>Best Lentil Soup</h2><p>Cumin-spiced vegan lentil soup with greens, partly blended.</p><div class="card-meta"><span>⏱ 55 min</span><span>🍽 Serves 4 large or 6 modest</span></div></div></a></li>
+            <li><a class="card" href="preview/recipe.html?r=painkiller" data-icon="highball"><div class="card-body"><span class="card-icon" aria-hidden="true"></span><div class="badges"><span class="badge cocktails">Cocktails</span></div><h2>Painkiller</h2><p>Dark rum, pineapple, orange and coconut cream, shaken.</p><div class="card-meta"><span>⏱ 5 min</span><span>🍽 Makes 1 drink</span></div></div></a></li>
+          </ul>
+        </div>
+        <div class="g-two">
+          <div class="g-spec">
+            <span class="tiny">Filter buttons, active chips, badges</span>
+            <div class="g-row"><button class="filter-btn" aria-expanded="false">Cuisine<span class="caret" aria-hidden="true">▾</span></button><button class="filter-btn" data-on="true" aria-expanded="false">Flavor<span class="n">2</span><span class="caret" aria-hidden="true">▾</span></button><button class="filter-btn" aria-expanded="true">Time<span class="caret" aria-hidden="true">▾</span></button></div>
+            <div class="active-row"><button class="chip" aria-pressed="true">Umami <span aria-hidden="true">×</span></button><button class="chip" aria-pressed="true">Sweet-savory <span aria-hidden="true">×</span></button><button class="clear">Clear all</button></div>
+            <div class="g-row g-sub"><span class="badge baking">Baking</span><span class="badge cooking">Cooking</span><span class="badge cocktails">Cocktails</span><span class="badge component">Component</span></div>
+            <dl class="g-states"><dt>Filter on</dt><dd>Family-ink edge and text, with a count stamp</dd><dt>Open</dt><dd>Family wash</dd><dt>Chip</dt><dd>A pill with an ink edge; tap to remove</dd><dt>Badge</dt><dd>A solid family stamp by day, a deep stamp lettered in ink after dark</dd></dl>
+          </div>
+          <div class="g-spec g-static-sheet fam-cooking">
+            <span class="tiny">Option sheet · bottom sheet on phones, drop-down from 720 px</span>
+            <div class="sheet" role="group" aria-label="Course (demo)">
+              <div class="sheet-head"><h2>Course</h2><button class="btn" type="button">Done</button></div>
+              <div class="sheet-body" data-demo-opts>
+                <div class="opts"><button class="opt" aria-pressed="true">Soup<span class="n">2</span></button><button class="opt" aria-pressed="false">Salad<span class="n">4</span></button><button class="opt" aria-pressed="false">Side<span class="n">8</span></button><button class="opt" aria-pressed="false">Full meal<span class="n">7</span></button><button class="opt" aria-pressed="false" disabled>Breakfast<span class="n">0</span></button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="g-spec on-surface">
+          <span class="tiny">Buttons and the back link</span>
+          <div class="g-row"><button class="btn" aria-pressed="false">Keep screen on</button><button class="btn fam-cooking" aria-pressed="true">Keep screen on</button><button class="btn">Reset checkmarks</button><button class="btn">Print</button><a class="back fam-cooking" href="#components">&larr; Cooking</a></div>
+        </div>
+        <div class="g-two">
+          <div class="g-spec fam-cooking g-sheet">
+            <span class="tiny">Ingredient checklist and step states · tap a step to try</span>
+            <section class="section"><h2>Ingredients</h2>
+              <ul class="ingredients">
+                <li><label><input type="checkbox" checked><span><b class="qty">1/4 cup</b> Extra virgin olive oil</span></label></li>
+                <li><label><input type="checkbox" checked><span><b class="qty">1</b> Large onion <span class="muted">chopped</span></span></label></li>
+                <li><label><input type="checkbox"><span><b class="qty">4</b> Garlic cloves <span class="muted">minced</span></span></label></li>
+              </ul>
+            </section>
+            <section class="section"><h2>Steps</h2>
+              <ol class="steps" data-demo-steps>
+                <li class="done" tabindex="0">Warm the oil in a large pot over medium-high heat. Add the onion and carrot.<span class="step-wait">⏱ 5 to 7 min</span></li>
+                <li class="current" tabindex="0">Stir in the garlic, cumin and curry powder until fragrant.<span class="step-cue">✓ Smells toasty, about 30 seconds</span></li>
+                <li tabindex="0">Pour in the tomatoes, lentils and broth, and bring to a boil.</li>
+              </ol>
+            </section>
+          </div>
+          <div class="g-spec fam-baking g-sheet">
+            <span class="tiny">States, spelled out</span>
+            <dl class="g-states g-states-lg"><dt>Checked ingredient</dt><dd>A filled family box with a tick. The line drops to graphite and is struck through with a 2 px line in the family ink. Its letter fades.</dd><dt>Done step</dt><dd>The number becomes a filled family box with a tick. The text drops to graphite with the same 2 px strike, waits and cues included.</dd><dt>Current step</dt><dd>The first open step after you start: a family-wash panel with a family edge, a filled number and a “Now” tab. Only one step is current at a time.</dd><dt>Upcoming step</dt><dd>An outlined family number on the sheet.</dd><dt>Wait / cue</dt><dd>A clock line in mono for times, and a tick line in the family ink for the cue to look for.</dd></dl>
+            <span class="tiny g-sub">Specimen label (facts)</span>
+            <dl class="facts"><div class="fact"><dt>Makes</dt><dd>1 loaf</dd></div><div class="fact"><dt>Total</dt><dd>About 5 hr</dd></div><div class="fact"><dt>Oven</dt><dd>350F (175C)</dd></div></dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="headers" aria-labelledby="headers-h">
+      <header class="g-sec-head"><span class="tiny">11</span><h2 id="headers-h">Three recipes, side by side</h2></header>
+      <p class="g-prose">The same template in each family's ink. The drawing, the specimen, the title, the label edge, the strike and the current step all follow <code>--section</code>.</p>
+      <div class="g-heads g-sub">
+        <article class="g-rh fam-baking g-sheet" data-icon="loaf"><span class="g-ricon" aria-hidden="true"></span><a class="back" href="preview/recipe.html?r=babkallah">&larr; Baking</a><span class="fam">Fam. Pistoriaceae</span><h3>Babkallah</h3><p>Chocolate-cinnamon babka, braided like challah.</p>
+          <dl class="facts"><div class="fact"><dt>Makes</dt><dd>1 loaf</dd></div><div class="fact"><dt>Total</dt><dd>About 5 hr</dd></div></dl>
+          <ol class="steps g-mini-steps"><li class="done">Warm the milk.</li><li class="current">Whisk in sugar, yolks and vanilla.</li></ol></article>
+        <article class="g-rh fam-cooking g-sheet" data-icon="soup"><span class="g-ricon" aria-hidden="true"></span><a class="back" href="preview/recipe.html?r=best-lentil-soup">&larr; Cooking</a><span class="fam">Fam. Culinaceae</span><h3>Best Lentil Soup</h3><p>Cumin-spiced vegan lentil soup with greens.</p>
+          <dl class="facts"><div class="fact"><dt>Serves</dt><dd>4 to 6</dd></div><div class="fact"><dt>Total</dt><dd>55 min</dd></div></dl>
+          <ol class="steps g-mini-steps"><li class="done">Soften the onion and carrot.</li><li class="current">Stir in garlic and spices.</li></ol></article>
+        <article class="g-rh fam-cocktails g-sheet" data-icon="highball"><span class="g-ricon" aria-hidden="true"></span><a class="back" href="preview/recipe.html?r=painkiller">&larr; Cocktails</a><span class="fam">Fam. Mixtaceae</span><h3>Painkiller</h3><p>Dark rum, pineapple, orange and coconut cream.</p>
+          <dl class="facts"><div class="fact"><dt>Makes</dt><dd>1 drink</dd></div><div class="fact"><dt>ABV</dt><dd>~7%</dd></div></dl>
+          <ol class="steps g-mini-steps"><li class="done">Shake hard with ice.</li><li class="current">Double strain into the glass.</li></ol></article>
+      </div>
+    </section>
+
+    <section class="g-sec" id="voice" aria-labelledby="voice-h">
+      <header class="g-sec-head"><span class="tiny">12</span><h2 id="voice-h">Voice and microcopy</h2></header>
+      <div class="g-voice">
+        <div class="g-prose">
+          <p>The voice is that of a naturalist's notebook kept by someone who cooks: exact about quantities and cues, and a little dry and fond everywhere else. The Latin is a wink. It appears once per recipe, in small italic graphite above the title, and nowhere in the controls.</p>
+          <p>Write cues as things you can see, smell or hear (“smooth and supple, no longer shiny”). Write waits as ranges (“5 to 10 min”). Give one instruction per step, and use no exclamation marks.</p>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Say this, not that</span>
+          <ul class="g-say">
+            <li><b>Empty</b><span>Nothing matches that. Clear filters <span class="no">Oops! No specimens found!</span></span></li>
+            <li><b>No recipes</b><span>No recipes yet. Add one to the recipes/ folder to get started.</span></li>
+            <li><b>Current step</b><span>Now</span></li>
+            <li><b>Captions</b><span>Specimen list · Procedure · Field notes · Read first <span class="no">Annotations</span></span></li>
+            <li><b>Label head</b><span>Specimen label <span class="no">Herbarium of Shaken, Stirred &amp; Sautéed</span></span></li>
+            <li><b>Family line</b><span>Fam. Mixtaceae <span class="no">Fam. Miscellaceae</span></span></li>
+            <li><b>Reset</b><span>Reset checkmarks <span class="no">Clear all progress?!</span></span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="g-sec" id="screens" aria-labelledby="screens-h">
+      <header class="g-sec-head"><span class="tiny">13</span><h2 id="screens-h">Screens</h2></header>
+      <div class="g-shots">
+        <figure><img src="shots/home-mobile-light.png" alt="Home page on a phone, light mode" loading="lazy"><figcaption>Home, light</figcaption></figure>
+        <figure><img src="shots/home-mobile-dark.png" alt="Home page on a phone, dark mode" loading="lazy"><figcaption>Home, after dark</figcaption></figure>
+        <figure><img src="shots/recipe-mobile-light.png" alt="Babkallah recipe page on a phone, in elderberry" loading="lazy"><figcaption>Baking · Babkallah</figcaption></figure>
+        <figure><img src="shots/recipe-mobile-dark.png" alt="Babkallah recipe page on a phone, dark mode" loading="lazy"><figcaption>Baking, after dark</figcaption></figure>
+        <figure><img src="shots/recipe-cooking-mobile-light.png" alt="Best Lentil Soup recipe page on a phone, in bay laurel" loading="lazy"><figcaption>Cooking · Lentil soup</figcaption></figure>
+        <figure><img src="shots/recipe-cooking-mobile-dark.png" alt="Best Lentil Soup recipe page, dark mode" loading="lazy"><figcaption>Cooking, after dark</figcaption></figure>
+        <figure><img src="shots/recipe-cocktail-mobile-light.png" alt="Painkiller recipe page on a phone, in juniper" loading="lazy"><figcaption>Cocktails · Painkiller</figcaption></figure>
+        <figure><img src="shots/recipe-cocktail-mobile-dark.png" alt="Painkiller recipe page, dark mode" loading="lazy"><figcaption>Cocktails, after dark</figcaption></figure>
+        <figure><img src="shots/sheet-mobile.png" alt="Filter bottom sheet on a phone" loading="lazy"><figcaption>Filter sheet</figcaption></figure>
+        <figure><img src="shots/empty-mobile.png" alt="Empty search result on a phone" loading="lazy"><figcaption>Empty state</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="g-sec" id="adopt" aria-labelledby="adopt-h">
+      <header class="g-sec-head"><span class="tiny">14</span><h2 id="adopt-h">How to adopt</h2></header>
+      <ol class="g-steps">
+        <li><b>Theme and fonts.</b> Copy <code>theme.css</code> to <code>assets/style.css</code>. Copy <code>fonts/</code> to <code>assets/fonts/</code>, the drawings (<code>plate-*.svg</code>, <code>spec-*.svg</code>) to <code>assets/</code>, and <code>icons/</code> to <code>assets/icons/</code>. Every <code>url("./…")</code> in the theme then resolves next to the stylesheet.</li>
+        <li><b>Header.</b> In <code>index.html</code> and <code>recipe.html</code>, replace the emoji <code>.brand-mark</code> span with the inline SVG from <code>preview/index.html</code>, add <code>&lt;span class="brand-sub"&gt;A kitchen field guide&lt;/span&gt;</code> after the name, and set the theme colour per mode:
+          <pre class="g-pre">&lt;meta name="theme-color" content="#e8ede6" media="(prefers-color-scheme: light)"&gt;
+&lt;meta name="theme-color" content="#111a15" media="(prefers-color-scheme: dark)"&gt;</pre></li>
+        <li><b>Icons in the data.</b> Move <code>iconFor()</code> and its tables from <code>style-guides/_shared/icons.js</code> into <code>scripts/build-index.mjs</code>. Write the result into each index entry as <code>icon</code>, and into the recipe JSON the page loads (or let <code>recipe.js</code> look it up). A recipe can still set its own <code>"icon": "coupe"</code>, which wins.
+          <pre class="g-pre">// build-index.mjs, in index.push({ … })
+icon: iconFor({ ...r, slug, facets }),</pre></li>
+        <li><b>Icons in the pages.</b> Two small changes render the span the theme styles:
+          <pre class="g-pre">// home.js, card(r)
+&lt;a class="card" href="…" ${r.icon ? `data-icon="${esc(r.icon)}"` : ""}&gt;
+  &lt;div class="card-body"&gt;
+    ${r.icon ? `&lt;span class="card-icon" aria-hidden="true"&gt;&lt;/span&gt;` : ""}
+
+// recipe.js, render(r) — before &lt;h1&gt;
+${r.icon ? `&lt;span class="recipe-icon" aria-hidden="true"&gt;&lt;/span&gt;` : ""}
+// and after setting innerHTML:
+if (r.icon) root.dataset.icon = r.icon;</pre>
+          Then drop <code>icons.js</code>. Cards without an icon fall back to their family plate.</li>
+        <li><b>Logo and offline.</b> Use <code>logo.svg</code> as <code>assets/icon.svg</code>. Re-export <code>icon-192.png</code> and <code>icon-512.png</code> on <code>#FBFCF9</code>, and set the manifest <code>theme_color</code> to <code>#e8ede6</code>. Add the fonts, plates and icons to the cache list in <code>sw.js</code> and bump its version.</li>
+        <li><b>CSP.</b> Nothing changes: fonts and drawings are same-origin, glyphs are <code>data:</code> URIs, and there are no inline styles or scripts. The small <code>&lt;style&gt;</code> inside each icon SVG lives in the image, not the page.</li>
+        <li><b>Later.</b> To add a recipe type, draw a 48-unit icon in the same hand (single 2.1 line, round ends, no fills), add one <code>[data-icon]</code> line to the theme, and add the key to the mapping.</li>
+      </ol>
+    </section>
+
+    <footer class="g-foot"><span class="g-draw d-leaf" aria-hidden="true"></span><span>Field Guide · final round · Fonts: Fraunces, Schibsted Grotesk and IBM Plex Mono, all SIL Open Font License. Plates and recipe drawings are original to this project.</span></footer>
+  </main>
+  <script src="guide.js"></script>
+</body>
+</html>
