@@ -513,3 +513,8 @@
   .g-cover::before, .g-cover::after, .g-try { display: none; }
   .g-spec, .g-card, .g-sw { break-inside: avoid; }
 }
+.back.g-bc { --cat-bg: var(--cocktails-bg); --cat-fg: var(--cocktails-fg); }
+.back.g-bk { --cat-bg: var(--baking-bg); --cat-fg: var(--baking-fg); }
+.g-steps-adopt { grid-template-columns: minmax(0, 1fr); }
+.g-steps-adopt li { min-width: 0; overflow-wrap: anywhere; }
+.g-steps-adopt .g-code { overflow-wrap: normal; }
