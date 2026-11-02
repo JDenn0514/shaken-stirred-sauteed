@@ -6,7 +6,7 @@
   "tags": {
     "type": ["breakfast-bakes"],
     "flavor": ["sweet", "spiced", "light"],
-    "ingredients": ["apple"],
+    "ingredients": ["apple-cider", "apple"],
     "occasion": ["brunch"],
     "season": ["fall"],
     "diet": ["vegetarian"]

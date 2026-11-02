@@ -4,7 +4,7 @@
   "kind": "dish",
   "description": "Yogurt-marinated roast chicken and two cheeses, baked inside folded naan.",
   "tags": {
-    "course": ["main"],
+    "course": ["full-meal"],
     "cuisine": ["american", "middle-eastern"],
     "method": ["sheet-pan"],
     "flavor": ["rich", "herby"],

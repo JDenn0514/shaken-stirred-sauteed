@@ -63,7 +63,7 @@ Every filter and its allowed values live in `recipes/vocabulary.json`. To tag a 
 
 ```json
 "tags": {
-  "course": ["main"],
+  "course": ["full-meal"],
   "cuisine": ["chinese-taiwanese"],
   "flavor": ["umami", "sweet-savory"],
   "ingredients": ["pork", "soy-sauce", "rice"],

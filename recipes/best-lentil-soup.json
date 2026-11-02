@@ -4,7 +4,7 @@
   "kind": "dish",
   "description": "Cumin-spiced vegan lentil soup with greens, partly blended.",
   "tags": {
-    "course": ["soup", "main"],
+    "course": ["soup", "full-meal"],
     "cuisine": ["middle-eastern"],
     "method": ["simmer-braise"],
     "flavor": ["rich", "bright"],

@@ -6,6 +6,7 @@
     "course": ["sweet", "side"],
     "cuisine": ["american"],
     "method": ["microwave"],
+    "flavor": ["sweet"],
     "ingredients": ["apple", "lemon"],
     "occasion": ["weeknight"],
     "season": ["fall"],

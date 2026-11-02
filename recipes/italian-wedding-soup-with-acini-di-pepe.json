@@ -4,7 +4,7 @@
   "kind": "dish",
   "description": "Beef and pork meatballs, vegetables, tiny pasta and spinach.",
   "tags": {
-    "course": ["soup", "main"],
+    "course": ["soup", "full-meal"],
     "cuisine": ["italian"],
     "method": ["simmer-braise"],
     "flavor": ["rich", "herby"],

@@ -5,7 +5,7 @@
   "description": "Arborio rice simmered in broth, tinted and perfumed with bloomed saffron.",
   "origin": "Milan, Italy",
   "tags": {
-    "course": ["main", "side"],
+    "course": ["full-meal", "side"],
     "cuisine": ["italian"],
     "method": ["simmer-braise"],
     "flavor": ["rich", "umami"],

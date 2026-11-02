@@ -7,6 +7,7 @@
     "course": ["drink"],
     "cuisine": ["american"],
     "method": ["slow-cooker", "simmer-braise"],
+    "flavor": ["sweet"],
     "ingredients": ["apple", "orange"],
     "occasion": ["holiday", "make-ahead"],
     "season": ["fall", "winter"],

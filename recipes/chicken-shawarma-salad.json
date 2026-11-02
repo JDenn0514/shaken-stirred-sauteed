@@ -4,7 +4,7 @@
   "kind": "dish",
   "description": "Spiced roast chicken over chopped salad, with two tahini sauces.",
   "tags": {
-    "course": ["main", "salad"],
+    "course": ["full-meal", "salad"],
     "cuisine": ["middle-eastern"],
     "method": ["sheet-pan"],
     "flavor": ["bright", "herby"],

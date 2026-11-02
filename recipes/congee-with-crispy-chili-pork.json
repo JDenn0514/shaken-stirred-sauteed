@@ -4,7 +4,7 @@
   "kind": "dish",
   "description": "Savory rice porridge under crisped chili-garlic ground pork.",
   "tags": {
-    "course": ["main"],
+    "course": ["full-meal"],
     "cuisine": ["chinese-taiwanese"],
     "method": ["simmer-braise", "wok"],
     "flavor": ["umami", "spicy"],

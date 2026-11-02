@@ -5,7 +5,7 @@
   "description": "Diced pork belly braised in soy and spices, over rice.",
   "origin": "Taiwan",
   "tags": {
-    "course": ["main"],
+    "course": ["full-meal"],
     "cuisine": ["chinese-taiwanese"],
     "method": ["simmer-braise", "wok"],
     "flavor": ["umami", "sweet-savory"],

@@ -6,7 +6,8 @@
       "label": "Course",
       "sections": ["cooking"],
       "values": [
-        { "key": "main", "label": "Main" },
+        { "key": "full-meal", "label": "Full meal" },
+        { "key": "protein", "label": "Main protein" },
         { "key": "side", "label": "Side" },
         { "key": "salad", "label": "Salad" },
         { "key": "soup", "label": "Soup" },
@@ -91,7 +92,8 @@
           { "key": "spicy", "label": "Spicy" },
           { "key": "smoky", "label": "Smoky & charred" },
           { "key": "umami", "label": "Umami & salty" },
-          { "key": "sweet-savory", "label": "Sweet & savory" }
+          { "key": "sweet-savory", "label": "Sweet & savory" },
+          { "key": "sweet", "label": "Sweet" }
         ],
         "baking": [
           { "key": "sweet", "label": "Sweet" },
@@ -186,6 +188,7 @@
           "label": "Fruit",
           "values": [
             { "key": "apple", "label": "Apple" },
+            { "key": "apple-cider", "label": "Apple cider" },
             { "key": "berries", "label": "Berries" },
             { "key": "stone-fruit", "label": "Stone fruit" },
             { "key": "banana", "label": "Banana" },
