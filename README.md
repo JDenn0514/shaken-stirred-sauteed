@@ -39,7 +39,7 @@ A GitHub Action re-runs the index check on every push and flags any recipe with 
 | `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges" }` |
 | `kind` | | `dish` (the default) or `component`, for things made to go into other recipes: sauces, curds, syrups, homemade pasta |
 | `description` | | Short blurb shown on the card |
-| `tags` | | e.g. `["weeknight", "gin", "holiday"]` |
+| `tags` | | Filter tags, e.g. `{ "occasion": ["weeknight"], "ingredients": ["chicken", "lime"] }`. Only the filters and values listed in `recipes/vocabulary.json` for the recipe's category are allowed, and the build fails on anything else |
 | `added` | | Date added (`YYYY-MM-DD`), used by "Newest" sort |
 | `yield` | | e.g. `"Makes 24 cookies"`, `"Serves 6"` |
 | `times` | | Times as written, e.g. `[["Active", "15 min"], ["Marinate", "4 to 8 hours"]]` |

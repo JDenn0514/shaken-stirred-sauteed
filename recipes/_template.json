@@ -2,7 +2,7 @@
   "title": "Recipe Name",
   "category": "cooking",
   "description": "One or two sentences about the dish.",
-  "tags": ["weeknight", "vegetarian"],
+  "tags": { "occasion": ["weeknight"], "diet": ["vegetarian"], "ingredients": ["tomato", "garlic"] },
   "added": "2026-10-31",
   "yield": "4 servings",
   "time": { "prep": 15, "cook": 30 },
