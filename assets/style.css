@@ -137,14 +137,18 @@
 
   color-scheme: light dark;
 }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 
 /* ===== Dark: the herbarium cabinet after dark =====
    Warm charcoal board (never pure black), sheets lifted one step,
    the three inks as clear, saturated mid-tones (bright, never neon),
    drawings slightly softened. Body text is a warm soft white at 12-14:1,
-   not paper-white. Shading stays flat. */
-@media (prefers-color-scheme: dark) {
-  :root {
+   not paper-white. Shading stays flat.
+   theme.js sets data-theme from the header toggle, or from the system
+   setting when nothing is saved. Screen only, so printing stays light. */
+@media screen {
+  :root[data-theme="dark"] {
     --bg: #15120f;
     --surface: #1d1b17;
     --surface-2: #27231f;
@@ -306,6 +310,7 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
   max-width: 1048px; margin: 0 auto;
   text-decoration: none; color: var(--text);
   min-height: 38px;
+  padding-right: 48px; /* room for the theme toggle */
 }
 .brand-mark { font-size: 1.5rem; flex: none; display: block; width: 27px; height: 32px; }
 .brand-mark .lg-sheet { fill: var(--surface); stroke: var(--text); }
@@ -319,6 +324,18 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
   font-size: 1.2rem; font-weight: 650; letter-spacing: -.012em; line-height: 1.15;
 }
 .amp { font-style: italic; font-weight: 500; color: var(--section); padding: 0 .04em; }
+/* Light/dark toggle, top right, level with the brand row. */
+.theme-toggle {
+  position: absolute; top: max(10px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right));
+  display: grid; place-items: center;
+  width: 38px; height: 38px; padding: 0;
+  border: 1px solid var(--rule-strong); border-radius: 50%;
+  background: var(--surface); color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s ease;
+}
+.theme-toggle:hover { border-color: var(--text); }
+.theme-toggle svg { width: 18px; height: 18px; }
 
 /* ===== Home controls ===== */
 .controls { padding-top: 18px; }
@@ -590,10 +607,10 @@ body.sheet-open { overflow: hidden; }
   background: var(--section); color: var(--on-section);
 }
 .badge.component { color: var(--muted); background: transparent; box-shadow: inset 0 0 0 1px var(--rule-strong); }
-@media (prefers-color-scheme: dark) {
+@media screen {
   /* After dark the stamp is a deep fill lettered in the glowing ink. */
-  .badge:not(.component) { background: var(--section-fill); color: var(--section); }
-  .opt[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--section); }
+  :root[data-theme="dark"] .badge:not(.component) { background: var(--section-fill); color: var(--section); }
+  :root[data-theme="dark"] .opt[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--section); }
 }
 .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
