@@ -1,0 +1,23 @@
+// Lint rules for the site's JavaScript, the scripts and the tests (npm run lint).
+// Catches code that is wrong or most likely wrong; style rules that fight how
+// this code is written are switched off below.
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": { "correctness": "error", "suspicious": "error" },
+  "rules": {
+    "no-undef": "error",
+    // `x ? a() : b()` and `ok && run()` as statements are this codebase's style.
+    "no-unused-expressions": ["error", { "allowTernary": true, "allowShortCircuit": true }],
+    // Helpers live inside each page's wrapper function on purpose.
+    "unicorn/consistent-function-scoping": "off",
+    // Sorting in place is intended where it's used.
+    "unicorn/no-array-sort": "off"
+  },
+  "env": { "browser": true, "es2024": true },
+  "ignorePatterns": ["style-guides/**"],
+  "overrides": [
+    { "files": ["sw.js"], "env": { "serviceworker": true } },
+    { "files": ["assets/recipe-icons.js"], "globals": { "module": "readonly" } },
+    { "files": ["scripts/**", "tests/**", "*.config.mjs"], "env": { "node": true } }
+  ]
+}
