@@ -14,11 +14,9 @@ export default defineConfig({
     channel: "chrome",
     trace: "retain-on-failure",
   },
-  // The same static server as local development, on its own port.
   webServer: {
-    command: `python3 -m http.server ${PORT}`,
+    command: `node tests/helpers/serve.mjs ${PORT}`,
     url: `http://localhost:${PORT}/`,
     reuseExistingServer: !process.env.CI,
-    stderr: "ignore", // python logs every request here
   },
 });

@@ -115,6 +115,10 @@ npm test
 ```
 
 - `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index.
-- `tests/e2e/` opens the site in Chrome and checks the index page: search, sections, filters, sorting and links. It uses a small set of test recipes, not the real ones.
+- `tests/e2e/` opens the site in Chrome. It uses a small set of test recipes, not the real ones, and covers:
+  - the index page: search, sections, filters, sorting and links
+  - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
+  - light and dark mode
+  - an automated accessibility scan of every page in both modes
 
 The GitHub Action runs them on every push. Dependabot opens a pull request when the test tools have a new version.
