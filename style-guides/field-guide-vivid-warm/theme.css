@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Field Guide: a drop-in theme for Shaken, Stirred & Sautéed (Vivid botanical)
+   Field Guide: a drop-in theme for Shaken, Stirred & Sautéed (Vivid botanical · warm night)
    The collection as a kitchen herbarium printed in three clear, saturated
    inks, like a modern botanical print. Same layout, type, drawings and
    behaviour as Field Guide (final); only the colour has changed. Every
@@ -12,8 +12,10 @@
 
    Paper is near-white with only a whisper of tint; colour comes from the
    ink, not from tinted backgrounds. The inks differ in lightness as well
-   as hue (light: persimmon 46, gentian 38, holly 30 L*; dark: holly 70,
-   persimmon 64, gentian 60 L*), so they stay apart for colour-blind eyes.
+   as hue (light: persimmon 46, gentian 38, holly 30 L*; dark: persimmon 74,
+   holly 69, gentian 62 L*). After dark the baking ink is lifted so that
+   orange and blue, the pair most often side by side, differ clearly in
+   lightness (relative luminance .47 / .40 / .31).
 
    One custom property, --section, carries the family ink. It is set on
    tabs, cards, badges and the whole page (body:has(...)), and every
@@ -23,9 +25,9 @@
    masks keyed on [data-icon]. They sit in each card's spine and large in
    the recipe header. The family plates stay on the tabs and empty state.
 
-   Dark mode is "the herbarium cabinet after dark": deep ink-blue-black
-   board, sheets lifted a step, inks as clear saturated mid-tones (never
-   neon, never pastel), drawings 86% ink.
+   Dark mode is "the herbarium cabinet after dark": a warm charcoal
+   board (from Spice cabinet), sheets lifted a step, inks as clear
+   saturated mid-tones (never neon, never pastel), drawings 86% ink.
 
    Flat colour and crisp lines only: no shadows that fake depth, no
    gradients that pretend to be light, no hatching, no grain.
@@ -138,9 +140,9 @@
 }
 
 /* ===== Dark: the herbarium cabinet after dark =====
-   Deep ink-blue-black board (never pure black), sheets lifted one step,
+   Warm charcoal board (never pure black), sheets lifted one step,
    the three inks as clear, saturated mid-tones (bright, never neon),
-   drawings slightly softened. Body text is a cool soft white at 12-14:1,
+   drawings slightly softened. Body text is a warm soft white at 12-14:1,
    not paper-white. Shading stays flat. */
 @media (prefers-color-scheme: dark) {
   :root {
