@@ -6,6 +6,7 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 
 ## Features
 
+- A calm welcome page (`index.html`): a search box, one large entry point per section, and a link to the full index (`recipes.html`)
 - Search by name, ingredient, or tag
 - Baking, Cooking and Cocktails sections, each with its own filters (cuisine, flavor, base spirit…), plus shared ones (ingredients, time, occasion, season, diet). Pick several options in a filter to widen it; combine filters to narrow down. Sort A–Z, newest, or quickest
 - Tap ingredients to check them off and tap steps to mark them done. Your progress is saved on your phone.
