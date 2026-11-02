@@ -955,17 +955,12 @@ body.sheet-open { overflow: hidden; }
 }
 
 /* ===== Welcome page =====
-   A calm front door: a greeting, one search box, the three families as
+   A calm front door: a headline, one search box, the three families as
    large plates, and a way into the full index. Search and the doors hand
    off to recipes.html (?q= / ?cat=), where all the filtering lives. */
 .welcome { max-width: 1000px; }
-.welcome-page .brand-sub { display: none; } /* the hero kicker says it */
+.welcome-page .brand-sub { display: none; } /* the headline stands alone */
 .hero { padding: 36px 0 22px; }
-.kicker {
-  margin: 0 0 10px;
-  font-family: var(--mono); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--muted);
-}
 .hero h1 {
   font-size: clamp(2.1rem, 9vw, 3.8rem); line-height: 1.02; letter-spacing: -.022em;
   max-width: 13ch; margin-bottom: 24px;
