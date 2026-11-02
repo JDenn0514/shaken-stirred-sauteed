@@ -4,11 +4,11 @@
    inks, like a modern botanical print. Same layout, type, drawings and
    behaviour as Field Guide (final); only the colour has changed. Every
    recipe is a specimen sheet with its own drawing; each section is a family
-   with its own ink, its own plate drawing and a short Latin name:
+   with its own ink and its own plate drawing:
 
-     Baking     Persimmon  #bf440f / dark #f6a466   Fam. Pistoriaceae  (pistor: baker)
-     Cooking    Holly      #00512f / dark #4fbd88   Fam. Culinaceae    (culina: kitchen)
-     Cocktails  Gentian    #0056bd / dark #5f97ea   Fam. Mixtaceae     (mixtus: mixed)
+     Baking     Persimmon  #bf440f / dark #f6a466
+     Cooking    Holly      #00512f / dark #4fbd88
+     Cocktails  Gentian    #0056bd / dark #5f97ea
 
    Paper is near-white with only a whisper of tint; colour comes from the
    ink, not from tinted backgrounds. The inks differ in lightness as well
@@ -111,7 +111,6 @@
   --section-fill: var(--text);
   --on-section: var(--accent-contrast);
   --on-section-fill: var(--accent-contrast);
-  --family: "Herbarium";
 
   /* Drawings: how much of the family ink a drawing takes (the rest is page ink).
      100% in light mode; 86% after dark, a touch softer. */
@@ -183,21 +182,18 @@ body:has(.tab[data-cat="baking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=baking"]) {
   --section: var(--baking); --section-wash: var(--baking-wash); --section-paper: var(--baking-paper);
   --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
-  --family: "Fam. Pistoriaceae";
 }
 .tab[data-cat="cooking"], .badge.cooking, .card:has(.badge.cooking), .fam-cooking,
 body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cooking"]) {
   --section: var(--cooking); --section-wash: var(--cooking-wash); --section-paper: var(--cooking-paper);
   --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
-  --family: "Fam. Culinaceae";
 }
 .tab[data-cat="cocktails"], .badge.cocktails, .card:has(.badge.cocktails), .fam-cocktails,
 body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cocktails"]) {
   --section: var(--cocktails); --section-wash: var(--cocktails-wash); --section-paper: var(--cocktails-paper);
   --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
-  --family: "Fam. Mixtaceae";
 }
 .tab[data-cat="all"], .fam-all {
   --section: var(--text); --section-wash: var(--surface-2); --section-fill: var(--text);
@@ -699,13 +695,6 @@ body.sheet-open { overflow: hidden; }
   margin-top: 4px; text-wrap: balance; color: var(--section);
   font-variation-settings: "SOFT" 100, "WONK" 1;
 }
-/* The family line above the title: the section's mock-Latin name. */
-.recipe h1::before {
-  content: var(--family) / "";
-  display: block; margin-bottom: 8px;
-  font-style: italic; font-weight: 450; font-size: 1.02rem; letter-spacing: 0; line-height: 1.2;
-  color: var(--muted);
-}
 .recipe > .badge { margin-bottom: 4px; }
 .recipe .lede { color: var(--muted); font-size: 1.1rem; line-height: 1.5; margin: 12px 0 0; max-width: 36em; }
 
@@ -970,31 +959,29 @@ body.sheet-open { overflow: hidden; }
 
 .doors { display: grid; gap: 10px; }
 .door {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
-  column-gap: 12px; min-height: 118px; padding: 14px 16px 14px 18px;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto;
+  align-content: center; align-items: center; column-gap: 12px;
+  min-height: 104px; padding: 12px 14px 12px 20px;
   border: var(--rule) solid var(--section); border-radius: var(--radius-ctl);
   background: var(--section-wash); color: var(--section);
   text-decoration: none;
   transition: background-color .15s ease;
 }
-.door-latin, .door-name, .door-count { grid-column: 1; }
-.door-latin {
-  font-family: var(--display); font-style: italic; font-size: .92rem; line-height: 1.2;
-  color: var(--section);
-}
+.door-name, .door-count { grid-column: 1; }
 .door-name {
+  grid-row: 1; align-self: end;
   font-family: var(--display); font-variation-settings: var(--soft);
   font-weight: 600; font-size: 2.05rem; line-height: 1.05; letter-spacing: -.016em;
-  margin: 2px 0 6px;
 }
 .door-count {
+  grid-row: 2; align-self: start; margin-top: 6px;
   font-family: var(--mono); font-weight: 500; font-size: .8rem; letter-spacing: .03em;
   color: var(--muted); min-height: 1.3em;
 }
 .door-count:not(:empty)::after { content: "  →"; color: var(--section); }
 .door .plate {
-  grid-column: 2; grid-row: 1 / span 3;
-  width: 78px; height: 78px;
+  grid-column: 2; grid-row: 1 / span 2;
+  width: 72px; height: 72px;
   background: color-mix(in srgb, var(--section) var(--draw-mix), var(--text));
   -webkit-mask-position: center; mask-position: center;
   -webkit-mask-size: contain; mask-size: contain;
@@ -1019,13 +1006,12 @@ body.sheet-open { overflow: hidden; }
   .hero-search { max-width: 640px; }
   .doors { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .door {
-    grid-template-columns: 1fr; grid-template-rows: 1fr auto auto auto; align-items: start;
-    min-height: 300px; padding: 20px 22px 18px;
+    grid-template-columns: 1fr; grid-template-rows: auto auto auto; align-content: start;
+    min-height: 0; padding: 24px 24px 22px;
   }
-  .door .plate { grid-column: 1; grid-row: 1; width: 112px; height: 112px; margin-bottom: 16px; }
-  .door-latin { grid-row: 2; }
-  .door-name { grid-row: 3; font-size: 2.6rem; }
-  .door-count { grid-row: 4; }
+  .door .plate { grid-column: 1; grid-row: 1; width: 104px; height: 104px; margin-bottom: 28px; }
+  .door-name { grid-row: 2; font-size: 2.6rem; }
+  .door-count { grid-row: 3; }
   .browse-all { margin-top: 14px; min-height: 64px; font-size: 1.35rem; padding-inline: 22px; }
 }
 
