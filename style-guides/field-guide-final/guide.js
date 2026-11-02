@@ -3,7 +3,14 @@
   document.querySelectorAll("[data-demo-tabs]").forEach((nav) => {
     nav.addEventListener("click", (e) => {
       const b = e.target.closest(".tab");
-      if (b) nav.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-pressed", String(t === b)));
+      if (!b) return;
+      nav.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-pressed", String(t === b)));
+      // Re-ink the specimen box the tabs sit in, as the theme re-inks the page.
+      const box = nav.closest(".g-spec");
+      if (box) {
+        box.classList.remove("fam-all", "fam-baking", "fam-cooking", "fam-cocktails", "g-sheet");
+        box.classList.add("fam-" + b.dataset.cat, "g-sheet");
+      }
     });
   });
   document.querySelectorAll("[data-demo-opts]").forEach((box) => {

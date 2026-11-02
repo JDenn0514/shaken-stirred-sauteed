@@ -396,23 +396,11 @@ html body.g-guide.g-guide.g-guide.g-guide .site-header {
 .g-famcard-head .g-draw { background: var(--on-section-fill); }
 .g-famcard-head small { display: block; opacity: .85; font-size: .85rem; margin-top: 2px; }
 
-/* Recipe headers with the recipe's own drawing (and its specimen) */
+/* Recipe headers with the recipe's own drawing */
 .g-rh { background: var(--section-paper); }
 .g-ricon {
-  float: right; width: 104px; height: 104px; margin: -4px -4px 6px 10px;
-  -webkit-mask: var(--icon) right top / 82% no-repeat; mask: var(--icon) right top / 82% no-repeat;
-}
-.fam-baking .g-ricon, .fam-baking.g-rh .g-ricon {
-  -webkit-mask: var(--icon) right top / 82% no-repeat, url("./spec-cinnamon.svg") left bottom / 40% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat, url("./spec-cinnamon.svg") left bottom / 40% no-repeat;
-}
-.fam-cooking .g-ricon {
-  -webkit-mask: var(--icon) right top / 82% no-repeat, url("./spec-chili.svg") left bottom / 38% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat, url("./spec-chili.svg") left bottom / 38% no-repeat;
-}
-.fam-cocktails .g-ricon {
-  -webkit-mask: var(--icon) right top / 82% no-repeat, url("./spec-mint.svg") left bottom / 40% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat, url("./spec-mint.svg") left bottom / 40% no-repeat;
+  float: right; width: 96px; height: 96px; margin: -2px -2px 6px 10px;
+  -webkit-mask: var(--icon) right top / contain no-repeat; mask: var(--icon) right top / contain no-repeat;
 }
 .g-rh .facts { clear: both; }
 .g-rh-inline { overflow: hidden; }
@@ -424,3 +412,39 @@ html body.g-guide.g-guide.g-guide.g-guide .site-header {
 .g-spec .section + .section { margin-top: 26px; }
 .g-steps b { font-weight: 650; }
 .g-shots { grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); }
+
+/* swatch fills */
+[data-sw="#111a15"] { background: #111a15; }
+[data-sw="#15241b"] { background: #15241b; }
+[data-sw="#19231e"] { background: #19231e; }
+[data-sw="#1a3140"] { background: #1a3140; }
+[data-sw="#1b5a86"] { background: #1b5a86; }
+[data-sw="#222e28"] { background: #222e28; }
+[data-sw="#223424"] { background: #223424; }
+[data-sw="#24435a"] { background: #24435a; }
+[data-sw="#2a3832"] { background: #2a3832; }
+[data-sw="#304a2c"] { background: #304a2c; }
+[data-sw="#352630"] { background: #352630; }
+[data-sw="#3c7125"] { background: #3c7125; }
+[data-sw="#4a5a4f"] { background: #4a5a4f; }
+[data-sw="#4d3141"] { background: #4d3141; }
+[data-sw="#5f7368"] { background: #5f7368; }
+[data-sw="#6c1f43"] { background: #6c1f43; }
+[data-sw="#788a7c"] { background: #788a7c; }
+[data-sw="#93c7e6"] { background: #93c7e6; }
+[data-sw="#a0b1a6"] { background: #a0b1a6; }
+[data-sw="#a8d48b"] { background: #a8d48b; }
+[data-sw="#b9cc55"] { background: #b9cc55; }
+[data-sw="#c6d0c3"] { background: #c6d0c3; }
+[data-sw="#cadd4c"] { background: #cadd4c; }
+[data-sw="#dcebf4"] { background: #dcebf4; }
+[data-sw="#dde6dc"] { background: #dde6dc; }
+[data-sw="#dfe6dc"] { background: #dfe6dc; }
+[data-sw="#e2eaee"] { background: #e2eaee; }
+[data-sw="#e2eed8"] { background: #e2eed8; }
+[data-sw="#e6a7c2"] { background: #e6a7c2; }
+[data-sw="#e6eddf"] { background: #e6eddf; }
+[data-sw="#e8ede6"] { background: #e8ede6; }
+[data-sw="#f1e8eb"] { background: #f1e8eb; }
+[data-sw="#f5e4eb"] { background: #f5e4eb; }
+[data-sw="#fbfcf9"] { background: #fbfcf9; }

@@ -60,7 +60,7 @@
   /* the counter and the paper */
   --page: #DDD9D1;            /* putty counter                            */
   --page-ink: #23262A;        /* 10.8:1 on page                           */
-  --page-muted: #4E5257;      /*  6.1:1 on page                           */
+  --page-muted: #45494E;      /*  6.4:1 on page · 5.1:1+ on station tints */
   --paper: #FBFAF7;           /* ticket paper                             */
   --paper-2: #F1EEE8;         /* quiet fill: hover, open                  */
   --ink: #23262A;             /* charcoal with a cool lean · 14.6:1       */
@@ -162,21 +162,21 @@
    home page while its tab is selected, and the whole recipe page. */
 .tab[data-cat="baking"],
 .card:has(.badge.baking),
-body:has(.tab[data-cat="baking"][aria-pressed="true"]),
+body:has(#tabs > .tab[data-cat="baking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=baking"]) {
   --section: var(--bake); --section-on: var(--bake-on); --section-ink: var(--bake-ink); --section-tint: var(--bake-tint);
   --station: "Bake station";
 }
 .tab[data-cat="cooking"],
 .card:has(.badge.cooking),
-body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
+body:has(#tabs > .tab[data-cat="cooking"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cooking"]) {
   --section: var(--cook); --section-on: var(--cook-on); --section-ink: var(--cook-ink); --section-tint: var(--cook-tint);
   --station: "The line";
 }
 .tab[data-cat="cocktails"],
 .card:has(.badge.cocktails),
-body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
+body:has(#tabs > .tab[data-cat="cocktails"][aria-pressed="true"]),
 body:has(.recipe > .back[href*="cat=cocktails"]) {
   --section: var(--bar); --section-on: var(--bar-on); --section-ink: var(--bar-ink); --section-tint: var(--bar-tint);
   --station: "The bar";
@@ -186,7 +186,7 @@ body:has(.recipe > .back[href*="cat=cocktails"]) {
   --section: var(--ink); --section-on: var(--paper); --section-ink: var(--ink); --section-tint: var(--hi);
 }
 /* the counter takes a breath of the station colour */
-body:has(.tab[aria-pressed="true"]:not([data-cat="all"])),
+body:has(#tabs > .tab[aria-pressed="true"]:not([data-cat="all"])),
 body:has(.recipe > .back[href*="cat="]) {
   --page-bg: color-mix(in srgb, var(--section) var(--tint-pct), var(--page));
   --stripe: linear-gradient(var(--section), var(--section));
@@ -408,6 +408,12 @@ code { font-family: var(--mono); font-size: .88em; background: var(--paper-2); p
 .tab[aria-pressed="true"]::after { background: var(--section-on); }
 .tab:focus-visible { outline: none; box-shadow: inset 0 0 0 3px var(--focus); }
 .tab[aria-pressed="true"]:focus-visible { box-shadow: inset 0 0 0 3px var(--section-on); }
+/* phones: keep the count and the pictogram apart */
+@media (max-width: 439px) {
+  .tab { padding-right: 6px; column-gap: 2px; }
+  .tab .n { font-size: 33px; }
+  .tab::after { width: 18px; height: 18px; margin-bottom: 3px; }
+}
 @media (max-width: 379px) {
   .tabs { gap: 6px; }
   .tab { padding-left: 7px; padding-right: 4px; font-size: 13px; letter-spacing: .03em; }
@@ -456,6 +462,7 @@ code { font-family: var(--mono); font-size: .88em; background: var(--paper-2); p
 .filter-btn[data-on="true"] { border-color: var(--section-ink); color: var(--section-ink); box-shadow: inset 0 -3px 0 var(--section); }
 .filter-btn[aria-expanded="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: none; }
 .filter-btn[aria-expanded="true"] .caret { transform: rotate(180deg); }
+.filter-btn[aria-expanded="true"] .n { background: var(--paper); color: var(--ink); }
 
 /* Active filter chips */
 .active-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
@@ -714,6 +721,7 @@ body.sheet-open { overflow: hidden; }
   border-top: var(--line-w) dashed var(--rule);
   font-family: var(--mono);
   font-size: 13px; color: var(--ink);
+  word-spacing: -.25ch;
 }
 .card-meta span {
   position: relative; display: block;
@@ -955,6 +963,7 @@ body.sheet-open { overflow: hidden; }
   flex: 0 1 auto; max-width: 64%;
   text-align: right; text-wrap: balance;
   font-weight: 700; font-size: 14.5px; line-height: 1.4;
+  word-spacing: -.3ch;
 }
 .facts::after {
   content: "";
@@ -982,7 +991,7 @@ body.sheet-open { overflow: hidden; }
   white-space: nowrap;
   transition: background-color .15s ease;
 }
-.toolbar .btn { flex: 1 1 auto; }
+.toolbar .btn { flex: 1 1 auto; min-width: 124px; }
 .btn::after {
   content: var(--kicker, "") / "";
   position: absolute; top: 8px; left: 13px; right: 8px;
@@ -1146,7 +1155,7 @@ body.sheet-open { overflow: hidden; }
 }
 
 .muted { color: var(--ink-2); }
-.qty { font-family: var(--mono); font-weight: 700; font-size: .9em; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.qty { font-family: var(--mono); font-weight: 700; font-size: .9em; letter-spacing: -.01em; word-spacing: -.3ch; font-variant-numeric: tabular-nums; }
 .step-wait, .step-cue {
   position: relative;
   display: block; width: fit-content; max-width: 100%;
@@ -1193,7 +1202,8 @@ body.sheet-open { overflow: hidden; }
   padding: 0 5px;
   border: 1.5px dashed currentColor;
 }
-.steps li.done .step-wait { opacity: .7; }
+.steps li.done { --wait-tag: var(--done-ink); --wait-tag-ink: var(--paper); }
+.steps li.done .step-wait { color: var(--done-ink); }
 .steps li.done .step-cue { color: var(--done-ink); }
 
 .notes { list-style: none; padding-left: 0; margin: 0; }

@@ -493,6 +493,13 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
 .opt .n { font-family: var(--mono); color: var(--muted); font-size: .76rem; }
 .opt[aria-pressed="true"] { background: var(--section-fill); border-color: var(--section); color: var(--on-section-fill); font-weight: 600; }
 .opt[aria-pressed="true"] .n { color: inherit; }
+/* A chosen option also carries a tick, so the choice never rests on colour alone. */
+.opt[aria-pressed="true"]::before {
+  content: ""; width: 14px; height: 14px; margin-left: -3px; flex: none;
+  background: currentColor;
+  -webkit-mask: var(--ico-tick) center / contain no-repeat;
+  mask: var(--ico-tick) center / contain no-repeat;
+}
 .opt:disabled { opacity: .45; cursor: default; border-style: dashed; }
 body.sheet-open { overflow: hidden; }
 @media (min-width: 720px) {
@@ -612,6 +619,7 @@ body.sheet-open { overflow: hidden; }
   .badge:not(.component) { background: var(--section-fill); color: var(--section); }
   .tab:not([data-cat="all"]) { border-color: color-mix(in srgb, var(--section) 62%, var(--surface)); }
   .tab:not([data-cat="all"])[aria-pressed="true"] { border-color: var(--section); }
+  .opt[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--section); }
 }
 .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
@@ -661,23 +669,10 @@ body.sheet-open { overflow: hidden; }
 .recipe:has(> .recipe-icon)::before { content: none; }
 .recipe > .recipe-icon {
   float: right;
-  width: 116px; height: 116px;
-  margin: -6px -6px 6px 14px;
-  -webkit-mask: var(--icon) right top / 82% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat;
-}
-/* ...and keeps one small ingredient specimen tucked at its foot, as on a botanical plate. */
-.recipe:has(> .back[href*="cat=baking"]) > .recipe-icon {
-  -webkit-mask: var(--icon) right top / 82% no-repeat, url("./spec-cinnamon.svg") left bottom / 40% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat, url("./spec-cinnamon.svg") left bottom / 40% no-repeat;
-}
-.recipe:has(> .back[href*="cat=cooking"]) > .recipe-icon {
-  -webkit-mask: var(--icon) right top / 82% no-repeat, url("./spec-chili.svg") left bottom / 38% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat, url("./spec-chili.svg") left bottom / 38% no-repeat;
-}
-.recipe:has(> .back[href*="cat=cocktails"]) > .recipe-icon {
-  -webkit-mask: var(--icon) right top / 82% no-repeat, url("./spec-mint.svg") left bottom / 40% no-repeat;
-  mask: var(--icon) right top / 82% no-repeat, url("./spec-mint.svg") left bottom / 40% no-repeat;
+  width: 104px; height: 104px;
+  margin: -2px -2px 8px 14px;
+  -webkit-mask: var(--icon) right top / contain no-repeat;
+  mask: var(--icon) right top / contain no-repeat;
 }
 
 .back {
@@ -853,7 +848,9 @@ body.sheet-open { overflow: hidden; }
 .steps li:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 .muted { color: var(--muted); }
-.qty { font-family: var(--mono); font-weight: 500; font-size: .9em; letter-spacing: -.02em; word-spacing: -.3em; }
+/* Quantities stay in the reading face (bold, lining figures), not mono:
+   they are read mid-stir, so they must be as easy as the words beside them. */
+.qty { font-weight: 680; font-variant-numeric: lining-nums; word-spacing: .14em; }
 .step-wait, .step-cue { position: relative; display: block; margin-top: 6px; padding-left: 22px; font-size: .92rem; line-height: 1.45; text-indent: -.3em; }
 .step-wait::first-letter, .step-cue::first-letter { font-size: 0; }
 .step-wait::before, .step-cue::before {
@@ -862,7 +859,7 @@ body.sheet-open { overflow: hidden; }
   -webkit-mask: var(--ico-clock) center / contain no-repeat;
   mask: var(--ico-clock) center / contain no-repeat;
 }
-.step-wait { color: var(--muted); font-family: var(--mono); font-size: .82rem; font-weight: 500; letter-spacing: .01em; padding-top: 1px; text-indent: -.6em; }
+.step-wait { color: var(--muted); font-weight: 600; }
 .step-cue { color: var(--section); font-weight: 600; }
 .step-cue::before { -webkit-mask-image: var(--ico-tick); mask-image: var(--ico-tick); }
 .steps li.done .step-cue, .steps li.done .step-wait { color: inherit; }
@@ -901,7 +898,7 @@ body.sheet-open { overflow: hidden; }
 
 @media (max-width: 359px) {
   .recipe::before { width: 88px; height: 88px; }
-  .recipe > .recipe-icon { width: 84px; height: 84px; margin-left: 8px; }
+  .recipe > .recipe-icon { width: 80px; height: 80px; margin-left: 8px; }
   .card { grid-template-columns: 52px minmax(0, 1fr); }
   .card .card-icon { left: 7px; width: 36px; height: 36px; }
   .recipe h1 { font-size: 2rem; }
@@ -929,7 +926,7 @@ body.sheet-open { overflow: hidden; }
   .recipe > .recipe-icon {
     float: none; grid-column: 9 / -1; grid-row: 1 / span 3;
     justify-self: end; align-self: start;
-    width: 172px; height: 172px; margin: -6px -10px 0 0;
+    width: 168px; height: 168px; margin: -4px -6px 0 0;
   }
   .recipe > .back, .recipe > h1, .recipe > .lede, .recipe > .badge { grid-column: 1 / 9; }
   .recipe > .back { justify-self: start; }
