@@ -345,80 +345,55 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
 .search input::placeholder { color: var(--muted); opacity: 1; }
 .search input::-webkit-search-cancel-button { filter: grayscale(1); }
 
-/* Sections: three big family plates under a slim "All" bar. */
+/* Sections: one slim row of tabs, each lettered in its family ink. The chosen
+   one gets a light wash and an ink underline ("All": the tricolour band). */
 .tabs {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px; margin-top: 14px;
+  display: flex; gap: 2px; margin-top: 12px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
+.tabs::-webkit-scrollbar { display: none; }
 .tab {
-  position: relative;
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
-  min-width: 0; min-height: 112px;
-  border: var(--rule) solid var(--section);
-  background: var(--section-wash);
-  color: var(--section);
-  border-radius: var(--radius-ctl);
-  padding: 10px 11px 9px;
-  cursor: pointer;
+  flex: 1 0 auto;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-height: 46px; padding: 8px 6px 7px;
+  border: 0; border-bottom: 3px solid transparent;
+  border-radius: var(--radius-ctl) var(--radius-ctl) 0 0;
+  background: transparent; color: var(--section);
   font-family: var(--display); font-variation-settings: var(--soft);
-  font-weight: 600; font-size: 1.16rem; line-height: 1.05; letter-spacing: -.012em;
-  text-align: left;
-  transition: background-color .15s ease, color .15s ease;
+  font-weight: 600; font-size: 1.04rem; line-height: 1.1; letter-spacing: -.01em;
+  white-space: nowrap; cursor: pointer;
+  transition: background-color .15s ease;
 }
 .tab > span[aria-hidden="true"] { display: none; }
 .tab::before {
-  content: "";
-  position: absolute; left: 8px; top: 9px;
-  width: 42px; height: 42px;
+  content: ""; flex: none; display: none;
+  width: 22px; height: 22px;
   background: currentColor;
   -webkit-mask-position: center; mask-position: center;
   -webkit-mask-size: contain; mask-size: contain;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
 }
 .tab .n {
-  position: absolute; top: 9px; right: 10px;
-  font-family: var(--mono); font-weight: 500; font-size: .78rem; letter-spacing: .02em; line-height: 1.3;
-  color: inherit;
+  font-family: var(--mono); font-weight: 500; font-size: .76rem; letter-spacing: .02em;
+  color: var(--muted);
 }
-.tab[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); }
-/* After dark the chosen family is a deep fill edged and lettered in its glowing ink, not a bright slab. */
-@media (prefers-color-scheme: dark) {
-  .tab:not([data-cat="all"])[aria-pressed="true"] { color: var(--section); box-shadow: inset 0 0 0 1px var(--section); }
-}
-.tab[data-cat="all"] {
-  grid-column: 1 / -1;
-  flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px;
-  min-height: 46px; padding: 8px 12px 8px 42px;
-  font-size: 1.08rem;
-  background: transparent; border-color: var(--rule-strong);
-}
-/* "All" chosen: the sheet with an ink edge and the tricolour band along its
-   foot (all three families), rather than a heavy solid slab. */
+.tab[aria-pressed="true"] { background-color: var(--section-wash); border-bottom-color: var(--section); }
+.tab[aria-pressed="true"] .n { color: var(--section); }
 .tab[data-cat="all"][aria-pressed="true"] {
-  color: var(--text); border-color: var(--text);
-  background: var(--surface) linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%) left bottom / 100% 5px no-repeat;
-  padding-bottom: 13px;
+  border-bottom-color: transparent;
+  background-image: linear-gradient(90deg, var(--baking) 0 33.333%, var(--cooking) 33.333% 66.666%, var(--cocktails) 66.666% 100%);
+  background-position: left bottom; background-size: 100% 3px; background-repeat: no-repeat;
+  padding-bottom: 10px; border-bottom-width: 0;
 }
-.tab[data-cat="all"]::before { top: 50%; left: 11px; width: 22px; height: 22px; margin-top: -11px; }
-.tab[data-cat="all"] .n { position: static; margin-left: auto; }
-@media (max-width: 359px) {
-  .tabs { gap: 5px; }
-  .tab { padding: 8px 7px 8px; font-size: .9rem; min-height: 100px; }
-  .tab::before { width: 34px; height: 34px; left: 6px; }
-  .tab .n { right: 7px; font-size: .72rem; }
+@media (max-width: 374px) {
+  .tabs { gap: 0; }
+  .tab { padding-inline: 4px; font-size: .9rem; gap: 3px; }
+  .tab .n { font-size: .68rem; letter-spacing: 0; }
 }
-@media (min-width: 720px) {
-  .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-  .tab { min-height: 128px; padding: 12px 16px 12px; font-size: 1.62rem; }
-  .tab::before { width: 56px; height: 56px; left: 12px; top: 12px; }
-  .tab .n { top: 12px; right: 14px; font-size: .82rem; }
-  .tab[data-cat="all"] {
-    grid-column: auto; flex-direction: column; align-items: flex-start; justify-content: flex-end;
-    min-height: 128px; padding: 12px 16px; font-size: 1.62rem;
-  }
-  .tab[data-cat="all"][aria-pressed="true"] { padding-bottom: 12px; }
-  .tab[data-cat="all"]::before { top: 12px; left: 12px; width: 56px; height: 56px; margin-top: 0; }
-  .tab[data-cat="all"] .n { position: absolute; margin: 0; }
+@media (min-width: 600px) {
+  .tab { flex: 0 0 auto; justify-content: flex-start; padding: 8px 16px 7px 12px; gap: 8px; font-size: 1.2rem; }
+  .tab::before { display: block; }
 }
 
 /* Filter buttons: one row that scrolls sideways on a phone. */
@@ -624,8 +599,6 @@ body.sheet-open { overflow: hidden; }
 @media (prefers-color-scheme: dark) {
   /* After dark the stamp is a deep fill lettered in the glowing ink. */
   .badge:not(.component) { background: var(--section-fill); color: var(--section); }
-  .tab:not([data-cat="all"]) { border-color: color-mix(in srgb, var(--section) 62%, var(--surface)); }
-  .tab:not([data-cat="all"])[aria-pressed="true"] { border-color: var(--section); }
   .opt[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--section); }
 }
 .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -1017,8 +990,7 @@ body.sheet-open { overflow: hidden; }
 
 /* ===== Hover (pointer devices only, so taps don't leave sticky states) ===== */
 @media (hover: hover) {
-  .tab:not([aria-pressed="true"]):hover { background: var(--surface); }
-  .tab[data-cat="all"]:not([aria-pressed="true"]):hover { background: var(--section-wash); }
+  .tab:not([aria-pressed="true"]):hover { background-color: var(--section-wash); }
   .filter-btn:hover { border-color: var(--section); }
   .chip:hover { border-color: var(--section); color: var(--section); }
   .clear:hover { color: var(--text); }
