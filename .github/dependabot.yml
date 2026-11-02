@@ -1,0 +1,7 @@
+# Opens a pull request when the test tools (Playwright) have a new version.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly

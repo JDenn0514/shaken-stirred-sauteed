@@ -104,3 +104,17 @@ Two alternative styles are kept in case you change your mind: `style-guides/fiel
 python3 -m http.server 8000
 # then open http://localhost:8000
 ```
+
+## Tests
+
+The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only: the site itself still has no dependencies.
+
+```sh
+npm install   # once
+npm test
+```
+
+- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index.
+- `tests/e2e/` opens the site in Chrome and checks the index page: search, sections, filters, sorting and links. It uses a small set of test recipes, not the real ones.
+
+The GitHub Action runs them on every push. Dependabot opens a pull request when the test tools have a new version.
