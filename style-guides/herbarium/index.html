@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Field Guide · style guide</title>
+  <meta name="description" content="Field Guide: the recipe collection as a kitchen herbarium. A brand direction for Shaken, Stirred &amp; Sautéed.">
+  <meta name="theme-color" content="#e9eee7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1511" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg>
+      <span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span>
+      <span class="brand-sub">Style guide · Field Guide</span>
+    </a>
+  </header>
+
+  <main class="g-wrap" id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="g-hero" aria-labelledby="hero-title">
+      <div class="g-hero-text">
+        <p class="tiny">Brand direction · Round two</p>
+        <h1 class="g-title" id="hero-title">Field Guide</h1>
+        <p class="g-lede">The recipe collection as a kitchen herbarium. Every recipe is a specimen sheet, the three sections are families, and the facts sit on a small archival label. Cool paper, botanical ink, one fresh lime accent. Calm, precise and easy to read at the stove.</p>
+      </div>
+      <div class="g-plates" aria-label="The three families">
+        <figure class="g-plate"><span class="g-draw d-baking" aria-hidden="true"></span><figcaption><span class="tiny">Fam. 01</span><b>Baking</b></figcaption></figure>
+        <figure class="g-plate"><span class="g-draw d-cooking" aria-hidden="true"></span><figcaption><span class="tiny">Fam. 02</span><b>Cooking</b></figcaption></figure>
+        <figure class="g-plate"><span class="g-draw d-cocktails" aria-hidden="true"></span><figcaption><span class="tiny">Fam. 03</span><b>Cocktails</b></figcaption></figure>
+      </div>
+    </section>
+
+    <ul class="g-go" aria-label="Live previews">
+      <li><a href="preview/index.html"><span class="tiny">Home page</span><strong>All recipes</strong><span class="g-arrow" aria-hidden="true">Open the preview &rarr;</span></a></li>
+      <li><a href="preview/recipe.html?r=painkiller"><span class="tiny">Cocktails</span><strong>Painkiller</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+      <li><a href="preview/recipe.html?r=minty-lime-bars"><span class="tiny">Baking</span><strong>Minty Lime Bars</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+      <li><a href="preview/recipe.html?r=chimichurri-sauce"><span class="tiny">Cooking</span><strong>Chimichurri Sauce</strong><span class="g-arrow" aria-hidden="true">Open &rarr;</span></a></li>
+    </ul>
+
+    <nav class="g-index" aria-label="Guide sections">
+      <ol>
+        <li><a href="#concept">Concept</a></li>
+        <li><a href="#feedback">What changed</a></li>
+        <li><a href="#logo">Logo</a></li>
+        <li><a href="#color">Color</a></li>
+        <li><a href="#type">Type</a></li>
+        <li><a href="#tokens">Tokens &amp; icons</a></li>
+        <li><a href="#components">Components</a></li>
+        <li><a href="#voice">Voice</a></li>
+        <li><a href="#photo">Photography</a></li>
+        <li><a href="#screens">Screens</a></li>
+        <li><a href="#adopt">How to adopt</a></li>
+      </ol>
+    </nav>
+
+    <!-- ============ CONCEPT ============ -->
+    <section class="g-sec" id="concept" aria-labelledby="concept-h">
+      <header class="g-sec-head"><span class="tiny">01</span><h2 id="concept-h">Concept</h2></header>
+      <div class="g-cols">
+        <div class="g-prose">
+          <p>Look at what is actually in these recipes: mint in the lime bars, parsley and oregano in the chimichurri, cilantro and dill in the green tahini, lemon in the curd, the tart and the asparagus, lime and orange in the drinks, apples in the donuts and the cider. This is a collection of plants. A herbarium is how botanists keep plants: each one pressed on its own sheet, labelled with a small ruled box of facts, and filed by family.</p>
+          <p>That gives the site a structure, not a costume. A recipe card is a specimen sheet with an accession number. The recipe page has a real specimen label for its facts. Baking, Cooking and Cocktails are families, each with one fine-line plate drawing. Ingredients are catalogued and ticked off. Everything else stays quiet so the recipe is easy to read.</p>
+          <p>It is deliberately <em>not</em> antique. There is no cream, no terracotta, no old-style serif, no foxing or sepia. The paper is a cool green-grey, the ink is a deep herb green, and the type is a sturdy modern grotesk. It should feel like a well-kept field guide from this year.</p>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Principles</span>
+          <ul class="g-list">
+            <li><b>One idea, used structurally.</b><span>Specimen sheet, specimen label, families. No props.</span></li>
+            <li><b>Type and color carry it.</b><span>Schibsted Grotesk to read, IBM Plex Mono for label fields. Ink green on cool paper.</span></li>
+            <li><b>Two signature details only.</b><span>The ruled specimen label, and the fine-line family plate.</span></li>
+            <li><b>Lime means "now".</b><span>The current step, a filter count, one strip of specimen tape. Nowhere else.</span></li>
+            <li><b>Readable first.</b><span>17px body, AA or better everywhere, 38px+ touch targets.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEEDBACK ============ -->
+    <section class="g-sec" id="feedback" aria-labelledby="feedback-h">
+      <header class="g-sec-head"><span class="tiny">02</span><h2 id="feedback-h">What changed from round one, and why</h2></header>
+      <p class="g-prose">Field Guide is a new direction, built on what you said about round one. The herbarium idea was set aside last time because it drifted toward the current warm serif-on-paper look. This version changes the materials, not just the drawings.</p>
+      <div class="g-diff g-sub">
+        <div class="g-label">
+          <span class="tiny">Taken from Order Up</span>
+          <ul class="g-list">
+            <li>A real-world document as the structure: the specimen sheet, like the ticket.</li>
+            <li>Easy, sturdy type with a mono for small fields.</li>
+            <li>A highlighter for the step you are on.</li>
+            <li>Plain lines and tidy rows, so you can read it at arm's length.</li>
+          </ul>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Avoided, from your notes</span>
+          <ul class="g-list">
+            <li>No gold, no hairline Didone, no script. Nothing hotel-like. Even baking is blueberry blue, not wheat-gold.</li>
+            <li>No repeating trim or patterned borders (Tin-Glaze).</li>
+            <li>No halftones, stickers or stacked effects (Overprint).</li>
+            <li>No barcodes, torn edges or rails on every card (Order Up).</li>
+          </ul>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Avoided, from the critique</span>
+          <ul class="g-list">
+            <li>No cream or terracotta: paper is cool green-grey <code>#E9EEE7</code>.</li>
+            <li>No serif: Schibsted Grotesk for everything you read.</li>
+            <li>Drawings are fine single-weight lines, not engravings or clip-art.</li>
+            <li>The botanical idea shows in four places only: label, plate, accession number and tape.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LOGO ============ -->
+    <section class="g-sec" id="logo" aria-labelledby="logo-h">
+      <header class="g-sec-head"><span class="tiny">03</span><h2 id="logo-h">Logo</h2></header>
+      <div class="g-cols">
+        <p class="g-prose">The mark is a herbarium sheet in miniature: a sprig pressed on a sheet and held down by one strip of lime specimen tape. Filled leaves keep it legible at favicon size. It is drawn for this brand and replaces the cocktail-glass emoji in the header. The wordmark is Schibsted Grotesk Bold with the ampersand in herb green at medium weight.</p>
+        <div>
+          <ul class="g-donts" aria-label="Don'ts">
+            <li>Don't outline the leaves or add more of them. It stops reading at 16px.</li>
+            <li>Don't recolor the tape in anything but lime. It's the only lime in the mark.</li>
+            <li>Don't put the mark on photos or patterns. Paper or ink only.</li>
+            <li>Keep clear space of half the mark's width on every side.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="g-logo-row g-sub">
+        <div class="g-tile"><div class="g-stage"><span class="g-clear"><svg class="brand-mark g-mark-xl" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg></span></div><span class="tiny">Mark · logo.svg · clear space dashed</span></div>
+        <div class="g-tile"><div class="g-stage"><svg class="brand-mark g-mark-48" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg><svg class="brand-mark g-mark-32" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg><svg class="brand-mark g-mark-16" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg></div><span class="tiny">48 · 32 · 16 px</span></div>
+        <div class="g-tile"><div class="g-stage"><span class="g-lockup"><svg class="brand-mark" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg><span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span></span></div><span class="tiny">Header lockup, on paper</span></div>
+        <div class="g-tile on-dark"><div class="g-stage"><span class="g-lockup"><svg class="brand-mark" viewBox="0 0 40 48" width="26" height="31" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#F8FAF6" stroke="#1E3B2C" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#1E3B2C" stroke-width="2" stroke-linecap="round"/><path class="lg-leaf" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31ZM20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5ZM20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#1E3B2C"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#C9DC4A" opacity=".92"/></svg><span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span></span></div><span class="tiny">Header lockup, dark mode</span></div>
+      </div>
+    </section>
+
+    <!-- ============ COLOR ============ -->
+    <section class="g-sec" id="color" aria-labelledby="color-h">
+      <header class="g-sec-head"><span class="tiny">04</span><h2 id="color-h">Color</h2></header>
+      <p class="g-prose">Cool, botanical and few. Ink green and graphite on green-grey paper do almost all the work. Herb green marks what you chose or finished. Lime is the one fresh accent: it marks what's happening <em>now</em> and is only ever a fill behind ink, never text. Each family has one color, used on its badge and its plate. Ratios are WCAG 2.1 contrast, computed from the hex values.</p>
+      <div class="g-swatches g-sub">
+        <div class="g-pal light">
+          <h3>Light</h3>
+          <ul>
+<li class="g-sw"><span class="g-chip c-l-bg"></span><span><b>--bg</b> <code>#E9EEE7</code><span class="role">Mounting board. The page.</span></span><span class="ratio">13.7:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-surface"></span><span><b>--surface</b> <code>#FAFBF8</code><span class="role">Specimen sheet. Cards, labels, sheet.</span></span><span class="ratio">15.6:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-s2"></span><span><b>--surface-2</b> <code>#DFE6DC</code><span class="role">Pressed. Sunken fills, code.</span></span><span class="ratio">12.7:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-text"></span><span><b>--text</b> <code>#15241B</code><span class="role">Botanical ink. Body and headings.</span></span><span class="ratio">13.7:1<small>AAA · on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-muted"></span><span><b>--muted</b> <code>#4B5A50</code><span class="role">Graphite. Descriptions, label fields.</span></span><span class="ratio">6.2:1<small>AA · on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-border"></span><span><b>--border</b> <code>#C5CFC2</code><span class="role">Hairline rules between things.</span></span><span class="ratio">—<small>decorative</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-rule"></span><span><b>--rule-strong</b> <code>#7A897E</code><span class="role">Control edges: inputs, buttons, chips.</span></span><span class="ratio">3.1:1<small>UI 3:1 · non-text, on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-accent"></span><span><b>--accent</b> <code>#2B5D3D</code><span class="role">Herb green. Links, chosen, done.</span></span><span class="ratio">6.5:1<small>AA · as text on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-lime"></span><span><b>--lime</b> <code>#CADD4C</code><span class="role">Fresh accent. Now and marked. Fill only.</span></span><span class="ratio">10.7:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-baking"></span><span><b>--baking</b> <code>#2F5485</code><span class="role">Family: baking (blueberry, cyanotype blue).</span></span><span class="ratio">6.3:1<small>AA · on its tint</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-cooking"></span><span><b>--cooking</b> <code>#2B5D3D</code><span class="role">Family: cooking (leaf).</span></span><span class="ratio">6.1:1<small>AA · on its tint</small></span></li>
+<li class="g-sw"><span class="g-chip c-l-cocktails"></span><span><b>--cocktails</b> <code>#6A3477</code><span class="role">Family: cocktails (pressed berry).</span></span><span class="ratio">7.1:1<small>AAA · on its tint</small></span></li>
+          </ul>
+        </div>
+        <div class="g-pal dark">
+          <h3>Dark</h3>
+          <ul>
+<li class="g-sw"><span class="g-chip c-d-bg"></span><span><b>--bg</b> <code>#0E1511</code><span class="role">Mounting board. The page.</span></span><span class="ratio">15.1:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-surface"></span><span><b>--surface</b> <code>#151E18</code><span class="role">Specimen sheet. Cards, labels, sheet.</span></span><span class="ratio">13.9:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-s2"></span><span><b>--surface-2</b> <code>#1E2A22</code><span class="role">Pressed. Sunken fills, code.</span></span><span class="ratio">12.2:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-text"></span><span><b>--text</b> <code>#E3EAE2</code><span class="role">Botanical ink. Body and headings.</span></span><span class="ratio">15.1:1<small>AAA · on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-muted"></span><span><b>--muted</b> <code>#A3B1A6</code><span class="role">Graphite. Descriptions, label fields.</span></span><span class="ratio">8.3:1<small>AAA · on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-border"></span><span><b>--border</b> <code>#2B3830</code><span class="role">Hairline rules between things.</span></span><span class="ratio">—<small>decorative</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-rule"></span><span><b>--rule-strong</b> <code>#5F7064</code><span class="role">Control edges: inputs, buttons, chips.</span></span><span class="ratio">3.5:1<small>UI 3:1 · non-text, on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-accent"></span><span><b>--accent</b> <code>#8FCFA0</code><span class="role">Herb green. Links, chosen, done.</span></span><span class="ratio">10.2:1<small>AAA · as text on board</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-lime"></span><span><b>--lime</b> <code>#C6DA52</code><span class="role">Fresh accent. Now and marked. Fill only.</span></span><span class="ratio">11.9:1<small>AAA · ink on it</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-baking"></span><span><b>--baking</b> <code>#A9C3EC</code><span class="role">Family: baking (blueberry, cyanotype blue).</span></span><span class="ratio">8.6:1<small>AAA · on its tint</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-cooking"></span><span><b>--cooking</b> <code>#8FCFA0</code><span class="role">Family: cooking (leaf).</span></span><span class="ratio">7.8:1<small>AAA · on its tint</small></span></li>
+<li class="g-sw"><span class="g-chip c-d-cocktails"></span><span><b>--cocktails</b> <code>#D4B0E4</code><span class="role">Family: cocktails (pressed berry).</span></span><span class="ratio">8.1:1<small>AAA · on its tint</small></span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="g-prose g-sub">Family tints: baking <code>#E2E9F3</code> / <code>#1A2536</code>, cooking <code>#DBE9D8</code> / <code>#17301F</code>, cocktails <code>#EFE3F1</code> / <code>#2D2135</code> (light / dark). On-accent text is white in light mode (7.7:1) and board-dark in dark mode (10.2:1). Focus rings are herb green in light mode and lime in dark mode.</p>
+    </section>
+
+    <!-- ============ TYPE ============ -->
+    <section class="g-sec" id="type" aria-labelledby="type-h">
+      <header class="g-sec-head"><span class="tiny">05</span><h2 id="type-h">Type</h2></header>
+      <div class="g-type">
+        <div class="g-face">
+          <span class="tiny">Reading and headings · Schibsted Grotesk · variable 400–900 · OFL</span>
+          <span class="big">Minty Lime Bars</span>
+          <p>A sturdy, open grotesk with a slightly bookish build. Big counters and clear figures make quantities and times easy to read at a glance. Headings are 700 with tight tracking; body is 400 at 17px.</p>
+          <span class="glyphs">Aa Bb Cc Gg Qq Rr · 0123456789 · ½ ¼ ° × – “ ” é ñ</span>
+        </div>
+        <div class="g-face mono">
+          <span class="tiny">Label fields · IBM Plex Mono · 400 / 500 · OFL</span>
+          <span class="big">No. 027</span>
+          <p>The voice of the specimen label: field names, accession numbers, quantities, counts and timers. Always small and usually uppercase with open tracking. Never used for sentences.</p>
+          <span class="glyphs">TIME · YIELD · 2 oz · 60 ml · 25 to 30 min</span>
+        </div>
+      </div>
+      <table class="g-scale">
+        <tbody>
+          <tr><th scope="row">Recipe title</th><td><span class="s-h1">Chimichurri Sauce</span></td><td class="spec">clamp(2rem, 8vw, 2.9rem) / 1.04 · 700 · −0.028em</td></tr>
+          <tr><th scope="row">Section</th><td><span class="s-h2">Ingredients</span></td><td class="spec">1.45rem · 700 · 1.5px ink rule</td></tr>
+          <tr><th scope="row">Card title</th><td><span class="s-card">Green Tahini Sauce</span></td><td class="spec">1.28rem / 1.18 · 700</td></tr>
+          <tr><th scope="row">Body</th><td><span class="s-body">Whisk the yolks, whole egg and sugar hard for about 1 min.</span></td><td class="spec">17px / 1.55 · 400</td></tr>
+          <tr><th scope="row">Secondary</th><td><span class="s-small">Tahini blended with fresh herbs, garlic, lemon and green chile.</span></td><td class="spec">0.92–0.95rem · graphite</td></tr>
+          <tr><th scope="row">Quantity</th><td><span class="s-qty">2 oz</span> Dark rum</td><td class="spec">Plex Mono 500 · 0.9em</td></tr>
+          <tr><th scope="row">Label field</th><td><span class="s-label">Herbarium of Shaken, Stirred &amp; Sautéed</span></td><td class="spec">Plex Mono · 0.64–0.78rem · caps · +0.09em</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ TOKENS ============ -->
+    <section class="g-sec" id="tokens" aria-labelledby="tokens-h">
+      <header class="g-sec-head"><span class="tiny">06</span><h2 id="tokens-h">Spacing, radius, lines and icons</h2></header>
+      <div class="g-tokens">
+        <div class="g-label">
+          <span class="tiny">Spacing</span>
+          <dl>
+            <div><dt>4</dt><dd>Inside badges and counts</dd><span class="g-bar w4"></span></div>
+            <div><dt>6</dt><dd>Gaps between chips and tabs</dd><span class="g-bar w8"></span></div>
+            <div><dt>12</dt><dd>Card grid gap, label padding</dd><span class="g-bar w12"></span></div>
+            <div><dt>16</dt><dd>Page gutter, card padding</dd><span class="g-bar w16"></span></div>
+            <div><dt>24</dt><dd>Around the specimen label</dd><span class="g-bar w24"></span></div>
+            <div><dt>32</dt><dd>Between recipe sections</dd><span class="g-bar w32"></span></div>
+            <div><dt>56</dt><dd>Between guide sections</dd><span class="g-bar w48"></span></div>
+          </dl>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Radius</span>
+          <dl>
+            <div><dt>2px</dt><dd>Specimen labels: nearly square</dd><span class="g-rad r2"></span></div>
+            <div><dt>3px</dt><dd>Badges, checkboxes, step boxes</dd><span class="g-rad r3"></span></div>
+            <div><dt>4px</dt><dd>Cards, chips, options</dd><span class="g-rad r4"></span></div>
+            <div><dt>6px</dt><dd>Controls: search, tabs, buttons</dd><span class="g-rad r6"></span></div>
+            <div><dt>12px</dt><dd>Top of the bottom sheet</dd><span class="g-rad r12"></span></div>
+          </dl>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Lines</span>
+          <dl>
+            <div><dt>1px border</dt><dd>Hairlines between rows</dd><span class="g-line"></span></div>
+            <div><dt>1px rule-strong</dt><dd>Edges of things you tap</dd><span class="g-line strong"></span></div>
+            <div><dt>1.5px ink</dt><dd>Specimen label and section heads</dd><span class="g-line ink"></span></div>
+          </dl>
+          <p class="g-prose s-small g-list-pad">No drop shadows at rest. A soft lift on hover only.</p>
+        </div>
+      </div>
+
+      <h3 class="g-h3 g-sub">Plates and glyphs</h3>
+      <p class="g-prose">Four fine-line plates, drawn as single-weight strokes with <code>vector-effect: non-scaling-stroke</code>, so the line stays 1.5px at any size. They are used as CSS masks, so they take any token color. Use them at 56px or larger: one per recipe page (top right, in the family color) and one in the empty state. Small UI glyphs are three data-URI masks. The emoji the scripts print (timer, plate, sun, printer, book) are hidden by the theme, so the UI never mixes emoji with the drawings.</p>
+      <div class="g-icons">
+        <figure><span class="g-draw lg d-baking" aria-hidden="true"></span><figcaption><b>plate-baking.svg</b><br>Ear of wheat</figcaption></figure>
+        <figure><span class="g-draw lg d-cooking" aria-hidden="true"></span><figcaption><b>plate-cooking.svg</b><br>Mint sprig</figcaption></figure>
+        <figure><span class="g-draw lg d-cocktails" aria-hidden="true"></span><figcaption><b>plate-cocktails.svg</b><br>Coupe with a lime wheel</figcaption></figure>
+        <figure><span class="g-draw lg d-leaf" aria-hidden="true"></span><figcaption><b>plate-leaf.svg</b><br>Pressed leaf: empty state</figcaption></figure>
+        <figure><span class="g-states"><span class="g-glyph clock" aria-hidden="true"></span><span class="g-glyph tick" aria-hidden="true"></span><span class="g-glyph lens" aria-hidden="true"></span></span><figcaption><b>UI glyphs</b><br>Wait, cue, search</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ============ COMPONENTS ============ -->
+    <section class="g-sec" id="components" aria-labelledby="comp-h">
+      <header class="g-sec-head"><span class="tiny">07</span><h2 id="comp-h">Components</h2></header>
+      <p class="g-prose">These use the real <code>theme.css</code> classes and the same markup the scripts produce. Tap them: tabs, options and steps respond.</p>
+
+      <div class="g-comp g-sub">
+
+        <div class="g-spec">
+          <span class="tiny"><span>Card · the specimen sheet</span><span>.card · .badge · .card-meta</span></span>
+          <div class="g-board">
+            <ul class="grid">
+              <li><a class="card" href="preview/recipe.html?r=minty-lime-bars"><div class="card-body"><div class="badges"><span class="badge baking">Baking</span></div><h2>Minty Lime Bars</h2><p>Lime-mint shortbread under baked lime curd, chilled and cut.</p><div class="card-meta"><span>⏱ 1 hr 45 min</span><span>🍽 Makes 16 bars</span></div></div></a></li>
+              <li><a class="card" href="preview/recipe.html?r=green-tahini-sauce"><div class="card-body"><div class="badges"><span class="badge cooking">Cooking</span><span class="badge component">Component</span></div><h2>Green Tahini Sauce</h2><p>Tahini blended with fresh herbs, garlic, lemon and green chile.</p><div class="card-meta"><span>⏱ 5 min</span><span>🍽 Makes about 1 cup</span></div></div></a></li>
+              <li><a class="card" href="preview/recipe.html?r=painkiller"><div class="card-body"><div class="badges"><span class="badge cocktails">Cocktails</span></div><h2>Painkiller</h2><p>Dark rum, pineapple, orange and coconut cream, shaken.</p><div class="card-meta"><span>⏱ 5 min</span><span>🍽 Makes 1 drink</span></div></div></a></li>
+            </ul>
+          </div>
+          <p class="note">Family badge top left, accession number top right (it counts the visible results), title, one-line description, and a small ruled label with Time and Yield. No photos are needed; if one is added it sits above the body at 16:10.</p>
+        </div>
+
+        <div class="g-two">
+          <div class="g-spec">
+            <span class="tiny"><span>Section tabs</span><span>.tab[aria-pressed]</span></span>
+            <div class="g-board">
+              <nav class="tabs" aria-label="Sections (demo)" data-demo-tabs>
+                <button class="tab" aria-pressed="true"><span aria-hidden="true">📖</span>All<span class="n">36</span></button>
+                <button class="tab" aria-pressed="false"><span aria-hidden="true">🥖</span>Baking<span class="n">8</span></button>
+                <button class="tab" aria-pressed="false"><span aria-hidden="true">🍳</span>Cooking<span class="n">24</span></button>
+                <button class="tab" aria-pressed="false"><span aria-hidden="true">🍸</span>Cocktails<span class="n">4</span></button>
+              </nav>
+            </div>
+            <p class="note">Four equal tiles on a phone, a row on desktop. The chosen family is a solid herb-green tile. Counts are in mono.</p>
+          </div>
+          <div class="g-spec">
+            <span class="tiny"><span>Filter buttons and chips</span><span>.filter-btn · .chip · .clear</span></span>
+            <div class="g-board">
+              <div class="filter-row">
+                <button class="filter-btn" aria-expanded="false" data-on="true">Ingredients<span class="n">2</span><span class="caret" aria-hidden="true">▾</span></button>
+                <button class="filter-btn" aria-expanded="true">Time<span class="caret" aria-hidden="true">▾</span></button>
+                <button class="filter-btn" aria-expanded="false">Occasion<span class="caret" aria-hidden="true">▾</span></button>
+              </div>
+              <div class="active-row">
+                <button class="chip" aria-pressed="true">Lime <span aria-hidden="true">×</span></button>
+                <button class="chip" aria-pressed="true">Mint <span aria-hidden="true">×</span></button>
+                <button class="clear">Clear all</button>
+              </div>
+            </div>
+            <p class="note">Outlined at rest. In use: green outline plus a lime count. Open: ink outline. Active chips repeat the selection and remove it with one tap.</p>
+          </div>
+        </div>
+
+        <div class="g-two">
+          <div class="g-spec">
+            <span class="tiny"><span>Option sheet (phone)</span><span>.sheet · .opt</span></span>
+            <div class="g-sheet-demo">
+              <div class="sheet" role="group" aria-labelledby="g-sheet-title">
+                <div class="sheet-head"><h2 id="g-sheet-title">Ingredients</h2><button class="btn" type="button">Done</button></div>
+                <div class="sheet-body" data-demo-opts>
+                  <h3>Herbs</h3>
+                  <div class="opts"><button class="opt" aria-pressed="true">Mint<span class="n">3</span></button><button class="opt" aria-pressed="false">Cilantro<span class="n">4</span></button><button class="opt" aria-pressed="false">Parsley<span class="n">5</span></button><button class="opt" aria-pressed="false" disabled>Tarragon<span class="n">0</span></button></div>
+                  <h3>Citrus</h3>
+                  <div class="opts"><button class="opt" aria-pressed="true">Lime<span class="n">5</span></button><button class="opt" aria-pressed="false">Lemon<span class="n">10</span></button><button class="opt" aria-pressed="false">Orange<span class="n">3</span></button><button class="opt" aria-pressed="false" disabled>Grapefruit<span class="n">0</span></button></div>
+                </div>
+              </div>
+            </div>
+            <p class="note">Slides up from the bottom on a phone over a green-black scrim; on desktop the same panel drops down under its button. Chosen options fill herb green; empty ones go dashed and faint.</p>
+          </div>
+          <div class="g-spec">
+            <span class="tiny"><span>Buttons and badges</span><span>.btn · .badge</span></span>
+            <div class="g-board">
+              <div class="g-states">
+                <button class="btn" type="button">Reset checkmarks</button>
+                <button class="btn" type="button">Print</button>
+                <button class="btn" type="button" aria-pressed="true">Keep screen on</button>
+              </div>
+              <div class="g-states g-sub">
+                <span class="badge baking">Baking</span>
+                <span class="badge cooking">Cooking</span>
+                <span class="badge cocktails">Cocktails</span>
+                <span class="badge component">Component</span>
+              </div>
+            </div>
+            <p class="note">Buttons are outlined, sentence case, 600 weight; pressed is solid green. Badges are mono caps on the family tint; Component is outlined so it never competes with the family.</p>
+          </div>
+        </div>
+
+        <div class="g-spec">
+          <span class="tiny"><span>Specimen label · recipe facts</span><span>dl.facts</span></span>
+          <div class="g-board">
+            <dl class="facts">
+              <div class="fact"><dt>Makes</dt><dd>16 bars</dd></div>
+              <div class="fact"><dt>Active</dt><dd>50 min</dd></div>
+              <div class="fact"><dt>Total</dt><dd>1 hr 45 min, plus chill</dd></div>
+              <div class="fact"><dt>Pan</dt><dd>8 x 8 in, metal</dd></div>
+              <div class="fact"><dt>Oven</dt><dd>350°F (175°C)</dd></div>
+            </dl>
+          </div>
+          <p class="note">The signature component. A 1.5px ink box with a centered header line, like a herbarium label, then the facts as ruled fields. One short strip of lime tape holds its top edge. It appears once per recipe.</p>
+        </div>
+
+        <div class="g-two">
+          <div class="g-spec">
+            <span class="tiny"><span>Ingredient checklist</span><span>.ingredients</span></span>
+            <div class="g-board">
+              <div class="section">
+                <h3>Shortbread crust</h3>
+                <ul class="ingredients">
+                  <li><label><input type="checkbox" checked><span><b class="qty">2 Tbsp</b> Finely grated lime zest <span class="muted">about 3 limes</span></span></label></li>
+                  <li><label><input type="checkbox" checked><span><b class="qty">50 g · 1/4 cup</b> Granulated sugar</span></label></li>
+                  <li><label><input type="checkbox"><span><b class="qty">2 Tbsp</b> Fresh mint <span class="muted">finely chopped</span></span></label></li>
+                  <li><label><input type="checkbox"><span><b class="qty">113 g · 1 stick</b> Unsalted butter <span class="muted">cut into 1/2-inch pieces, chilled</span></span></label></li>
+                </ul>
+              </div>
+            </div>
+            <p class="note">Quantities in mono, item in sans, notes in graphite. Ticked: a green box with a white check, and the line is struck through and greyed so what's left stands out.</p>
+          </div>
+          <div class="g-spec">
+            <span class="tiny"><span>Step states</span><span>li · .done · .current</span></span>
+            <div class="g-board">
+              <ol class="steps" data-demo-steps>
+                <li class="done" tabindex="0">Rub the lime zest into the sugar until damp and fragrant.</li>
+                <li class="current" tabindex="0">Scatter the crumbs in the pan and press into an even layer. Bake at 350°F (175°C).<span class="step-wait">⏱ 25 to 30 min</span><span class="step-cue">✓ Lightly golden</span></li>
+                <li tabindex="0">Lower the oven to 300°F (150°C) and let the crust cool.</li>
+              </ol>
+            </div>
+            <p class="note">To do: numbered label box. Done: green box with a check, text in graphite. Now: a lime number on a raised sheet, the only lime in the steps. Waits are mono with a clock; cues are green with a tick.</p>
+          </div>
+        </div>
+
+        <div class="g-spec g-empty-demo">
+          <span class="tiny"><span>Empty state</span><span>.empty</span></span>
+          <div class="g-board"><div class="empty"><span class="big">🔍</span>Nothing matches that. <a href="preview/index.html">Clear filters</a></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VOICE ============ -->
+    <section class="g-sec" id="voice" aria-labelledby="voice-h">
+      <header class="g-sec-head"><span class="tiny">08</span><h2 id="voice-h">Voice and microcopy</h2></header>
+      <div class="g-cols">
+        <div class="g-prose">
+          <p><b>Calm, exact, a little scholarly.</b> Write like the margin notes in a good field guide: what to look for, how long, how much. Plain words over clever ones. The botanical idea lives in the design, so the copy only nods to it in a couple of fixed places (the label header, the accession number) and never makes plant puns in instructions.</p>
+          <p>Cues describe what you will see, smell or feel (“Lightly golden”, “Coats a spoon”). Waits give a range (“25 to 30 min”). Sentence case everywhere except tiny label fields.</p>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Fixed lines</span>
+          <table class="g-copy">
+            <thead><tr><th scope="col">Where</th><th scope="col">Copy</th></tr></thead>
+            <tbody>
+              <tr><td>Header tagline</td><td>A kitchen field guide</td></tr>
+              <tr><td>Label header</td><td>Herbarium of Shaken, Stirred &amp; Sautéed</td></tr>
+              <tr><td>Card number</td><td>No. 01</td></tr>
+              <tr><td>Card label fields</td><td>Time · Yield</td></tr>
+              <tr><td>Empty search</td><td>Nothing matches that. Clear filters</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="g-label g-sub">
+        <span class="tiny">Do and don't</span>
+        <table class="g-copy">
+          <thead><tr><th scope="col">Write</th><th scope="col">Not</th></tr></thead>
+          <tbody>
+            <tr><td>Bake until lightly golden, 25 to 30 min.</td><td class="no">Pop it in till it's perfectly golden and gorgeous!</td></tr>
+            <tr><td>Reset checkmarks</td><td class="no">Start fresh, little sprout</td></tr>
+            <tr><td>Fresh mint, finely chopped</td><td class="no">Mentha spicata, harvested at dawn</td></tr>
+            <tr><td>Keeps 5 days in the fridge.</td><td class="no">Best enjoyed within the specimen's natural lifespan.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ PHOTO ============ -->
+    <section class="g-sec" id="photo" aria-labelledby="photo-h">
+      <header class="g-sec-head"><span class="tiny">09</span><h2 id="photo-h">Photography</h2></header>
+      <div class="g-cols even">
+        <div class="g-prose">
+          <p>The site works without photos, and that's the default. If you add some, shoot them like specimens: one subject, straight down or straight on, in cool daylight from a window, on a pale grey-green or white surface with room around it. Raw herbs, a cut lime or a whole lemon can sit beside the dish, the way a specimen sheet shows the fruit next to the leaf.</p>
+          <p>Cards crop to 16:10 and the recipe hero to 16:9, so keep the subject centered.</p>
+        </div>
+        <div class="g-label">
+          <span class="tiny">Shot list</span>
+          <ul class="g-list">
+            <li><b>Yes</b><span>Daylight, soft shadow, neutral cool surface, one dish, a few raw ingredients, a little negative space.</span></li>
+            <li><b>No</b><span>Warm tungsten, rustic wood boards, linen and twine, heavy filters, crowded props, steam effects.</span></li>
+            <li><b>Cocktails</b><span>Glass on a plain surface, side-lit, garnish in focus. No bar backdrops.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCREENS ============ -->
+    <section class="g-sec" id="screens" aria-labelledby="screens-h">
+      <header class="g-sec-head"><span class="tiny">10</span><h2 id="screens-h">Screens</h2></header>
+      <div class="g-shots">
+        <figure><img src="shots/home-mobile-light.png" alt="Home page on a phone, light mode" loading="lazy" decoding="async"><figcaption>Home, light</figcaption></figure>
+        <figure><img src="shots/home-mobile-dark.png" alt="Home page on a phone, dark mode" loading="lazy" decoding="async"><figcaption>Home, dark</figcaption></figure>
+        <figure><img src="shots/sheet-mobile.png" alt="The ingredient filter sheet open on a phone" loading="lazy" decoding="async"><figcaption>Filter sheet</figcaption></figure>
+        <figure><img src="shots/recipe-mobile-light.png" alt="Painkiller recipe on a phone, light mode" loading="lazy" decoding="async"><figcaption>Recipe, light</figcaption></figure>
+        <figure><img src="shots/recipe-mobile-dark.png" alt="Painkiller recipe on a phone, dark mode" loading="lazy" decoding="async"><figcaption>Recipe, dark</figcaption></figure>
+        <figure><img src="shots/print.png" alt="Minty Lime Bars printed on white paper" loading="lazy" decoding="async"><figcaption>Print</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ============ ADOPT ============ -->
+    <section class="g-sec" id="adopt" aria-labelledby="adopt-h">
+      <header class="g-sec-head"><span class="tiny">11</span><h2 id="adopt-h">How to adopt</h2></header>
+      <p class="g-prose">The theme is a drop-in replacement for <code>assets/style.css</code>. No script changes are needed, and the page Content-Security-Policy stays as it is: no inline styles, no inline scripts, no font hosts.</p>
+      <ol class="g-steps g-sub">
+        <li>Copy <code>theme.css</code> to <code>assets/style.css</code>.</li>
+        <li>Copy the <code>fonts/</code> folder to <code>assets/fonts/</code>, and <code>plate-baking.svg</code>, <code>plate-cooking.svg</code>, <code>plate-cocktails.svg</code> and <code>plate-leaf.svg</code> into <code>assets/</code>. The stylesheet points to them with <code>./</code> paths, so they resolve next to it.</li>
+        <li>Copy <code>logo.svg</code> to <code>assets/icon.svg</code>, and re-export <code>icon-192.png</code> and <code>icon-512.png</code> from it.</li>
+        <li>In <code>index.html</code> and <code>recipe.html</code>, replace the emoji brand mark with the inline SVG from <code>preview/index.html</code> and add the tagline span:
+<pre class="g-code">&lt;a class="brand" href="./"&gt;
+  &lt;svg class="brand-mark" viewBox="0 0 40 48" …&gt;…&lt;/svg&gt;
+  &lt;span class="brand-name"&gt;Shaken, Stirred &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; Sautéed&lt;/span&gt;
+  &lt;span class="brand-sub"&gt;A kitchen field guide&lt;/span&gt;
+&lt;/a&gt;</pre></li>
+        <li>Set the theme color: <code>&lt;meta name="theme-color" content="#e9eee7" media="(prefers-color-scheme: light)"&gt;</code> and <code>#0e1511</code> for dark. In <code>manifest.webmanifest</code> set <code>background_color</code> to <code>#e9eee7</code> and <code>theme_color</code> to <code>#2b5d3d</code>.</li>
+        <li>Bump <code>CACHE</code> in <code>sw.js</code> (for example to <code>sss-v2</code>) so installed phones pick up the new look.</li>
+      </ol>
+    </section>
+
+    <footer class="g-foot">
+      <span>Field Guide · a round-two direction for Shaken, Stirred &amp; Sautéed</span>
+      <span>Fonts: Schibsted Grotesk and IBM Plex Mono, SIL Open Font License</span>
+    </footer>
+  </main>
+
+  <script src="guide.js"></script>
+</body>
+</html>

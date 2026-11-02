@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Shaken, Stirred &amp; Sautéed</title>
+  <meta name="description" content="A personal collection of baking, cooking, and cocktail recipes.">
+  <meta name="theme-color" content="#F6F4EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16141B" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../../assets/icon-192.png">
+  <link rel="stylesheet" href="../theme.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <span class="brand-name">Shaken, Stirred <span class="amp"><svg class="amp-mark" viewBox="0.43 -71.67 72.48 74.12" aria-hidden="true" focusable="false"><defs><path id="hd-a" d="M53.33 1.45Q47.95 1.45 42.86 -1.12Q37.77 -3.68 33.19 -7.98Q28.62 -12.28 24.85 -17.67Q21.08 -23.05 18.3 -28.78Q15.52 -34.52 14.02 -39.86Q12.52 -45.2 12.52 -49.42Q12.52 -54.15 14.56 -58.23Q16.6 -62.32 20.95 -64.89Q25.3 -67.47 32.12 -67.47Q38.52 -67.47 42.65 -65.25Q46.78 -63.03 48.86 -59.61Q50.93 -56.18 50.93 -52.47Q50.93 -48.42 48.53 -44.72Q46.13 -41.02 41.47 -38.03Q36.82 -35.05 29.95 -33.1L28.12 -38.33Q32.7 -40.93 35.3 -43.92Q37.9 -46.9 37.9 -50.4Q37.9 -52.8 36.57 -54.44Q35.23 -56.08 32.52 -56.08Q30.53 -56.08 29.27 -55.11Q28.02 -54.13 27.5 -52.65Q26.98 -51.17 26.98 -49.57Q26.98 -47.17 28.09 -43.37Q29.2 -39.58 31.12 -35.17Q33.03 -30.77 35.52 -26.41Q38 -22.05 40.76 -18.47Q43.52 -14.88 46.36 -12.7Q49.2 -10.52 51.78 -10.52Q53.78 -10.52 54.78 -11.74Q55.77 -12.97 55.77 -14.58Q55.77 -16.52 54.26 -18.71Q52.75 -20.9 49.46 -22.7Q46.17 -24.5 40.72 -24.95V-34.85H65.33V-24.18L48.45 -26.83V-25.9Q57.77 -24.22 62.74 -20.66Q67.72 -17.1 67.72 -10.65Q67.72 -7 66.27 -4.63Q64.83 -2.25 62.59 -0.91Q60.35 0.43 57.86 0.94Q55.37 1.45 53.33 1.45ZM18.15 1.43Q13.37 1.43 9.57 -0.41Q5.77 -2.25 3.6 -5.74Q1.43 -9.23 1.43 -14.2Q1.43 -18.5 3 -21.75Q4.57 -25 7.04 -27.32Q9.52 -29.63 12.32 -31.12Q15.12 -32.6 17.6 -33.33L20.03 -28.13Q17.75 -26.18 16.4 -23.54Q15.05 -20.9 15.05 -18.15Q15.05 -14.93 16.67 -12.56Q18.3 -10.18 21.02 -8.91Q23.73 -7.63 26.95 -7.63Q28.87 -7.63 30.2 -8.23Q31.53 -8.83 32.7 -9.83L33.78 -7.73H32.98Q32.08 -5.05 30.09 -2.98Q28.1 -0.9 25.11 0.27Q22.12 1.43 18.15 1.43Z"/><clipPath id="hd-c"><use href="#hd-a"/></clipPath></defs><use href="#hd-a" class="plate-blue"/><use href="#hd-a" class="plate-pink" transform="translate(4.2 -3.2)"/><g clip-path="url(#hd-c)"><use href="#hd-a" class="plate-over" transform="translate(4.2 -3.2)"/></g></svg><span class="visually-hidden">&amp;</span></span> Sautéed</span>
+    </a>
+  </header>
+
+  <main class="container">
+    <div class="controls">
+      <label class="search">
+        <span class="visually-hidden">Search recipes</span>
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search" type="search" placeholder="Search by name, ingredient, or tag…" autocomplete="off">
+      </label>
+
+      <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+
+      <div class="filter-host">
+        <div class="filter-row" id="filters" aria-label="Filters"></div>
+        <div class="active-row" id="active" aria-label="Active filters"></div>
+
+        <div class="backdrop" id="backdrop" hidden></div>
+        <div class="sheet" id="sheet" role="dialog" aria-labelledby="sheet-title" hidden>
+          <div class="sheet-head">
+            <h2 id="sheet-title"></h2>
+            <button class="btn" id="sheet-done">Done</button>
+          </div>
+          <div class="sheet-body" id="sheet-body"></div>
+        </div>
+      </div>
+
+      <div class="result-bar">
+        <span id="count" aria-live="polite"></span>
+        <label class="sort">Sort
+          <select id="sort">
+            <option value="az">A–Z</option>
+            <option value="new">Newest</option>
+            <option value="quick">Quickest</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <ul class="grid" id="grid"></ul>
+    <div class="empty" id="empty" hidden></div>
+  </main>
+
+  <script src="../../../assets/common.js"></script>
+  <script src="../../../assets/home.js"></script>
+</body>
+</html>

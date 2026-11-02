@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 44" width="40" height="44">
+  <title>Shaken, Stirred &amp; Sautéed: a blue ticket with a pink stamp</title>
+  <defs>
+    <clipPath id="ticket">
+      <path d="M5 5H29V36L27 39L25 36L23 39L21 36L19 39L17 36L15 39L13 36L11 39L9 36L7 39L5 36Z"/>
+    </clipPath>
+  </defs>
+  <!-- plate 1: riso blue ticket -->
+  <path fill="#0072BA" d="M5 5H29V36L27 39L25 36L23 39L21 36L19 39L17 36L15 39L13 36L11 39L9 36L7 39L5 36Z"/>
+  <!-- plate 2: fluoro pink stamp, printed slightly off the corner -->
+  <circle fill="#FF48B0" cx="30.5" cy="10.5" r="7.5"/>
+  <!-- where pink lands on blue: purple -->
+  <circle fill="#6A3C9C" cx="30.5" cy="10.5" r="7.5" clip-path="url(#ticket)"/>
+  <!-- the paper showing through: a title and two receipt lines -->
+  <g fill="#FFFDF8">
+    <rect x="9" y="10" width="11" height="3.4"/>
+    <circle cx="9.7" cy="22" r=".75"/><circle cx="12.1" cy="22" r=".75"/><circle cx="14.5" cy="22" r=".75"/><circle cx="16.9" cy="22" r=".75"/>
+    <rect x="19.5" y="20.7" width="5.5" height="2.6"/>
+    <circle cx="9.7" cy="28.5" r=".75"/><circle cx="12.1" cy="28.5" r=".75"/>
+    <rect x="14.5" y="27.2" width="10.5" height="2.6"/>
+  </g>
+</svg>
