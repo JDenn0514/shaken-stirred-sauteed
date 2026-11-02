@@ -98,7 +98,9 @@ for (const file of readdirSync(DIR).sort()) {
     : null);
   if (total == null) warnings.push(`${where}: no total time, so it can't be filtered by time`);
 
-  const facets = { ...(Array.isArray(tags) ? {} : tags), time: timeFacet(total), kind: [r.kind || "dish"] };
+  // Tags that aren't lists were reported above; leave them out here rather than crash.
+  const listTags = Array.isArray(tags) || typeof tags !== "object" ? {} : Object.fromEntries(Object.entries(tags).filter(([, v]) => Array.isArray(v)));
+  const facets = { ...listTags, time: timeFacet(total), kind: [r.kind || "dish"] };
   if (r.category === "cocktails") facets.strength = strengthFacet(r.standardDrinks);
   for (const k of Object.keys(facets)) if (!facets[k].length) delete facets[k];
   const tagWords = Object.entries(facets).flatMap(([dim, vals]) =>

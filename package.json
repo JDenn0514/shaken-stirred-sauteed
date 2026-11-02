@@ -1,0 +1,13 @@
+{
+  "name": "shaken-stirred-sauteed",
+  "private": true,
+  "description": "Dev-only: the site itself has no build step and no dependencies. This file just holds the test tools.",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "node --test \"tests/unit/*.test.mjs\"",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}
