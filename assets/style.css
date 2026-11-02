@@ -319,12 +319,6 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
   font-size: 1.2rem; font-weight: 650; letter-spacing: -.012em; line-height: 1.15;
 }
 .amp { font-style: italic; font-weight: 500; color: var(--section); padding: 0 .04em; }
-.brand-sub {
-  display: none; margin-left: auto;
-  font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--muted);
-}
-@media (min-width: 600px) { .brand-sub { display: inline; } }
 
 /* ===== Home controls ===== */
 .controls { padding-top: 18px; }
@@ -921,7 +915,6 @@ body.sheet-open { overflow: hidden; }
    large plates, and a way into the full index. Search and the doors hand
    off to recipes.html (?q= / ?cat=), where all the filtering lives. */
 .welcome { max-width: 1000px; }
-.welcome-page .brand-sub { display: none; } /* the headline stands alone */
 .hero { padding: 36px 0 22px; }
 .hero h1 {
   font-size: clamp(2.1rem, 9vw, 3.8rem); line-height: 1.02; letter-spacing: -.022em;
