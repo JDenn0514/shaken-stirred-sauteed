@@ -494,6 +494,7 @@
           <li><code>style-guides/gilt-hour/theme.css</code> → <code>assets/style.css</code> (replace it)</li>
           <li><code>style-guides/gilt-hour/fonts/</code> → <code>assets/fonts/</code> (three .woff2 files)</li>
           <li><code>style-guides/gilt-hour/icon.svg</code> → <code>assets/icon.svg</code></li>
+          <li><code>style-guides/gilt-hour/monogram.svg</code> → <code>assets/monogram.svg</code> (only if you use the <code>&lt;img&gt;</code> header below)</li>
         </ul>
         <p class="g-note">theme.css loads its fonts from <code>./fonts/</code>, which resolves to <code>assets/fonts/</code> once it lives at <code>assets/style.css</code>.</p></li>
       <li>In <code>index.html</code> and <code>recipe.html</code>, replace the brand inside <code>&lt;header class="site-header"&gt;</code>:
@@ -511,7 +512,7 @@
       class="amp"&gt;&amp;amp;&lt;/span&gt; Sautéed&lt;/span&gt;
   &lt;/span&gt;
 &lt;/a&gt;</code></pre>
-        <p class="g-note">The inline SVG is coloured by the theme (<code>.gh-line</code>, <code>.gh-fill</code>), so it turns deep gilt on the paper card. <code>&lt;img class="brand-mark" src="assets/icon.svg"&gt;</code> also works.</p></li>
+        <p class="g-note">The inline SVG is coloured by the theme (<code>.gh-line</code>, <code>.gh-fill</code>), so it turns deep gilt on the paper card. <code>&lt;img class="brand-mark" src="assets/monogram.svg" alt=""&gt;</code> also works; the monogram file switches between lacquer and paper colours on its own.</p></li>
       <li>Swap the theme colour so the phone’s browser chrome matches:
 <pre><code>&lt;meta name="theme-color" content="#0B1020"
       media="(prefers-color-scheme: dark)"&gt;

@@ -197,6 +197,7 @@ button { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
 code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .88em; background: var(--yellow-tint); padding: 1px 5px; border-radius: 4px; }
 
+[hidden] { display: none !important; }
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
@@ -271,6 +272,7 @@ main.container::after {
 .brand {
   display: flex; align-items: center; gap: 12px;
   width: fit-content;
+  max-width: calc(100% - 104px);   /* leave room for the cover sticker */
   margin: 0 auto 0 max(0px, calc((100% - 1180px) / 2));
   text-decoration: none; color: var(--ink);
   border-radius: 8px;
@@ -367,8 +369,11 @@ body:has(main.recipe) .site-header::after {
   font-variation-settings: "opsz" 96;
   line-height: .86; letter-spacing: -.015em;
   text-transform: uppercase;
-  color: transparent;
-  -webkit-text-stroke: 1.6px var(--ink);
+  /* Outline at rest. The stroke is painted UNDER a paper-coloured fill, so only its
+     outer half shows and the variable font's overlapping contours never show through. */
+  color: var(--paper);
+  -webkit-text-stroke: 3.4px var(--ink);
+  paint-order: stroke fill;
   transition: color .15s ease;
 }
 .tab > span[aria-hidden="true"] { display: none; }   /* emoji: the verbs do the talking */
@@ -760,18 +765,50 @@ body.sheet-open { overflow: hidden; }
 .grid .badges .badge:first-child { transform: rotate(-2.5deg); }
 .grid .badges .badge + .badge { transform: rotate(2deg); }
 
+/* Empty state: a misprinted page. A halftone spot behind the stamped emoji,
+   then "nada." in giant misregistered display type, then the JS message. */
 .empty {
-  text-align: center; color: var(--muted);
-  padding: 56px 16px;
+  position: relative;
+  text-align: center; color: var(--ink);
+  margin: 4px 0 0;
+  padding: 40px 20px 48px;
+  border: 2.5px dashed var(--rule);
+  border-radius: var(--r-lg);
   font-size: 1.05rem; font-weight: 500;
+  text-wrap: balance;
 }
 .empty .big {
-  display: block; margin: 0 auto 14px;
-  font-size: 4rem; line-height: 1;
+  position: relative; isolation: isolate;
+  display: block; width: fit-content; margin: 0 auto 6px;
+  padding: 26px 30px 0;
+  font-size: 4.2rem; line-height: 1;
   color: transparent;
   text-shadow: -2px 1.5px 0 var(--blue), 3px -2px 0 var(--pink);
+  mix-blend-mode: normal;
 }
-.empty a { font-weight: 800; }
+.empty .big::before {                 /* halftone spot */
+  content: "";
+  position: absolute; z-index: -1;
+  left: 50%; top: 0; width: 132px; height: 132px; margin-left: -66px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--yellow) 0 2.1px, transparent 2.6px) 0 0 / 7px 7px;
+  -webkit-mask-image: radial-gradient(closest-side, #000 35%, transparent);
+  mask-image: radial-gradient(closest-side, #000 35%, transparent);
+}
+.empty .big::after {                  /* the stamp */
+  content: "nada." / "";
+  display: block;
+  margin-top: 18px;
+  font-size: clamp(3.6rem, 19vw, 6.4rem);
+  font-weight: 800; font-stretch: 75%;
+  font-variation-settings: "opsz" 96;
+  line-height: .85; letter-spacing: -.03em;
+  color: var(--heading);
+  text-shadow: -1.5px 1px 0 var(--plate-a), 2.5px -1.8px 0 var(--plate-b);
+  transform: rotate(-3deg);
+}
+.empty a { font-weight: 800; white-space: nowrap; }
+.empty code { white-space: nowrap; }
 
 /* ===== Recipe page: the press sheet (calm, no rotation) ===== */
 .recipe {
@@ -804,7 +841,7 @@ body.sheet-open { overflow: hidden; }
   margin-bottom: 18px;
   box-shadow: var(--e2);
 }
-.recipe > .badge { vertical-align: 6px; margin: 0 0 16px; }
+.recipe > .badge { vertical-align: 11px; margin: 0 0 16px; }
 .recipe h1 {
   font-size: clamp(3.3rem, 17vw, 7.5rem);
   font-weight: 800; font-stretch: 75%;
@@ -921,8 +958,11 @@ body.sheet-open { overflow: hidden; }
   position: absolute; inset: 0; z-index: -1;
   border-radius: inherit;
   background: radial-gradient(circle, var(--yellow) 0 1.7px, transparent 2.2px) 0 0 / 6px 6px;
-  -webkit-mask-image: linear-gradient(200deg, #000, transparent 65%);
-  mask-image: linear-gradient(200deg, #000, transparent 65%);
+  -webkit-mask-image: radial-gradient(farthest-side at 100% 0, #000 0, rgba(0,0,0,.55) 40%, transparent 100%);
+  mask-image: radial-gradient(farthest-side at 100% 0, #000 0, rgba(0,0,0,.55) 40%, transparent 100%);
+  -webkit-mask-size: 70% 120px; mask-size: 70% 120px;
+  -webkit-mask-position: 100% 0; mask-position: 100% 0;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
 }
 .section.before::before {
   content: "";
@@ -999,7 +1039,7 @@ body.sheet-open { overflow: hidden; }
 .steps li:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .steps li { display: flow-root; }
 .steps li.done {
-  color: color-mix(in srgb, var(--ink) 60%, var(--paper));
+  color: color-mix(in srgb, var(--ink) 74%, var(--paper));
   text-decoration: line-through wavy color-mix(in srgb, var(--blue) 75%, transparent) 1px;
   text-decoration-skip-ink: none;
 }
@@ -1028,7 +1068,7 @@ body.sheet-open { overflow: hidden; }
   letter-spacing: .1em; text-transform: uppercase; line-height: 1.2;
 }
 .steps li.current .step-wait { background: #FF48B0; color: #141B3D; }
-.steps li.current .step-cue { border-color: #141B3D; color: #141B3D; text-shadow: 0 0 0 #141B3D; }
+.steps li.current .step-cue { border-color: #141B3D; background: #FFFEFA; color: transparent; text-shadow: 0 0 0 #141B3D; }
 
 .muted { color: var(--muted); }
 .qty {
@@ -1038,9 +1078,14 @@ body.sheet-open { overflow: hidden; }
   padding: 0 1px;
 }
 .steps li.current .qty, .steps .qty { background: none; }
+@media (prefers-color-scheme: dark) {
+  .qty { background: linear-gradient(transparent 64%, color-mix(in srgb, var(--pink) 60%, transparent) 64% 94%, transparent 94%); }
+}
 .step-wait, .step-cue {
   /* floated so a done step's scribble strike doesn't run through them */
   float: left; clear: left;
+  width: max-content; max-width: 100%;
+  margin-right: 100%;          /* never sit beside the step text */
   margin-top: 8px;
   padding: 3px 11px 2px;
   border-radius: var(--r-sm);
@@ -1159,9 +1204,22 @@ body.sheet-open { overflow: hidden; }
 
 /* ===== Print: one black ink, no stickers ===== */
 @media print {
-  .site-header, .back, .toolbar, .tag-groups { display: none !important; }
+  /* every ink becomes black: one drum, cheap toner */
+  :root {
+    --paper: #fff; --surface: #fff; --paper-2: #fff;
+    --ink: #000; --muted: #333; --heading: #000; --rule: #999;
+    --blue: #000; --pink: #000; --purple: #000; --yellow: #fff; --line: #000;
+    --cat-bg: #000; --cat-dot: transparent;
+  }
+  .site-header, .back, .toolbar, .tag-groups, .empty { display: none !important; }
   main.container::after { display: none; }
-  body { background: #fff; color: #000; font-size: 12pt; }
+  body { background: #fff; background-image: none; color: #000; font-size: 12pt; }
+  .recipe .lede { color: #000; font-size: 13pt; }
+  .recipe > .badge { -webkit-mask: none; mask: none; background: none; border: 1pt solid #000; color: #000; text-shadow: none; }
+  .section.before::after { display: none; }
+  .steps li.current .step-wait, .steps li.current .step-cue { background: none; border: 0; color: #000; text-shadow: none; }
+  .steps li.done .step-wait, .steps li.done .step-cue { opacity: 1; }
+  .fact dd { color: #000; }
   .recipe { display: block; max-width: none; padding: 0; }
   .recipe h1, .section > h2, .card h2 { color: #000; text-shadow: none; mix-blend-mode: normal; }
   .recipe h1 { font-size: 30pt; }

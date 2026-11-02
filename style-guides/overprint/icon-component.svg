@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
-  <title id="t">Jar (component)</title>
+  <title id="t">Labelled jar (component)</title>
   <defs><mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><g fill="#fff" stroke="#fff"><rect x="20" y="8" width="24" height="8" rx="2"/><path d="M16 20h32c3 0 5 2 5 5v28c0 3-2 5-5 5H16c-3 0-5-2-5-5V25c0-3 2-5 5-5z"/></g></mask></defs>
   <g fill="#FF48B0" transform="translate(3 -2)"><rect x="20" y="8" width="24" height="8" rx="2"/><path d="M16 20h32c3 0 5 2 5 5v28c0 3-2 5-5 5H16c-3 0-5-2-5-5V25c0-3 2-5 5-5z"/></g>
   <g fill="#0078BF"><rect x="20" y="8" width="24" height="8" rx="2"/><path d="M16 20h32c3 0 5 2 5 5v28c0 3-2 5-5 5H16c-3 0-5-2-5-5V25c0-3 2-5 5-5z"/></g>
   <g mask="url(#m)"><g fill="#6A3C9C" transform="translate(3 -2)"><rect x="20" y="8" width="24" height="8" rx="2"/><path d="M16 20h32c3 0 5 2 5 5v28c0 3-2 5-5 5H16c-3 0-5-2-5-5V25c0-3 2-5 5-5z"/></g></g>
+  <rect x="17" y="31" width="33" height="15" rx="2.5" fill="#FFFEFA" transform="rotate(-4 33 38)"/>
+  <path d="M22 37.4h22M22 41.4h14" stroke="#1C2A5C" stroke-width="2.2" stroke-linecap="round" transform="rotate(-4 33 38)"/>
 </svg>

@@ -48,13 +48,23 @@
         <p class="g-lede">The site works like a restaurant's expediting system. The home page is the rail of open tickets. A recipe is one ticket, read top to bottom while you fire it. Filters print up from the bottom like paper feeding out of a thermal printer. At night the paper rail turns into the glowing kitchen display screen used during service.</p>
         <div class="g-fire">
           <a class="g-f-home" href="preview/index.html"><small>Preview · home page</small><strong>Open the rail</strong></a>
-          <a class="g-f-bar" href="preview/recipe.html?r=painkiller"><small>Cocktail · the bar</small><strong>Fire a Painkiller</strong></a>
-          <a class="g-f-bake" href="preview/recipe.html?r=babkallah"><small>Baking · bake station</small><strong>Fire the Babkallah</strong></a>
-          <a class="g-f-line" href="preview/recipe.html?r=congee-with-crispy-chili-pork"><small>Cooking · the line</small><strong>Fire the congee</strong></a>
+          <a class="g-f-bar" href="preview/recipe.html?r=painkiller"><small>The bar</small><strong>Fire a Painkiller</strong></a>
+          <a class="g-f-bake" href="preview/recipe.html?r=babkallah"><small>Bake station</small><strong>Fire the Babkallah</strong></a>
+          <a class="g-f-line" href="preview/recipe.html?r=congee-with-crispy-chili-pork"><small>The line</small><strong>Fire the congee</strong></a>
         </div>
       </div>
       <div class="g-hero-rail">
         <img src="logo-ticket.svg" width="440" height="584" alt="The Order Up ticket lockup: *** ORDER UP *** above SHAKEN, STIRRED &amp; SAUTÉED in double-height mono, with a red rush stripe and a barcode.">
+        <div class="g-hang g-slip"><div class="g-ticket">
+          <span class="g-label">*** All day · on the rail ***</span>
+          <dl class="facts">
+            <div class="fact"><dt>Bake station</dt><dd>×8</dd></div>
+            <div class="fact"><dt>The line</dt><dd>×24</dd></div>
+            <div class="fact"><dt>The bar</dt><dd>×4</dd></div>
+            <div class="fact"><dt>Stylesheet</dt><dd>×1</dd></div>
+            <div class="fact"><dt>Font file</dt><dd>×1</dd></div>
+          </dl>
+        </div></div>
       </div>
     </section>
 
@@ -118,6 +128,7 @@
         <div class="g-sw"><i class="c-line"></i><div><b>Flag · line</b><code>#D42A1A · --cooking</code><span>Cooking order pad.</span><em>Paper on it 4.85:1</em></div></div>
         <div class="g-sw"><i class="c-bar"></i><div><b>Flag · bar</b><code>#1F5FD1 · --cocktails</code><span>Cocktails order pad and cues.</span><em>Paper on it 5.6:1</em></div></div>
         <div class="g-sw"><i class="c-comp"></i><div><b>Component</b><code>#141414 outline</code><span>Builds into other recipes. Outline only.</span></div></div>
+        <div class="g-sw"><i class="c-amp"></i><div><b>Header amp</b><code>#FF5A47 · --hdr-amp</code><span>The &amp; in the printer-head header, on ink.</span><em>5.97:1 on ink</em></div></div>
       </div>
       <h3 class="g-h">Dark · the kitchen display</h3>
       <div class="g-swatches">
@@ -158,6 +169,7 @@
             <tr><td><span class="g-pair q7">Aa</span></td><td>Screen on phosphor · FIRING tag</td><td class="g-pass">15.17</td></tr>
             <tr><td><span class="g-pair q8">Aa</span></td><td>Screen on amber · bake header</td><td class="g-pass">11.03</td></tr>
             <tr><td><span class="g-pair q9">Aa</span></td><td>Screen on bar blue · bar header</td><td class="g-pass">7.70</td></tr>
+            <tr><td><span class="g-pair q10">Aa</span></td><td>Screen on alarm · active filter</td><td class="g-pass">6.14</td></tr>
           </tbody></table></div>
       </div>
     </section>
@@ -368,7 +380,7 @@
           <tr><td>Print</td><td>80 mm ticket</td><td>"Print"</td></tr>
           <tr><td>Current step</td><td><i>Firing</i></td><td>Announced with the step text</td></tr>
           <tr><td>Finished step</td><td>01 · Sent</td><td>Announced with the step number</td></tr>
-          <tr><td>Empty results</td><td>Nothing on the rail.</td><td>"Nothing matches that. 86 a filter → Clear filters"</td></tr>
+          <tr><td>Empty results</td><td>Nothing on the rail.</td><td>"Nothing matches that." then a key: "86 · Clear filters"</td></tr>
           <tr><td>Loading</td><td>Printing ticket ▌</td><td>"Loading…"</td></tr>
           <tr><td>Back link</td><td>← Baking ¦ Back to the pass</td><td>"← Baking"</td></tr>
           <tr><td>Header status</td><td>• Tickets open</td><td>Dark mode: "• Service live" (decorative)</td></tr>
@@ -419,16 +431,16 @@
     <section class="g-sec" id="service" aria-labelledby="h-svc">
       <header class="g-sec-head"><span class="g-num" aria-hidden="true">10</span><h2 id="h-svc">In service</h2><p>The real site, re-skinned by swapping one stylesheet. Tap a phone to open the live preview.</p></header>
       <div class="g-screens">
-        <figure class="g-phone"><a href="preview/index.html"><img src="shots/home-mobile-light.png" width="780" height="1520" alt="Home page on a phone in light mode: the rail of tickets." loading="lazy"></a><figcaption>Home · the rail</figcaption></figure>
-        <figure class="g-phone"><a href="preview/index.html"><img src="shots/sheet-mobile.png" width="780" height="1688" alt="Filter sheet printing up from the bottom of the screen." loading="lazy"></a><figcaption>Filter sheet · paper feed</figcaption></figure>
-        <figure class="g-phone"><a href="preview/recipe.html?r=babkallah"><img src="shots/recipe-mobile-light.png" width="780" height="1520" alt="Babkallah recipe ticket in light mode." loading="lazy"></a><figcaption>Recipe · one ticket</figcaption></figure>
-        <figure class="g-phone"><a href="preview/index.html"><img src="shots/home-mobile-dark.png" width="780" height="1520" alt="Home page in dark mode: the kitchen display screen." loading="lazy"></a><figcaption>Home · KDS night service</figcaption></figure>
+        <figure class="g-phone"><a href="preview/index.html"><img src="shots/frame-home.png" width="780" height="1688" alt="Home page on a phone in light mode: station tabs and the first tickets hanging from the rail." loading="lazy"></a><figcaption>Home · the rail</figcaption></figure>
+        <figure class="g-phone"><a href="preview/index.html"><img src="shots/frame-sheet.png" width="780" height="1688" alt="Ingredients filter sheet printed up from the bottom, with three options ticked in rush red." loading="lazy"></a><figcaption>Filter sheet · paper feed</figcaption></figure>
+        <figure class="g-phone"><a href="preview/recipe.html?r=babkallah"><img src="shots/frame-recipe.png" width="780" height="1688" alt="Babkallah steps: step 01 stamped SENT and struck through, step 02 highlighted and tagged FIRING." loading="lazy"></a><figcaption>Recipe · firing a step</figcaption></figure>
+        <figure class="g-phone"><a href="preview/recipe.html?r=painkiller"><img src="shots/frame-kds.png" width="780" height="1688" alt="Painkiller method on the dark kitchen display: a SENT step and the current step lit in phosphor green." loading="lazy"></a><figcaption>Recipe · KDS night service</figcaption></figure>
       </div>
       <div class="g-fire">
         <a class="g-f-home" href="preview/index.html"><small>Preview · home page</small><strong>Open the rail</strong></a>
-        <a class="g-f-bar" href="preview/recipe.html?r=painkiller"><small>Cocktail · the bar</small><strong>Fire a Painkiller</strong></a>
-        <a class="g-f-bake" href="preview/recipe.html?r=babkallah"><small>Baking · bake station</small><strong>Fire the Babkallah</strong></a>
-        <a class="g-f-line" href="preview/recipe.html?r=sheet-pan-chicken-shawarma-havarti-sandwich"><small>Cooking · longest title</small><strong>Shawarma havarti</strong></a>
+        <a class="g-f-bar" href="preview/recipe.html?r=painkiller"><small>The bar</small><strong>Fire a Painkiller</strong></a>
+        <a class="g-f-bake" href="preview/recipe.html?r=babkallah"><small>Bake station</small><strong>Fire the Babkallah</strong></a>
+        <a class="g-f-line" href="preview/recipe.html?r=sheet-pan-chicken-shawarma-havarti-sandwich"><small>The line · longest title</small><strong>Shawarma havarti</strong></a>
       </div>
     </section>
 

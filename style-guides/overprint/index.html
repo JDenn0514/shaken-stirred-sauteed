@@ -114,7 +114,7 @@
         <div>
           <h3 class="g-label">Minimum size</h3>
           <div class="g-sizes">
-            <figure><img class="g-s140" src="logo.svg" alt="Stacked wordmark at 140px" width="402" height="294"><figcaption>Stacked ≥ 96px wide</figcaption></figure>
+            <figure><img class="g-s96" src="logo.svg" alt="Stacked wordmark at its 96px minimum" width="402" height="294"><figcaption>Stacked ≥ 96px wide</figcaption></figure>
             <figure><img class="g-s64" src="icon.svg" alt="Monogram at 64px" width="512" height="512"><figcaption>Monogram 64px</figcaption></figure>
             <figure><img class="g-s32" src="icon.svg" alt="Monogram at 32px" width="512" height="512"><figcaption>32px</figcaption></figure>
             <figure><img class="g-s20" src="icon.svg" alt="Monogram at 20px" width="512" height="512"><figcaption>20px floor</figcaption></figure>
@@ -344,14 +344,13 @@
           <div class="g-states"><span><b>Phone</b> slides up and lands with a little overshoot over a halftone scrim.</span><span><b>720px+</b> drops down under its button with a 6px pink shadow.</span></div>
         </div>
         <div class="g-spec">
-          <span class="g-label">Facts band</span>
+          <span class="g-label">Facts band + category badges</span>
           <dl class="facts">
             <div class="fact"><dt>Makes</dt><dd>1 drink</dd></div>
             <div class="fact"><dt>ABV</dt><dd>~7%</dd></div>
             <div class="fact"><dt>Glass</dt><dd>Highball</dd></div>
             <div class="fact"><dt>Method</dt><dd>Shaken, double strained</dd></div>
           </dl>
-          <span class="g-label">Category badges</span>
           <p class="badges"><span class="badge baking">Baking</span><span class="badge cooking">Cooking</span><span class="badge cocktails">Cocktails</span><span class="badge component">Component</span></p>
         </div>
       </div>
@@ -407,6 +406,8 @@
         <div class="g-say"><dt>Loading</dt><dd><span class="g-was">Loading…</span><span class="g-now">inking the drums…</span></dd></div>
         <div class="g-say"><dt>Reset</dt><dd><span class="g-was">Reset checkmarks</span><span class="g-now">start over</span></dd></div>
         <div class="g-say"><dt>Error</dt><dd><span class="g-was">Recipe not found.</span><span class="g-now">this page got lost at the printer.</span></dd></div>
+        <div class="g-say"><dt>Before you start</dt><dd><span class="g-was">Before you start</span><span class="g-now">get your stuff out</span></dd></div>
+        <div class="g-say"><dt>Print button</dt><dd><span class="g-was">Print</span><span class="g-now">run off a copy</span></dd></div>
       </dl>
       <p class="t-body">Most of this copy lives in <code>home.js</code> and <code>recipe.js</code>. The theme ships without changing it, so these are recommended string edits for a later pass.</p>
     </section>
@@ -450,9 +451,11 @@ cp style-guides/overprint/logo.svg assets/logo.svg</code></li>
     </section>
   </div>
 
-  <footer class="g-wrap g-foot">
-    <img src="logo-horizontal.svg" alt="Shaken, Stirred &amp; Sautéed" width="1200" height="104">
-    <span>Overprint · pulled in two inks · Bricolage Grotesque (SIL OFL 1.1)</span>
+  <footer class="g-wrap">
+    <div class="g-foot">
+      <img src="logo-horizontal.svg" alt="Shaken, Stirred &amp; Sautéed" width="1200" height="104">
+      <span>Overprint · pulled in two inks · Bricolage Grotesque (SIL OFL 1.1)</span>
+    </div>
   </footer>
 </main>
 </body>

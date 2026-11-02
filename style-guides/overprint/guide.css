@@ -358,7 +358,7 @@
 }
 .g-meta { font-size: 12.5px; color: var(--muted); font-family: ui-monospace, Menlo, monospace; }
 .g-meta b { font-family: var(--font); font-size: 12px; font-weight: 800; font-stretch: 75%; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); margin-right: 8px; }
-@media (min-width: 760px) { .g-row { grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: baseline; } }
+@media (min-width: 760px) { .g-row { grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: center; } }
 .t-display { font-size: clamp(3.3rem, 10vw, 7.5rem); font-weight: 800; font-stretch: 75%; font-variation-settings: "opsz" 96; line-height: .88; letter-spacing: -.03em; }
 .t-tab { font-size: clamp(2.75rem, 7vw, 5rem); font-weight: 800; font-stretch: 75%; font-variation-settings: "opsz" 96; line-height: .86; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.6px var(--ink); }
 .t-h2 { font-size: clamp(2.1rem, 6vw, 2.9rem); font-weight: 800; font-stretch: 75%; font-variation-settings: "opsz" 96; line-height: .9; text-transform: uppercase; }
@@ -489,12 +489,12 @@
 @media (prefers-color-scheme: dark) { .g-code { background: #0D0B11; border: 1.5px solid var(--rule); } }
 
 .g-foot {
-  margin-top: 90px; padding: 34px 0 max(40px, env(safe-area-inset-bottom));
+  margin-top: 90px; padding-top: 34px; padding-bottom: max(40px, env(safe-area-inset-bottom));
   border-top: 3px solid var(--ink);
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: center;
   font-size: 13px; color: var(--muted);
 }
-.g-foot img { width: 120px; height: auto; }
+.g-foot img { width: min(100%, 340px); height: auto; }
 
 @media (min-width: 900px) {
   .g-cover-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
@@ -518,3 +518,14 @@
 .g-steps-adopt { grid-template-columns: minmax(0, 1fr); }
 .g-steps-adopt li { min-width: 0; overflow-wrap: anywhere; }
 .g-steps-adopt .g-code { overflow-wrap: normal; }
+.g-sizes img { display: block; height: auto; margin: 0 auto; }
+.g-swatches { grid-template-columns: repeat(auto-fill, minmax(min(100%, 168px), 1fr)); }
+.g-logos + .g-logo-tile { margin-top: 22px; min-height: 0; }
+.g-logos + .g-logo-tile + .g-cols, .g-dos { margin-top: 36px; }
+.g-sec h3.g-label { margin: 34px 0 12px; }
+.g-sec .g-cols h3.g-label { margin-top: 0; }
+.g-row-flex { margin-bottom: 4px; }
+.g-spec .facts + .badges { margin-top: 18px; }
+
+/* the empty-state specimen already sits in a dashed spec frame */
+.g-spec > .empty { border: 0; padding: 8px 0 16px; }

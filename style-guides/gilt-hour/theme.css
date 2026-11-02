@@ -198,8 +198,8 @@ code { font-family: var(--sans); font-size: .85em; letter-spacing: .04em; color:
 }
 .brand:hover { color: var(--text); }
 .brand-mark { flex: none; font-size: 1.5rem; line-height: 1; }
-svg.brand-mark { width: 44px; height: 47px; transition: transform .5s var(--ease); }
-.brand:hover svg.brand-mark { transform: translateY(-1px) scale(1.04); }
+svg.brand-mark, img.brand-mark { display: block; width: 44px; height: 47px; transition: transform .5s var(--ease); }
+.brand:hover .brand-mark { transform: translateY(-1px) scale(1.04); }
 .brand-mark .gh-line { fill: none; stroke: var(--gilt); }
 .brand-mark .gh-fill { fill: var(--gilt); }
 .brand-name {
@@ -317,6 +317,7 @@ svg.brand-mark { width: 44px; height: 47px; transition: transform .5s var(--ease
   transform: rotate(45deg);
 }
 .tab:hover { color: var(--text); }
+.tab:focus-visible { outline-width: 1.5px; outline-offset: 0; border-radius: 2px; }
 .tab[aria-pressed="true"] { color: var(--text); }
 .tab[aria-pressed="true"]::after {
   content: "";
@@ -355,7 +356,13 @@ svg.brand-mark { width: 44px; height: 47px; transition: transform .5s var(--ease
   transition: border-color .2s, background-color .2s, color .2s;
 }
 .filter-btn:hover { border-color: var(--gilt); }
-.filter-btn .caret { color: var(--gilt); font-size: .85em; letter-spacing: 0; display: inline-block; transition: transform .3s var(--ease); }
+.filter-btn .caret {
+  display: inline-block; flex: none; width: 10px; height: 7px;
+  font-size: 0; color: transparent; background: var(--gilt);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .3s var(--ease);
+}
+.filter-btn[data-on="true"] .caret { margin-left: -2px; }
 .filter-btn .n {
   display: inline-grid; place-items: center;
   min-width: 1.75em; height: 1.75em; padding: 0 5px;
@@ -383,7 +390,13 @@ svg.brand-mark { width: 44px; height: 47px; transition: transform .5s var(--ease
   transition: border-color .2s, background-color .2s, color .2s;
 }
 .chip:hover { border-color: var(--gilt); color: var(--text); }
-.chip span[aria-hidden="true"] { color: var(--gilt); font-style: normal; font-size: 1.1em; line-height: 1; }
+.chip span[aria-hidden="true"] {
+  display: inline-block; flex: none; width: 10px; height: 10px; margin-left: 2px;
+  font-size: 0; color: transparent; background: var(--gilt);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 2l8 8M10 2 2 10' stroke='black' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 2l8 8M10 2 2 10' stroke='black' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .25s var(--ease);
+}
+@media (hover: hover) { .chip:hover span[aria-hidden="true"] { transform: rotate(90deg); } }
 .chip[aria-pressed="true"] { border-color: var(--gilt); background: color-mix(in srgb, var(--gilt) 12%, transparent); }
 .clear {
   border: 0; background: none; cursor: pointer;
@@ -572,11 +585,11 @@ body.sheet-open { overflow: hidden; }
   text-align: center;
   border-top: 1px solid var(--rule);
   color: var(--muted);
-  font: 600 11px/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase;
+  font: 600 11px/1.4 var(--sans); letter-spacing: .13em; text-transform: uppercase;
 }
 .card-body > p + .card-meta, .card-body > h2 + .card-meta { margin-top: auto; }
 .card-meta span::first-letter { font-size: 0; margin-right: -.3em; }   /* drop the ⏱ 🍽 emoji */
-.card-meta span { flex: 0 1 auto; min-width: 0; }
+.card-meta span { flex: 0 1 auto; min-width: 0; text-wrap: balance; }
 .card-meta span:first-child { flex: none; }
 .card-meta span + span { position: relative; padding-left: 27px; }
 .card-meta span + span::before {
@@ -679,13 +692,13 @@ body.sheet-open { overflow: hidden; }
 
 /* Facts: a bill of fare with gilt rules between the columns */
 .facts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex; flex-wrap: wrap;          /* the last row always fills the card */
   margin: 32px 0 26px;
   border-block: 3px double var(--rule-2);
   overflow: hidden;
 }
 .fact {
+  flex: 1 1 150px;
   margin: -1px 0 0 -1px;
   padding: 15px 12px 14px;
   border-left: 1px solid var(--rule-2);
@@ -693,7 +706,6 @@ body.sheet-open { overflow: hidden; }
   text-align: center;
   display: flex; flex-direction: column; justify-content: center;
 }
-@media (max-width: 520px) { .fact:last-child:nth-child(odd) { grid-column: 1 / -1; } }
 .fact dt { font: 600 10.5px/1.2 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--gilt); padding-left: .22em; }
 .fact dd { margin: 7px 0 0; font-size: 1.06rem; font-weight: 500; line-height: 1.3; text-wrap: balance; font-variant-numeric: lining-nums; }
 
@@ -905,7 +917,7 @@ body.sheet-open { overflow: hidden; }
 /* ===== Wider screens ===== */
 @media (min-width: 720px) {
   .site-header { padding-top: max(14px, env(safe-area-inset-top)); padding-bottom: 14px; }
-  svg.brand-mark { width: 58px; height: 62px; }
+  svg.brand-mark, img.brand-mark { width: 58px; height: 62px; }
   .brand { gap: 16px; }
   .brand-line { font-size: 12px; }
   .brand-script { font-size: 2.1rem; }
@@ -917,12 +929,28 @@ body.sheet-open { overflow: hidden; }
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 34'%3E%3Cpath d='M32.0 33L1.06 31.05L1.77 26.15Z'/%3E%3Cpath d='M32.0 33L2.86 22.42L4.92 17.91Z'/%3E%3Cpath d='M32.0 33L7.02 14.64L10.27 10.89Z'/%3E%3Cpath d='M32.0 33L13.21 8.34L17.38 5.67Z'/%3E%3Cpath d='M32.0 33L20.92 4.05L25.67 2.65Z'/%3E%3Cpath d='M32.0 33L29.52 2.10L34.48 2.10Z'/%3E%3Cpath d='M32.0 33L38.33 2.65L43.08 4.05Z'/%3E%3Cpath d='M32.0 33L46.62 5.67L50.79 8.34Z'/%3E%3Cpath d='M32.0 33L53.73 10.89L56.98 14.64Z'/%3E%3Cpath d='M32.0 33L59.08 17.91L61.14 22.42Z'/%3E%3Cpath d='M32.0 33L62.23 26.15L62.94 31.05Z'/%3E%3Cpath d='M22.0 33a10 10 0 0 1 20 0z'/%3E%3Crect x='0.0' y='32.4' width='64' height='1.2'/%3E%3C/svg%3E") top center / 88px 44px no-repeat, linear-gradient(#000, #000) 0 54px / 100% 100% no-repeat;
   }
   .search { padding: 15px 24px; }
+  .controls { max-width: none; }        /* the result bar spans the full grid */
+  .filter-host { max-width: 1000px; margin: 0 auto; }
   .tabs { margin-top: 32px; }
   .tab { font-size: 12.5px; letter-spacing: .2em; }
   .grid { gap: 22px; }
   .card { padding: 28px 28px 22px; }
   .recipe { padding-top: 34px; }
   .steps li { padding-right: 22px; }
+}
+
+/* ===== Small phones (iPhone SE / 320px) ===== */
+@media (max-width: 359px) {
+  .tabs { gap: 14px; }
+  .tab { font-size: 10.5px; letter-spacing: .06em; padding-inline: 0; }
+  .tab .n { margin-right: .06em; }
+  .tab + .tab::before { left: -9.5px; width: 5px; height: 5px; }
+  .search { padding: 10px 16px; gap: 10px; }
+  .search input { font-size: 1rem; }
+  .brand-line { letter-spacing: .26em; }
+  .card { padding: 22px 18px 18px; }
+  .steps li { padding-left: 3.6em; }
+  .steps li::before { width: calc(2.9 * var(--fs-body)); font-size: 1.3rem; }
 }
 
 /* ===== Motion ===== */
@@ -967,4 +995,20 @@ body.sheet-open { overflow: hidden; }
   .section { break-inside: auto; margin-top: 18pt; }
   .section.before { outline: 0; border: 1px solid #888; background: #fff; }
   .section > h2 { break-after: avoid; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  /* hover and current tints never reach paper */
+  .steps li, .steps li.current, .ingredients li label { background: none !important; }
+  /* the facts as one even bill of fare */
+  .facts { display: flex; flex-wrap: wrap; margin: 16pt 0; }
+  .fact { flex: 1 1 110px; padding: 8pt 6pt; }
+  /* a small house line where the header was */
+  .recipe { padding-top: 0; }
+  .recipe::before {
+    display: block; position: static; transform: none;
+    width: auto; height: auto; margin: 0 0 14pt;
+    content: "Shaken \25C6  Stirred & Saut\E9 ed";
+    background: none; -webkit-mask: none; mask: none;
+    text-align: center; color: #000;
+    font: 600 8pt/1 var(--sans); letter-spacing: .32em; text-transform: uppercase;
+  }
 }

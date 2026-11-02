@@ -68,6 +68,8 @@
   --focus: #1D3F8F;
   --scrim: rgba(15, 36, 87, .42);
   --check-glyph: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Cpath fill=%22%23FFFFFF%22 d=%22M14.4 5.6A4.4 4.4 0 0 1 14.4 14.4A4.4 4.4 0 0 1 5.6 14.4A4.4 4.4 0 0 1 5.6 5.6A4.4 4.4 0 0 1 14.4 5.6Z%22/%3E%3C/svg%3E");
+  --brush-img: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 100%22 preserveAspectRatio=%22none%22%3E%3Cpath fill=%22%231D3F8F%22 d=%22M0.88 0L1.47 2.5L1.26 5L0.4 7.5L0.37 10L0.43 12.5L1.06 15L0.52 17.5L1.43 20L1.34 22.5L2.06 25L1.85 27.5L0.56 30L0.86 32.5L0.63 35L1.45 37.5L1.29 40L0.41 42.5L1.52 45L0.87 47.5L1.12 50L1.73 52.5L0.74 55L1.25 57.5L1.61 60L2.06 62.5L1.05 65L0.57 67.5L0.37 70L1.68 72.5L1.88 75L1.55 77.5L1.34 80L1.81 82.5L1.15 85L0.41 87.5L1.46 90L1.78 92.5L0.99 95L0.34 97.5L0.6 100L7.89 100L8.44 97.5L8.77 95L8.16 92.5L9.29 90L8.82 87.5L8.76 85L9.21 82.5L8.43 80L8.65 77.5L8.2 75L8.62 72.5L8.77 70L8.48 67.5L8.91 65L7.89 62.5L8.16 60L9.1 57.5L8.62 55L8.82 52.5L8.18 50L8.64 47.5L8.38 45L8.03 42.5L7.8 40L8.3 37.5L8.63 35L9.01 32.5L7.89 30L8.16 27.5L7.77 25L8.33 22.5L9.22 20L8.06 17.5L9.02 15L7.85 12.5L8.39 10L8.51 7.5L8.29 5L7.82 2.5L7.94 0Z%22/%3E%3C/svg%3E");
+  --x-glyph: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Cpath d=%22M5.5 5.5l9 9M14.5 5.5l-9 9%22 fill=%22none%22 stroke=%22%231D3F8F%22 stroke-width=%222.4%22 stroke-linecap=%22round%22/%3E%3C/svg%3E");
   --tick-glyph: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Cpath d=%22M5 10.5l3.4 3.4L15 6.6%22 fill=%22none%22 stroke=%22%23FFFFFF%22 stroke-width=%222.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E");
 
   /* Space, radius, elevation */
@@ -119,6 +121,8 @@
     --focus: #F5CF4A;
     --scrim: rgba(3, 8, 24, .62);
     --check-glyph: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Cpath fill=%22%230A1638%22 d=%22M14.4 5.6A4.4 4.4 0 0 1 14.4 14.4A4.4 4.4 0 0 1 5.6 14.4A4.4 4.4 0 0 1 5.6 5.6A4.4 4.4 0 0 1 14.4 5.6Z%22/%3E%3C/svg%3E");
+    --brush-img: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 100%22 preserveAspectRatio=%22none%22%3E%3Cpath fill=%22%23F5CF4A%22 d=%22M0.88 0L1.47 2.5L1.26 5L0.4 7.5L0.37 10L0.43 12.5L1.06 15L0.52 17.5L1.43 20L1.34 22.5L2.06 25L1.85 27.5L0.56 30L0.86 32.5L0.63 35L1.45 37.5L1.29 40L0.41 42.5L1.52 45L0.87 47.5L1.12 50L1.73 52.5L0.74 55L1.25 57.5L1.61 60L2.06 62.5L1.05 65L0.57 67.5L0.37 70L1.68 72.5L1.88 75L1.55 77.5L1.34 80L1.81 82.5L1.15 85L0.41 87.5L1.46 90L1.78 92.5L0.99 95L0.34 97.5L0.6 100L7.89 100L8.44 97.5L8.77 95L8.16 92.5L9.29 90L8.82 87.5L8.76 85L9.21 82.5L8.43 80L8.65 77.5L8.2 75L8.62 72.5L8.77 70L8.48 67.5L8.91 65L7.89 62.5L8.16 60L9.1 57.5L8.62 55L8.82 52.5L8.18 50L8.64 47.5L8.38 45L8.03 42.5L7.8 40L8.3 37.5L8.63 35L9.01 32.5L7.89 30L8.16 27.5L7.77 25L8.33 22.5L9.22 20L8.06 17.5L9.02 15L7.85 12.5L8.39 10L8.51 7.5L8.29 5L7.82 2.5L7.94 0Z%22/%3E%3C/svg%3E");
+    --x-glyph: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Cpath d=%22M5.5 5.5l9 9M14.5 5.5l-9 9%22 fill=%22none%22 stroke=%22%238FB0FF%22 stroke-width=%222.4%22 stroke-linecap=%22round%22/%3E%3C/svg%3E");
     --tick-glyph: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22%3E%3Cpath d=%22M5 10.5l3.4 3.4L15 6.6%22 fill=%22none%22 stroke=%22%230A1638%22 stroke-width=%222.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E");
     --lift-1: none;
     --lift-2: 0 -10px 40px rgba(0, 0, 0, .5);
@@ -201,7 +205,7 @@ code { font-size: .9em; background: var(--wash); padding: 1px 5px; border-radius
   transition: transform .35s var(--ease);
 }
 svg.brand-mark { display: block; overflow: visible; }
-.brand:hover .brand-mark { transform: rotate(90deg); }
+@media (hover: hover) { .brand:hover .brand-mark { transform: rotate(90deg); } }
 .bm-face { fill: var(--tile); }
 .bm-wash { fill: var(--pattern-wash); }
 .bm-ink { fill: var(--cobalt); }
@@ -244,7 +248,11 @@ svg.brand-mark { display: block; overflow: visible; }
   -webkit-appearance: none; appearance: none;
 }
 .search input::placeholder { color: var(--muted); opacity: 1; }
-.search input::-webkit-search-cancel-button { filter: grayscale(1); }
+.search input::-webkit-search-cancel-button {
+  -webkit-appearance: none; appearance: none;
+  width: 24px; height: 24px; margin-left: 6px; cursor: pointer;
+  border-radius: 2px; background: var(--wash) var(--x-glyph) center / 18px 18px no-repeat;
+}
 
 /* Sections: a strip of four tiles in grout */
 .tabs {
@@ -282,8 +290,8 @@ svg.brand-mark { display: block; overflow: visible; }
   color: var(--muted); font-weight: 560; font-size: .78rem;
   font-variant-numeric: tabular-nums;
 }
-.tab:hover { background: var(--tile-hover); }
-.tab:hover::before { transform: rotate(45deg); }
+@media (hover: hover) { .tab:hover { background: var(--tile-hover); } }
+@media (hover: hover) { .tab:hover::before { transform: rotate(45deg); } }
 .tab[aria-pressed="true"] { background: var(--cobalt); color: var(--on-cobalt); box-shadow: none; }
 .tab[aria-pressed="true"]::before { background-color: var(--on-cobalt); }
 .tab[aria-pressed="true"] .n { color: inherit; opacity: .82; }
@@ -312,7 +320,7 @@ svg.brand-mark { display: block; overflow: visible; }
   box-shadow: var(--pillow);
   transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
 }
-.filter-btn:hover { border-color: var(--cobalt); }
+@media (hover: hover) { .filter-btn:hover { border-color: var(--cobalt); } }
 .filter-btn:active { transform: translateY(1px); }
 .filter-btn .caret { color: var(--cobalt); font-size: .7rem; transition: transform .25s var(--ease); }
 .filter-btn .n {
@@ -338,12 +346,12 @@ svg.brand-mark { display: block; overflow: visible; }
   text-decoration: none;
   transition: background-color .15s ease, border-color .15s ease;
 }
-.chip:hover { border-color: var(--cobalt); background: var(--wash); }
+@media (hover: hover) { .chip:hover { border-color: var(--cobalt); background: var(--wash); } }
 .chip[aria-pressed="true"] {
   border-color: var(--cobalt); color: var(--on-cobalt); background: var(--cobalt); font-weight: 620;
 }
-.chip[aria-pressed="true"]:hover { background: var(--ink); border-color: var(--ink); }
-@media (prefers-color-scheme: dark) { .chip[aria-pressed="true"]:hover { background: var(--ink); color: var(--page); } }
+@media (hover: hover) { .chip[aria-pressed="true"]:hover { background: var(--ink); border-color: var(--ink); } }
+@media (hover: hover) and (prefers-color-scheme: dark) { .chip[aria-pressed="true"]:hover { background: var(--ink); color: var(--page); } }
 .clear {
   border: 0; background: none; color: var(--cobalt); cursor: pointer;
   font-size: .86rem; font-weight: 620; padding: 4px 6px;
@@ -384,8 +392,9 @@ svg.brand-mark { display: block; overflow: visible; }
 .sheet-head .btn {
   background: var(--cobalt); color: var(--on-cobalt); border-color: var(--cobalt);
   min-width: 84px; justify-content: center;
+  box-shadow: inset 0 0 0 2px var(--cobalt), inset 0 0 0 3.5px var(--on-cobalt);
 }
-.sheet-head .btn:hover { background: var(--ink); border-color: var(--ink); color: var(--page); }
+@media (hover: hover) { .sheet-head .btn:hover { background: var(--ink); border-color: var(--ink); color: var(--page); } }
 .sheet-body { overflow-y: auto; padding: 6px 18px 22px; overscroll-behavior: contain; }
 .sheet-body h3 {
   font-family: var(--sans); font-size: .74rem; font-weight: 680; text-transform: uppercase; letter-spacing: .09em;
@@ -404,7 +413,7 @@ svg.brand-mark { display: block; overflow: visible; }
   box-shadow: var(--pillow);
   transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .12s ease;
 }
-.opt:hover:not(:disabled) { border-color: var(--cobalt); }
+@media (hover: hover) { .opt:hover:not(:disabled) { border-color: var(--cobalt); } }
 .opt:active:not(:disabled) { transform: scale(.97); }
 .opt .n { color: var(--muted); font-size: .78rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .opt[aria-pressed="true"] {
@@ -444,7 +453,7 @@ body.sheet-open { overflow: hidden; }
   padding: 5px 30px 5px 11px; cursor: pointer;
   color: var(--ink); font-size: .9rem; font-weight: 600; letter-spacing: 0; text-transform: none;
 }
-.sort select:hover { border-color: var(--cobalt); }
+@media (hover: hover) { .sort select:hover { border-color: var(--cobalt); } }
 
 /* =====================================================================
    The wall: recipe tiles in real grout, quarter-motifs meeting at the joints
@@ -491,12 +500,13 @@ body.sheet-open { overflow: hidden; }
 }
 
 .card::before, .card::after,
-.section.before::before, .section.before::after {
+.section.before::before, .section.before::after,
+.tg-tile::before, .tg-tile::after {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
 }
 /* wash layer */
-.card::before, .section.before::before {
+.card::before, .section.before::before, .tg-tile::before {
   background-color: var(--pattern-wash);
   -webkit-mask-image: var(--w), var(--w), var(--w), var(--w);
   mask-image: var(--w), var(--w), var(--w), var(--w);
@@ -506,7 +516,7 @@ body.sheet-open { overflow: hidden; }
   transition: background-color .25s ease;
 }
 /* line layer: corner quarters + painted frame + half-moons at each edge midpoint */
-.card::after, .section.before::after {
+.card::after, .section.before::after, .tg-tile::after {
   background-color: var(--pattern);
   -webkit-mask-image:
     var(--m), var(--m), var(--m), var(--m),
@@ -535,9 +545,9 @@ body.sheet-open { overflow: hidden; }
     50% var(--fin), 50% calc(100% - var(--fin)), var(--fin) 50%, calc(100% - var(--fin)) 50%,
     50% 0, 50% 100%, 0 50%, 100% 50%;
 }
-.card:hover { background: var(--tile-hover); }
-.card:hover::before { background-color: var(--pattern-wash-hover); }
-.card:hover h2 { color: var(--cobalt); }
+@media (hover: hover) { .card:hover { background: var(--tile-hover); } }
+@media (hover: hover) { .card:hover::before { background-color: var(--pattern-wash-hover); } }
+@media (hover: hover) { .card:hover h2 { color: var(--cobalt); } }
 .card:active { transform: scale(.988); }
 .card:focus-visible { outline: 3px solid var(--focus); outline-offset: -6px; }
 
@@ -582,16 +592,44 @@ body.sheet-open { overflow: hidden; }
 .badge.component { color: var(--muted); background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
 .badges { display: flex; flex-wrap: wrap; gap: 6px; }
 
-.empty { text-align: center; color: var(--muted); padding: 56px 16px; font-size: 1.02rem; }
+/* Empty: a gap in the wall. A dashed slot in the grout, still painted at its corners. */
+.empty {
+  position: relative; text-align: center; color: var(--ink);
+  padding: 56px 16px 64px;
+  font-family: var(--serif); font-size: 1.3rem; line-height: 1.3; text-wrap: balance;
+}
+.empty::before, .empty::after {
+  content: ""; display: block; width: 116px; height: 116px; margin: 0 auto;
+}
 .empty::before {
-  content: ""; display: block; width: 84px; height: 84px; margin: 0 auto 18px;
+  margin-bottom: 22px;
+  background-color: var(--pattern);
+  -webkit-mask-image: var(--m-rosette), var(--m-rosette), var(--m-rosette), var(--m-rosette), var(--m-qf);
+  mask-image: var(--m-rosette), var(--m-rosette), var(--m-rosette), var(--m-rosette), var(--m-qf);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 84px 84px, 84px 84px, 84px 84px, 84px 84px, 18px 18px;
+  mask-size: 84px 84px, 84px 84px, 84px 84px, 84px 84px, 18px 18px;
+  -webkit-mask-position: -42px -42px, calc(100% + 42px) -42px, -42px calc(100% + 42px), calc(100% + 42px) calc(100% + 42px), center;
+  mask-position: -42px -42px, calc(100% + 42px) -42px, -42px calc(100% + 42px), calc(100% + 42px) calc(100% + 42px), center;
+  opacity: .5;
+}
+.empty::after {
+  position: absolute; top: 56px; left: 50%; transform: translateX(-50%);
   border: var(--joint) dashed var(--grout); border-radius: var(--r-tile);
-  background-color: transparent;
-  background-image: radial-gradient(circle at 0 0, var(--wash) 0 22px, transparent 23px),
-    radial-gradient(circle at 100% 100%, var(--wash) 0 22px, transparent 23px);
+  box-shadow: inset 0 0 0 6px var(--page), inset 0 0 0 7px color-mix(in srgb, var(--grout) 60%, transparent);
+  pointer-events: none;
 }
 .empty .big { display: none; }
-.empty a { font-weight: 650; }
+.empty a {
+  display: table; margin: 18px auto 0;
+  font-family: var(--sans); font-size: .95rem; font-weight: 650; text-decoration: none;
+  min-height: 44px; line-height: 40px; padding: 0 18px;
+  color: var(--on-cobalt); background: var(--cobalt);
+  border-radius: var(--r-tile);
+  box-shadow: inset 0 0 0 2px var(--cobalt), inset 0 0 0 3.5px var(--on-cobalt);
+}
+@media (hover: hover) { .empty a:hover { background: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 3.5px var(--page); color: var(--page); } }
+.empty code { font-family: ui-monospace, Menlo, monospace; font-size: .8em; }
 
 /* =====================================================================
    Recipe page
@@ -606,7 +644,7 @@ body.sheet-open { overflow: hidden; }
   text-decoration: none; font-weight: 650; font-size: .93rem; color: var(--cobalt);
   transition: border-color .15s ease, transform .15s ease;
 }
-.back:hover { border-color: var(--cobalt); transform: translateX(-2px); }
+@media (hover: hover) { .back:hover { border-color: var(--cobalt); transform: translateX(-2px); } }
 .recipe-hero {
   display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; margin-bottom: 18px;
   border-radius: var(--r-tile); background: var(--wash);
@@ -652,7 +690,13 @@ body.sheet-open { overflow: hidden; }
 }
 .fact dd { margin: 3px 0 0; font-size: 1.02rem; font-weight: 640; line-height: 1.3; color: var(--ink); font-variant-numeric: tabular-nums; }
 
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: var(--joint); margin-bottom: 8px;
+  background: var(--grout); border: var(--joint) solid var(--grout); border-radius: var(--r-tile);
+}
+.toolbar .btn { flex: 1 1 auto; justify-content: center; border: 0; border-radius: 0; min-height: 50px; }
+.toolbar .btn[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--cobalt), inset 0 0 0 4.5px var(--lemon); }
+@media (hover: hover) { .toolbar .btn:hover { background: var(--tile-hover); } .toolbar .btn[aria-pressed="true"]:hover { background: var(--cobalt); } }
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
   min-height: 44px;
@@ -662,7 +706,7 @@ body.sheet-open { overflow: hidden; }
   box-shadow: var(--pillow);
   transition: border-color .15s ease, background-color .15s ease, color .15s ease, transform .12s ease;
 }
-.btn:hover { border-color: var(--cobalt); }
+@media (hover: hover) { .btn:hover { border-color: var(--cobalt); } }
 .btn:active { transform: translateY(1px); }
 .btn[aria-pressed="true"] {
   background: var(--cobalt); color: var(--on-cobalt); border-color: var(--cobalt);
@@ -692,6 +736,15 @@ body.sheet-open { overflow: hidden; }
   -webkit-mask-image: var(--m-qf); mask-image: var(--m-qf);
 }
 
+/* Utility: set any panel as a single painted tile (rosette corners, frame, half-moons). */
+.tg-tile {
+  position: relative; isolation: isolate;
+  --m: var(--m-rosette); --w: var(--w-rosette);
+  --frame-h: linear-gradient(#000 0 0); --frame-v: linear-gradient(#000 0 0);
+  --ms: 92px; --mo: calc(var(--ms) / -2 - 1px); --mo2: calc(100% + var(--ms) / 2 + 1px);
+  --fcut: calc(var(--ms) * .86); --fin: 9px;
+}
+
 /* "Before you start" is set as a single framed tile */
 .section.before {
   isolation: isolate;
@@ -716,7 +769,7 @@ body.sheet-open { overflow: hidden; }
   transition: background-color .2s ease;
 }
 .ingredients li:last-child label { border-bottom-color: transparent; }
-.ingredients li label:hover { background: var(--tile-hover); }
+@media (hover: hover) { .ingredients li label:hover { background: var(--tile-hover); } }
 .ingredients input {
   -webkit-appearance: none; appearance: none;
   flex: none; width: 24px; height: 24px; margin: 1px 0 0;
@@ -754,7 +807,7 @@ body.sheet-open { overflow: hidden; }
   line-height: 1.55;
   transition: background-color .25s ease, color .25s ease, border-color .25s ease;
 }
-.steps li:hover { background: var(--tile-hover); }
+@media (hover: hover) { .steps li:hover { background: var(--tile-hover); } }
 .steps li::before {
   content: counter(step);
   position: absolute; left: 19px; top: 16px; z-index: 1;
@@ -776,6 +829,12 @@ body.sheet-open { overflow: hidden; }
   transition: background-color .25s ease, transform .6s var(--ease);
 }
 .steps li:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 599.98px) {
+  .steps li { padding-left: 72px; padding-right: 12px; }
+  .steps li::before { left: 15px; }
+  .steps li::after { left: 0; top: 1px; width: 68px; height: 68px; -webkit-mask-size: 68px 68px; mask-size: 68px 68px; }
+  .steps li.current { background-size: 5px calc(100% - 12px); background-position: 0 6px; }
+}
 .steps li.done { color: var(--muted); }
 .steps li.done::before {
   content: ""; background-color: var(--cobalt); background-image: var(--tick-glyph);
@@ -785,8 +844,8 @@ body.sheet-open { overflow: hidden; }
 .steps li.done .step-cue { color: var(--muted); }
 .steps li.current {
   background-color: var(--current-bg);
-  background-image: linear-gradient(var(--brush), var(--brush));
-  background-repeat: no-repeat; background-size: 5px calc(100% - 16px); background-position: 0 8px;
+  background-image: var(--brush-img);
+  background-repeat: no-repeat; background-size: 7px calc(100% - 12px); background-position: 1px 6px;
   color: var(--current-ink);
   border-color: color-mix(in srgb, var(--lemon) 55%, transparent);
 }
@@ -806,8 +865,8 @@ body.sheet-open { overflow: hidden; }
 .notes { list-style: none; padding-left: 0; margin: 0; }
 .notes li { position: relative; padding-left: 26px; margin-bottom: 10px; }
 .notes li::before {
-  content: ""; position: absolute; left: 2px; top: .42em; width: 13px; height: 13px;
-  background-color: var(--cobalt);
+  content: ""; position: absolute; left: 4px; top: .52em; width: 10px; height: 10px;
+  background-color: var(--pattern); opacity: .72;
   -webkit-mask-image: var(--m-qf); mask-image: var(--m-qf);
 }
 
@@ -829,6 +888,19 @@ body.sheet-open { overflow: hidden; }
   animation: tg-spin 2.6s linear infinite;
 }
 
+/* Colophon: every wall ends with the cartouche rule and its keystone. */
+main.container::after {
+  content: ""; display: block; height: 24px; width: min(300px, 72%); margin: 64px auto 0;
+  background-color: var(--pattern); opacity: .7;
+  -webkit-mask-image: var(--m-curl-l), var(--m-curl-r), linear-gradient(#000 0 0), linear-gradient(#000 0 0), var(--m-qf);
+  mask-image: var(--m-curl-l), var(--m-curl-r), linear-gradient(#000 0 0), linear-gradient(#000 0 0), var(--m-qf);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 28px 24px, 28px 24px, calc(100% - 54px) 1.8px, calc(100% - 54px) 1px, 18px 18px;
+  mask-size: 28px 24px, 28px 24px, calc(100% - 54px) 1.8px, calc(100% - 54px) 1px, 18px 18px;
+  -webkit-mask-position: 0 0, 100% 0, 50% 2.1px, 50% 6.2px, 50% 7px;
+  mask-position: 0 0, 100% 0, 50% 2.1px, 50% 6.2px, 50% 7px;
+}
+
 /* =====================================================================
    Motion
    ===================================================================== */
@@ -848,7 +920,15 @@ body.sheet-open { overflow: hidden; }
    Print: plain ink on paper, no glaze
    ===================================================================== */
 @media print {
-  .site-header, .back, .toolbar, .tag-groups { display: none !important; }
+  :root {
+    --ink: #000; --cobalt: #000; --muted: #333; --teal: #333; --pattern: #000;
+    --page: #fff; --tile: #fff; --grout: #999; --wash: #fff; --pattern-wash: #fff;
+    --baking-fg: #000; --cooking-fg: #000; --cocktails-fg: #000; --baking-bg: #fff; --cooking-bg: #fff; --cocktails-bg: #fff;
+    --current-bg: #fff; --current-ink: #000; --pillow: none;
+  }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .site-header, .back, .toolbar, .tag-groups, main.container::after { display: none !important; }
+  .badge { box-shadow: inset 0 0 0 1px #000; }
   body { background: #fff; color: #000; font-size: 12pt; }
   .recipe h1::before, .recipe h1::after, .section > h2::after,
   .steps li::after, .section.before::before, .section.before::after { display: none; }

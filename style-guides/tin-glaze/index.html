@@ -47,6 +47,8 @@
         <div class="g-t" aria-hidden="true"></div>
         <div class="g-t" aria-hidden="true"></div>
         <div class="g-t" aria-hidden="true"></div>
+        <div class="g-t" aria-hidden="true"></div>
+        <div class="g-t" aria-hidden="true"></div>
         <div class="g-panel">
           <p class="g-eyebrow">A brand direction for Shaken, Stirred &amp; Sautéed</p>
           <h1 id="g-title" class="g-cartouche">Tin-Glaze</h1>
@@ -86,6 +88,17 @@
           <li><b>One hand, wet fingers.</b> Every target is at least 42–44px. State is shown by fill and weight, never by color alone.</li>
           <li><b>Modular to the bone.</b> Tiles, grout, frieze and medallion are four parts that build every screen.</li>
         </ul>
+      </div>
+    </section>
+
+    <!-- ============ PREVIEWS ============ -->
+    <section class="g-sec g-previews" id="previews" aria-labelledby="h-prev">
+      <header class="g-sec-head"><span class="g-num">✦</span><h2 id="h-prev">See it on the real site</h2></header>
+      <div class="g-prev-grid">
+        <a class="g-prev g-prev-home" href="preview/index.html"><img src="shots/home-desktop.png" alt="Home page in Tin-Glaze"><span class="g-prev-label">Home · the wall <span aria-hidden="true">→</span></span></a>
+        <a class="g-prev" href="preview/recipe.html?r=painkiller"><img src="shots/recipe-desktop.png" alt="Painkiller recipe page"><span class="g-prev-label">Cocktail · Painkiller <span aria-hidden="true">→</span></span></a>
+        <a class="g-prev" href="preview/recipe.html?r=lemon-blueberry-tart"><img src="shots/recipe-mobile-light.png" alt="Lemon Blueberry Tart on a phone"><span class="g-prev-label">Baking · Lemon Blueberry Tart <span aria-hidden="true">→</span></span></a>
+        <a class="g-prev" href="preview/recipe.html?r=risotto-milanese"><img src="shots/recipe-risotto-mobile-dark.png" alt="Risotto Milanese on a phone at night"><span class="g-prev-label">Cooking · Risotto Milanese <span aria-hidden="true">→</span></span></a>
       </div>
     </section>
 
@@ -282,7 +295,7 @@
         <div class="g-scale-row"><span class="g-scale-tag">UI<br><code>.92rem · 560–640</code></span><p class="t-ui">Keep the screen awake · Start fresh · Done</p></div>
         <div class="g-scale-row"><span class="g-scale-tag">Label<br><code>.68–.76rem · 700 · caps · .09em</code></span><p class="t-label">Total time · Serves · Blueberry sauce</p></div>
       </div>
-      <div class="g-specimen">
+      <div class="g-specimen tg-tile">
         <span class="badge cocktails">Cocktails</span>
         <p class="g-spec-title">Painkiller</p>
         <p class="g-spec-lede">Dark rum, pineapple, orange and coconut cream, shaken.</p>
@@ -354,6 +367,7 @@
       <p class="g-intro">These are live specimens that use the same classes and states the site’s JavaScript renders, styled by <code>theme.css</code> with nothing extra.</p>
 
       <h3 class="g-h3">Recipe tiles · pattern by category</h3>
+      <p class="g-caption g-cap-top">Neighbouring tiles of one category complete each other’s medallions. Mixed categories make a patchwork wall, which is the Lisbon “padrão” look on purpose. A component gets a dashed frame, as trim tiles do.</p>
       <ul class="grid g-cards">
         <li><a class="card" href="preview/recipe.html?r=lemon-curd"><div class="card-body"><div class="badges"><span class="badge baking">Baking</span><span class="badge component">Component</span></div><h2>Lemon Curd</h2><p>Stovetop curd of whole eggs and yolks, tempered and strained.</p><div class="card-meta"><span>⏱ 2 hr</span><span>🍽 Makes 2 cups</span></div></div></a></li>
         <li><a class="card" href="preview/recipe.html?r=israeli-salad"><div class="card-body"><div class="badges"><span class="badge cooking">Cooking</span></div><h2>Israeli Salad</h2><p>Finely diced tomato, cucumber and peppers with herbs and lemon.</p><div class="card-meta"><span>⏱ 30 min</span><span>🍽 Serves 4 to 6</span></div></div></a></li>
@@ -391,9 +405,14 @@
           <div class="g-row">
             <button class="btn" aria-pressed="false">Keep the screen awake</button>
             <button class="btn" aria-pressed="true">Screen stays awake</button>
-            <button class="btn">↺ Clear the checkmarks</button>
           </div>
           <p class="g-caption">Idle · pressed (cobalt with a lemon inner ring)</p>
+          <div class="toolbar g-toolbar">
+            <button class="btn" aria-pressed="true">☀️ Keep the screen awake</button>
+            <button class="btn">↺ Clear the checkmarks</button>
+            <button class="btn">🖨 Print</button>
+          </div>
+          <p class="g-caption">On a recipe the buttons sit together as one strip of tiles in grout, wrapping to a second row on a phone.</p>
           <div class="g-row"><a class="back" href="preview/index.html">← Back to the wall</a></div>
           <div class="g-row g-badges"><span class="badge baking">Baking</span><span class="badge cooking">Cooking</span><span class="badge cocktails">Cocktails</span><span class="badge component">Component</span></div>
         </div>
@@ -499,17 +518,6 @@
       </ul>
     </section>
 
-    <!-- ============ PREVIEWS ============ -->
-    <section class="g-sec g-previews" id="previews" aria-labelledby="h-prev">
-      <header class="g-sec-head"><span class="g-num">✦</span><h2 id="h-prev">See it on the real site</h2></header>
-      <div class="g-prev-grid">
-        <a class="g-prev g-prev-home" href="preview/index.html"><img src="shots/home-desktop.png" alt="Home page in Tin-Glaze" loading="lazy"><span class="g-prev-label">Home · the wall <span aria-hidden="true">→</span></span></a>
-        <a class="g-prev" href="preview/recipe.html?r=painkiller"><img src="shots/recipe-desktop.png" alt="Painkiller recipe page" loading="lazy"><span class="g-prev-label">Cocktail · Painkiller <span aria-hidden="true">→</span></span></a>
-        <a class="g-prev" href="preview/recipe.html?r=lemon-blueberry-tart"><img src="shots/recipe-mobile-light.png" alt="Lemon Blueberry Tart on a phone" loading="lazy"><span class="g-prev-label">Baking · Lemon Blueberry Tart <span aria-hidden="true">→</span></span></a>
-        <a class="g-prev" href="preview/recipe.html?r=risotto-milanese"><img src="shots/recipe-risotto-mobile-dark.png" alt="Risotto Milanese on a phone at night" loading="lazy"><span class="g-prev-label">Cooking · Risotto Milanese <span aria-hidden="true">→</span></span></a>
-      </div>
-    </section>
-
     <!-- ============ 10 ADOPT ============ -->
     <section class="g-sec" id="adopt" aria-labelledby="h-adopt">
       <header class="g-sec-head"><span class="g-num">10</span><h2 id="h-adopt">How to adopt</h2></header>
@@ -521,15 +529,21 @@
         <li><b>Theme color:</b> replace <code>&lt;meta name="theme-color" content="#b4532a"&gt;</code> with two metas, <code>#F7F9FC</code> for <code>(prefers-color-scheme: light)</code> and <code>#0A1638</code> for dark. Set <code>theme_color</code>/<code>background_color</code> in <code>manifest.webmanifest</code> to <code>#F7F9FC</code>.</li>
         <li><b>Optional copy pass:</b> take the voice lines from section 08 into <code>home.js</code> and <code>recipe.js</code>.</li>
       </ol>
-      <pre class="g-code"><code>&lt;a class=&quot;brand&quot; href=&quot;./&quot;&gt;
-  &lt;svg class=&quot;brand-mark&quot; viewBox=&quot;0 0 64 64&quot; width=&quot;40&quot; height=&quot;40&quot;
-       aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;
-    &lt;!-- paste the contents of style-guides/tin-glaze/preview/index.html&#x27;s
-         .brand-mark &lt;svg&gt;: paths use class=&quot;bm-face|bm-wash|bm-ink|bm-line|bm-lemon&quot;,
-         coloured by theme.css, so the mark follows light and dark mode --&gt;
-  &lt;/svg&gt;
-  &lt;span class=&quot;brand-name&quot;&gt;Shaken, Stirred &lt;span class=&quot;amp&quot;&gt;&amp;amp;&lt;/span&gt; Sautéed&lt;/span&gt;
-&lt;/a&gt;</code></pre>
+      <pre class="g-code"><code><span class="g-cm">&lt;!-- index.html and recipe.html: inside &lt;header class="site-header"&gt; --&gt;</span>
+&lt;a class="brand" href="./"&gt;
+<span class="g-del">-   &lt;span class="brand-mark" aria-hidden="true"&gt;🍸&lt;/span&gt;</span>
+<span class="g-add">+   &lt;svg class="brand-mark" viewBox="0 0 64 64" width="40" height="40"</span>
+<span class="g-add">+        aria-hidden="true" focusable="false"&gt;</span>
+<span class="g-cm">      &lt;!-- tile face, four quarter-rosettes, spoons and shaker:</span>
+<span class="g-cm">           copy the whole &lt;svg&gt; verbatim from preview/index.html --&gt;</span>
+<span class="g-add">+   &lt;/svg&gt;</span>
+    &lt;span class="brand-name"&gt;Shaken, Stirred &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; Sautéed&lt;/span&gt;
+&lt;/a&gt;
+
+<span class="g-cm">&lt;!-- both pages: in &lt;head&gt; --&gt;</span>
+<span class="g-del">- &lt;meta name="theme-color" content="#b4532a"&gt;</span>
+<span class="g-add">+ &lt;meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)"&gt;</span>
+<span class="g-add">+ &lt;meta name="theme-color" content="#0A1638" media="(prefers-color-scheme: dark)"&gt;</span></code></pre>
       <p class="g-note">Nothing in <code>&lt;main&gt;</code> changes. All of it is rendered by the existing JavaScript, and the theme styles every class and state it emits: <code>aria-pressed</code>, <code>data-on</code>, <code>aria-expanded</code>, <code>.done</code>, <code>.current</code>, <code>:checked</code>, <code>[hidden]</code>, <code>body.sheet-open</code>, plus print, safe-area insets, reduced motion and dark mode.</p>
     </section>
     </div>

@@ -294,7 +294,7 @@ code { font-family: var(--mono); font-size: .92em; background: var(--rule-soft);
   text-overflow: ellipsis;
 }
 .search:focus-within input { padding-left: 14px; }
-.search input::placeholder { color: var(--ink-2); opacity: 1; }
+.search input::placeholder { color: var(--ink-2); opacity: 1; font-stretch: var(--w-tall); font-size: 14px; letter-spacing: .01em; }
 .search input::-webkit-search-cancel-button { filter: grayscale(1); }
 .search:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
 
@@ -303,7 +303,7 @@ code { font-family: var(--mono); font-size: .92em; background: var(--rule-soft);
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px; margin-top: 18px;
 }
-@media (min-width: 720px) { .tabs { display: flex; flex-wrap: wrap; } .tab { width: 168px; } }
+@media (min-width: 720px) { .tabs { grid-template-columns: repeat(4, minmax(0, 176px)); } }
 .tab {
   --flag: var(--ink); --flag-ink: var(--paper); --icon: var(--i-all);
   position: relative;
@@ -318,6 +318,7 @@ code { font-family: var(--mono); font-size: .92em; background: var(--rule-soft);
   font-stretch: var(--w-tall); font-weight: 700;
   font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase;
   line-height: 1.1;
+  overflow: hidden; min-width: 0;
   filter: var(--ticket-shadow);
   -webkit-mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) 0 100% / 10px 5px repeat-x,
                 linear-gradient(#000 0 0) 0 0 / 100% calc(100% - 5px) no-repeat;
@@ -346,6 +347,13 @@ code { font-family: var(--mono); font-size: .92em; background: var(--rule-soft);
 }
 .tab .n::before { content: "\00D7" / ""; font-size: .55em; font-weight: 600; margin-right: 1px; vertical-align: .32em; }
 @media (hover: hover) { .tab:hover { transform: translateY(2px); } }
+/* narrow phones (iPhone SE and smaller): drop the station icon, tighten the label */
+@media (max-width: 379px) {
+  .tabs { gap: 6px; }
+  .tab { padding-left: 7px; padding-right: 4px; font-size: 10px; letter-spacing: .01em; }
+  .tab::after { display: none; }
+  .tab .n { font-size: 25px; }
+}
 .tab[aria-pressed="true"] { background: var(--on); color: var(--on-ink); border-top-color: var(--flag); }
 .tab[aria-pressed="true"] .n { color: inherit; }
 .tab:focus-visible { outline: none; box-shadow: inset 0 0 0 3px var(--focus); }
@@ -519,11 +527,12 @@ body.sheet-open { overflow: hidden; }
   .sheet {
     position: absolute; left: 0; right: auto; bottom: auto; top: 100%;
     width: min(440px, 100%); max-height: 60vh;
-    filter: none;
-    -webkit-mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) 0 100% / var(--tooth) var(--tooth-h) repeat-x,
-                  linear-gradient(#000 0 0) 0 0 / 100% calc(100% - var(--tooth-h)) no-repeat;
-            mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) 0 100% / var(--tooth) var(--tooth-h) repeat-x,
-                  linear-gradient(#000 0 0) 0 0 / 100% calc(100% - var(--tooth-h)) no-repeat;
+    /* teeth are painted, not masked, so the slip can cast a shadow */
+    -webkit-mask: none; mask: none;
+    background:
+      conic-gradient(from -45deg at 50% 100%, var(--paper) 90deg, #0000 0) 0 100% / var(--tooth) var(--tooth-h) repeat-x,
+      linear-gradient(var(--paper), var(--paper)) 0 0 / 100% calc(100% - var(--tooth-h) + 1px) no-repeat;
+    filter: drop-shadow(0 1px 0 rgba(30, 34, 36, .3)) drop-shadow(0 14px 18px rgba(30, 34, 36, .32));
     padding-bottom: var(--tooth-h);
     border-top: 6px solid var(--ink);
     animation: feed-down .36s steps(6, end);
@@ -533,7 +542,7 @@ body.sheet-open { overflow: hidden; }
   body.sheet-open { overflow: auto; }
 }
 @media (min-width: 720px) and (prefers-color-scheme: dark) {
-  .sheet { -webkit-mask: none; mask: none; border: 1px solid var(--line); border-top: 2px solid var(--live); padding-bottom: 0; }
+  .sheet { -webkit-mask: none; mask: none; background: var(--paper); filter: none; border: 1px solid var(--rule); border-top: 2px solid var(--live); padding-bottom: 0; box-shadow: 0 18px 40px rgba(0, 0, 0, .7), 0 0 24px rgba(57, 255, 122, .12); }
 }
 
 .result-bar {
@@ -632,8 +641,7 @@ body.sheet-open { overflow: hidden; }
   .grid > li:nth-child(even):hover .card { transform: rotate(1deg) translateY(3px); }
 }
 .card:active { transform: translateY(5px) !important; transition-duration: .08s; }
-.card:focus-visible { outline: none; box-shadow: inset 0 0 0 3px var(--focus); }
-.grid > li:has(.card:focus-visible) { outline: 3px solid var(--focus); outline-offset: 4px; }
+.card:focus-visible { outline: none; box-shadow: inset 0 0 0 4px var(--focus); }
 .card-img {
   display: block; width: calc(100% - 32px); margin: 12px 16px 0;
   aspect-ratio: 16 / 10; object-fit: cover;
@@ -675,7 +683,8 @@ body.sheet-open { overflow: hidden; }
 }
 .card-meta span:first-child:not(:only-child)::before { content: "Time" / ""; }
 .card-meta span:last-child:not(:only-child)::before { content: "Yield" / ""; }
-.card-meta span:first-child:not(:only-child) { background-position-x: 0; }
+.card-meta span:only-child { padding-left: 0; background: none; }
+.card-meta span:only-child::first-letter { font-size: inherit; }
 
 /* dark: the tickets become panels on the kitchen display */
 @media (prefers-color-scheme: dark) {
@@ -715,23 +724,66 @@ body.sheet-open { overflow: hidden; }
 .badges { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .empty {
-  max-width: 420px; margin: 8px auto 0;
+  max-width: 440px; margin: 8px auto 0;
   text-align: center; color: var(--ink);
-  padding: 34px 20px 30px;
-  background: var(--paper);
-  border-top: 6px solid var(--rush);
-  font-size: 15px;
-  filter: var(--ticket-shadow);
+  padding: 34px 22px calc(26px + var(--tooth-h));
+  background:
+    linear-gradient(var(--rush), var(--rush)) 0 0 / 100% 8px no-repeat,
+    var(--paper);
+  font-size: 15px; line-height: 1.5;
+  -webkit-mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) 0 100% / var(--tooth) var(--tooth-h) round no-repeat,
+                linear-gradient(#000 0 0) 0 0 / 100% calc(100% - var(--tooth-h) + 1px) no-repeat;
+          mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) 0 100% / var(--tooth) var(--tooth-h) round no-repeat,
+                linear-gradient(#000 0 0) 0 0 / 100% calc(100% - var(--tooth-h) + 1px) no-repeat;
 }
 .empty .big { display: none; }
 .empty::before {
   content: "Nothing on the rail." / "";
-  display: block; margin-bottom: 12px;
+  display: block; margin: 0 auto 14px; max-width: 9em;
   font-stretch: var(--w-tall); font-weight: 800;
-  font-size: 30px; line-height: .95; text-transform: uppercase;
+  font-size: 36px; line-height: .95; letter-spacing: -.01em; text-transform: uppercase;
+  text-wrap: balance;
 }
-.empty a { font-weight: 700; color: var(--ink); }
-.empty a::before { content: "86 a filter \2192  " / ""; }
+.empty::after {
+  content: "*** 0 tickets \00B7  86 a filter ***" / "";
+  display: block;
+  margin-top: 26px; padding-top: 62px;
+  text-wrap: balance;
+  font-stretch: var(--w-label); font-weight: 500;
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-2);
+  background:
+    linear-gradient(var(--rule), var(--rule)) 50% 0 / 100% 1.5px no-repeat,
+    var(--barcode) 50% 16px / auto 34px no-repeat;
+}
+.empty a {
+  display: flex; align-items: center; gap: 12px;
+  width: fit-content; margin: 18px auto 0; min-height: 48px;
+  padding: 0 16px 0 0;
+  background: var(--paper);
+  border: 2px solid var(--ink); border-radius: var(--r-key);
+  box-shadow: var(--key-depth);
+  color: var(--ink); text-decoration: none;
+  font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.empty a::before {
+  content: "86" / "";
+  align-self: stretch; display: grid; place-items: center; padding: 0 11px;
+  background: var(--rush); color: var(--rush-ink);
+  font-stretch: var(--w-tall); font-weight: 800; font-size: 17px; letter-spacing: 0;
+}
+.empty a:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+@media (hover: hover) { .empty a:hover { background: var(--hi); color: #141414; } }
+.empty code { font-weight: 700; }
+@media (prefers-color-scheme: dark) {
+  .empty { -webkit-mask: none; mask: none; border: 1px solid var(--line); padding-bottom: 26px;
+    background: linear-gradient(var(--rush), var(--rush)) 0 0 / 100% 8px no-repeat, var(--paper);
+    box-shadow: 0 0 30px rgba(255, 77, 61, .10); }
+  .empty::after { background: linear-gradient(var(--rule), var(--rule)) 50% 0 / 100% 1px no-repeat; padding-top: 18px; }
+  .empty a { border-width: 1px; border-color: var(--rule); }
+}
 
 /* ===== Recipe page: one ticket, read top to bottom while you fire it ===== */
 .recipe {
@@ -847,8 +899,8 @@ body.sheet-open { overflow: hidden; }
 }
 .fact dd {
   order: 2; margin: 0;
-  max-width: 64%;
-  text-align: right;
+  flex: 0 1 auto; max-width: 64%;
+  text-align: left; text-wrap: balance;
   font-weight: 700; font-size: 15px; line-height: 1.35;
 }
 .facts::after {
@@ -1050,6 +1102,7 @@ body.sheet-open { overflow: hidden; }
 @media (prefers-color-scheme: dark) {
   .steps li { border-bottom-color: var(--line); }
   .steps li::before { border-width: 1px; border-color: var(--rule); }
+  .steps li { background-image: linear-gradient(var(--cur-bg), var(--cur-bg)); }
   .steps li.current { box-shadow: inset 3px 0 0 var(--live), 0 0 0 1px rgba(57, 255, 122, .35); border-radius: 2px; }
   .steps li.current::before { box-shadow: 0 0 14px rgba(57, 255, 122, .45); }
 }
@@ -1212,7 +1265,17 @@ body.sheet-open { overflow: hidden; }
     padding: 0 0 6mm !important;
     background: #fff !important; filter: none !important; border: 0 !important; box-shadow: none !important;
   }
-  .recipe::before { display: none !important; }
+  /* the receipt prints its own header in place of the chrome rail */
+  .recipe::before {
+    content: "*** Shaken \00B7  Stirred \00B7  Saut\00E9 ed ***" / "" !important;
+    position: static !important; display: block !important;
+    height: auto !important; margin: 0 0 4mm !important; padding: 0 0 3mm !important;
+    background: none !important; box-shadow: none !important; border-radius: 0 !important;
+    border-bottom: 1.5pt solid #000 !important;
+    color: #000 !important; text-align: center;
+    font-stretch: var(--w-tall); font-weight: 800; font-size: 10pt; letter-spacing: -.01em; line-height: 1.1;
+    text-transform: uppercase; white-space: pre;
+  }
   .recipe::after, .facts::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .recipe h1 { font-size: 22pt; }
   .recipe h1::before, .recipe .lede, .fact dd, .fact dt { color: #000; }
@@ -1231,7 +1294,9 @@ body.sheet-open { overflow: hidden; }
   }
   .steps li.done::after, .steps li.current::after { display: none; }
   .step-wait, .step-cue { font-size: 8.5pt; }
-  .section h3::before, .notes li::before { background: #000; color: #000; }
+  .section h3::before { background: #000; }
+  .notes li::before { color: #000; background: none; }
+  .section.before { border-color: #000; }
   .facts, .fact { background: #fff; }
   .grid { display: block; margin: 0; padding: 0; overflow: visible; }
   .grid > li { filter: none; padding: 0; break-inside: avoid; margin-bottom: 4mm; }
