@@ -108,7 +108,7 @@ One kind of link does all of this: **an ingredient can point to the recipe that 
   - A lineup that's all one course (just a pavlova and its parts) has only that course.
   - Nested recipes follow their dish's course.
 - **Making something ahead.** Some dishes hold the oven or a long wait for hours. A pavlova's meringue bakes for 90 minutes and then cools in the oven with the door shut. On the same day as a dinner that needs the oven, that turns a 1½-hour meal into 5½ hours. So **the lineup page asks** (Jacob's decision).
-  - **When it asks:** when doing a dish's first part ahead would make the day's plan more than 30 minutes shorter. The first part is everything up to the step marked `holds` (see Recipe data), or the whole dish if it keeps.
+  - **When it asks:** when doing a dish's first part ahead would make the day's plan more than 30 minutes shorter. The first part is everything up to the step marked `holds` (see Recipe data), or the whole dish if it keeps. A dish that keeps entirely isn't offered when it's the whole lineup, since nothing would be left for the day.
   - **What it asks:** a line under the dish: "The meringue · made ahead (it holds the oven 3½ hr) · Change". It starts on whichever choice makes the day shorter.
   - **Made ahead:** that part becomes a separate **"Ahead of time"** run on the lineup page. You cook it through lineup cook mode like any other plan, planned on its own with no serve time. The day's plan then starts after that point.
   - **All today:** the planner plans everything together, however long it takes.
@@ -315,7 +315,7 @@ Jacob checks it at four points, each before the next stage starts:
 - Whether the lineup page is its own page (`lineup.html`) or a view of an existing one, and how lineup cook mode is reached and left. The phone's back gesture must return to the lineup page, as it returns to the recipe page today.
 - How a dish's course is changed and the dish removed on the menu card.
 - Where the lineup link goes on the home page, following the recipes page.
-- How the planner is made fast enough on a phone if trying serve times one minute at a time is slow. The prototype's five meals each plan instantly.
+- How the planner is made fast enough on a phone if trying serve times one minute at a time is slow. In `assets/planner.mjs`, the steak dinner with a pavlova, curd and blueberry cream plans in about half a second on a laptop, most of it spent on the make-ahead comparison. A phone could take a second or two, which matters because it re-plans on every Next step.
 
 ## Calls Claude made (for Jacob to check)
 
