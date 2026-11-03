@@ -74,10 +74,12 @@ function latestStarts(dish, serve) {
 
 // Move forward through time. Whenever the cook's hands are free, start the
 // most urgent step that can start: the one whose latest start is soonest.
-function simulate(dishes, serve) {
-  const latest = dishes.map((d) => latestStarts(d, serve));
+// `early` plans a dish to be ready that many minutes before serving.
+function simulate(dishes, serve, early = {}) {
+  const latest = dishes.map((d) => latestStarts(d, serve - (early[d.slug] || 0)));
   // A hot dish starts no earlier than would leave it sitting too long.
-  const earliest = dishes.map((dish, d) => latest[d][0] - dish.sits);
+  const earliest = dishes.map((dish, d) => latest[d][0] + (early[dish.slug] || 0) - dish.sits);
+  const heldUpBy = dishes.map(() => new Set());   // dishes whose oven use kept each one waiting
   const next = dishes.map(() => 0);           // index of each dish's next step
   const readyAt = dishes.map(() => 0);        // when that step can start
   const oven = new Map();                     // dish -> { setting, until } while it holds the oven
@@ -97,6 +99,12 @@ function simulate(dishes, serve) {
 
   while (dishes.some((_, d) => left(d))) {
     const can = dishes.map((_, d) => d).filter((d) => left(d) && canStart(d));
+    for (const d of dishes.map((_, x) => x).filter(left)) {
+      const s = dishes[d].steps[next[d]], setting = s.oven || s.preheat;
+      if (setting && opensAt(d) <= t && !ovenFree(d, setting)) {
+        for (const [o, h] of oven) if (o !== d && h.until > t && !sameSetting(h.setting, setting)) heldUpBy[d].add(dishes[o].slug);
+      }
+    }
     if (!can.length) {
       const times = [handsFree, ...dishes.map((_, d) => d).filter(left).map(opensAt), ...[...oven.values()].map((h) => h.until), heat ? heat.hotAt : 0];
       t = Math.min(...times.filter((x) => x > t));
@@ -114,7 +122,33 @@ function simulate(dishes, serve) {
     const setting = s.oven || s.preheat;
     if (setting) oven.set(d, { setting, until: i === dishes[d].lastOven ? readyAt[d] : Infinity });
   }
-  return { steps, end: Math.max(...readyAt) };
+  return {
+    steps, end: Math.max(...readyAt),
+    ready: Object.fromEntries(dishes.map((dish, d) => [dish.slug, readyAt[d]])),
+    heldUpBy: Object.fromEntries(dishes.map((dish, d) => [dish.slug, [...heldUpBy[d]]])),
+  };
+}
+
+// Plan for serving at `serve`. If a dish comes out late, plan it, and any dish
+// whose oven use held it up, to be ready a little earlier, but never earlier
+// than it can sit, and try again.
+function planFor(dishes, serve) {
+  const sitsFor = Object.fromEntries(dishes.map((d) => [d.slug, d.sits]));
+  const early = {};
+  let plan;
+  for (let round = 0; round < 8; round++) {
+    plan = simulate(dishes, serve, early);
+    const late = Object.entries(plan.ready).filter(([, r]) => r > serve).sort((a, b) => b[1] - a[1])[0];
+    if (!late) return plan;
+    const [slug, ready] = late;
+    let moved = false;
+    for (const b of [...plan.heldUpBy[slug], slug]) {
+      const want = Math.min(sitsFor[b], (early[b] || 0) + Math.ceil(ready - serve));
+      if (want > (early[b] || 0)) { early[b] = want; moved = true; }
+    }
+    if (!moved) return plan;
+  }
+  return plan;
 }
 
 // The earliest serve time one cook can get everything ready for.
@@ -123,8 +157,8 @@ export function planLineup(lineup, recipes) {
   const shortest = Math.max(...dishes.map((d) => d.steps.reduce((a, s) => a + s.hands + s.wait, 0)));
   let plan;
   for (let serve = Math.ceil(shortest); serve < shortest + 24 * 60; serve++) {
-    plan = simulate(dishes, serve);
-    if (plan.end <= serve) return { steps: plan.steps, minutes: serve };
+    plan = planFor(dishes, serve);
+    if (plan.end <= serve) return { steps: plan.steps, minutes: serve, ready: plan.ready };
   }
-  return { steps: plan.steps, minutes: plan.end };
+  return { steps: plan.steps, minutes: plan.end, ready: plan.ready };
 }

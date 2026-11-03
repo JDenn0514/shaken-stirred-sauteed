@@ -130,3 +130,62 @@ describe("the oven", () => {
     assert.deepEqual(plan.steps.filter((s) => s.added).map((s) => s.text), []);
   });
 });
+
+// Jacob's steak dinner, with the planning data from the prototype.
+const DINNER = {
+  steak: recipe("Pan-Seared Ribeye", [
+    ["Take the steak out of the fridge to sit", { hands: "0.5 min", wait: "30 min" }],
+    ["Heat the oil in the skillet until it just smokes", { hands: "1 min", wait: "3 min", burner: true }],
+    ["Pat the steak dry and season the top", { hands: "1 min", burner: true }],
+    ["Sear without moving it", { hands: "0.5 min", wait: "4 min", watch: true, burner: true }],
+    ["Turn it, add the butter and baste", { hands: "4 min", burner: true }],
+    ["Rest the steak", { hands: "0.5 min", wait: "7.5 min" }],
+  ], { serve: "hot", sits: "5 min" }),
+  asparagus: recipe("Parmesan Asparagus", [
+    ["Lay the asparagus on a sheet", { hands: "4 min" }],
+    ["Lemon and butter over the top", { hands: "3 min" }],
+    ["Roast until just fork-tender", { hands: "0.5 min", wait: "9 min", oven: "200C" }],
+    ["Switch the oven to broil", { hands: "0.5 min", preheat: "broil" }],
+    ["Scatter the parmesan and broil", { hands: "0.5 min", wait: "2.5 min", watch: true, oven: "broil" }],
+  ], { serve: "hot", sits: "5 min" }),
+  applesauce: recipe("Applesauce", [
+    ["Peel, core and cut the apples", { hands: "8 min" }],
+    ["Stir everything in the dish", { hands: "2 min" }],
+    ["Microwave on high", { hands: "0.5 min", wait: "7.5 min", microwave: true }],
+    ["Stir, then microwave again", { hands: "1 min", wait: "7.5 min", microwave: true }],
+    ["Mash to the texture you want", { hands: "2 min" }],
+  ], { serve: "keeps" }),
+  potatoes: recipe("Hasselback Potatoes", [
+    ["Heat the oven to 200C and line a tray", { hands: "1 min", preheat: "200C" }],
+    ["Scrub and dry the potatoes", { hands: "3 min" }],
+    ["Slice each potato thinly", { hands: "10 min" }],
+    ["Set them on the tray", { hands: "1 min" }],
+    ["Mix the garlic butter", { hands: "3 min" }],
+    ["Brush the potatoes and bake", { hands: "3 min", wait: "40 min", oven: "200C" }],
+    ["Baste and bake until crisp", { hands: "2 min", wait: "17.5 min", oven: "200C" }],
+    ["Scatter with parsley", { hands: "1 min" }],
+  ], { serve: "hot", sits: "10 min" }),
+};
+const dinner = { dishes: ["steak", "asparagus", "applesauce", "potatoes"].map((slug) => ({ slug })) };
+
+describe("Jacob's steak dinner", () => {
+  const plan = planLineup(dinner, DINNER);
+  const at = (text) => plan.steps.find((s) => s.text === text).at;
+
+  test("every hot dish is ready within its sitting time of serving, and nothing is late", () => {
+    for (const [slug, limit] of [["steak", 5], ["asparagus", 5], ["potatoes", 10]]) {
+      const ready = plan.ready[slug];
+      assert.ok(ready <= plan.minutes, `${slug} ready at ${ready}, after serving at ${plan.minutes}`);
+      assert.ok(plan.minutes - ready <= limit, `${slug} ready at ${ready}, sitting ${plan.minutes - ready} min before serving at ${plan.minutes}`);
+    }
+    assert.ok(plan.ready.applesauce <= plan.minutes);
+  });
+
+  test("it takes about an hour and a half", () => {
+    assert.ok(plan.minutes >= 80 && plan.minutes <= 95, `takes ${plan.minutes} min`);
+  });
+
+  test("the asparagus is broiled only after the potatoes are out", () => {
+    assert.ok(at("Scatter the parmesan and broil") >= at("Baste and bake until crisp") + 19.5);
+  });
+});
