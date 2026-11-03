@@ -1,11 +1,19 @@
 // The lineup planner: puts every step of several recipes in one order for one
 // cook. See docs/specs/meal-planner-design.md, "How the planner works".
 
-// "3 min" as minutes.
-const minutes = (text) => {
-  const m = /(\d+(?:\.\d+)?)\s*min/i.exec(text || "");
-  return m ? +m[1] : 0;
-};
+// A time as recipes write it, in minutes, from its first time: "About 6 min",
+// "45 sec", "1 1/2 hr", "1 hr 15 min". A range plans from its middle, so
+// "7 to 8 min" is 7.5. (Cook mode's timers start at the short end instead.)
+const NUM = String.raw`\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+`;
+const TIME = new RegExp(`(${NUM})\\s*(?:(?:to|-|–)\\s*(${NUM})\\s*)?(sec(?:ond)?s?|min(?:ute)?s?|hrs?|hours?)\\b(?:\\s*(\\d+)\\s*min)?`, "i");
+const num = (x) => x.split(/\s+/).reduce((t, p) => t + (p.includes("/") ? p.split("/")[0] / p.split("/")[1] : +p), 0);
+function minutes(text) {
+  const m = TIME.exec(text || "");
+  if (!m) return 0;
+  const per = { s: 1 / 60, m: 1, h: 60 }[m[3][0].toLowerCase()];
+  const low = num(m[1]), high = m[2] ? num(m[2]) : low;
+  return ((low + high) / 2) * per + (m[4] ? +m[4] : 0);
+}
 
 // Two oven settings are the same if they're equal ("broil", "off") or
 // temperatures within 15°F of each other, so 200C and 400F share.
@@ -163,7 +171,7 @@ export function planLineup(lineup, recipes) {
   const dishes = chains(lineup, recipes);
   const shortest = Math.max(...dishes.map((d) => d.steps.reduce((a, s) => a + s.hands + s.wait, 0)));
   let plan;
-  for (let serve = Math.ceil(shortest); serve < shortest + 24 * 60; serve++) {
+  for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
     plan = planFor(dishes, serve);
     if (plan.end <= serve) return { steps: plan.steps, minutes: serve, ready: plan.ready };
   }

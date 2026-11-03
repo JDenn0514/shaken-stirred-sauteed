@@ -24,6 +24,20 @@ describe("one recipe", () => {
     assert.deepEqual(texts(plan), ["Slice the bread", "Toast it", "Butter it"]);
     assert.equal(plan.minutes, 7);
   });
+
+  test("times are read as recipes write them, and a range plans from its middle", () => {
+    const recipes = {
+      curd: recipe("Curd", [
+        ["Cook, whisking often", { hands: "About 6 min" }],
+        ["Ice bath", { hands: "45 sec", wait: "7 to 8 min" }],
+        ["Chill", { wait: "About 1 hr in the fridge" }],
+        ["Set overnight", { wait: "1 1/2 to 2 1/2 hr" }],
+      ]),
+    };
+    const plan = planLineup({ dishes: [{ slug: "curd" }] }, recipes);
+    // 6 + 0.75 + 7.5 + 60 + 120
+    assert.equal(plan.minutes, 194.25);
+  });
 });
 
 describe("one cook, several recipes", () => {
