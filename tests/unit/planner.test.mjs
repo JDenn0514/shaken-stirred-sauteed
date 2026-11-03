@@ -317,6 +317,22 @@ describe("re-planning as you cook", () => {
   });
 });
 
+describe("a timer ringing in the middle of a step", () => {
+  test("keeps you on your step, and makes its follow-up the next one", () => {
+    const recipes = {
+      potatoes: recipe("Potatoes", [["Bake the potatoes", { hands: "2 min", wait: "40 min" }], ["Baste the potatoes", { hands: "2 min", wait: "15 min" }]]),
+      steak: recipe("Steak", [["Sear without moving it", { hands: "1 min", wait: "4 min", watch: true }], ["Rest the steak", { wait: "10 min" }]], { serve: "hot", sits: "5 min" }),
+      asparagus: recipe("Asparagus", [["Trim the asparagus", { hands: "3 min" }], ["Plate it", { hands: "1 min" }]]),
+    };
+    // The potatoes went in at 0 and ring at 42, while the steak is searing (since 41).
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "steak" }, { slug: "asparagus" }] }, recipes,
+      { now: 42, done: [{ slug: "potatoes", step: 0, at: 2 }], current: { slug: "steak", step: 0, at: 41 } });
+    const ahead = plan.steps.filter((s) => !s.done).map((s) => s.text);
+    assert.deepEqual(ahead.slice(0, 2), ["Sear without moving it", "Baste the potatoes"]);
+    assert.equal(plan.steps.find((s) => s.text === "Sear without moving it").at, 41);
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {

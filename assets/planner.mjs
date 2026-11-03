@@ -154,8 +154,9 @@ const serveTimes = (dishes, serve) => (dishes.some((d) => d.course === "Main") ?
 //
 // `progress` is what's happened so far: `done` lists finished steps as
 // { slug, step, at }, `at` being the minute you moved on from it, plus
-// `waitUntil` when its timer was given more time or stopped early; `now` is the
-// minute it is. Finished steps stay where they happened, waits run from when
+// `waitUntil` when its timer was given more time or stopped early; `current`
+// is the step on screen, { slug, step, at } with `at` when it was started, which
+// stays your step whatever rings meanwhile; `now` is the minute it is. Finished steps stay where they happened, waits run from when
 // you moved on, and nothing new starts before now.
 function simulate(dishes, serve, early = {}, progress = {}) {
   const times = serveTimes(dishes, serve);
@@ -219,6 +220,13 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     const at = finished - s.hands - (s.watch ? s.wait : 0);
     steps.push({ slug: s.slug, step: s.n, text: s.text, at, done: true, ...(s.added && { added: true }) });
     start(d, s, at, finished);
+  }
+  const cur = progress.current;
+  const onScreen = cur ? dishes.findIndex((x, i) => x.slug === cur.slug && left(i) && x.steps[next[i]].n === cur.step) : -1;
+  if (onScreen >= 0) {
+    const s = dishes[onScreen].steps[next[onScreen]++];
+    steps.push({ slug: s.slug, step: s.n, text: s.text, at: cur.at, current: true, ...(s.added && { added: true }) });
+    start(onScreen, s, cur.at);
   }
   t = Math.max(t, progress.now || 0);
   handsFree = Math.max(handsFree, t);
