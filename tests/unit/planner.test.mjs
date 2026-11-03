@@ -78,11 +78,55 @@ describe("the oven", () => {
 
   test("dishes share the oven at the same setting, 200C and 400F included", () => {
     const recipes = {
-      potatoes: recipe("Potatoes", [["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }], ["Scatter with parsley", { hands: "1 min" }]]),
+      potatoes: recipe("Potatoes", [
+        ["Heat the oven to 200C", { hands: "1 min", preheat: "200C" }],
+        ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }],
+        ["Scatter with parsley", { hands: "1 min" }],
+      ]),
       asparagus: recipe("Asparagus", [["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "400F" }]], { sits: "5 min" }),
     };
     const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, recipes);
     assert.ok(at(plan, "Roast the asparagus") < at(plan, "Bake the potatoes") + 42, "the asparagus waited for the potatoes to come out");
-    assert.equal(plan.minutes, 43);
+    // Heating 15 min, baking 42, parsley 1: the asparagus fits inside the bake.
+    assert.equal(plan.minutes, 59);
+  });
+
+  test("the oven heats in the background, and baking waits until it's hot", () => {
+    const recipes = {
+      potatoes: recipe("Potatoes", [
+        ["Heat the oven to 200C", { hands: "1 min", preheat: "200C" }],
+        ["Slice the potatoes", { hands: "10 min" }],
+        ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }],
+      ]),
+    };
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }] }, recipes);
+    assert.equal(at(plan, "Slice the potatoes"), 1);
+    assert.equal(at(plan, "Bake the potatoes"), 16);
+    assert.equal(plan.minutes, 58);
+  });
+
+  const asparagus = recipe("Asparagus", [
+    ["Lay out the asparagus", { hands: "4 min" }],
+    ["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "400F" }],
+  ], { sits: "5 min" });
+
+  test("a heating step is added at the start of a dish whose recipe doesn't heat the oven", () => {
+    const plan = planLineup({ dishes: [{ slug: "asparagus" }] }, { asparagus });
+    assert.equal(plan.steps[0].text, "Heat the oven to 200°C / 400°F");
+    assert.equal(plan.steps[0].added, true);
+    assert.equal(at(plan, "Lay out the asparagus"), 1);
+    assert.ok(at(plan, "Roast the asparagus") >= 16, `roasted at ${at(plan, "Roast the asparagus")}, before the oven was hot`);
+  });
+
+  test("no heating step is added when another dish has heated the oven to that setting", () => {
+    const recipes = {
+      asparagus,
+      potatoes: recipe("Potatoes", [
+        ["Heat the oven to 200C", { hands: "1 min", preheat: "200C" }],
+        ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }],
+      ]),
+    };
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, recipes);
+    assert.deepEqual(plan.steps.filter((s) => s.added).map((s) => s.text), []);
   });
 });
