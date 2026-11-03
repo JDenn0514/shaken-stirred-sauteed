@@ -41,3 +41,14 @@ Jacob's calls after clicking through it:
 - **Waits:** a "Wait about 12 minutes" step, with a ring that empties and a Start timer button.
 
 Options remain for two open questions: how sub-recipes sit on the menu card (three options), and what tapping "In your lineup" does (two options).
+
+### Round 3
+
+`lineup-prototype-v3.html` (script `prototypes/lineup-ui/lineup-ui-v3.js`), published at the same link. Jacob's answers on sub-recipes:
+
+- **Optional parts aren't added automatically.** A "Goes with" dropdown offers them.
+- **Required parts are added for you,** like the syrup for blueberry whipped cream and the garlic paste for the potatoes. Each is "Make it" or "Already made".
+- **Already-made parts stay listed,** because they still go into the dish.
+- **A component can be a dish on its own.**
+
+The round also covers waits that ring until you press Stop (two options for what Stop does), and another dish's timer ringing in the middle of a step.

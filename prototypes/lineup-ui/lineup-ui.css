@@ -219,3 +219,18 @@ body { padding-bottom: 120px; }
 @keyframes lu-drain { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 339.3; } }
 .lu-running .lu-left { stroke-dashoffset: 10; }
 .small { font-size: .88rem; }
+
+/* ===== Round 3 ===== */
+.lu-gw { position: relative; font-style: normal; }
+.lu-gwmenu { position: absolute; z-index: 5; top: calc(100% + 6px); left: 12px; display: grid; gap: 10px; min-width: 240px; padding: 12px 14px; background: var(--surface); border: 1.5px solid var(--text); border-radius: var(--radius-ctl); box-shadow: 0 8px 22px rgba(0, 0, 0, .16); font-family: var(--sans); color: var(--text); }
+.lu-gwmenu label { display: flex; gap: 10px; align-items: center; }
+.lu-gwmenu input { width: 18px; height: 18px; accent-color: var(--text); }
+.lu-gwmenu a { color: var(--muted); font-size: .9rem; }
+.lu-needed .lu-with { font-style: normal; font-family: var(--sans); font-size: .88rem; }
+.lu-up circle.lu-track { stroke: var(--section); stroke-width: 8; }
+.lu-stop { min-height: 56px; min-width: 200px; font-size: 1.15rem; justify-content: center; border-radius: var(--radius-ctl); }
+@media (prefers-reduced-motion: no-preference) {
+  .lu-ringing { animation: lu-pulse 1s ease-in-out infinite; }
+}
+@keyframes lu-pulse { 50% { transform: scale(1.05); } }
+.lu-stop { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
