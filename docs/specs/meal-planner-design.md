@@ -27,7 +27,7 @@ This is the "Later: cooking a whole meal" project from `docs/specs/cook-mode-des
 - Scaling a sub-recipe to the amount needed. You make the whole sub-recipe.
 - Guessing a step's equipment or timing from its wording. Planning data is written into the recipes, the same rule cook mode follows for ingredients.
 - Oven rack space. Two dishes at the same setting share the oven, however full it gets.
-- No change to how single-recipe cook mode works.
+- No change to how single-recipe cook mode works, apart from the step order choice (see "Prep first or as written").
 
 ## Anti-goals (failures even if it technically works)
 
@@ -118,6 +118,7 @@ New optional fields. Each one has a fallback, so a recipe without them still get
 | `preheat` | step | The step heats the oven to this setting in the background | The planner adds a heating step if a dish needs the oven |
 | `burner`, `grill`, `microwave` | step | `true` when the step uses one | Not used |
 | `prep` | step | Prep: knife work, measuring, getting things ready. `true` means it can be done ahead; `"just before"` means close to when it's needed | Not prep |
+| `prepOnly` | step | An added prep step that brings out prep hidden in an ingredient line. It shows only when steps are in prep-first order | Shown in both orders |
 | `holds` | step | After this step, the dish keeps as long as you like (a cooled meringue) | The whole dish is tied to serving if it's hot |
 | `serve` | recipe | `"hot"`, `"soon"` or `"keeps"`, with `sits` for how long a hot or soon dish can wait once done, e.g. `"10 min"` | Components and baking keep; cocktails are soon (5 min); cooking dishes are hot (10 min) |
 | `recipe` | ingredient | The slug of the recipe that makes it, or a list of slugs to choose from | No sub-recipe |
@@ -139,7 +140,25 @@ The README's "Recipe fields" table and `recipes/_template.json` document the fie
 
 Claude adds the planning data and the sub-recipe links to all 40 recipes, and Jacob reviews them, as with the step-ingredient links. The hands-on minutes are Claude's estimates, from the recipes' active times and the step text. It's recipe data, so it lands in its own commit(s), separate from the code. The prototype's `library.js` already has the data for the nine recipes in Jacob's two meals.
 
-**Prep hidden in ingredient lines.** Much of today's prep lives in ingredient lines ("garlic, minced", "jalapeño, seeded and diced" in the carne asada) or in "Before you start", so there is no step to mark. Each such recipe gets explicit prep steps at the top ("Mince the garlic and dice the jalapeño"), marked `prep`, with `uses` links like any other step. This changes recipe text, not only fields, so it lands as its own commit(s) for Jacob to review apart from the field data. Single-recipe cook mode gets a real prep stage before the cooking starts, which helps even without a meal. The future recipe-import tool writes recipes this way from the start.
+**Prep hidden in ingredient lines.** Much of today's prep lives in ingredient lines ("garlic, minced", "jalapeño, seeded and diced" in the carne asada) or in "Before you start", so there is no step to mark. Each such recipe gets added prep steps ("Mince the garlic and dice the jalapeño"), marked `prep` and `prepOnly`, with `uses` links like any other step. The recipe as written is unchanged: its own steps keep their text and order, and the added steps only show in prep-first order. The added steps are new text, so they land in their own commit(s) for Jacob to review apart from the field data. The future recipe-import tool writes recipes the same way: the source's steps as written, plus prep marks and added prep steps.
+
+### Prep first or as written
+
+Every recipe can show its steps in two orders, on the recipe page and in single-recipe cook mode (Jacob's idea):
+
+- **Prep first:** a prep stage, then the cooking.
+  - The prep stage holds the recipe's `prep` steps that can be done ahead, plus its `prepOnly` steps, in the recipe's own order.
+  - The cooking is the rest of the steps in their written order.
+  - "Just before" prep stays where it was written, because doing it early would hurt the dish.
+  - In cook mode, the prep stage has its own heading ("Prep"), so you can see where the cooking starts.
+- **As written:** the source's own steps in its own order, with the `prepOnly` steps left out. This is what the site shows today.
+
+Rules:
+
+- The choice is the same saved preference as the meal page's "Prep everything first" (one setting, Claude's call), and it defaults to prep first. A recipe page has a toggle to switch, and switching there changes the saved preference. A recipe with no prep marks looks the same both ways, so it shows no toggle.
+- **Progress follows the step, not the display.** Saved progress uses each step's place in the recipe file, as it does today, so switching order never ticks or un-ticks the wrong step. "Where you are" is the first step not done in the order being shown. A `prepOnly` step done in prep-first order doesn't count in as-written order.
+- **Only prep that's safe to do before any cooking is marked `prep`.** A step that depends on an earlier cooking step ("slice the rested steak") isn't prep. When it adds the marks, Claude lists any step where moving it could be wrong, for Jacob to check.
+- In a meal, the planner always uses the prep marks, whichever order a single recipe shows. "Prep everything first" or "Fastest" decides how.
 
 ## Saving
 
@@ -162,7 +181,8 @@ Claude adds the planning data and the sub-recipe links to all 40 recipes, and Ja
   - the meal page, with a sub-recipe choice and a make-ahead question showing;
   - meal cook mode on a step;
   - meal cook mode during a gap;
-  - the meal's done screen.
+  - the meal's done screen;
+  - a recipe page and single-recipe cook mode in prep-first order, with the prep stage showing.
 
   Colour problems the scan finds are shown to Jacob before any colour is changed.
 
@@ -202,7 +222,9 @@ Claude adds the planning data and the sub-recipe links to all 40 recipes, and Ja
 - No guessing equipment from step text. The checker warns instead.
 - "Prep everything first" is the default. Only heating the oven can start during prep.
 - The meal page remembers your prep choice for next time, until a settings page takes it over.
-- Prep hidden in ingredient lines becomes its own prep steps at the top of each recipe, rather than the recipe text staying as written. Say if you'd rather only mark existing steps.
+- One saved prep preference covers both the meal planner and how single recipes are ordered.
+- A recipe with no prep marks shows no order toggle.
+- Added prep steps show only in prep-first order. As written, prep stays in the ingredient lines, as today.
 
 ## Later
 

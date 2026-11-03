@@ -6,7 +6,7 @@ Projects that came up while designing something else. None of them is planned ye
 
 2026-11-03 · from the meal planner design (`docs/specs/meal-planner-design.md`)
 
-A page that holds your cooking preferences so you don't pick them every time. The first one is the meal planner's **"Prep everything first" or "Fastest"**. Until this page exists, the meal page remembers that choice itself.
+A page that holds your cooking preferences so you don't pick them every time. The first one is **prep first**: the meal planner's "Prep everything first" or "Fastest", which also decides whether a single recipe shows its steps prep first or as written. Until this page exists, the meal page and the recipe page's order toggle remember that choice themselves.
 
 Other settings that could move here:
 
