@@ -62,3 +62,27 @@ describe("one cook, several recipes", () => {
     assert.equal(plan.minutes, 62);
   });
 });
+
+describe("the oven", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
+
+  test("a dish waits for the oven while another uses it at a different setting", () => {
+    const recipes = {
+      potatoes: recipe("Potatoes", [["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }], ["Scatter with parsley", { hands: "1 min" }]]),
+      asparagus: recipe("Asparagus", [["Broil the asparagus", { hands: "1 min", wait: "3 min", watch: true, oven: "broil" }]], { sits: "5 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, recipes);
+    assert.ok(at(plan, "Broil the asparagus") >= at(plan, "Bake the potatoes") + 42,
+      `broiled at ${at(plan, "Broil the asparagus")}, with the potatoes in the oven until ${at(plan, "Bake the potatoes") + 42}`);
+  });
+
+  test("dishes share the oven at the same setting, 200C and 400F included", () => {
+    const recipes = {
+      potatoes: recipe("Potatoes", [["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }], ["Scatter with parsley", { hands: "1 min" }]]),
+      asparagus: recipe("Asparagus", [["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "400F" }]], { sits: "5 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, recipes);
+    assert.ok(at(plan, "Roast the asparagus") < at(plan, "Bake the potatoes") + 42, "the asparagus waited for the potatoes to come out");
+    assert.equal(plan.minutes, 43);
+  });
+});
