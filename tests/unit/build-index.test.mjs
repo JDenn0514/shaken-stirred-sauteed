@@ -251,6 +251,8 @@ describe("planning data", () => {
       quiet({ "test-recipe": withStep({ do: "Melt the butter in a pan.", burner: true }) }, /equipment field/));
     test("not when the field says the step doesn't use it", () =>
       quiet({ "test-recipe": withStep({ do: "Press the dough into the pan.", burner: false }) }, /equipment field/));
+    test("not when oven: false says a step that mentions the oven doesn't use it", () =>
+      quiet({ "test-recipe": withStep({ do: "Set the dough somewhere warm, away from the oven.", oven: false }) }, /equipment field/));
     test("not for words that only contain one", () =>
       quiet({ "test-recipe": withStep({ do: "Pour the pancake batter over the panko." }) }, /equipment field/));
   });

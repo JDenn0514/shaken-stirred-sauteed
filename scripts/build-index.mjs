@@ -78,6 +78,7 @@ const NUM = String.raw`\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+`;
 const TIME = new RegExp(`(${NUM})\\s*(?:(?:to|-|–)\\s*(${NUM})\\s*)?(sec(?:ond)?s?|min(?:ute)?s?|hrs?|hours?)\\b`, "i");
 const isTime = (x) => typeof x === "string" && TIME.test(x);
 // Oven settings: a temperature with its unit ("200C", "400F"), "broil" or "off".
+// false says a step that mentions the oven doesn't use it.
 const isSetting = (x) => typeof x === "string" && (/^\d+[CF]$/.test(x) || x === "broil" || x === "off");
 const SERVES = ["hot", "soon", "keeps"];
 const FLAGS = ["watch", "burner", "grill", "microwave", "prepOnly", "holds"];
@@ -95,7 +96,7 @@ function checkPlanning(r, steps, ings) {
     const step = `step ${n + 1}`;
     if (s.hands !== undefined && !isTime(s.hands)) problems.push(`${step}: "hands" must be a time, like "10 min"`);
     for (const k of ["oven", "preheat"]) {
-      if (s[k] !== undefined && !isSetting(s[k])) problems.push(`${step}: oven setting "${s[k]}" isn't one of "200C", "400F", "broil" or "off"`);
+      if (s[k] !== undefined && s[k] !== false && !isSetting(s[k])) problems.push(`${step}: oven setting "${s[k]}" isn't one of "200C", "400F", "broil" or "off"`);
     }
     if (s.preheat === "off") problems.push(`${step}: "preheat" can't be "off"; use "oven": "off" to turn it off`);
     if (s.watch && !s.wait) problems.push(`${step}: "watch" needs a "wait" to watch`);
