@@ -195,11 +195,43 @@ describe("a dish that keeps part-way", () => {
   };
 
   test("once a cooled meringue keeps, only putting it together is tied to dessert", () => {
-    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] }, recipes);
+    // All on the same day, rather than the meringue made ahead.
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }], ahead: { pavlova: false } }, recipes);
     assert.ok(plan.minutes < 6 * 60, `planned to serve after ${plan.minutes} min`);
     const assembled = at(plan, "Pile on the cream and fruit") + 4;
     assert.ok(assembled <= plan.courses.Dessert && plan.courses.Dessert - assembled <= 15, `put together at ${assembled}, dessert at ${plan.courses.Dessert}`);
     assert.ok(at(plan, "Brush the potatoes and bake") >= at(plan, "Cool it in the oven with the door shut") + 120.5, "the potatoes went in while the meringue was cooling");
+  });
+
+  describe("making it ahead", () => {
+    const meringue = ["Heat the oven to 200F", "Whip and shape the meringue", "Bake the meringue", "Cool it in the oven with the door shut"];
+
+    test("is asked about when it would make the day more than 30 minutes shorter, and starts as ahead", () => {
+      const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] }, recipes);
+      const q = plan.makeAhead.find((x) => x.slug === "pavlova");
+      assert.ok(q, "no make-ahead question for the pavlova");
+      assert.ok(q.saves > 30, `saves only ${q.saves} min`);
+      assert.equal(q.ahead, true);
+    });
+
+    test("made ahead, the meringue is its own plan and the day starts after it", () => {
+      const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] }, recipes);
+      assert.deepEqual(plan.aheadOfTime.steps.map((s) => s.text), meringue);
+      assert.ok(texts(plan).every((t) => !meringue.includes(t)), "the meringue is still in the day's plan");
+      assert.ok(texts(plan).includes("Pile on the cream and fruit"));
+      assert.ok(plan.minutes < 90, `the day takes ${plan.minutes} min`);
+    });
+
+    test("all today, everything stays in one plan", () => {
+      const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }], ahead: { pavlova: false } }, recipes);
+      assert.equal(plan.aheadOfTime, null);
+      assert.ok(meringue.every((t) => texts(plan).includes(t)));
+      assert.equal(plan.makeAhead.find((x) => x.slug === "pavlova").ahead, false);
+    });
+
+    test("isn't asked about when it wouldn't save much", () => {
+      assert.deepEqual(planLineup(dinner, DINNER).makeAhead, []);
+    });
   });
 });
 
@@ -236,7 +268,7 @@ describe("connected recipes", () => {
       ["Bake the meringue", { hands: "5 min", wait: "90 min" }],
       ["Pile on the cream and curd", { hands: "4 min", uses: ["Lemon curd"] }],
     ], { category: "baking", serve: "soon", sits: "15 min", ingredients: [{ item: "Egg whites" }, { item: "Lemon curd", recipe: "lemon-curd", optional: true }] }),
-    "lemon-curd": recipe("Lemon Curd", [["Cook the curd", { hands: "12 min" }], ["Chill it", { hands: "1 min", wait: "90 min" }]], { kind: "component", serve: "keeps" }),
+    "lemon-curd": recipe("Lemon Curd", [["Cook the curd", { hands: "12 min" }], ["Chill it", { hands: "1 min", wait: "90 min" }]], { category: "baking", kind: "component", serve: "keeps" }),
   };
 
   test("an optional ingredient's recipe isn't added by itself", () => {

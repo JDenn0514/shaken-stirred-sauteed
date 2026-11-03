@@ -58,9 +58,15 @@ const sits = (r) => (r.serve === "keeps" ? Infinity : r.sits ? minutes(r.sits) :
 // step that uses it waits for it: `neededBy` lists those [dish, step] pairs.
 const lower = (x) => String(x ?? "").trim().toLowerCase();
 const ingredientsOf = (r) => (r.ingredients || []).flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]));
-function chains(lineup, recipes) {
+//
+// `parts` splits a dish made ahead: "before" is the part up to where it keeps,
+// planned ahead of time; "after" is the rest, on the day; "skip" leaves out a
+// dish that keeps entirely.
+function chains(lineup, recipes, parts = {}) {
   const dishes = [];
   const add = (slug, made, course, parent = null) => {
+    const part = parent ? null : parts[slug];
+    if (part === "skip") return;
     const r = recipes[slug];
     const steps = r.steps.map((s) => ({
       slug, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
@@ -77,11 +83,19 @@ function chains(lineup, recipes) {
     }
     // After a `holds` step the dish keeps (a cooled meringue), so only the steps
     // after it are tied to serving.
-    const servedFrom = steps.findLastIndex((x) => x.holds) + 1;
-    const index = dishes.push({ slug, course, sits: sits(r), steps, servedFrom, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [] }) - 1;
+    const holdsAt = steps.findLastIndex((x) => x.holds) + 1;
+    const from = part === "after" ? holdsAt : 0, to = part === "before" ? holdsAt : steps.length;
+    const kept = steps.slice(from, to);
+    const index = dishes.push({
+      slug, course, steps: kept, lastOven: kept.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [],
+      sits: part === "before" ? Infinity : sits(r),
+      servedFrom: part ? (part === "before" ? kept.length : 0) : holdsAt,
+    }) - 1;
     for (const ing of ingredientsOf(r)) {
       if (typeof ing !== "object" || !ing.recipe || made.includes(ing.recipe)) continue;
-      const step = Math.max(0, steps.findIndex((s) => s.needs.includes(lower(ing.item))));
+      const at = Math.max(0, steps.findIndex((s) => s.needs.includes(lower(ing.item))));
+      if (at < from || at >= to) continue;
+      const step = at - from;
       if (ing.optional) links.push({ slug: ing.recipe, by: [index, step] });
       else add(ing.recipe, made, course, [index, step]);
     }
@@ -215,8 +229,7 @@ function planFor(dishes, serve) {
 }
 
 // The earliest serve time one cook can get everything ready for.
-export function planLineup(lineup, recipes) {
-  const dishes = chains(lineup, recipes);
+function search(dishes) {
   const shortest = Math.max(...dishes.map((d) => d.steps.reduce((a, s) => a + s.hands + s.wait, 0)));
   let plan;
   for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
@@ -224,4 +237,27 @@ export function planLineup(lineup, recipes) {
     if (!Object.keys(plan.late).length) return { steps: plan.steps, minutes: serve, ready: plan.ready, courses: plan.courses };
   }
   return { steps: plan.steps, minutes: plan.end, ready: plan.ready, courses: plan.courses };
+}
+
+// Plan the lineup. A dish that keeps, entirely or after a `holds` step, can
+// have that part made ahead of time. When that would make the day more than
+// 30 minutes shorter, the plan asks (makeAhead), starting on "ahead" unless
+// lineup.ahead says otherwise, and the part made ahead gets its own plan.
+const MAKE_AHEAD_SAVES = 30;
+export function planLineup(lineup, recipes) {
+  const keepsWhole = (slug) => !recipes[slug].steps.some((s) => s.holds);
+  const dayParts = (slugs) => Object.fromEntries(slugs.map((slug) => [slug, keepsWhole(slug) ? "skip" : "after"]));
+  const dayLength = (p) => Math.max(...Object.values(p.courses));
+  const allToday = search(chains(lineup, recipes));
+  const makeAhead = [];
+  for (const { slug } of lineup.dishes) {
+    if (keepsWhole(slug) && sits(recipes[slug]) !== Infinity) continue;
+    const saves = dayLength(allToday) - dayLength(search(chains(lineup, recipes, dayParts([slug]))));
+    if (saves > MAKE_AHEAD_SAVES) makeAhead.push({ slug, saves, ahead: lineup.ahead?.[slug] ?? true });
+  }
+  const ahead = makeAhead.filter((q) => q.ahead).map((q) => q.slug);
+  if (!ahead.length) return { ...allToday, makeAhead, aheadOfTime: null };
+  const before = search(chains({ dishes: lineup.dishes.filter((d) => ahead.includes(d.slug)) }, recipes,
+    Object.fromEntries(ahead.map((slug) => [slug, keepsWhole(slug) ? null : "before"]))));
+  return { ...search(chains(lineup, recipes, dayParts(ahead))), makeAhead, aheadOfTime: { steps: before.steps, minutes: before.minutes } };
 }
