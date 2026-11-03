@@ -155,6 +155,32 @@ describe("the oven", () => {
   });
 });
 
+describe("nested recipes", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
+  const recipes = {
+    potatoes: recipe("Potatoes", [
+      ["Scrub the potatoes", { hands: "3 min" }],
+      ["Mix the garlic butter", { hands: "3 min", uses: ["Garlic paste"] }],
+      ["Brush and bake", { hands: "3 min", wait: "40 min" }],
+    ], { ingredients: [{ item: "Potatoes" }, { item: "Garlic paste", recipe: "garlic-paste" }] }),
+    "garlic-paste": recipe("Garlic Paste", [["Chop the garlic", { hands: "4 min" }], ["Muddle to a paste", { hands: "5 min" }]], { kind: "component" }),
+  };
+
+  test("a required ingredient with its own recipe is made before the step that uses it", () => {
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }] }, recipes);
+    assert.ok(at(plan, "Muddle to a paste") + 5 <= at(plan, "Mix the garlic butter"),
+      `the paste was done at ${at(plan, "Muddle to a paste") + 5}, the butter mixed at ${at(plan, "Mix the garlic butter")}`);
+    assert.equal(plan.minutes, 58);
+  });
+
+  test("one marked already made isn't made, and its dish uses it as usual", () => {
+    const plan = planLineup({ dishes: [{ slug: "potatoes", made: ["garlic-paste"] }] }, recipes);
+    assert.equal(at(plan, "Chop the garlic"), undefined);
+    assert.deepEqual(texts(plan), ["Scrub the potatoes", "Mix the garlic butter", "Brush and bake"]);
+    assert.equal(plan.minutes, 49);
+  });
+});
+
 describe("other equipment", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
 
