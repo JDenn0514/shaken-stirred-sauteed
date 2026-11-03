@@ -18,6 +18,7 @@ This is the "Later: cooking a whole meal" project from `docs/specs/cook-mode-des
 - **Order and timers only.** While cooking you see the step to do now, any timers running, and "Nothing to do for about 12 min" when there's a gap. No clock times (Jacob's decision: a schedule makes him stressed).
 - The plan re-plans itself from where you are each time you finish a step, so running long never means a broken plan.
 - Sub-recipes: an ingredient can link to the recipe that makes it. When you add the dish to a meal, you choose to make it or use some you have, and the planner fits it in before the step that needs it.
+- **Prep comes before heat.** Chopping and measuring for a dish is done before that dish's first time-sensitive step, and by default all the meal's prep is done first. Prep is where cooks' speeds vary most, so getting it out of the way keeps the time-sensitive steps on time (Jacob's idea).
 
 ## Non-goals
 
@@ -54,6 +55,12 @@ The prototype (branch `prototype/meal-planner`, and the published page linked in
 8. **The earliest serve time wins.** The planner tries serve times from the shortest possible upward and keeps the first one that works.
 9. **Re-planning.** Each time you finish a step, the planner runs again from that moment. Finished steps and running waits stay as they happened, using real elapsed time, so a slow step moves the rest of the meal later. There's no "this took longer" button, because the planner can see it.
 10. **Ranges plan from the middle.** "7 to 8 min" plans as 7.5. Timers still start at the short end, as in cook mode, so you check early.
+11. **Prep before heat, always.** A dish's prep steps (marked `prep`, see Recipe data) come before its first step that isn't prep. Prep marked "just before" (cutting apples that would brown, salting a steak) is done as late as it can be, but still before the step that needs it.
+12. **"Prep everything first" or "Fastest".** These are the two ways to plan a meal.
+    - **Prep everything first** (the default): no step that isn't prep starts until all the meal's ahead-of-time prep is done. Only heating the oven, which runs in the background, can start during prep.
+    - **Fastest:** prep fills waits like any other step, as in the prototype.
+
+    Prep-first makes the meal longer, since the potatoes go in the oven later. In return, nothing time-sensitive starts until the knife work is behind you. The meal page shows how long each way takes.
 
 The planner is a pure module (`assets/planner.js`, or the builder's choice of name) with no page code. The prototype's `planner.js` is the starting point.
 
@@ -78,6 +85,7 @@ The planner is a pure module (`assets/planner.js`, or the builder's choice of na
   - under it, a choice for each linked sub-recipe: **Make it**, **I have some**, and **Leave it out** if the ingredient is optional. Where the ingredient links to more than one recipe ("Whipped cream": plain or blueberry), the choices name each one. Choosing to make a sub-recipe shows that sub-recipe's own choices too.
 - Below the dishes:
   - the make-ahead questions;
+  - **Prep everything first** or **Fastest**, with how long each takes ("Prep first: about 1 hr 45 min · Fastest: about 1 hr 30 min"). It starts on your saved choice, and changing it here changes the saved choice for next time too. Until a settings page exists (see `docs/ideas.md`), this is where the choice lives;
   - "Takes about 1 hr 30 min" for the day's plan;
   - a warning if a dish can't be on time;
   - **Start cooking**.
@@ -109,6 +117,7 @@ New optional fields. Each one has a fallback, so a recipe without them still get
 | `oven` | step | The setting the step needs while it runs: `"200C"`, `"400F"`, `"broil"` or `"off"` | No oven |
 | `preheat` | step | The step heats the oven to this setting in the background | The planner adds a heating step if a dish needs the oven |
 | `burner`, `grill`, `microwave` | step | `true` when the step uses one | Not used |
+| `prep` | step | Prep: knife work, measuring, getting things ready. `true` means it can be done ahead; `"just before"` means close to when it's needed | Not prep |
 | `holds` | step | After this step, the dish keeps as long as you like (a cooled meringue) | The whole dish is tied to serving if it's hot |
 | `serve` | recipe | `"hot"`, `"soon"` or `"keeps"`, with `sits` for how long a hot or soon dish can wait once done, e.g. `"10 min"` | Components and baking keep; cocktails are soon (5 min); cooking dishes are hot (10 min) |
 | `recipe` | ingredient | The slug of the recipe that makes it, or a list of slugs to choose from | No sub-recipe |
@@ -129,6 +138,8 @@ The README's "Recipe fields" table and `recipes/_template.json` document the fie
 ### Filling it in for the existing recipes
 
 Claude adds the planning data and the sub-recipe links to all 40 recipes, and Jacob reviews them, as with the step-ingredient links. The hands-on minutes are Claude's estimates, from the recipes' active times and the step text. It's recipe data, so it lands in its own commit(s), separate from the code. The prototype's `library.js` already has the data for the nine recipes in Jacob's two meals.
+
+**Prep hidden in ingredient lines.** Much of today's prep lives in ingredient lines ("garlic, minced", "jalapeño, seeded and diced" in the carne asada) or in "Before you start", so there is no step to mark. Each such recipe gets explicit prep steps at the top ("Mince the garlic and dice the jalapeño"), marked `prep`, with `uses` links like any other step. This changes recipe text, not only fields, so it lands as its own commit(s) for Jacob to review apart from the field data. Single-recipe cook mode gets a real prep stage before the cooking starts, which helps even without a meal. The future recipe-import tool writes recipes this way from the start.
 
 ## Saving
 
@@ -160,7 +171,7 @@ Claude adds the planning data and the sub-recipe links to all 40 recipes, and Ja
 - Plain HTML, CSS and JavaScript: no frameworks, no build step, no new runtime dependencies (README).
 - The Content-Security-Policy forbids inline scripts and styles. Set styles through the DOM, as `recipe.js` does.
 - Tests come first, with the `mattpocock-skills:tdd` skill, per `.claude/rules/testing.md`:
-  - The planner is pure, so it gets unit tests on Node's built-in runner (`tests/unit/planner.test.mjs`). They cover Jacob's two meals as cases: the broil waiting for the potatoes, the curd and syrup fitting into the meringue's bake, a slow step moving the meal later, the gap between courses, and the make-ahead question.
+  - The planner is pure, so it gets unit tests on Node's built-in runner (`tests/unit/planner.test.mjs`). They cover Jacob's two meals as cases: the broil waiting for the potatoes, the curd and syrup fitting into the meringue's bake, a slow step moving the meal later, the gap between courses, the make-ahead question, prep before heat, and prep-first against fastest.
   - Browser tests use fixture recipes in `tests/e2e/fixtures.mjs`, with planning data added there, never the real recipes.
   - Checker tests go through `tests/helpers/build-index.mjs`.
   - `npm test` passes before the work is called done.
@@ -189,10 +200,15 @@ Claude adds the planning data and the sub-recipe links to all 40 recipes, and Ja
 - An ingredient with a sub-recipe links to it on the recipe page, outside meals too.
 - The timer strip's "ready around 9:40 pm" for long waits stays, even in meal cook mode, because it's a timer and not a schedule. Say if it should go.
 - No guessing equipment from step text. The checker warns instead.
+- "Prep everything first" is the default. Only heating the oven can start during prep.
+- The meal page remembers your prep choice for next time, until a settings page takes it over.
+- Prep hidden in ingredient lines becomes its own prep steps at the top of each recipe, rather than the recipe text staying as written. Say if you'd rather only mark existing steps.
 
 ## Later
 
 - Saved, named meals ("Cookout").
+- A settings page that holds the prep choice and other preferences (`docs/ideas.md`).
+- Learning your pace: comparing how long your steps, prep especially, really take with the estimates, and planning with your speed.
 - Choosing your own order step by step, or "do this first".
 - A combined shopping list for the meal.
 - Two cooks.
