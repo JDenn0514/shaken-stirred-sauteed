@@ -1,4 +1,5 @@
 // Cook mode: a recipe's steps one screen at a time, opened from the recipe page.
+import { readFileSync } from "node:fs";
 import { test, expect } from "./fixtures.mjs";
 
 const cook = (page) => page.getByRole("region", { name: "Cook mode" });
@@ -333,4 +334,37 @@ test.describe("timers", () => {
     await timer(page, "Lemon Bars, step 2").getByRole("link", { name: /Lemon Bars/ }).click();
     await expect(instruction(page)).toHaveText("Bake the crust.");
   });
+});
+
+test("text in a recipe is shown as text in cook mode, never run as page code", async ({ page }) => {
+  await start(page, "sneaky-recipe");
+  await expect(instruction(page)).toHaveText(`<i class="injected">Stir</i>`);
+  await expect(cook(page).getByTestId("cue")).toContainText(`<u class="injected">done</u>`);
+  await expect(page.locator(".injected")).toHaveCount(0);
+});
+
+// Every real recipe, walked through from start to finish, so a recipe the
+// checker allows but cook mode can't show gets caught here rather than mid-cook.
+test.describe("every real recipe in cook mode", () => {
+  test.use({ testRecipes: false });
+  const file = (p) => JSON.parse(readFileSync(new URL(`../../recipes/${p}`, import.meta.url), "utf8"));
+  const steps = (r) => r.steps.flatMap((e) => (Array.isArray(e.items) ? e.items : [e]));
+
+  for (const { slug, title } of file("index.json")) {
+    test(`${slug} walks through every step, with each step's ingredients`, async ({ page }) => {
+      const errors = [];
+      page.on("pageerror", (e) => errors.push(e.message));
+      page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+      const r = file(`${slug}.json`);
+      await start(page, slug);
+      if (r.beforeYouStart?.length) await next(page).click();
+      for (const [n, s] of steps(r).entries()) {
+        await expect(stepLabel(page)).toHaveText(new RegExp(`Step ${n + 1} of ${steps(r).length}$`));
+        await expect(cook(page).getByRole("checkbox"), `${title}, step ${n + 1}`).toHaveCount(s.uses?.length ?? 0);
+        await next(page).click();
+      }
+      await expect(cook(page).getByRole("heading", { name: "All done" })).toBeVisible();
+      expect(errors).toEqual([]);
+    });
+  }
 });
