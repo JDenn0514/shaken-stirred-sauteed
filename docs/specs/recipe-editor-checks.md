@@ -2,6 +2,8 @@
 
 2026-11-03 · answers to "To check before planning" in [recipe-editor-design.md](recipe-editor-design.md)
 
+**Decided after this was written (2026-11-03):** sign-in uses (b), bearer tokens with the one-time-token handoff. Originals aren't kept at all, so neither R2 nor KV is used, and the R2 and KV notes below no longer apply. The design spec has been updated to match.
+
 Sources are primary only: Better Auth's source code, GitHub's and Cloudflare's own docs, and the Public Suffix List. This session's network blocked `docs.github.com`, `developers.cloudflare.com` and `webkit.org`, so GitHub's and Cloudflare's docs were read from the repos those sites are built from ([github/docs](https://github.com/github/docs) at commit `749d174`, 2026-11-03; [cloudflare/cloudflare-docs](https://github.com/cloudflare/cloudflare-docs) at commit `d986303`, 2026-11-03). Links below point to the live pages. Better Auth was read at [commit `0e75ddc`](https://github.com/better-auth/better-auth/tree/0e75ddcf36489aa3a191ea902a82d1892034dc74) (2026-11-01). The latest release on npm is `1.7.15`.
 
 ## Summary

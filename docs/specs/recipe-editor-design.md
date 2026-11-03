@@ -24,7 +24,7 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 - **Recipes stay as JSON files in the repo.** The database only holds sign-in data for now.
 - **AI is optional, never required.** Import works fully without it, using structured website data, PDF text, OCR and rules. The optional AI step (below) only improves a draft.
 - **No step images** (pictures showing how to do something). That's the next project, built on this editor (see "Later").
-- **No change of hosting yet.** The site stays on GitHub Pages unless sign-in needs a shared domain (see "Signing in").
+- **No change of hosting.** The site stays on GitHub Pages; sign-in works across sites without a shared domain (see "Signing in").
 - **No drafts.** Save publishes. A recipe you want to finish later is either saved as it is and edited again, or not saved.
 - **The editor doesn't work offline.** It needs a connection to save, sign in and fetch web pages. The rest of the site keeps working offline as today.
 - No screenshot tests, offline tests or print layout tests (matching `.claude/rules/testing.md`).
@@ -36,7 +36,7 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 - **A save that leaves the site broken.** A recipe that would fail `build-index.mjs` must never be committed. The recipe file and `recipes/index.json` change together in one commit, or not at all.
 - **A wrong amount slips in unnoticed.** OCR misreads and AI "corrections" both change amounts. Anything the importer guessed or the AI changed must be easy to check against the original before saving.
 - **A delete by accident.** One tap must never delete a recipe.
-- **An original becomes public.** Photos of cookbook pages are someone else's work. Originals are only ever visible to Jacob.
+- **An original becomes public.** Photos of cookbook pages are someone else's work. The photo, screenshot or PDF a recipe is imported from is never committed or stored anywhere (see "Originals").
 - **A surprise bill.** No service is set up in a way that can charge money.
 - **Visitors see editing controls that don't work for them.** Signed out, the site looks exactly as it does today.
 
@@ -44,10 +44,11 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 
 Everything server-side runs on **Cloudflare's free plan**, in one Cloudflare account:
 
-- **A Worker**: one small server program that handles sign-in, fetching recipe web pages, serving originals, and the optional AI step. Signed-out requests get nothing but the sign-in itself.
-- **D1** (Cloudflare's SQLite database): holds only what sign-in needs (users, sessions, linked GitHub accounts). Recipe tables wait for the multi-user project.
-- **R2** (Cloudflare's file storage): a private bucket for originals.
+- **A Worker**: one small server program that handles sign-in, fetching recipe web pages, and the optional AI step. Signed-out requests get nothing but the sign-in itself.
+- **D1** (Cloudflare's SQLite database): holds only what sign-in needs (users, sessions, linked GitHub accounts, one-time sign-in codes). Recipe tables wait for the multi-user project.
 - **Workers AI** (optional): the vision model for the "Tidy up with AI" step.
+
+No file storage (R2 or KV) is needed, since originals aren't kept. That also avoids R2, which Cloudflare adds through a checkout and bills past its free amount. On the free plan, Workers, D1 and Workers AI return errors at their limits rather than charging. Current allowances and sources are in `docs/specs/recipe-editor-checks.md`.
 
 Cloudflare was picked over Supabase because Supabase pauses free projects after about a week of no activity, which an editor used now and then would keep hitting. It was picked over Firebase because Firebase's file storage and functions need the pay-as-you-go plan, with a card and no hard spending cap. The cost of Cloudflare is that sign-in and access rules are built by us, not ready-made.
 
@@ -61,11 +62,36 @@ Jacob creates the Cloudflare account, the GitHub App, and any keys, and puts the
 - The GitHub side is a **GitHub App installed only on this repo**, not an older OAuth app, which could only ask for access to all of Jacob's public repos. That also settles "only Jacob" without extra code: anyone can sign in, but only Jacob has permission to commit to the repo, so GitHub refuses anyone else's save. The editor should still show a clear message rather than a failed save if someone else signs in.
 - The sign-in link sits somewhere quiet (the footer, for instance). Once signed in, the site shows **"Add recipe"** and an **"Edit"** button on each recipe page. Signed out, neither exists.
 
-### To check before planning
+### Better Auth and the GitHub token
 
-- **Better Auth with a GitHub App.** That Better Auth's GitHub provider works with a GitHub App's sign-in, and gives the Worker the user's GitHub token for committing. GitHub App user tokens expire after about 8 hours and come with a refresh token, so the Worker must refresh them rather than ask Jacob to sign in again each day.
-- **Cookies across sites.** The site is on `jdenn0514.github.io` and the Worker would be on `*.workers.dev`: two different sites. Safari blocks cookies between different sites, so a normal sign-in cookie won't reach the Worker from the site on an iPhone. The options are: (a) a custom domain with the site and the Worker on the same site (e.g. `example.com` and `api.example.com`), which GitHub Pages supports, at about $10 a year for the domain, which breaks "no money" slightly; (b) Better Auth's bearer-token mode, where the browser keeps the session token and sends it with each request, no cross-site cookie needed; or (c) moving the site to Cloudflare Pages on the same `workers.dev`/`pages.dev` setup if that counts as one site. Find out which works on iPhone Safari before planning. Claude's lean is (b), since it keeps "no money" and needs no hosting change.
-- **Current free limits.** Workers, D1, R2 and Workers AI free allowances, checked on Cloudflare's pricing pages at planning time. At a few recipes a week they're far beyond what's needed.
+Checked in `docs/specs/recipe-editor-checks.md` (question 1):
+
+- Better Auth's GitHub provider works with a GitHub App's sign-in. It stores the access token, refresh token and expiry in D1, and its `getAccessToken` renews the 8-hour token itself.
+- **Token encryption is on** (`encryptOAuthTokens`), since the token can commit to the repo.
+- `disableDefaultScope: true`: GitHub Apps ignore scopes, so none are asked for.
+- The GitHub App has **Contents: read & write** and **Email addresses: read-only** (sign-in fails without the email permission).
+- The Worker runs with Cloudflare's `nodejs_compat` flag and uses Better Auth's built-in D1 support.
+- A refresh token works once. If GitHub refuses a token or a refresh, the editor says "sign in again" rather than failing the save silently.
+
+### Sign-in across sites: bearer token with a one-time code
+
+The site (`jdenn0514.github.io`) and the Worker (`*.workers.dev`) are different sites, and Safari blocks cookies between them, so the sign-in cookie can't be used from the site. Decided: Better Auth's **bearer** and **one-time-token** plugins, with no hosting change and no domain to buy (checks file, question 2):
+
+1. The sign-in link is a **full-page visit to the Worker** (not a background request), so Better Auth's sign-in check cookie works. The Worker sends Jacob to GitHub.
+2. GitHub sends him back to the Worker, which creates the session and redirects to the site with a **single-use code that lasts 3 minutes** in the `#` part of the URL (never sent to a server).
+3. The page removes the code from the address bar, swaps it with the Worker for a session token, keeps the token in the browser, and sends it as `Authorization: Bearer` with every request.
+4. The Worker answers the site's origin with CORS headers (allowing `Authorization`, exposing `set-auth-token`), and `trustedOrigins` names the site.
+5. Signing out deletes the token in the browser and ends the session in D1.
+
+The stored token can be read by any script on the site, which the strict CSP and having no third-party scripts keep safe. That's another reason the editor's looser CSP stays as narrow as "Constraints" says.
+
+To try first, once Jacob has created the accounts (each is a small test, listed at the end of the checks file):
+
+- That the one-time code comes back on GitHub's return as the code suggests. If not, the callback goes to a Worker route that makes the code itself; it's just as small.
+- Signing in on an iPhone in Safari, normal and Private tab, then saving an edit and reloading.
+- That Better Auth stays within the free plan's 10 ms of CPU per request.
+
+If the handoff fails on a real iPhone, the fallback is serving the site and the Worker from one Cloudflare address. That's free, but it changes the site's URL and visitors lose saved progress.
 
 ## Importing
 
@@ -135,47 +161,38 @@ The rules that turn plain text into a draft:
 ## Deleting
 
 - Edit existing has a **Delete** button. It asks you to **type the recipe's name to confirm**, then commits the removal of the recipe file, with the rebuilt index, in one commit.
-- Its original, if any, is deleted from R2 too.
 - Git history still has the recipe, so a mistaken delete can be recovered from the repo.
 
 ## Originals
 
-- The image or PDF a recipe was imported from is kept in a **private R2 bucket**. Only the Worker can read it, and it only serves an original to the signed-in owner.
-- Signed in, a recipe page with an original shows **"View original"**. Visitors never see it.
-- The recipe JSON records that an original exists in some form the builder picks (a path, or the slug alone). It must reveal nothing a visitor could use to reach the file.
-- When multi-user arrives, each person's originals stay theirs.
-
-### Moving the existing PDFs
-
-- The 38 PDFs committed in `source-pdfs/` move to the same private bucket, attached to their recipes where the match is clear. Claude writes and runs the upload script, after Jacob creates the bucket and puts the key in a local file the script reads (never committed). The script checks every file arrived before anything is removed from the repo.
-- Then `source-pdfs/` is removed from the repo in its own commit.
-- **They stay in the public git history** until that history is rewritten. Rewriting changes every commit and is hard to undo, so it's a separate decision Jacob hasn't made, and it isn't part of this project.
+- **Originals aren't kept** (Jacob's call, 2026-11-03). The photo, screenshot or PDF a recipe is imported from lives only in the browser while importing: shown beside the preview, read by OCR, and sent to the AI step if that's used. It's gone once the recipe is saved or the import abandoned, and nothing about it goes in the recipe JSON.
+- The unsaved draft kept in the browser holds the text read, not the original, so after a reload the original has to be chosen again to compare against it.
+- `source-pdfs/` stays in the repo as it is today. Whether to remove it (and from git history) is a separate decision, not part of this project.
 
 ## Order of work
 
-1. Answer the questions under "To check before planning."
-2. Set up Cloudflare: the Worker, D1 with Better Auth's tables, the R2 bucket. Jacob creates the account, GitHub App and keys.
-3. Move the existing PDFs to R2.
-4. The editor, in the order the planning settles on.
-5. The optional AI step last, after a trial on real pages.
+1. Set up Cloudflare: the Worker and D1 with Better Auth's tables. Jacob creates the account, GitHub App and keys.
+2. Sign-in end to end, tried on an iPhone first (see "Sign-in across sites"), since the rest depends on it.
+3. The editor, in the order the planning settles on.
+4. The optional AI step last, after a trial on real pages.
 
 ## Accessibility
 
 - Everything in the editor works by keyboard and screen reader, not only by tapping. Edit-in-place parts are real buttons or fields with labels, not just tappable text.
-- The accessibility scan (`tests/e2e/accessibility.spec.mjs`) gets the new pages and states added to `PAGES`: the import screen, the editor with a recipe, the editor showing check errors, Details open, AI changes marked for checking, the delete confirmation, and a recipe page signed in (with Edit and "View original"), in light and dark mode. Colour problems the scan finds are shown to Jacob before any colour is changed.
+- The accessibility scan (`tests/e2e/accessibility.spec.mjs`) gets the new pages and states added to `PAGES`: the import screen, the editor with a recipe, the editor showing check errors, Details open, AI changes marked for checking, the delete confirmation, and a recipe page signed in (with Edit), in light and dark mode. Colour problems the scan finds are shown to Jacob before any colour is changed.
 
 ## Constraints
 
 - Plain HTML, CSS and JavaScript on the site, no frameworks and no build step (README). The Worker is its own small program in its own folder, deployed with Cloudflare's `wrangler` tool. It may use npm packages (Better Auth), since it's not part of the site.
 - **The site needs new runtime dependencies**, which the README currently rules out: Tesseract.js (and its English language data) and a PDF reader such as pdf.js. They're committed into the repo as files (no CDN, no build step) and load only on the editor pages. The README's "the site itself still has no dependencies" line changes to say so.
-- The pages' Content-Security-Policy loosens **only on the editor pages**, as far as needed: `connect-src` for the Worker (and `api.github.com` if the browser commits itself), `worker-src` and `'wasm-unsafe-eval'` for Tesseract. Signed-in features on recipe pages ("Edit", "View original") need `connect-src` for the Worker there too, and nothing more. Every other page keeps today's policy. Styles are still set through the DOM, not inline.
+- The pages' Content-Security-Policy loosens **only on the editor pages**, as far as needed: `connect-src` for the Worker (and `api.github.com` if the browser commits itself), `worker-src` and `'wasm-unsafe-eval'` for Tesseract. The signed-in "Edit" button on recipe pages needs `connect-src` for the Worker there too, and nothing more. Every other page keeps today's policy. Styles are still set through the DOM, not inline.
 - The service worker is network-first and caches same-origin files, so the editor's large files get cached after first use. That's fine. Requests to the Worker and GitHub aren't cached, as today.
 - Tests come first (`mattpocock-skills:tdd`, per `.claude/rules/testing.md`). Browser tests use the fixture recipes and the fixture's request blocking, so GitHub, the Worker and Workers AI are faked in tests, never called. Text-to-recipe rules get unit tests on sample text, including real OCR mistakes. The Worker gets its own tests. The shared checks keep their tests through `tests/helpers/build-index.mjs`. `npm test` passes before it's called done.
 - Work happens on its own branch, so the live site is untouched until it's merged.
 
 ## Later
 
-- **Step images** are the next project: a photo on a step, shown on the recipe page and in cook mode, uploaded from the editor. Unlike originals they're public, so they'd live in the repo next to the recipe, shrunk in the browser before committing so the repo doesn't swell, and they'd work offline like the rest of the site.
+- **Step images** are the next project: a photo on a step, shown on the recipe page and in cook mode, uploaded from the editor. They're public, so they'd live in the repo next to the recipe, shrunk in the browser before committing so the repo doesn't swell, and they'd work offline like the rest of the site.
 - **Multi-user**: the editor is its first feature. Only saving changes, from "commit to the repo" to "save to my account" in D1. Its open questions were parked on 2026-11-01 (shared library or per-account copies, login methods, scope, audience). With friends using the AI step, they'd share the free daily allowance.
 - **Hosting**: a custom domain works with GitHub Pages as it is. Moving the site to Cloudflare Pages would keep saving through the repo and put everything in one account.
 
@@ -185,7 +202,6 @@ The rules that turn plain text into a draft:
 - Whether the browser or the Worker makes the GitHub commit.
 - The PDF reader, and how Tesseract's files are vendored and loaded.
 - The exact heading words and amount patterns the text rules recognise, and the order they're tried in.
-- How an original is recorded in the recipe JSON (within the rule above).
 - How a save handles `main` having moved for other recipes.
 - How the AI step's differences are marked in the editor.
 - Exact layout of edit-in-place and Details on phone and desktop, within the Field Guide style.
@@ -198,8 +214,8 @@ The rules that turn plain text into a draft:
 - The category is guessed and always shown for checking.
 - An unsaved draft is kept in the browser.
 - The sign-in link is in a quiet spot, and Edit and "Add recipe" only show when signed in.
-- The Worker only fetches pages, serves originals and runs AI for signed-in users.
-- Deleting a recipe also deletes its original.
+- The Worker only fetches pages and runs AI for signed-in users.
+- An unsaved draft keeps the text read, not the original.
 - The editor loosens the CSP on its own pages only.
 - The AI step is skipped by default for websites with structured recipe data.
-- Lean towards bearer-token sign-in over a custom domain, pending the iPhone check.
+- `source-pdfs/` is left alone now that originals aren't kept.
