@@ -6,7 +6,7 @@ import { test, expect } from "./fixtures.mjs";
 const open = (page, slug) => page.goto(`recipe.html?r=${slug}`);
 const heading = (page) => page.getByRole("heading", { level: 1 });
 const ingredient = (page, name) => page.getByRole("checkbox", { name });
-// Steps are list items you tap; "done" and "current" are only shown by styling for now.
+// Steps are list items you tap. The current step has aria-current="step"; "done" is only shown by styling for now.
 const step = (page, text) => page.locator("ol.steps li", { hasText: text });
 const fact = (page, label) => page.locator(".facts .fact", { has: page.locator("dt", { hasText: label }) }).locator("dd");
 
@@ -118,7 +118,7 @@ test.describe("checking things off", () => {
 });
 
 test.describe("the current step", () => {
-  const current = (page) => page.locator("ol.steps li.current");
+  const current = (page) => page.locator(`ol.steps li[aria-current="step"]`);
 
   test.beforeEach(async ({ page }) => {
     await open(page, "pork-carnitas");

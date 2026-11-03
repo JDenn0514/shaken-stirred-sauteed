@@ -18,7 +18,7 @@
 - Browser tests use the test recipes in `tests/e2e/fixtures.mjs`, never the real ones, so adding a recipe never breaks a test. Add a test recipe when a test needs a new case.
 - Checker tests go through `tests/helpers/build-index.mjs`, which runs the real build script on throwaway recipes. Link checker tests go through `tests/helpers/check-links.mjs` the same way.
 - Lint findings: fix the code. Only switch a rule off in `.oxlintrc.json` if it fights the codebase's style rather than catching mistakes, and say why in a comment there.
-- A recipe step's "done" and "current" state is only shown by styling today, so `tests/e2e/recipe-page.spec.mjs` checks the `done` and `current` classes. When steps expose that state to assistive tech (e.g. `aria-current="step"`), switch those tests to it.
+- The current recipe step has `aria-current="step"`, and tests check that. A step's "done" state is only shown by styling today, so `tests/e2e/recipe-page.spec.mjs` checks the `done` class. When done steps expose that state to assistive tech, switch those tests to it.
 - `tests/e2e/accessibility.spec.mjs` scans each page in light and dark mode. When adding a page or a new state of one (an open panel, a new mode), add it to `PAGES`. Fix what the scan finds rather than turning a check off. Colour fixes are design decisions, so show the user what failed before changing colours.
 - When a test you didn't expect to fail fails, decide whether the code or the test is wrong. The README describes how the site should behave. Never weaken or delete a test just to get it passing. If behaviour is meant to change, say which test changed and why.
 

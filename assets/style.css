@@ -1017,6 +1017,52 @@ body.sheet-open { overflow: hidden; }
   a:hover { text-decoration-thickness: 2px; }
 }
 
+/* ===== Cook mode: one step per screen (assets/cook.js) =====
+   Replaces the page while it's open. The step is large enough to read at arm's
+   length; everything else is quiet. Colour comes from the family ink. */
+.cook-start {
+  background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section);
+  font-size: 1rem; min-height: 46px; padding: 0 22px; margin-bottom: 10px;
+}
+body.cooking > .site-header, body.cooking > main { display: none; }
+.cook {
+  display: flex; flex-direction: column; gap: 12px;
+  min-height: 100vh; min-height: 100dvh; max-width: 680px; margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  touch-action: pan-y;
+}
+.cook-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cook-label { font-family: var(--mono); font-size: .74rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.cook-close {
+  width: 44px; height: 44px; margin-right: -8px; border: 0; border-radius: 50%; background: none;
+  font-size: 1.2rem; cursor: pointer; color: var(--text);
+}
+.cook-bar { display: flex; gap: 3px; }
+.cook-bar i { flex: 1; height: 4px; border-radius: 2px; background: var(--border); }
+.cook-bar i.done { background: var(--section); }
+.cook-bar i.now { background: var(--section); opacity: .45; }
+.cook-body { flex: 1; display: flex; flex-direction: column; gap: 16px; padding-top: 6px; }
+.cook-body h2 { font-size: 1.7rem; letter-spacing: -.018em; }
+.cook-do { margin: 0; font-size: 1.45rem; line-height: 1.38; font-weight: 500; text-wrap: pretty; }
+.cook-wait, .cook-cue { margin: 0; font-size: 1.02rem; font-weight: 600; line-height: 1.45; }
+.cook-wait { color: var(--muted); }
+.cook-cue { color: var(--section); }
+.cook-list { margin: 0; padding-left: 1.2em; font-size: 1.1rem; line-height: 1.5; }
+.cook-list li + li { margin-top: 6px; }
+.cook-return { align-self: flex-start; }
+.cook-upnext {
+  display: block; width: 100%; padding: 10px 0; border: 0; border-top: 1px solid var(--border); background: none;
+  text-align: left; font-size: .9rem; line-height: 1.45; color: var(--muted); cursor: pointer;
+}
+.cook-upnext[aria-expanded="false"] { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cook-upnext-label { font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; margin-right: 4px; }
+.cook-upnext-label::after { content: " ▴" / ""; }
+.cook-upnext[aria-expanded="true"] .cook-upnext-label::after { content: " ▾" / ""; }
+.cook-nav { display: flex; gap: 10px; }
+.cook-nav .btn { flex: 1; min-height: 52px; border-radius: var(--radius-ctl); font-size: 1rem; }
+.cook-nav .cook-go { flex: 2.2; background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
+.cook-nav .btn:disabled { opacity: .45; cursor: default; }
+
 /* ===== Motion ===== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }

@@ -15,7 +15,7 @@ const PAGES = [
   ["recipe page part-way through", "recipe.html?r=pork-carnitas", async (page) => {
     await page.getByRole("checkbox").first().check();
     await page.locator("ol.steps li").first().click();
-    await expect(page.locator("ol.steps li.current")).toHaveCount(1);
+    await expect(page.locator(`ol.steps li[aria-current="step"]`)).toHaveCount(1);
   }],
   ["cocktail recipe", "recipe.html?r=daiquiri", (page) => expect(page.getByRole("heading", { level: 1 })).toBeVisible()],
 ];

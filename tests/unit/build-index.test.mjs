@@ -65,6 +65,33 @@ describe("rejects", () => {
     rejects(recipe({ tags: { flavor: ["spirit-forward"] } }), /"spirit-forward" isn't an allowed flavor value for cooking/));
 });
 
+// A step's "uses" names the ingredients it needs, for cook mode.
+describe("ingredients a step uses", () => {
+  const crustAndFilling = [
+    { group: "Crust", items: [{ qty: "1 cup", item: "Flour" }, { qty: "1/4 cup", item: "Sugar" }] },
+    { group: "Filling", items: [{ qty: "1 cup", item: "Sugar" }, "Powdered sugar, for dusting"] },
+  ];
+  const withUses = (uses) => recipe({ ingredients: crustAndFilling, steps: [{ do: "Mix.", uses }] });
+
+  test("accepts ingredients named by item, by group and item, or as written", () =>
+    entry(withUses(["flour", { group: "Filling", item: "Sugar" }, "Powdered sugar, for dusting"])));
+  test("accepts a step's own share of an ingredient", () =>
+    entry(withUses([{ group: "Crust", item: "Sugar", amount: "2 Tbsp" }])));
+  test("rejects uses that isn't a list", () => rejects(withUses("Flour"), /step 1: "uses" must be a list/));
+  test("rejects an ingredient the recipe doesn't have", () =>
+    rejects(withUses(["Butter"]), /step 1 uses "Butter", which isn't one of the ingredients/));
+  test("rejects a name that matches two ingredients", () =>
+    rejects(withUses(["Sugar"]), /step 1 uses "Sugar", which matches 2 ingredients: add its "group"/));
+  test("rejects a group the recipe doesn't have", () =>
+    rejects(withUses([{ group: "Topping", item: "Sugar" }]), /step 1 uses "Sugar" from "Topping", which isn't one of the ingredients/));
+  test("rejects an entry with no item", () => rejects(withUses([{ amount: "1 cup" }]), /step 1: every entry in "uses" needs an "item"/));
+  test("rejects an amount that isn't text", () =>
+    rejects(withUses([{ item: "Flour", amount: 2 }]), /step 1: "amount" must be text/));
+  test("counts steps across groups", () =>
+    rejects(recipe({ ingredients: crustAndFilling, steps: ["Heat the oven.", { group: "Mix", items: [{ do: "Mix.", uses: ["Butter"] }] }] }),
+      /step 2 uses "Butter"/));
+});
+
 describe("warns but still passes", () => {
   test("no key ingredients tagged", () => {
     const res = buildIndex({ "test-recipe": recipe({ tags: {} }) });

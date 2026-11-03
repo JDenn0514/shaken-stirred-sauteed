@@ -1,0 +1,137 @@
+// Cook mode: a recipe's steps one screen at a time. recipe.js opens it (the
+// page's URL ends in #cook while it's open) and shares the recipe's saved
+// progress with it, so ticks and finished steps show in both views.
+window.SSSCook = (() => {
+  const { esc, toGroups } = window.SSS;
+
+  const START = { baking: "Start baking", cooking: "Start cooking", cocktails: "Start mixing" };
+  const startLabel = (r) => START[r.category] || "Start cooking";
+
+  // opts: { recipe, progress, save, onChange, onClose }. progress is the recipe
+  // page's { ing: [...], steps: [...] } record; save() stores it and onChange()
+  // repaints the recipe page.
+  function open(opts) {
+    const { recipe: r, progress, save, onChange, onClose } = opts;
+    const steps = toGroups(r.steps).flatMap((g) => g.items.map((s) => ({ group: g.group, ...(typeof s === "string" ? { do: s } : s) })));
+    const before = r.beforeYouStart || [];
+    const notes = toGroups(r.notes);
+
+    const el = document.createElement("section");
+    el.className = "cook";
+    el.setAttribute("aria-label", "Cook mode");
+    document.body.append(el);
+    document.body.classList.add("cooking");
+
+    const isDone = (i) => progress.steps.includes(i);
+    const current = () => steps.findIndex((_, i) => !isDone(i));
+    const view = () => {
+      if (current() < 0) return "done";
+      return before.length && !progress.started && !progress.steps.length ? "intro" : "step";
+    };
+    const commit = () => { save(progress); onChange(); paint(); };
+
+    function goNext() {
+      const v = view();
+      if (v === "intro") progress.started = true;
+      else if (v === "step") progress.steps.push(current());
+      else return;
+      commit();
+    }
+    function goBack() {
+      const v = view();
+      const prev = v === "done" ? steps.length - 1 : current() - 1;
+      if (v === "intro") return;
+      if (prev >= 0) progress.steps = progress.steps.filter((i) => i !== prev);
+      else if (before.length) progress.started = false;
+      else return;
+      commit();
+    }
+
+    const upNextHTML = (s) => s ? `
+      <button class="cook-upnext" type="button" aria-expanded="false">
+        <span class="cook-upnext-label">Up next</span> <span class="cook-upnext-text">${esc(s.do)}</span>
+      </button>` : "";
+
+    function paint() {
+      const v = view(), i = current(), s = steps[i];
+      const label = v === "intro" ? "Before you start" : v === "done" ? "All done"
+        : `${s.group ? `${s.group} · ` : ""}Step ${i + 1} of ${steps.length}`;
+      const bar = steps.map((_, k) => `<i class="${isDone(k) ? "done" : k === i ? "now" : ""}"></i>`).join("");
+
+      let body;
+      if (v === "intro") {
+        body = `<h2>Before you start</h2><ul class="cook-list">${before.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`;
+      } else if (v === "done") {
+        body = `<h2>All done</h2>
+          ${notes.map((g) => `${g.group ? `<h3>${esc(g.group)}</h3>` : ""}<ul class="cook-list">${g.items.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`).join("")}
+          <button class="btn cook-return" type="button">Back to the recipe</button>`;
+      } else {
+        body = `<p class="cook-do" data-testid="instruction">${esc(s.do)}</p>
+          ${s.wait ? `<p class="cook-wait" data-testid="wait">⏱ ${esc(s.wait)}</p>` : ""}
+          ${s.cue ? `<p class="cook-cue" data-testid="cue">✓ ${esc(s.cue)}</p>` : ""}`;
+      }
+      const after = v === "intro" ? steps[0] : v === "step" ? steps[i + 1] : null;
+      const canBack = v === "done" || (v === "step" && (i > 0 || before.length > 0));
+
+      el.innerHTML = `
+        <div class="cook-top">
+          <span class="cook-label" data-testid="step-label">${esc(label)}</span>
+          <button class="cook-close" type="button" aria-label="Close cook mode">✕</button>
+        </div>
+        <div class="cook-bar" aria-hidden="true">${bar}</div>
+        <div class="cook-body">${body}</div>
+        ${upNextHTML(after)}
+        <div class="cook-nav">
+          <button class="btn cook-back" type="button" ${canBack ? "" : "disabled"}>Back</button>
+          ${v === "done" ? "" : `<button class="btn cook-go" type="button">${v === "step" && i === steps.length - 1 ? "Finish" : "Next step"}</button>`}
+        </div>
+        <p class="visually-hidden" aria-live="polite">${esc(label)}${v === "step" ? `: ${esc(s.do)}` : ""}</p>`;
+    }
+
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      if (b.matches(".cook-go")) goNext();
+      else if (b.matches(".cook-back")) goBack();
+      else if (b.matches(".cook-close, .cook-return")) onClose();
+      else if (b.matches(".cook-upnext")) b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true"));
+    });
+
+    // Swipe left for the next step, right to go back (touch and pen only, so
+    // selecting text with a mouse never moves you).
+    let down = null;
+    el.addEventListener("pointerdown", (e) => { down = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY }; });
+    el.addEventListener("pointerup", (e) => {
+      if (!down) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      down = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) dx < 0 ? goNext() : goBack();
+    });
+
+    // Keep the screen awake while cook mode is open (where supported).
+    let lock = null, closed = false;
+    const wake = async () => {
+      if (closed || lock || !("wakeLock" in navigator) || document.visibilityState !== "visible") return;
+      try {
+        lock = await navigator.wakeLock.request("screen");
+        lock.addEventListener("release", () => { lock = null; });
+        if (closed) lock.release();
+      } catch { lock = null; }
+    };
+    document.addEventListener("visibilitychange", wake);
+    wake();
+
+    paint();
+    return {
+      close() {
+        closed = true;
+        document.removeEventListener("visibilitychange", wake);
+        if (lock) lock.release();
+        el.remove();
+        document.body.classList.remove("cooking");
+      },
+    };
+  }
+
+  return { open, startLabel };
+})();

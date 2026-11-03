@@ -39,9 +39,37 @@ const RECIPES = {
     ingredients: ["1 lb tomatillos", "1 bunch cilantro"],
     tags: { cuisine: ["mexican"], course: ["sauce"], ingredients: ["fresh-herbs"] },
   }),
+  // The cook-mode recipe: grouped steps that say which ingredients they use, a
+  // name used twice ("Sugar"), one ingredient split across two steps, and waits.
   "lemon-bars": recipe({
     title: "Lemon Bars", category: "baking", added: "2026-03-01", time: { total: 90 },
-    ingredients: ["4 lemons", "1 cup sugar"],
+    beforeYouStart: ["Heat the oven to 350°F."],
+    ingredients: [
+      { group: "Crust", items: [
+        { grams: 125, qty: "1 cup", item: "Flour" },
+        { grams: 50, qty: "1/4 cup", item: "Sugar" },
+        { grams: 115, qty: "8 Tbsp", item: "Butter", note: "melted" },
+      ] },
+      { group: "Filling", items: [
+        { grams: 200, qty: "1 cup", item: "Sugar" },
+        { qty: "3 large", item: "Eggs" },
+        { qty: "1/2 cup", item: "Lemon juice", note: "from 4 lemons" },
+        "Powdered sugar, for dusting",
+      ] },
+    ],
+    steps: [
+      { group: "Crust", items: [
+        { do: "Mix the flour, sugar and butter, and press into the pan.", uses: ["Flour", { group: "Crust", item: "Sugar" }, "Butter"] },
+        { do: "Bake the crust.", wait: "15 to 18 min", cue: "Pale gold at the edges" },
+      ] },
+      { group: "Filling", items: [
+        { do: "Whisk the sugar, eggs and half the lemon juice.", uses: [{ group: "Filling", item: "Sugar" }, "Eggs", { item: "Lemon juice", amount: "1/4 cup" }] },
+        { do: "Whisk in the rest of the lemon juice.", uses: [{ item: "Lemon juice", amount: "the rest" }] },
+        { do: "Pour over the crust and bake.", wait: "About 20 min", cue: "Set, with only a slight wobble" },
+        { do: "Chill, then dust with powdered sugar.", wait: "At least 2 hr in the fridge", uses: ["Powdered sugar, for dusting"] },
+      ] },
+    ],
+    notes: ["Keeps for 3 days in the fridge."],
     tags: { type: ["cookies-bars"], ingredients: ["lemon"] },
   }),
   daiquiri: recipe({
