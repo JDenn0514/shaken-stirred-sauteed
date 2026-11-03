@@ -101,6 +101,86 @@
     "search": "best lentil soup cumin-spiced vegan lentil soup with greens, partly blended. cooking dish soup full meal middle eastern simmer & braise rich & savory bright & tangy beans & lentils tomato greens & broccolini lemon weeknight meal prep freezer-friendly fall winter vegan vegetarian gluten-free dairy-free 1/4 cup extra virgin olive oil 1 medium yellow or white onion, chopped 2 carrots, peeled and chopped 4 cloves garlic, pressed or minced 2 tsp ground cumin 1 tsp curry powder 1/2 tsp dried thyme 28 oz can diced tomatoes, lightly drained 1 cup brown or green lentils, picked over and rinsed 4 cups vegetable broth 2 cups water 1 tsp salt, plus more to taste pinch red pepper flakes black pepper, freshly ground, to taste 1 cup collard greens or kale, chopped, tough ribs removed 1 to 2 tbsp lemon juice (1/2 to 1 medium lemon), to taste"
   },
   {
+    "slug": "blueberry-syrup",
+    "title": "Blueberry Syrup",
+    "category": "cocktails",
+    "kind": "component",
+    "description": "Blueberries simmered with sugar and water, mashed in the pan and strained.",
+    "yield": "",
+    "image": "",
+    "icon": "bottle",
+    "added": "2026-11-03",
+    "facets": {
+      "spirit": [
+        "non-alcoholic"
+      ],
+      "style": [
+        "syrup-mixer"
+      ],
+      "flavor": [
+        "fruity",
+        "sweet"
+      ],
+      "ingredients": [
+        "berries"
+      ],
+      "occasion": [
+        "make-ahead"
+      ],
+      "season": [
+        "summer"
+      ],
+      "diet": [
+        "vegan",
+        "gluten-free"
+      ],
+      "kind": [
+        "component"
+      ]
+    },
+    "totalMinutes": null,
+    "search": "blueberry syrup blueberries simmered with sugar and water, mashed in the pan and strained. cocktails component non-alcoholic syrup & mixer fruity & tropical sweet berries make-ahead summer vegan gluten-free 8 oz blueberries 8 oz granulated sugar 4 oz water"
+  },
+  {
+    "slug": "blueberry-whipped-cream",
+    "title": "Blueberry Whipped Cream",
+    "category": "baking",
+    "kind": "component",
+    "description": "Whipped cream flavored and tinted with chilled blueberry syrup.",
+    "yield": "",
+    "image": "",
+    "icon": "jar",
+    "added": "2026-11-03",
+    "facets": {
+      "type": [
+        "fillings-creams"
+      ],
+      "flavor": [
+        "fruity",
+        "light"
+      ],
+      "usesUp": [
+        "heavy-cream"
+      ],
+      "ingredients": [
+        "berries",
+        "cream"
+      ],
+      "season": [
+        "summer"
+      ],
+      "diet": [
+        "vegetarian",
+        "gluten-free"
+      ],
+      "kind": [
+        "component"
+      ]
+    },
+    "totalMinutes": null,
+    "search": "blueberry whipped cream whipped cream flavored and tinted with chilled blueberry syrup. baking component fillings & creams fruity light & airy heavy cream berries cream summer vegetarian gluten-free 1 cup heavy whipping cream cold 3 to 4 tbsp blueberry syrup chilled 1 to 2 spoonfuls confectioners' sugar"
+  },
+  {
     "slug": "carne-asada",
     "title": "Carne Asada",
     "category": "cooking",

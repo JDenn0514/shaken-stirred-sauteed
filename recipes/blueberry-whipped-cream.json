@@ -1,0 +1,57 @@
+{
+  "title": "Blueberry Whipped Cream",
+  "category": "baking",
+  "kind": "component",
+  "description": "Whipped cream flavored and tinted with chilled blueberry syrup.",
+  "tags": {
+    "type": ["fillings-creams"],
+    "flavor": ["fruity", "light"],
+    "usesUp": ["heavy-cream"],
+    "ingredients": ["berries", "cream"],
+    "season": ["summer"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
+  "added": "2026-11-03",
+  "beforeYouStart": [
+    "Make the blueberry syrup ahead and chill it. Warm syrup deflates the cream."
+  ],
+  "ingredients": [
+    {
+      "qty": "1 cup",
+      "ml": 240,
+      "item": "Heavy whipping cream",
+      "note": "cold"
+    },
+    {
+      "qty": "3 to 4 tbsp",
+      "item": "Blueberry syrup",
+      "note": "chilled"
+    },
+    {
+      "qty": "1 to 2 spoonfuls",
+      "item": "Confectioners' sugar"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Whip the cream on its own to soft peaks.",
+      "cue": "Peaks that slump over when the whisk lifts out",
+      "uses": ["Heavy whipping cream"]
+    },
+    {
+      "do": "Turn the speed down and add the blueberry syrup.",
+      "uses": ["Blueberry syrup"]
+    },
+    {
+      "do": "Add the confectioners' sugar, then turn the speed back up and whip to medium-firm peaks.",
+      "cue": "Peaks that hold their shape with just the tip curling over",
+      "uses": ["Confectioners' sugar"]
+    }
+  ],
+  "notes": [
+    "Goes well on pavlova with fresh berries."
+  ],
+  "source": {
+    "name": "Jacob's own, worked out with Claude"
+  }
+}
