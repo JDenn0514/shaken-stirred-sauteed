@@ -263,8 +263,15 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     const d = can.reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
     const i = next[d]++;
     const s = dishes[d].steps[i];
-    // An added heating step isn't needed if the oven's already at that setting.
-    if (s.added && heat && sameSetting(heat.setting, s.preheat)) continue;
+    // Heating isn't needed if the oven's already at that setting: an added step
+    // is left out, and a recipe's own is marked skipped, taking no time.
+    if (s.preheat && heat && sameSetting(heat.setting, s.preheat)) {
+      if (s.added) continue;
+      steps.push({ slug: s.slug, step: s.n, text: s.text, at: t, skipped: true });
+      readyAt[d] = t;
+      oven.set(d, { setting: heat.setting, until: i === dishes[d].lastOven ? t : Infinity });
+      continue;
+    }
     steps.push({ slug: s.slug, step: s.n, text: s.text, at: t, ...(s.added && { added: true }) });
     start(d, s, t);
   }

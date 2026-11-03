@@ -142,6 +142,17 @@ describe("the oven", () => {
     assert.equal(plan.steps[0].text, "Heat the oven to 200°C / 400°F");
   });
 
+  test("a recipe's own heating step is skipped when the oven is already at that setting", () => {
+    const recipes = {
+      potatoes: recipe("Potatoes", [["Heat the oven for the potatoes", { hands: "1 min", preheat: "200C" }], ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }]]),
+      asparagus: recipe("Asparagus", [["Heat the oven for the asparagus", { hands: "1 min", preheat: "400F" }], ["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "400F" }]], { sits: "5 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, recipes);
+    const second = plan.steps.find((s) => s.text === "Heat the oven for the asparagus");
+    assert.equal(second.skipped, true);
+    assert.equal(at(plan, "Bake the potatoes"), 16);
+  });
+
   test("no heating step is added when another dish has heated the oven to that setting", () => {
     const recipes = {
       asparagus,
