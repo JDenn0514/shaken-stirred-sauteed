@@ -64,7 +64,7 @@ function chains(lineup, recipes) {
     const r = recipes[slug];
     const steps = r.steps.map((s) => ({
       slug, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
-      oven: s.oven || null, preheat: s.preheat || null,
+      oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds,
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
     }));
@@ -75,7 +75,10 @@ function chains(lineup, recipes) {
       const setting = steps[first].oven;
       steps.unshift({ slug, text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
     }
-    const index = dishes.push({ slug, course, sits: sits(r), steps, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [] }) - 1;
+    // After a `holds` step the dish keeps (a cooled meringue), so only the steps
+    // after it are tied to serving.
+    const servedFrom = steps.findLastIndex((x) => x.holds) + 1;
+    const index = dishes.push({ slug, course, sits: sits(r), steps, servedFrom, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [] }) - 1;
     for (const ing of ingredientsOf(r)) {
       if (typeof ing !== "object" || !ing.recipe || made.includes(ing.recipe)) continue;
       const step = Math.max(0, steps.findIndex((s) => s.needs.includes(lower(ing.item))));
@@ -133,7 +136,7 @@ function simulate(dishes, serve, early = {}) {
   const waits = dishes.map((_, d) => dishes.flatMap((x, n) => x.neededBy.filter(([p]) => p === d).map(([, step]) => [n, step])));
   const waitingFor = (d) => waits[d].filter(([, step]) => step === next[d]).map(([n]) => n);
   // A hot dish starts no earlier than would leave it sitting too long.
-  const earliest = dishes.map((dish, d) => latest[d][0] + (early[dish.slug] || 0) - dish.sits);
+  const earliest = dishes.map((dish, d) => (dish.servedFrom < dish.steps.length ? latest[d][dish.servedFrom] + (early[dish.slug] || 0) - dish.sits : -Infinity));
   const heldUpBy = dishes.map(() => new Set());   // dishes whose oven use kept each one waiting
   const next = dishes.map(() => 0);           // index of each dish's next step
   const readyAt = dishes.map(() => 0);        // when that step can start
@@ -145,7 +148,7 @@ function simulate(dishes, serve, early = {}) {
   const free = (kind) => busy.filter((b) => b.kind === kind && b.until > t).length < CAPACITY[kind];
 
   const left = (d) => next[d] < dishes[d].steps.length;
-  const opensAt = (d) => Math.max(readyAt[d], next[d] === 0 ? earliest[d] : -Infinity);
+  const opensAt = (d) => Math.max(readyAt[d], next[d] === dishes[d].servedFrom ? earliest[d] : -Infinity);
   const ovenFree = (d, setting) => [...oven].every(([o, h]) => o === d || h.until <= t || sameSetting(h.setting, setting));
   const hot = (setting) => !heat || !sameSetting(heat.setting, setting) || heat.hotAt <= t;
   const canStart = (d) => {

@@ -177,6 +177,32 @@ describe("courses", () => {
   });
 });
 
+describe("a dish that keeps part-way", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
+  const recipes = {
+    potatoes: recipe("Potatoes", [
+      ["Heat the oven to 200C", { hands: "1 min", preheat: "200C" }],
+      ["Brush the potatoes and bake", { hands: "3 min", wait: "40 min", oven: "200C" }],
+      ["Baste and bake until crisp", { hands: "2 min", wait: "17.5 min", oven: "200C" }],
+    ], { serve: "hot", sits: "10 min" }),
+    pavlova: recipe("Pavlova", [
+      ["Heat the oven to 200F", { hands: "0.5 min", preheat: "200F" }],
+      ["Whip and shape the meringue", { hands: "15 min" }],
+      ["Bake the meringue", { hands: "0.5 min", wait: "90 min", oven: "200F" }],
+      ["Cool it in the oven with the door shut", { hands: "0.5 min", wait: "120 min", oven: "off", holds: true }],
+      ["Pile on the cream and fruit", { hands: "4 min" }],
+    ], { category: "baking", serve: "soon", sits: "15 min" }),
+  };
+
+  test("once a cooled meringue keeps, only putting it together is tied to dessert", () => {
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] }, recipes);
+    assert.ok(plan.minutes < 6 * 60, `planned to serve after ${plan.minutes} min`);
+    const assembled = at(plan, "Pile on the cream and fruit") + 4;
+    assert.ok(assembled <= plan.courses.Dessert && plan.courses.Dessert - assembled <= 15, `put together at ${assembled}, dessert at ${plan.courses.Dessert}`);
+    assert.ok(at(plan, "Brush the potatoes and bake") >= at(plan, "Cool it in the oven with the door shut") + 120.5, "the potatoes went in while the meringue was cooling");
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {
