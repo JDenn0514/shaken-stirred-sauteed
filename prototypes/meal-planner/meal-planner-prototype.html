@@ -1,0 +1,834 @@
+<title>Meal Planner Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Layout: the site's Field Guide look. Controls on the left, the plan (the state) on the right; one column on a phone. */
+:root {
+  --bg: #f3f4f1; --surface: #fdfdfc; --surface-2: #e7e9e5; --text: #111715; --muted: #4b524e;
+  --border: #d4d8d3; --rule-strong: #7c837e; --lime: #cadd4c; --on-lime: #111715;
+  --cooking: #00512f; --cooking-wash: #eef7f2; --baking: #bf440f; --baking-wash: #fdf4ef;
+  --cocktails: #0056bd; --cocktails-wash: #f2f5fd; --on-ink: #fdfdfc; --focus: #111715;
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15120f; --surface: #1d1b17; --surface-2: #27231f; --text: #e4dfd6; --muted: #afa89e;
+  --border: #312d29; --rule-strong: #6f6963; --lime: #b9cc55; --on-lime: #15120f;
+  --cooking: #4fbd88; --cooking-wash: #1a271f; --baking: #f6a466; --baking-wash: #2f2219;
+  --cocktails: #5f97ea; --cocktails-wash: #1d2331; --on-ink: #15120f; --focus: #c9da7c; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #15120f; --surface: #1d1b17; --surface-2: #27231f; --text: #e4dfd6; --muted: #afa89e;
+  --border: #312d29; --rule-strong: #6f6963; --lime: #b9cc55; --on-lime: #15120f;
+  --cooking: #4fbd88; --cooking-wash: #1a271f; --baking: #f6a466; --baking-wash: #2f2219;
+  --cocktails: #5f97ea; --cocktails-wash: #1d2331; --on-ink: #15120f; --focus: #c9da7c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font: 15px/1.5 var(--sans); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(28px, 5vw, 40px); }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
+p { margin: 0; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tape { display: inline-block; background: var(--lime); color: var(--on-lime); padding: 4px 8px; border-radius: 2px; }
+.intro { display: grid; gap: 12px; max-width: 68ch; margin-bottom: 28px; }
+.intro p { color: var(--muted); }
+.grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1.5px solid var(--border); border-radius: 4px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.stack { display: grid; gap: 20px; min-width: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+button { font: 500 14px/1.2 var(--sans); color: var(--text); background: var(--surface); border: 1.5px solid var(--rule-strong);
+  border-radius: 6px; padding: 9px 12px; cursor: pointer; text-align: left; }
+button:hover:not(:disabled) { background: var(--surface-2); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { background: var(--text); color: var(--on-ink); border-color: var(--text); }
+button.primary:hover:not(:disabled) { background: var(--text); opacity: .88; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button { padding: 6px 10px; font-size: 13px; border-radius: 999px; }
+.tabs button[aria-selected="true"] { background: var(--text); color: var(--on-ink); border-color: var(--text); }
+.script { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; counter-reset: s; }
+.script li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: center; counter-increment: s; }
+.script li::before { content: counter(s); font: 500 12px var(--mono); color: var(--muted); text-align: right; }
+.script li.did::before { content: "✓"; color: var(--text); }
+.script button { width: 100%; }
+.watch { border-left: 3px solid var(--lime); padding-left: 10px; font-size: 14px; }
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+legend { font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+label.check { display: flex; gap: 8px; align-items: center; }
+.sub { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding-left: 26px; font-size: 14px; }
+select { font: 14px var(--sans); color: var(--text); background: var(--surface); border: 1.5px solid var(--rule-strong); border-radius: 6px; padding: 5px 8px; max-width: 190px; }
+.chip { display: inline-block; font: 500 11px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 4px 7px; border-radius: 3px; white-space: nowrap; }
+.chip.cooking { color: var(--cooking); background: var(--cooking-wash); }
+.chip.baking { color: var(--baking); background: var(--baking-wash); }
+.chip.cocktails { color: var(--cocktails); background: var(--cocktails-wash); }
+.now { border-color: var(--text); }
+.now .step { font-family: var(--display); font-size: clamp(20px, 3vw, 26px); font-weight: 500; line-height: 1.25; }
+.idle { font: 500 15px var(--mono); }
+.timers { display: grid; gap: 6px; }
+.timer { display: flex; justify-content: space-between; gap: 12px; background: var(--surface-2); border-radius: 4px; padding: 8px 10px; font-size: 14px; }
+.timer b { font: 500 14px var(--mono); white-space: nowrap; }
+.change { background: var(--lime); color: var(--on-lime); border-radius: 4px; padding: 8px 12px; font-size: 14px; }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 14px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; }
+.plan { list-style: none; padding: 0; margin: 0; display: grid; }
+.plan li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
+.plan li:first-child { border-top: 0; }
+.plan .at { font: 500 13px var(--mono); color: var(--muted); padding-top: 2px; }
+.plan .body { display: grid; gap: 4px; min-width: 0; }
+.plan .line { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+.plan .meta { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.plan .why { font-size: 13px; font-style: italic; color: var(--muted); }
+.plan li.done .text { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--muted); }
+.plan li.skipped .text { color: var(--muted); }
+.plan li.current { background: var(--surface-2); margin: 0 -10px; padding-left: 10px; padding-right: 10px; border-radius: 4px; border-top-color: transparent; }
+.plan li.moved .at::after { content: " ↻"; color: var(--text); }
+.hidden-in-real .at, .hidden-in-real .meta { display: none; }
+.hidden-in-real .plan li { grid-template-columns: minmax(0, 1fr); }
+.toggle { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.serve { font-size: 15px; }
+@media (prefers-reduced-motion: no-preference) { button { transition: background .12s; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow"><span class="tape">Prototype</span>&nbsp; throwaway · not site code</span>
+    <h1>One cook, several recipes, in order</h1>
+    <p><strong>The question:</strong> if the planner fills each dish's waits with another dish's hands-on steps, and keeps clashing dishes out of the oven, does it pick an order you'd actually follow? You never see a clock, only the next step and any timers. The plan re-orders itself when a step runs long.</p>
+    <p class="small">The recipes are the site's real ones, with the new planning data filled in by hand: how long your hands are busy, what runs on its own, what needs the oven, broiler, a burner or the microwave, and how long a dish can sit once it's done. Ranges plan from the middle.</p>
+  </header>
+
+  <div class="grid">
+    <div class="stack">
+      <section class="panel" aria-labelledby="wt-h">
+        <h2 id="wt-h">Walkthroughs</h2>
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <p id="wt-desc"></p>
+        <p class="watch" id="wt-watch"></p>
+        <ol class="script" id="wt-steps"></ol>
+      </section>
+
+      <section class="panel" aria-labelledby="fp-h">
+        <h2 id="fp-h">Free play</h2>
+        <p class="small muted">Pick a meal and start over, then use the buttons by the next step on the right.</p>
+        <fieldset id="dishes"><legend>Dishes</legend></fieldset>
+        <div class="row"><button class="primary" id="restart">Start over with this meal</button></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="panel now" aria-labelledby="now-h" aria-live="polite">
+        <div class="line row" style="justify-content:space-between;align-items:center">
+          <h2 id="now-h">Up now</h2>
+          <span id="now-chip"></span>
+        </div>
+        <p class="idle" id="idle" hidden></p>
+        <p class="step" id="now-step"></p>
+        <p class="small muted" id="now-detail"></p>
+        <div class="row">
+          <button class="primary" id="done">Done</button>
+          <button id="slow">Done, but it took 5 min longer</button>
+        </div>
+        <div class="timers" id="timers"></div>
+      </section>
+
+      <p class="change" id="change" hidden></p>
+
+      <section class="panel" aria-labelledby="plan-h" id="plan-panel">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h2 id="plan-h">The order</h2>
+          <label class="toggle"><input type="checkbox" id="show-mins" checked> Show the planner's minutes</label>
+        </div>
+        <p class="serve" id="serve"></p>
+        <dl class="facts" id="facts"></dl>
+        <ol class="plan" id="plan"></ol>
+        <p class="small muted">Minutes after you start (<span style="font-family:var(--mono)">+0:35</span>) and the grey notes are the planner's working. Cook mode wouldn't show them. ↻ marks a step that changed places at the last re-plan.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Meal planner: the part worth keeping =====
+// Pure functions, no DOM. The page below only calls into these.
+//
+// A step:  { text, hands, wait, watch, oven, ovenChange, preheat, burner, micro, auto }
+//   hands  minutes your hands are busy
+//   wait   minutes after that the step runs on its own (bake, chill, rest)
+//   watch  true when the wait still needs you standing there (searing, broiling)
+//   preheat "200C" | "350F" | "broil": heats the oven in the background; the
+//           recipe carries on, and the oven step after it waits until it's hot
+//   oven   the oven setting the step needs while it runs
+//   ovenChange  turning the oven down or off: no preheat needed
+// A recipe: { key, title, family, serve: "hot" | "soon" | "keeps", hold, steps, subs }
+//   hold   for hot/soon dishes, how many minutes it can sit once done
+//   subs   sub-recipes: [{ label, step, options: [[recipeKey | "have", label], ...] }]
+const Planner = (() => {
+  const HEAT_MIN = { broil: 3 };
+  const DEFAULT_HEAT = 15;
+  const BURNERS = 4;
+
+  // The recipes in a meal: the dishes picked, plus each sub-recipe the cook chose to make.
+  function buildMeal(lib, dishKeys, choices) {
+    const out = [];
+    const add = (key, isSub) => {
+      if (out.some((r) => r.key === key)) return out.find((r) => r.key === key);
+      const src = lib[key];
+      const r = { ...src, sub: isSub, steps: src.steps.map((s, i) => ({ ...s, id: `${key}.${i}`, r: key, needs: [] })) };
+      out.push(r);
+      for (const sub of src.subs || []) {
+        const pick = choices[`${key}/${sub.label}`] ?? sub.options[0][0];
+        if (pick === "have") continue;
+        add(pick, true);
+        r.steps[sub.step].needs.push(pick);
+      }
+      return r;
+    };
+    dishKeys.forEach((k) => add(k, false));
+    return out;
+  }
+
+  const heatMin = (temp) => HEAT_MIN[temp] ?? DEFAULT_HEAT;
+  // How long a step holds up the rest of its recipe. A preheat runs in the background,
+  // unless the very next step is the one that needs the oven hot.
+  const chainDur = (s, next) => {
+    if (!s.preheat) return s.hands + (s.wait || 0);
+    return next && next.oven === s.preheat ? Math.max(s.hands, heatMin(s.preheat)) : s.hands;
+  };
+  const recipeDur = (r) => r.steps.reduce((a, s, i) => a + chainDur(s, r.steps[i + 1]), 0);
+  // The first step that has to happen close to serving: everything before a
+  // "holds" step (a cooled meringue) can be done as early as you like.
+  const serveFrom = (r) => {
+    let h = 0;
+    r.steps.forEach((s, i) => { if (s.holds) h = i + 1; });
+    return h;
+  };
+
+  // Run one cook through the meal, aiming to serve at minute S.
+  // progress.fixed holds steps already done: { id: { start, extra } }; nothing new starts before progress.now.
+  function simulate(recipes, S, progress, shift = {}) {
+    const fixed = progress.fixed || {};
+    const now = progress.now || 0;
+    const byKey = Object.fromEntries(recipes.map((r) => [r.key, r]));
+    const latest = {};
+    const setDeadline = (r, D) => {
+      let acc = D;
+      for (let i = r.steps.length - 1; i >= 0; i--) {
+        const s = r.steps[i];
+        acc -= chainDur(s, r.steps[i + 1]);
+        latest[s.id] = acc;
+        for (const k of s.needs) setDeadline(byKey[k], acc);
+      }
+    };
+    recipes.filter((r) => !r.sub).forEach((r) => setDeadline(r, S - (shift[r.key] || 0)));
+    const earliest = (r) => (r.serve === "keeps" ? -Infinity : latest[r.steps[serveFrom(r)].id] - r.hold);
+    const heldBack = (r) => (r.serve === "hot" ? "Held back so it's hot when you serve" : "Held back so it's fresh when you serve");
+    const ovenBlockers = {};
+
+    const st = {};
+    const idx = Object.fromEntries(recipes.map((r) => [r.key, 0]));
+    const lastOven = {};
+    for (const r of recipes) {
+      lastOven[r.key] = -1;
+      r.steps.forEach((s, i) => { if (s.oven || s.preheat) lastOven[r.key] = i; });
+    }
+    const oven = { temp: null, readyAt: 0, owners: new Set() };
+    const waitingSince = {};
+    const blockedBy = {};
+    let t = 0;
+    let cookFree = 0;
+    let guard = 0;
+
+    const recipeDone = (k) => {
+      const r = byKey[k];
+      const last = r.steps[r.steps.length - 1];
+      return st[last.id] && st[last.id].end <= t;
+    };
+    const releaseOven = () => {
+      for (const k of [...oven.owners]) {
+        const li = lastOven[k];
+        const s = byKey[k].steps[li];
+        if (st[s.id] && st[s.id].end <= t) oven.owners.delete(k);
+      }
+    };
+    const othersInOven = (k) => [...oven.owners].filter((o) => o !== k);
+    const ovenLabel = (temp) => (temp === "broil" ? "broil" : temp === "off" ? "off, door shut" : temp.replace(/(\d+)([CF])/, "$1°$2"));
+
+    // Why can't step s start right now? null if it can.
+    const blockReason = (r, s) => {
+      for (const k of s.needs) if (!recipeDone(k)) return `Waits for the ${byKey[k].title.toLowerCase()} to be ready`;
+      if (idx[r.key] === serveFrom(r) && t < earliest(r)) return heldBack(r);
+      if (s.burner) {
+        const busy = Object.values(st).filter((x) => x.burner && x.start <= t && t < x.end).length;
+        if (busy >= BURNERS) return "Waits for a free burner";
+      }
+      if (s.micro && Object.values(st).some((x) => x.micro && x.start <= t && t < x.end)) return "Waits for the microwave";
+      if (s.preheat) {
+        if (oven.temp === s.preheat) return null;
+        const o = othersInOven(r.key);
+        if (o.length) return `Waits for the oven: ${o.map((k) => byKey[k].title).join(", ")} at ${ovenLabel(oven.temp)}`;
+      } else if (s.oven) {
+        if (s.ovenChange) {
+          const o = othersInOven(r.key);
+          if (o.length) return `Waits for the oven: ${o.map((k) => byKey[k].title).join(", ")} at ${ovenLabel(oven.temp)}`;
+          if (t < oven.readyAt) return "Waits for the oven to heat";
+        } else if (oven.temp !== s.oven) {
+          const o = othersInOven(r.key);
+          return o.length ? `Waits for the oven: ${o.map((k) => byKey[k].title).join(", ")} at ${ovenLabel(oven.temp)}` : `Needs the oven at ${ovenLabel(s.oven)}`;
+        } else if (t < oven.readyAt) return "Waits for the oven to heat";
+      }
+      return null;
+    };
+
+    const chainReadyAt = (r) => {
+      const i = idx[r.key];
+      if (i >= r.steps.length) return null;
+      if (i === 0) return 0;
+      const p = st[r.steps[i - 1].id];
+      return p.preheat || p.skipped ? p.handsEnd : p.end;
+    };
+
+    const start = (r, s, forced) => {
+      const extra = forced ? forced.extra || 0 : 0;
+      const hands = s.hands + extra;
+      let rec;
+      if (s.preheat && oven.temp === s.preheat) {
+        rec = { start: t, handsEnd: t, end: t, skipped: true, note: `The oven's already at ${ovenLabel(s.preheat)}` };
+        oven.owners.add(r.key);
+      } else if (s.preheat) {
+        oven.temp = s.preheat;
+        oven.readyAt = t + hands + heatMin(s.preheat);
+        oven.owners.add(r.key);
+        rec = { start: t, handsEnd: t + hands, end: t + hands, preheat: true, heatEnd: oven.readyAt };
+        cookFree = t + hands;
+      } else {
+        if (s.oven) {
+          if (s.ovenChange || oven.temp !== s.oven) { oven.temp = s.oven; oven.readyAt = Math.max(oven.readyAt, t); }
+          oven.owners.add(r.key);
+        }
+        const end = t + hands + (s.wait || 0);
+        rec = { start: t, handsEnd: t + hands, end, burner: s.burner, micro: s.micro };
+        cookFree = s.watch ? end : t + hands;
+      }
+      rec.extra = extra;
+      rec.latest = latest[s.id];
+      const ready = waitingSince[s.id];
+      if (!rec.skipped && ready != null && t - ready >= 1 && blockedBy[s.id]) rec.reason = blockedBy[s.id];
+      st[s.id] = rec;
+      idx[r.key]++;
+    };
+
+    while (recipes.some((r) => idx[r.key] < r.steps.length) && guard++ < 5000) {
+      releaseOven();
+      // Steps already done start exactly when they did.
+      let startedForced = false;
+      for (const r of recipes) {
+        const s = r.steps[idx[r.key]];
+        if (s && fixed[s.id] && fixed[s.id].start <= t) { start(r, s, fixed[s.id]); startedForced = true; }
+      }
+      if (startedForced) continue;
+
+      const cands = [];
+      for (const r of recipes) {
+        const s = r.steps[idx[r.key]];
+        if (!s || fixed[s.id]) continue;
+        const ready = chainReadyAt(r);
+        if (ready == null || ready > t) continue;
+        if (waitingSince[s.id] == null) waitingSince[s.id] = t;
+        const why = blockReason(r, s);
+        if (why) {
+          if (!why.startsWith("Held back") || !blockedBy[s.id]) blockedBy[s.id] = why;
+          if (why.startsWith("Waits for the oven:")) (ovenBlockers[r.key] ||= new Set()).add(...othersInOven(r.key));
+          continue;
+        }
+        const skipping = s.preheat && oven.temp === s.preheat;
+        if (!skipping && cookFree > t) continue;
+        if (t < now) continue;
+        cands.push({ r, s, key: latest[s.id] });
+      }
+      if (cands.length) {
+        cands.sort((a, b) => a.key - b.key);
+        start(cands[0].r, cands[0].s, null);
+        continue;
+      }
+      // Nothing can start: jump to the next moment something changes.
+      const ev = [cookFree, oven.readyAt, now];
+      for (const x of Object.values(st)) ev.push(x.handsEnd, x.end);
+      for (const r of recipes) if (idx[r.key] === serveFrom(r)) ev.push(earliest(r));
+      for (const f of Object.values(fixed)) ev.push(f.start);
+      const next = Math.min(...ev.filter((e) => e > t + 1e-9 && Number.isFinite(e)));
+      if (!Number.isFinite(next)) break;
+      t = next;
+    }
+
+    const ends = {};
+    for (const r of recipes) { const l = r.steps[r.steps.length - 1]; ends[r.key] = st[l.id] ? st[l.id].end : Infinity; }
+    let late = 0, cold = 0, worst = null;
+    for (const r of recipes) {
+      if (r.sub) continue;
+      if (ends[r.key] - S > late) { late = ends[r.key] - S; worst = r.key; }
+      if (r.serve !== "keeps") cold = Math.max(cold, S - r.hold - ends[r.key]);
+    }
+    return { st, ends, late, cold, S, worst, ovenBlockers };
+  }
+
+  // The plan: the earliest serve time one cook can hit, and every step's slot in it.
+  function plan(recipes, progress = {}) {
+    const now = progress.now || 0;
+    let lo = now;
+    for (const r of recipes) if (!r.sub) lo = Math.max(lo, recipeDur(r));
+    const byKey = Object.fromEntries(recipes.map((r) => [r.key, r]));
+    let best = null;
+    for (let S = Math.ceil(lo); S < lo + 600 && !(best && best.ok); S++) {
+      // If a dish comes out late, plan it (or whatever had the oven) to finish
+      // a little earlier, as far as that dish can sit and wait.
+      const shift = {};
+      for (let k = 0; k < 8; k++) {
+        const sim = simulate(recipes, S, progress, shift);
+        sim.ok = sim.late <= 0.01 && sim.cold <= 0.01;
+        if (!best || sim.ok || sim.late + sim.cold < best.late + best.cold) best = sim;
+        if (sim.ok || !sim.worst) break;
+        let moved = false;
+        // Pull earlier the dishes holding the oven it waited for, or else the late dish itself.
+        const pull = sim.ovenBlockers[sim.worst] ? [...sim.ovenBlockers[sim.worst], sim.worst] : [sim.worst];
+        for (const b of pull) {
+          const br = byKey[b];
+          if (!br || br.sub) continue;
+          const cap = br.serve === "keeps" ? Infinity : br.hold;
+          const want = Math.min(cap, (shift[b] || 0) + Math.ceil(sim.late));
+          if (want > (shift[b] || 0)) { shift[b] = want; moved = true; }
+        }
+        if (!moved) break;
+      }
+    }
+    const rows = [];
+    for (const r of recipes) for (const s of r.steps) if (best.st[s.id]) rows.push({ step: s, recipe: r, ...best.st[s.id] });
+    rows.sort((a, b) => a.start - b.start || a.handsEnd - b.handsEnd);
+    return { serve: best.S, rows, ok: best.ok, late: best.late, worst: best.worst && byKey[best.worst].title };
+  }
+
+  // What the cook does. state: { dishes, choices, now, fixed }
+  function reduce(lib, state, action) {
+    switch (action.type) {
+      case "reset":
+        return { dishes: action.dishes, choices: action.choices || {}, now: 0, fixed: {} };
+      case "done": {
+        const p = plan(buildMeal(lib, state.dishes, state.choices), state);
+        const next = p.rows.find((x) => !state.fixed[x.step.id] && !x.skipped);
+        if (!next) return state;
+        const fixed = { ...state.fixed };
+        for (const x of p.rows) if (x.skipped && x.start <= next.start) fixed[x.step.id] = { start: x.start, extra: 0 };
+        const extra = action.extra || 0;
+        fixed[next.step.id] = { start: next.start, extra };
+        const handsEnd = next.start + next.step.hands + extra;
+        const now = next.step.watch ? handsEnd + (next.step.wait || 0) : handsEnd;
+        return { ...state, fixed, now };
+      }
+      case "finish": {
+        let s = state;
+        for (let i = 0; i < 200; i++) { const n = reduce(lib, s, { type: "done" }); if (n === s) break; s = n; }
+        return s;
+      }
+      default:
+        return state;
+    }
+  }
+
+  return { buildMeal, plan, reduce };
+})();
+
+</script>
+<script>
+// ===== The recipes, with the new planning data filled in by hand =====
+// Ranges use the middle ("7 to 8 min" plans as 7.5). Hands-on minutes are Claude's estimates.
+const S_ = (text, hands, more = {}) => ({ text, hands, wait: 0, ...more });
+const LIB = {
+  steak: {
+    key: "steak", title: "Pan-Seared Ribeye", family: "cooking", serve: "hot", hold: 5,
+    steps: [
+      S_("Take the steak out of the fridge to sit.", 0.5, { wait: 30 }),
+      S_("Heat the oil in the skillet until it just smokes.", 1, { wait: 3, burner: true }),
+      S_("Pat the steak dry and season the top.", 1, { burner: true }),
+      S_("Lay it in seasoned side down, season the top, sear without moving it.", 0.5, { wait: 4, watch: true, burner: true }),
+      S_("Turn it, add the butter, herbs and garlic, and baste to 130°F inside.", 4, { burner: true }),
+      S_("Rest the steak.", 0.5, { wait: 7.5 }),
+    ],
+  },
+  asparagus: {
+    key: "asparagus", title: "Parmesan Asparagus", family: "cooking", serve: "hot", hold: 5,
+    steps: [
+      S_("Heat the oven to 200°C / 400°F.", 0.5, { preheat: "200C", auto: true }),
+      S_("Lay the asparagus on a sheet; oil, salt and pepper.", 4),
+      S_("Lemon juice, lemon rings and butter over the top.", 3),
+      S_("Roast until just fork-tender.", 0.5, { wait: 9, oven: "200C" }),
+      S_("Switch the oven to broil.", 0.5, { preheat: "broil" }),
+      S_("Scatter the parmesan and broil until golden.", 0.5, { wait: 2.5, watch: true, oven: "broil" }),
+    ],
+  },
+  applesauce: {
+    key: "applesauce", title: "Applesauce", family: "cooking", serve: "keeps", hold: 0,
+    steps: [
+      S_("Peel, core and cut the apples small.", 8),
+      S_("Put everything in the casserole dish and stir to coat.", 2),
+      S_("Microwave on high.", 0.5, { wait: 7.5, micro: true }),
+      S_("Stir, then microwave again.", 1, { wait: 7.5, micro: true }),
+      S_("Mash to the texture you want.", 2),
+    ],
+  },
+  potatoes: {
+    key: "potatoes", title: "Hasselback Potatoes", family: "cooking", serve: "hot", hold: 10,
+    subs: [{ label: "Garlic paste", step: 4, options: [["have", "I have some"], ["garlic", "Make it"]] }],
+    steps: [
+      S_("Heat the oven to 200°C / 400°F and line a tray.", 1, { preheat: "200C" }),
+      S_("Scrub and dry the potatoes.", 3),
+      S_("Slice each potato thinly, stopping short of the base.", 10),
+      S_("Set them on the tray, cut side up.", 1),
+      S_("Mix the oil, butter, garlic paste, salt and pepper; hold back half.", 3),
+      S_("Brush the potatoes and bake.", 3, { wait: 40, oven: "200C" }),
+      S_("Baste with the rest and bake until crisp.", 2, { wait: 17.5, oven: "200C" }),
+      S_("Scatter with parsley.", 1),
+    ],
+  },
+  garlic: {
+    key: "garlic", title: "Garlic Paste", family: "cooking", serve: "keeps", hold: 0,
+    steps: [
+      S_("Trim and chop the garlic cloves.", 4),
+      S_("Add the salt and muddle to a paste.", 5),
+      S_("Stir in the olive oil.", 1),
+    ],
+  },
+  pavlova: {
+    key: "pavlova", title: "Pavlova", family: "baking", serve: "soon", hold: 15,
+    subs: [
+      { label: "Lemon curd", step: 8, options: [["curd", "Make it"], ["have", "I have some"]] },
+      { label: "Whipped cream", step: 8, options: [["bcream", "Blueberry, make it"], ["cream", "Plain, make it"], ["have", "I have some"]] },
+    ],
+    steps: [
+      S_("Heat the oven to 350°F.", 0.5, { preheat: "350F" }),
+      S_("Whip the egg whites to soft peaks.", 0.5, { wait: 5, watch: true }),
+      S_("Add the sugar in two parts, then beat on high.", 1, { wait: 2, watch: true }),
+      S_("Beat in the vanilla.", 1),
+      S_("Fold in the cream of tartar and cornstarch.", 1),
+      S_("Spread into a circle with tall edges.", 4),
+      S_("Into the oven, and turn it down to 200°F straight away.", 0.5, { wait: 90, oven: "200F", ovenChange: true }),
+      S_("Turn the oven off; let it cool inside with the door shut.", 0.5, { wait: 120, oven: "off", ovenChange: true, holds: true }),
+      S_("Pile on the cream, curd and berries.", 4),
+    ],
+  },
+  curd: {
+    key: "curd", title: "Lemon Curd", family: "baking", serve: "keeps", hold: 0,
+    steps: [
+      S_("Rub the zest into the sugar, then leave it.", 1, { wait: 10 }),
+      S_("Fill a big bowl with ice water.", 2),
+      S_("Bring the juice to a simmer; whisk the eggs, yolks and salt into the zest-sugar.", 3, { burner: true }),
+      S_("Temper: drizzle the hot juice into the eggs, whisking.", 2, { burner: true }),
+      S_("Back into the pan; cook, whisking often.", 6, { burner: true }),
+      S_("Off the heat, whisk in the butter.", 1),
+      S_("Strain into a bowl.", 3),
+      S_("Cover the surface; ice bath, then the fridge.", 1, { wait: 90 }),
+    ],
+  },
+  cream: {
+    key: "cream", title: "Whipped Cream", family: "baking", serve: "soon", hold: 20,
+    steps: [
+      S_("Whip the cream, sugar and vanilla to medium peaks.", 0.5, { wait: 3.5, watch: true }),
+      S_("Cover and chill until needed.", 0.5),
+    ],
+  },
+  bcream: {
+    key: "bcream", title: "Blueberry Whipped Cream", family: "baking", serve: "soon", hold: 20,
+    subs: [{ label: "Blueberry syrup", step: 1, options: [["syrup", "Make it"], ["have", "I have some"]] }],
+    steps: [
+      S_("Whip the cream to soft peaks.", 0.5, { wait: 3, watch: true }),
+      S_("Turn the speed down and add the blueberry syrup.", 1),
+      S_("Add the confectioners' sugar; whip to medium-firm peaks.", 0.5, { wait: 2, watch: true }),
+    ],
+  },
+  syrup: {
+    key: "syrup", title: "Blueberry Syrup", family: "cocktails", serve: "keeps", hold: 0,
+    steps: [
+      S_("Combine the blueberries, sugar and water; bring to a simmer.", 1, { wait: 4, burner: true }),
+      S_("Simmer, mashing the berries, until the sugar dissolves.", 5, { burner: true }),
+      S_("Strain, pressing the solids.", 3),
+      S_("Cool, then chill.", 1, { wait: 60 }),
+    ],
+  },
+};
+
+</script>
+<script>
+// ===== The page: a thin shell over Planner =====
+const DISHES = ["steak", "asparagus", "applesauce", "potatoes", "pavlova"];
+const DINNER = ["steak", "asparagus", "applesauce", "potatoes"];
+const SCENARIOS = [
+  {
+    name: "Steak dinner",
+    desc: "Ribeye, parmesan asparagus, applesauce and hasselback potatoes, with garlic paste you already have.",
+    watch: "The applesauce goes in during the potatoes' first bake. The asparagus shares the 200°C oven with the potatoes, but has to wait for them to come out before the oven can broil. The steak comes last, so it rests while the asparagus broils.",
+    dishes: DINNER, choices: {},
+    steps: [
+      ["Start the meal", { type: "reset" }],
+      ["Get the potatoes into the oven", { type: "doneUntil", ids: ["potatoes.5"] }],
+      ["Make the applesauce while they bake", { type: "doneUntil", ids: ["applesauce.4"] }],
+      ["Prep the asparagus and baste the potatoes", { type: "doneUntil", ids: ["asparagus.2", "potatoes.6"] }],
+      ["Cook the steak", { type: "doneUntil", ids: ["steak.5"] }],
+      ["Finish everything", { type: "finish" }],
+    ],
+  },
+  {
+    name: "Slicing runs long",
+    desc: "The same dinner, but slicing the potatoes takes 10 minutes longer than planned.",
+    watch: "After the slow step, the planner re-plans from where you are. Dinner moves later by about the time you lost, and steps that changed places get a ↻. Nothing scolds you for running behind.",
+    dishes: DINNER, choices: {},
+    steps: [
+      ["Start the meal", { type: "reset" }],
+      ["Heat the oven and scrub the potatoes", { type: "doneUntil", ids: ["potatoes.1"] }],
+      ["Slice them, 10 min slower than planned", { type: "done", extra: 10 }],
+      ["Carry on to the end", { type: "finish" }],
+    ],
+  },
+  {
+    name: "Pavlova, all homemade",
+    desc: "Pavlova with lemon curd, and blueberry whipped cream made from blueberry syrup. That's sub-recipes two deep.",
+    watch: "The curd and the syrup both fit into the meringue's 90 minutes in the oven, so they're cold in time. The cream is whipped close to the end, and only after the syrup has chilled.",
+    dishes: ["pavlova"], choices: { "pavlova/Lemon curd": "curd", "pavlova/Whipped cream": "bcream", "bcream/Blueberry syrup": "syrup" },
+    steps: [
+      ["Start the dessert", { type: "reset" }],
+      ["Get the meringue into the oven", { type: "doneUntil", ids: ["pavlova.6"] }],
+      ["Make the curd and the syrup while it bakes", { type: "doneUntil", ids: ["curd.7", "syrup.3"] }],
+      ["Whip the cream", { type: "doneUntil", ids: ["bcream.2"] }],
+      ["Finish", { type: "finish" }],
+    ],
+  },
+  {
+    name: "Making the garlic paste",
+    desc: "The steak dinner again, but you make the potatoes' garlic paste from scratch.",
+    watch: "The garlic paste is made before the potatoes' garlic-butter step needs it, and the whole dinner moves about 10 minutes later.",
+    dishes: DINNER, choices: { "potatoes/Garlic paste": "garlic" },
+    steps: [
+      ["Start the meal", { type: "reset" }],
+      ["Get the potatoes into the oven", { type: "doneUntil", ids: ["potatoes.5"] }],
+      ["Finish everything", { type: "finish" }],
+    ],
+  },
+  {
+    name: "Dinner and pavlova",
+    desc: "All five dishes on the same day. The pavlova keeps the oven for about 3½ hours: 90 minutes baking, then cooling inside it with the door shut.",
+    watch: "Dinner can't use the oven until the meringue is cool, so the whole meal takes over 5 hours. The planner also assembles dessert at the same moment as dinner, because it doesn't know about courses yet. Both are open questions.",
+    dishes: DISHES, choices: {},
+    steps: [
+      ["Start the meal", { type: "reset" }],
+      ["Get the meringue into the oven", { type: "doneUntil", ids: ["pavlova.6"] }],
+      ["Finish everything", { type: "finish" }],
+    ],
+  },
+];
+
+let state;
+let free = { dishes: [...DINNER], choices: {} };
+let tab = 0;
+let did = -1;
+let change = null;
+let showMins = true;
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v);
+  }
+  for (const k of kids) if (k != null) n.append(k);
+  return n;
+};
+const at = (m) => `+${Math.floor(m / 60)}:${String(Math.round(m % 60)).padStart(2, "0")}`;
+const dur = (m) => {
+  m = Math.round(m);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? `${h} hr ${r} min` : `${h} hr`;
+};
+const mins = (m) => (Number.isInteger(m) ? `${m}` : m.toFixed(1).replace(/\.0$/, ""));
+const ovenName = (t) => (t === "broil" ? "broil" : t === "off" ? "off, door shut" : t.replace(/(\d+)([CF])/, "$1°$2"));
+
+const meal = () => Planner.buildMeal(LIB, state.dishes, state.choices);
+const currentPlan = () => Planner.plan(meal(), state);
+
+function act(action) {
+  const before = state && state.dishes ? currentPlan() : null;
+  if (action.type === "doneUntil") {
+    for (let i = 0; i < 200 && !action.ids.every((id) => state.fixed[id]); i++) {
+      const n = Planner.reduce(LIB, state, { type: "done" });
+      if (n === state) break;
+      state = n;
+    }
+  } else {
+    state = Planner.reduce(LIB, state, action);
+  }
+  change = null;
+  if (before && action.type !== "reset") {
+    const after = currentPlan();
+    const order = (p) => p.rows.filter((r) => !state.fixed[r.step.id] && !r.skipped).map((r) => r.step.id);
+    const a = order(after), set = new Set(a);
+    const b = order(before).filter((id) => set.has(id));
+    const moved = new Set(a.filter((id, i) => b[i] !== id));
+    const delta = Math.round(after.serve - before.serve);
+    if (delta > 0 || moved.size) change = { delta, moved };
+  }
+  render();
+}
+
+function startScenario(i) {
+  tab = i; did = 0;
+  const sc = SCENARIOS[i];
+  state = Planner.reduce(LIB, null, { type: "reset", dishes: sc.dishes, choices: sc.choices });
+  change = null;
+  render();
+}
+
+function renderTabs() {
+  const tabs = $("tabs");
+  tabs.replaceChildren(...SCENARIOS.map((sc, i) => el("button", { role: "tab", "aria-selected": String(i === tab), text: sc.name, onclick: () => startScenario(i) })));
+  const sc = SCENARIOS[tab];
+  $("wt-desc").textContent = sc.desc;
+  $("wt-watch").textContent = "What to watch for: " + sc.watch;
+  $("wt-steps").replaceChildren(...sc.steps.map(([label, action], i) => {
+    const b = el("button", { text: label, onclick: () => {
+      if (i === 0) { startScenario(tab); return; }
+      did = i; act(action);
+    } });
+    b.disabled = i !== did + 1 && !(i === 0);
+    return el("li", { class: i <= did ? "did" : "" }, b);
+  }));
+}
+
+function renderFree() {
+  const fs = $("dishes");
+  const kids = [el("legend", { text: "Dishes" })];
+  for (const k of DISHES) {
+    const cb = el("input", { type: "checkbox", id: `dish-${k}` });
+    cb.checked = free.dishes.includes(k);
+    cb.addEventListener("change", () => {
+      free.dishes = DISHES.filter((d) => (d === k ? cb.checked : free.dishes.includes(d)));
+      renderFree();
+    });
+    kids.push(el("label", { class: "check" }, cb, LIB[k].title));
+    if (!cb.checked) continue;
+    const subRows = (key) => {
+      for (const sub of LIB[key].subs || []) {
+        const ck = `${key}/${sub.label}`;
+        const sel = el("select", { id: `sub-${ck.replace(/\W/g, "-")}`, "aria-label": `${sub.label} for ${LIB[key].title}` },
+          ...sub.options.map(([v, l]) => el("option", { value: v, text: l })));
+        sel.value = free.choices[ck] ?? sub.options[0][0];
+        sel.addEventListener("change", () => { free.choices[ck] = sel.value; renderFree(); });
+        kids.push(el("div", { class: "sub" }, el("span", { text: sub.label }), sel));
+        if (sel.value !== "have") subRows(sel.value);
+      }
+    };
+    subRows(k);
+  }
+  fs.replaceChildren(...kids);
+  $("restart").disabled = free.dishes.length === 0;
+}
+
+function renderState() {
+  const p = currentPlan();
+  const next = p.rows.find((r) => !state.fixed[r.step.id] && !r.skipped);
+
+  // Up now
+  if (next) {
+    const gap = next.start - state.now;
+    $("idle").hidden = gap < 0.5;
+    $("idle").textContent = gap >= 0.5 ? `Nothing to do for about ${dur(gap)}. Then:` : "";
+    $("now-chip").replaceChildren(el("span", { class: `chip ${next.recipe.family}`, text: next.recipe.title }));
+    $("now-step").textContent = next.step.text;
+    const bits = [];
+    if (next.step.wait && !next.step.preheat) bits.push(next.step.watch ? `Then ${mins(next.step.wait)} min, and you stay with it.` : `Then it runs on its own for ${mins(next.step.wait)} min, with a timer.`);
+    if (next.step.preheat) bits.push("The oven heats on its own while you carry on.");
+    $("now-detail").textContent = bits.join(" ");
+    $("done").disabled = $("slow").disabled = false;
+    $("done").textContent = gap >= 0.5 ? "Skip ahead, then Done" : "Done";
+  } else {
+    $("idle").hidden = true;
+    $("now-chip").replaceChildren();
+    $("now-step").textContent = "Everything's done. Time to eat.";
+    $("now-detail").textContent = "";
+    $("done").disabled = $("slow").disabled = true;
+    $("done").textContent = "Done";
+  }
+
+  // Timers running now
+  const timers = [];
+  for (const r of p.rows) {
+    if (!state.fixed[r.step.id] || r.skipped) continue;
+    if (r.preheat && r.heatEnd > state.now) timers.push([`${r.recipe.title}: oven heating to ${ovenName(r.step.preheat)}`, r.heatEnd - state.now]);
+    else if (!r.preheat && r.step.wait && r.handsEnd <= state.now && r.end > state.now) timers.push([`${r.recipe.title}: ${r.step.text}`, r.end - state.now]);
+  }
+  $("timers").replaceChildren(...timers.map(([l, m]) => el("div", { class: "timer" }, el("span", { text: l }), el("b", { text: `${mins(Math.round(m * 2) / 2)} min left` }))));
+
+  // What changed
+  if (change) {
+    const parts = [];
+    if (change.delta > 0) parts.push(`Re-planned: eating about ${dur(change.delta)} later.`);
+    if (change.moved.size) parts.push(`${change.moved.size} step${change.moved.size > 1 ? "s" : ""} changed places (↻).`);
+    $("change").hidden = false;
+    $("change").textContent = parts.join(" ");
+  } else $("change").hidden = true;
+
+  // The order
+  const left = p.serve - state.now;
+  $("serve").textContent = !next ? "Served." : state.now === 0 ? `Start now to eat in about ${dur(p.serve)}.` : `The planner thinks you'll eat in about ${dur(left)}.`;
+  if (!p.ok && next) $("serve").textContent += ` It couldn't find an order with everything on time: ${p.worst} runs about ${dur(p.late)} late.`;
+  const ovenNow = p.rows.filter((r) => state.fixed[r.step.id] && !r.skipped && (r.step.oven || r.step.preheat) && r.start <= state.now).pop();
+  const inOven = p.rows.filter((r) => state.fixed[r.step.id] && r.step.oven && r.start <= state.now && r.end > state.now).map((r) => r.recipe.title);
+  const burners = p.rows.filter((r) => state.fixed[r.step.id] && r.step.burner && r.start <= state.now && r.end > state.now).map((r) => r.recipe.title);
+  $("facts").replaceChildren(
+    el("dt", { text: "Oven" }), el("dd", { text: ovenNow ? `${ovenName(ovenNow.step.oven || ovenNow.step.preheat)}${inOven.length ? `, with ${[...new Set(inOven)].join(" and ")} in it` : ", empty"}` : "Off" }),
+    el("dt", { text: "Burners" }), el("dd", { text: burners.length ? [...new Set(burners)].join(", ") : "None on" }),
+  );
+  const currentId = next && next.step.id;
+  $("plan").replaceChildren(...p.rows.map((r) => {
+    const fixed = !!state.fixed[r.step.id];
+    const cls = [r.skipped ? "skipped" : fixed ? "done" : "", r.step.id === currentId ? "current" : "", change && change.moved.has(r.step.id) ? "moved" : ""].join(" ");
+    const meta = [];
+    if (!r.skipped) {
+      meta.push(`hands ${mins(r.step.hands + (r.extra || 0))} min`);
+      if (r.step.wait) meta.push(r.step.watch ? `then ${mins(r.step.wait)} min watching` : `then ${mins(r.step.wait)} min on its own`);
+      if (r.step.preheat) meta.push(`oven heats to ${ovenName(r.step.preheat)} in the background`);
+      if (r.step.oven) meta.push(`oven ${ovenName(r.step.oven)}`);
+      if (r.step.burner) meta.push("burner");
+      if (r.step.micro) meta.push("microwave");
+      if (r.step.auto) meta.push("added by the planner");
+      if (r.extra) meta.push(`took ${r.extra} min longer`);
+    }
+    return el("li", { class: cls },
+      el("span", { class: "at", text: at(r.start) }),
+      el("div", { class: "body" },
+        el("div", { class: "line" }, el("span", { class: `chip ${r.recipe.family}`, text: r.recipe.title }), el("span", { class: "text", text: r.skipped ? `Skipped: ${r.note}` : r.step.text })),
+        meta.length ? el("div", { class: "meta" }, ...meta.map((m) => el("span", { text: m }))) : null,
+        r.reason ? el("div", { class: "why", text: r.reason }) : null));
+  }));
+  $("plan-panel").classList.toggle("hidden-in-real", !showMins);
+}
+
+function render() { renderTabs(); renderFree(); renderState(); }
+
+$("done").addEventListener("click", () => { did = -2; act({ type: "done" }); });
+$("slow").addEventListener("click", () => { did = -2; act({ type: "done", extra: 5 }); });
+$("restart").addEventListener("click", () => {
+  did = -2; tab = -1;
+  state = Planner.reduce(LIB, null, { type: "reset", dishes: free.dishes, choices: { ...free.choices } });
+  change = null; render();
+});
+$("show-mins").addEventListener("change", (e) => { showMins = e.target.checked; renderState(); });
+startScenario(0);
+</script>
