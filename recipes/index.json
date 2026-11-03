@@ -1460,6 +1460,55 @@
     "search": "pan-fried broccolini, lemon-dressed broccolini charred in cast iron, then tossed in lemon zest, juice and olive oil. cooking dish side italian sauté & pan-sear bright & tangy greens & broccolini lemon weeknight year-round vegan vegetarian gluten-free dairy-free 1 lb broccolini 1 tsp olive oil salt, black pepper, red pepper flakes 2 tbsp extra-virgin olive oil juice of ½ lemon zest of 1 lemon ¼ tsp garlic powder pinch each salt, black pepper, red pepper flakes"
   },
   {
+    "slug": "pan-seared-ribeye",
+    "title": "Pan-Seared Ribeye",
+    "category": "cooking",
+    "kind": "dish",
+    "description": "One ribeye seared hard in a smoking skillet, then basted in butter, garlic and herbs.",
+    "yield": "Serves 1",
+    "image": "",
+    "icon": "chicken",
+    "added": "2026-11-03",
+    "facets": {
+      "course": [
+        "protein"
+      ],
+      "cuisine": [
+        "american"
+      ],
+      "method": [
+        "saute"
+      ],
+      "flavor": [
+        "rich"
+      ],
+      "ingredients": [
+        "beef",
+        "butter",
+        "garlic",
+        "fresh-herbs"
+      ],
+      "occasion": [
+        "weeknight",
+        "entertaining"
+      ],
+      "season": [
+        "year-round"
+      ],
+      "diet": [
+        "gluten-free"
+      ],
+      "time": [
+        "under-60"
+      ],
+      "kind": [
+        "dish"
+      ]
+    },
+    "totalMinutes": 48,
+    "search": "pan-seared ribeye one ribeye seared hard in a smoking skillet, then basted in butter, garlic and herbs. cooking dish main protein american sauté & pan-sear rich & savory beef butter garlic fresh herbs weeknight entertaining year-round gluten-free 12 oz ribeye steak 2 tbsp cooking oil or beef tallow 1/2 tbsp steak seasoning 1 tbsp butter fresh herbs optional; rosemary and thyme 2 cloves garlic optional, peeled and left whole"
+  },
+  {
     "slug": "pavlova",
     "title": "Pavlova",
     "category": "baking",
@@ -1749,6 +1798,52 @@
     },
     "totalMinutes": 10,
     "search": "tahini yogurt sauce yogurt and tahini whisked with garlic into a tangy sauce. cooking component sauce & condiment middle eastern no-cook bright & tangy fresh & herby tahini & sesame yogurt garlic weeknight make-ahead year-round vegetarian gluten-free 3/4 cup plain yogurt, milk kefir or vegan yogurt 1/4 cup tahini, stirred 1 to 2 garlic cloves, finely minced (or 1/2 tsp granulated) 1/4 to 1/2 tsp salt, plus more to taste 1/4 tsp black pepper 1 tsp lemon juice (optional) 1 tsp olive oil (optional, for fat-free yogurt) parsley, dill, cilantro or chives aleppo chile flakes or urfa biber"
+  },
+  {
+    "slug": "whipped-cream",
+    "title": "Whipped Cream",
+    "category": "baking",
+    "kind": "component",
+    "description": "Cold heavy cream whipped with a little sugar and vanilla to medium peaks.",
+    "yield": "Makes about 2 cups",
+    "image": "",
+    "icon": "jar",
+    "added": "2026-11-03",
+    "facets": {
+      "type": [
+        "fillings-creams"
+      ],
+      "flavor": [
+        "sweet",
+        "light"
+      ],
+      "usesUp": [
+        "heavy-cream"
+      ],
+      "ingredients": [
+        "cream"
+      ],
+      "occasion": [
+        "make-ahead",
+        "freezer-friendly"
+      ],
+      "season": [
+        "year-round"
+      ],
+      "diet": [
+        "vegetarian",
+        "gluten-free"
+      ],
+      "time": [
+        "under-30",
+        "under-60"
+      ],
+      "kind": [
+        "component"
+      ]
+    },
+    "totalMinutes": 5,
+    "search": "whipped cream cold heavy cream whipped with a little sugar and vanilla to medium peaks. baking component fillings & creams sweet light & airy heavy cream cream make-ahead freezer-friendly year-round vegetarian gluten-free 1 cup heavy cream cold 2 tbsp sugar granulated or confectioners' 1/2 tsp pure vanilla extract"
   },
   {
     "slug": "zombie",

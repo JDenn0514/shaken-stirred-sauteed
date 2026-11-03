@@ -1,0 +1,96 @@
+{
+  "title": "Pan-Seared Ribeye",
+  "category": "cooking",
+  "kind": "dish",
+  "description": "One ribeye seared hard in a smoking skillet, then basted in butter, garlic and herbs.",
+  "tags": {
+    "course": ["protein"],
+    "cuisine": ["american"],
+    "method": ["saute"],
+    "flavor": ["rich"],
+    "ingredients": ["beef", "butter", "garlic", "fresh-herbs"],
+    "occasion": ["weeknight", "entertaining"],
+    "season": ["year-round"],
+    "diet": ["gluten-free"]
+  },
+  "added": "2026-11-03",
+  "yield": "Serves 1",
+  "times": [
+    ["Sit out", "30 min"],
+    ["Prep", "5 min"],
+    ["Cook", "8 min"],
+    ["Rest", "5 to 10 min"]
+  ],
+  "time": {
+    "total": 48
+  },
+  "pan": "Heavy skillet, ideally cast iron",
+  "ingredients": [
+    {
+      "qty": "12 oz",
+      "item": "Ribeye steak"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "Cooking oil",
+      "note": "or beef tallow"
+    },
+    {
+      "qty": "1/2 tbsp",
+      "item": "Steak seasoning"
+    },
+    {
+      "qty": "1 tbsp",
+      "item": "Butter"
+    },
+    {
+      "item": "Fresh herbs",
+      "note": "optional; rosemary and thyme"
+    },
+    {
+      "qty": "2 cloves",
+      "item": "Garlic",
+      "note": "optional, peeled and left whole"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Take the steak out of the fridge 30 minutes before cooking so it cooks evenly instead of staying raw in the center.",
+      "wait": "30 min",
+      "uses": ["Ribeye steak"]
+    },
+    {
+      "do": "Heat the oil in the skillet over medium-high heat until it just starts to smoke. A pan that isn't hot enough won't give you a golden crust.",
+      "cue": "Oil just starting to smoke",
+      "uses": ["Cooking oil"]
+    },
+    {
+      "do": "Pat the steak dry and season the top side right before it goes in. Salted any earlier, it draws out moisture and won't sear.",
+      "uses": [{ "item": "Steak seasoning", "amount": "half" }]
+    },
+    {
+      "do": "Lay it in seasoned side down, season the new top side, and cook without moving it: 3 to 4 minutes for a 1 in (2.5 cm) steak, 5 minutes for 1 1/2 in (4 cm).",
+      "wait": "3 to 5 min, undisturbed",
+      "uses": [{ "item": "Steak seasoning", "amount": "the rest" }]
+    },
+    {
+      "do": "Turn it, add the butter, herbs and garlic, and keep spooning the melted butter over the steak as it finishes. Pull it at 130F (54C) inside for medium-rare; it climbs about 5F more as it rests.",
+      "cue": "130F (54C) inside for medium-rare",
+      "uses": ["Butter", "Fresh herbs", "Garlic"]
+    },
+    {
+      "do": "Rest 5 to 10 minutes before slicing and serving.",
+      "wait": "5 to 10 min"
+    }
+  ],
+  "notes": [
+    "Searing fat: beef tallow, bacon grease, or a high-smoke-point oil such as light olive oil or avocado oil. Not extra virgin olive oil.",
+    "Cast iron gives the deepest crust, but any heavy-bottomed pan works.",
+    "Leftovers keep 3 to 4 days in the fridge, airtight or wrapped in foil."
+  ],
+  "nutrition": "Per serving (estimate): 1071 kcal · 3 g carbs · 69 g protein · 88 g fat (31 g sat) · 268 mg sodium",
+  "source": {
+    "name": "Bake It With Love",
+    "url": "https://bakeitwithlove.com/perfectly-pan-seared-ribeye-steak/"
+  }
+}

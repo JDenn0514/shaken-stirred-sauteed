@@ -1,0 +1,69 @@
+{
+  "title": "Whipped Cream",
+  "category": "baking",
+  "kind": "component",
+  "description": "Cold heavy cream whipped with a little sugar and vanilla to medium peaks.",
+  "tags": {
+    "type": ["fillings-creams"],
+    "flavor": ["sweet", "light"],
+    "usesUp": ["heavy-cream"],
+    "ingredients": ["cream"],
+    "occasion": ["make-ahead", "freezer-friendly"],
+    "season": ["year-round"],
+    "diet": ["vegetarian", "gluten-free"]
+  },
+  "added": "2026-11-03",
+  "yield": "Makes about 2 cups",
+  "times": [
+    ["Active", "5 min"]
+  ],
+  "time": {
+    "total": 5
+  },
+  "beforeYouStart": [
+    "Keep the cream in the fridge until you need it. Cold cream whips best.",
+    "Set out a large bowl and a hand or stand mixer with the whisk."
+  ],
+  "ingredients": [
+    {
+      "qty": "1 cup",
+      "ml": 240,
+      "item": "Heavy cream",
+      "note": "cold"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "Sugar",
+      "note": "granulated or confectioners'"
+    },
+    {
+      "qty": "1/2 tsp",
+      "item": "Pure vanilla extract"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Whip the cream, sugar and vanilla on medium-high speed to medium peaks, about 3 to 4 minutes. If it goes too far and looks curdled and heavy, fold in a splash more cold cream by hand until it smooths out.",
+      "wait": "3 to 4 min",
+      "cue": "Medium peaks: firmer than soft, not yet stiff",
+      "uses": ["Heavy cream", "Sugar", "Pure vanilla extract"]
+    },
+    {
+      "do": "Use right away, or cover tightly and refrigerate up to 24 hours."
+    }
+  ],
+  "notes": [
+    "Use heavy cream or heavy whipping cream. Plain whipping cream has less fat and won't hold its shape as long; half-and-half and milk won't whip.",
+    "Cream doubles in volume as it whips, so 1 cup makes about 2 cups. The recipe doubles or triples easily.",
+    "Sugar: at this amount, granulated and confectioners' work the same. In bigger batches granulated can taste gritty, so use confectioners'. Brown sugar works too.",
+    "Freezing: freeze in a container, or in dollops on a parchment-lined sheet and then bag them, up to 3 months. Thaw in the fridge. It's a little less creamy after thawing.",
+    {
+      "group": "Used in",
+      "items": ["Pavlova"]
+    }
+  ],
+  "source": {
+    "name": "Sally's Baking Addiction",
+    "url": "https://sallysbakingaddiction.com/homemade-whipped-cream/"
+  }
+}
