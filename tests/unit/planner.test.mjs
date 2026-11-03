@@ -131,6 +131,27 @@ describe("the oven", () => {
   });
 });
 
+describe("other equipment", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
+
+  test("the microwave runs one thing at a time", () => {
+    const recipes = {
+      applesauce: recipe("Applesauce", [["Microwave the apples", { hands: "1 min", wait: "8 min", microwave: true }]], { serve: "keeps" }),
+      butter: recipe("Butter", [["Melt the butter", { hands: "1 min", wait: "1 min", microwave: true }]], { serve: "keeps" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "applesauce" }, { slug: "butter" }] }, recipes);
+    assert.ok(at(plan, "Melt the butter") >= at(plan, "Microwave the apples") + 9, `the butter went in at ${at(plan, "Melt the butter")}, with the apples still in`);
+  });
+
+  test("there are four burners, so a fifth pot waits for one to come free", () => {
+    const pots = ["Rice", "Beans", "Soup", "Sauce", "Stock"];
+    const recipes = Object.fromEntries(pots.map((p) => [p.toLowerCase(), recipe(p, [[`Simmer the ${p.toLowerCase()}`, { hands: "1 min", wait: "20 min", burner: true }]], { serve: "keeps" })]));
+    const plan = planLineup({ dishes: pots.map((p) => ({ slug: p.toLowerCase() })) }, recipes);
+    const starts = pots.map((p) => at(plan, `Simmer the ${p.toLowerCase()}`)).sort((a, b) => a - b);
+    assert.ok(starts[4] >= starts[0] + 21, `the fifth pot went on at ${starts[4]}, with four still simmering`);
+  });
+});
+
 // Jacob's steak dinner, with the planning data from the prototype.
 const DINNER = {
   steak: recipe("Pan-Seared Ribeye", [
