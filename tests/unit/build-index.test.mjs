@@ -219,6 +219,14 @@ describe("planning data", () => {
       rejects(linking("test-recipe", "no-such-recipe"), /"Paste" links to recipe "no-such-recipe", which doesn't exist/));
     test("rejects a list of recipes, which the planner can't follow yet", () =>
       rejects(linking("test-recipe", ["a", "b"]), /"Paste": "recipe" must be one recipe's file name/));
+    test("accepts a nested recipe that starts on Already made", () =>
+      passes({ a: linking("a", "b", { alreadyMade: true }), b: recipe({ title: "b" }) }));
+    test("rejects alreadyMade that isn't true or false", () =>
+      rejects(linking("test-recipe", "paste", { alreadyMade: "yes" }), /"Paste": "alreadyMade" must be true or false/));
+    test("rejects alreadyMade without a recipe link", () =>
+      rejects(recipe({ ingredients: [{ item: "Rice", alreadyMade: true }] }), /"Rice": "alreadyMade" needs a "recipe"/));
+    test("rejects alreadyMade on an optional link, which is never made unless you add it", () =>
+      rejects(linking("test-recipe", "paste", { optional: true, alreadyMade: true }), /"Paste": "alreadyMade" is only for required ingredients/));
     test("rejects an optional flag that isn't true or false", () =>
       rejects(recipe({ ingredients: [{ item: "Rice", optional: "yes" }] }), /"Rice": "optional" must be true or false/));
     test("rejects a recipe that links to itself", () =>

@@ -110,6 +110,11 @@ function checkPlanning(r, steps, ings) {
   for (const i of ings) {
     const name = typeof i === "string" ? i : i?.item;
     if (i?.optional !== undefined && typeof i.optional !== "boolean") problems.push(`"${name}": "optional" must be true or false`);
+    if (i?.alreadyMade !== undefined) {
+      if (typeof i.alreadyMade !== "boolean") problems.push(`"${name}": "alreadyMade" must be true or false`);
+      else if (i.recipe === undefined) problems.push(`"${name}": "alreadyMade" needs a "recipe" to start on Already made`);
+      else if (i.optional) problems.push(`"${name}": "alreadyMade" is only for required ingredients; an optional one is made only when you add it`);
+    }
     if (i?.recipe !== undefined && typeof i.recipe !== "string") problems.push(`"${name}": "recipe" must be one recipe's file name, like "garlic-paste" (the planner takes one for now)`);
     if (typeof i?.recipe === "string" && !usedItems.has(lower(name))) notes.push(`"${name}" links to a recipe but no step uses it, so the lineup has it ready before step 1`);
     const says = typeof i === "string" ? i : [i?.qty, i?.item, i?.note].join(" ");

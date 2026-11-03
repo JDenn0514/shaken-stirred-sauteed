@@ -96,7 +96,7 @@ On a step:
 
 On the recipe, `serve` is `"hot"`, `"soon"` or `"keeps"`, and `sits` is how long a hot or soon dish can wait once done. Without them, components and baking keep, cocktails are soon (5 min), and cooking dishes are hot (10 min).
 
-On an ingredient, `recipe` is the file name of the recipe that makes it. A required ingredient with a recipe is **nested**: it joins the lineup with its dish. An `optional` one is **connected**: it's a dish of its own you add yourself. Either way, the planner has it ready before the first step whose `uses` names it.
+On an ingredient, `recipe` is the file name of the recipe that makes it. A required ingredient with a recipe is **nested**: it joins the lineup with its dish. An `optional` one is **connected**: it's a dish of its own you add yourself. Either way, the planner has it ready before the first step whose `uses` names it. A nested recipe starts on "Make it" in the lineup; add `"alreadyMade": true` when you'd usually buy it or have it on hand (homemade pasta in a soup), so it starts on "Already made" instead.
 
 ```json
 "ingredients": [{ "qty": "1 tsp", "item": "garlic paste", "recipe": "garlic-paste" }],
