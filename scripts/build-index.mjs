@@ -81,7 +81,7 @@ const isTime = (x) => typeof x === "string" && TIME.test(x);
 // false says a step that mentions the oven doesn't use it.
 const isSetting = (x) => typeof x === "string" && (/^\d+[CF]$/.test(x) || x === "broil" || x === "off");
 const SERVES = ["hot", "soon", "keeps"];
-const FLAGS = ["watch", "burner", "grill", "microwave", "prepOnly", "holds"];
+const FLAGS = ["watch", "burner", "grill", "microwave", "prepOnly", "holds", "during"];
 const EQUIPMENT = ["oven", "preheat", "burner", "grill", "microwave"];
 // Words in a step that mean it needs equipment. A step that has one but doesn't
 // use it (pressing dough into a pan) says so with "burner": false.
@@ -100,6 +100,13 @@ function checkPlanning(r, steps, ings) {
     }
     if (s.preheat === "off") problems.push(`${step}: "preheat" can't be "off"; use "oven": "off" to turn it off`);
     if (s.watch && !s.wait) problems.push(`${step}: "watch" needs a "wait" to watch`);
+    // A "during" step runs while the nearest earlier step that isn't "during"
+    // (or an added prep step) waits.
+    if (s.during === true) {
+      const runsAlongside = steps.slice(0, n).findLast((x) => x && typeof x === "object" && !x.during && !x.prepOnly);
+      if (!runsAlongside?.wait) problems.push(`${step}: "during" needs an earlier step with a wait to run alongside`);
+      else if (runsAlongside.watch) problems.push(`${step}: "during" can't run alongside a watched wait, which needs your hands`);
+    }
     if (s.prep !== undefined && s.prep !== true && s.prep !== "just before") problems.push(`${step}: "prep" must be true or "just before"`);
     for (const k of FLAGS) if (s[k] !== undefined && typeof s[k] !== "boolean") problems.push(`${step}: "${k}" must be true or false`);
     const said = MENTIONS.exec(s.do || "");

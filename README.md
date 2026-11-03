@@ -92,6 +92,7 @@ On a step:
 | `burner`, `grill`, `microwave` | `true` when the step uses one. `false` says a step that mentions one doesn't ("press the dough into the pan") | Not used |
 | `prep` | Knife work, measuring, getting ready. `true` can be done ahead, before any cooking; `"just before"` is done close to when it's needed (cut apples that brown, salting a steak) | Not prep |
 | `prepOnly` | `true` on an added prep step that brings out prep hidden in an ingredient line ("Mince the garlic"). It shows only when steps are in prep-first order | Shown in both orders |
+| `during` | `true` on a step that runs while an earlier step waits, such as frying the pork while the congee simmers. Several in a row run one after another during that wait, and the next step waits for both. The earlier step needs a `wait` without `watch` | Steps run one after another |
 | `holds` | `true` on the step after which the dish keeps as long as you like (the pavlova's cooled meringue). One per recipe | A hot dish is tied to serving from its first step |
 
 On the recipe, `serve` is `"hot"`, `"soon"` or `"keeps"`, and `sits` is how long a hot or soon dish can wait once done. Without them, components and baking keep, cocktails are soon (5 min), and cooking dishes are hot (10 min).

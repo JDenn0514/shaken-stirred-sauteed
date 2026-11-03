@@ -110,7 +110,7 @@ function chains(lineup, recipes, parts = {}) {
     const ordered = [...all.filter(ahead), ...all.filter((s) => !ahead(s))];
     const steps = ordered.map((s) => ({
       slug, n: s.n, text: s.do, hands: s.hands == null ? handsGuess(r, all) : minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
-      oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds, prep: ahead(s),
+      oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds, during: !!s.during, prep: ahead(s),
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
     }));
@@ -164,11 +164,20 @@ function chains(lineup, recipes, parts = {}) {
 // Work back from serving at minute `serve`: each step's latest start. Heating
 // the oven has to start early enough for it to be hot by the oven step that
 // needs it.
+//
+// Steps marked `during` run while the step before them (the first one not
+// marked) waits, unless you have to watch it; the step after them waits for
+// both. So that step's wait has to end by the time the step after the
+// `during` steps starts (`join`), and its hands-on part by the time the first
+// of them starts.
+const overlaps = (steps, i) => !steps[i].during && !steps[i].watch && !!steps[i + 1]?.during;
 function latestStarts(dish, serve) {
   const { steps } = dish, out = [];
-  let t = serve;
+  let t = serve, join = serve;
   for (let i = steps.length - 1; i >= 0; i--) {
-    t -= steps[i].hands + steps[i].wait;
+    if (!steps[i + 1]?.during) join = t;
+    if (overlaps(steps, i)) t = Math.min(join - steps[i].hands - steps[i].wait, t - steps[i].hands);
+    else t -= steps[i].hands + steps[i].wait;
     if (steps[i].preheat) {
       const j = steps.findIndex((x, k) => k > i && x.oven && x.oven !== "off" && covers(steps[i].preheat, x.oven));
       if (j >= 0) t = Math.min(t, out[j] - heatTime(steps[i].preheat) - steps[i].hands);
@@ -239,13 +248,28 @@ function simulate(dishes, serve, early = {}, progress = {}) {
   };
 
   // Replay the finished steps, in the order they were done.
+  // `end` is when the step's wait is over. Its dish's next step can start then,
+  // or as soon as your hands are free if that step runs during this wait; the
+  // wait then runs in the background until the `during` steps are done.
+  const background = dishes.map(() => 0);
+  const settle = (d, end, handsDone) => {
+    if (overlaps(dishes[d].steps, next[d] - 1)) {
+      background[d] = end;
+      readyAt[d] = handsDone;
+    } else if (dishes[d].steps[next[d]]?.during) readyAt[d] = end;
+    else {
+      readyAt[d] = Math.max(end, background[d]);
+      background[d] = 0;
+    }
+  };
   const start = (d, s, at, finished) => {
-    readyAt[d] = finished ? (waitUntil(d) ?? (s.watch ? finished : finished + s.wait)) : at + s.hands + s.wait;
-    handsFree = Math.max(handsFree, finished ?? (s.watch ? readyAt[d] : at + s.hands));
-    for (const kind of s.kit) busy.push({ kind, until: readyAt[d] });
+    const end = finished ? (waitUntil(d) ?? (s.watch ? finished : finished + s.wait)) : at + s.hands + s.wait;
+    handsFree = Math.max(handsFree, finished ?? (s.watch ? end : at + s.hands));
+    settle(d, end, finished ?? at + s.hands);
+    for (const kind of s.kit) busy.push({ kind, until: end });
     if (s.preheat) heat = { setting: s.preheat, hotAt: at + s.hands + heatTime(s.preheat) };
     const setting = s.oven || s.preheat;
-    if (setting) oven.set(d, { setting, until: next[d] - 1 === dishes[d].lastOven ? readyAt[d] : Infinity });
+    if (setting) oven.set(d, { setting, until: next[d] - 1 === dishes[d].lastOven ? end : Infinity });
   };
   for (;;) {
     const ds = dishes.map((_, d) => d).filter((d) => doneAt(d) !== undefined);
@@ -289,7 +313,7 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     if (s.preheat && heat && sameSetting(heat.setting, s.preheat)) {
       if (s.added) continue;
       steps.push({ slug: s.slug, step: s.n, text: s.text, at: t, skipped: true });
-      readyAt[d] = t;
+      settle(d, t, t);
       oven.set(d, { setting: heat.setting, until: i === dishes[d].lastOven ? t : Infinity });
       continue;
     }
@@ -329,7 +353,7 @@ function planFor(dishes, serve, progress) {
 
 // The earliest serve time one cook can get everything ready for.
 function search(dishes, progress = {}) {
-  const shortest = Math.max(progress.now || 0, ...dishes.map((d) => d.steps.reduce((a, s) => a + s.hands + s.wait, 0)));
+  const shortest = Math.max(progress.now || 0, ...dishes.map((d) => -latestStarts(d, 0)[0] || 0));
   let plan;
   for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
     plan = planFor(dishes, serve, progress);

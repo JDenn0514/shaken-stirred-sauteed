@@ -58,7 +58,7 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
    - the step before it in its recipe is done;
    - the recipes it uses are ready;
    - its equipment is free.
-3. **Waits run on their own,** unless the step marks them as needing you (searing, broiling, whisking a curd). While one runs, your hands go to the next most urgent step.
+3. **Waits run on their own,** unless the step marks them as needing you (searing, broiling, whisking a curd). While one runs, your hands go to the next most urgent step. That can be a later step of the same dish when the recipe marks it `during` (frying the pork while the congee simmers); the step after those waits for both.
 4. **Hot dishes are held back.** A hot dish doesn't start so early that it would sit longer than it can once done. Dishes that keep have no such limit and fill the gaps.
 5. **Equipment:** one oven, four burners, one microwave, one grill.
    - Dishes can share the oven only at the same setting. Temperatures within 15°F (about 10°C) count as the same, so 200°C and 400°F share.
@@ -199,6 +199,7 @@ New optional fields. Each one has a fallback, so a recipe without them still get
 | `burner`, `grill`, `microwave` | step | `true` when the step uses one | Not used |
 | `prep` | step | Prep: knife work, measuring, getting things ready. `true` means it can be done ahead; `"just before"` means close to when it's needed | Not prep |
 | `prepOnly` | step | An added prep step that brings out prep hidden in an ingredient line. It shows only when steps are in prep-first order | Shown in both orders |
+| `during` | step | `true` when the step runs while an earlier step's wait does (the pork while the congee simmers) | Steps run one after another |
 | `holds` | step | After this step, the dish keeps as long as you like (a cooled meringue) | The whole dish is tied to serving if it's hot |
 | `serve` | recipe | `"hot"`, `"soon"` or `"keeps"`, with `sits` for how long a hot or soon dish can wait once done, e.g. `"10 min"` | Components and baking keep; cocktails are soon (5 min); cooking dishes are hot (10 min) |
 | `recipe` | ingredient | The slug of the recipe that makes it. A list of slugs when there's a choice (rare) | No linked recipe |

@@ -205,6 +205,19 @@ describe("planning data", () => {
     rejects(withStep({ prep: "early" }), /step 1: "prep" must be true or "just before"/));
   test("rejects an equipment flag that isn't true or false", () =>
     rejects(withStep({ burner: "yes" }), /step 1: "burner" must be true or false/));
+  test("accepts during on a step after one with a wait, skipping added prep steps", () =>
+    passes({ "test-recipe": recipe({ steps: [
+      { do: "Simmer.", wait: "20 min" }, { do: "Chop the scallions.", prep: true, prepOnly: true },
+      { do: "Fry the pork.", during: true }, { do: "Glaze it.", during: true }, { do: "Serve." },
+    ] }) }));
+  test("rejects during that isn't true or false", () =>
+    rejects(recipe({ steps: [{ do: "Simmer.", wait: "20 min" }, { do: "Fry.", during: "yes" }] }), /step 2: "during" must be true or false/));
+  test("rejects during on the first step", () =>
+    rejects(withStep({ during: true }), /step 1: "during" needs an earlier step with a wait to run alongside/));
+  test("rejects during after a step with no wait", () =>
+    rejects(recipe({ steps: [{ do: "Chop." }, { do: "Fry.", during: true }] }), /step 2: "during" needs an earlier step with a wait to run alongside/));
+  test("rejects during after a watched wait, which needs your hands", () =>
+    rejects(recipe({ steps: [{ do: "Sear.", wait: "4 min", watch: true }, { do: "Chop.", during: true }] }), /step 2: "during" can't run alongside a watched wait/));
   test("rejects more than one holds in a recipe", () =>
     rejects(recipe({ steps: [{ do: "Bake.", holds: true }, { do: "Cool.", holds: true }] }), /more than one step with "holds"/));
   test("counts holds across step groups", () =>

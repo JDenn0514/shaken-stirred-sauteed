@@ -487,6 +487,47 @@ describe("connected recipes", () => {
   });
 });
 
+describe("steps that run during another's wait", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
+  const congee = (simmer, more = {}) => ({
+    congee: recipe("Congee", [
+      ["Simmer the congee", { hands: "1 min", wait: simmer, ...more }],
+      ["Fry the pork", { hands: "5 min", during: true }],
+      ["Glaze the pork", { hands: "2 min", during: true }],
+      ["Ladle into bowls", { hands: "2 min" }],
+    ]),
+  });
+
+  test("they start once the step before is under way, and the next step waits for both", () => {
+    const plan = planLineup({ dishes: [{ slug: "congee" }] }, congee("25 min"));
+    assert.equal(at(plan, "Fry the pork"), 1);
+    assert.equal(at(plan, "Glaze the pork"), 6);
+    assert.equal(at(plan, "Ladle into bowls"), 26);
+    assert.equal(plan.minutes, 28);
+  });
+
+  test("when they take longer than the wait, the next step waits for them", () => {
+    const plan = planLineup({ dishes: [{ slug: "congee" }] }, congee("5 min"));
+    assert.equal(at(plan, "Ladle into bowls"), 8);
+    assert.equal(plan.minutes, 10);
+  });
+
+  test("a wait that needs you there can't be overlapped", () => {
+    const plan = planLineup({ dishes: [{ slug: "congee" }] }, congee("25 min", { watch: true }));
+    assert.equal(at(plan, "Fry the pork"), 26);
+  });
+
+  test("a hot dish that overlaps its steps is still ready on time", () => {
+    const recipes = { ...congee("25 min"), applesauce: recipe("Applesauce", [["Make the applesauce", { hands: "15 min" }]], { serve: "keeps" }) };
+    recipes.congee.serve = "hot";
+    recipes.congee.sits = "5 min";
+    const plan = planLineup({ dishes: [{ slug: "congee" }, { slug: "applesauce" }] }, recipes);
+    assert.ok(at(plan, "Ladle into bowls") + 2 >= plan.minutes - 5, `the congee was done at ${at(plan, "Ladle into bowls") + 2}, serving at ${plan.minutes}`);
+    // The applesauce and the pork both fit inside the simmer.
+    assert.equal(plan.minutes, 28);
+  });
+});
+
 describe("other equipment", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
 
