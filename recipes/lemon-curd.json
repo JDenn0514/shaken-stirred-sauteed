@@ -92,7 +92,8 @@
     {
       "do": "Meanwhile, fill a large bowl partway with ice and cold water for chilling the curd later.",
       "hands": "2 min",
-      "prep": true
+      "prep": true,
+      "during": true
     },
     {
       "do": "Bring the juice to a simmer in the saucepan over medium heat, about 3 minutes. While it heats, whisk the eggs, yolks and salt into the zest-sugar until smooth. Whole eggs plus yolks gives richness without the heavy, eggy thickness of an all-yolk curd.",
