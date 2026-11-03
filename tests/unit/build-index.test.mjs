@@ -156,3 +156,113 @@ describe("index entry", () => {
     assert.deepEqual(res.index.map((e) => e.title), ["Apple Pie", "Banana Bread", "Cherry Tart"]);
   });
 });
+
+// Planning data for the lineup (docs/specs/meal-planner-design.md, "Recipe data
+// changes"): how long your hands are busy, equipment, prep, and links between
+// recipes through their ingredients.
+describe("planning data", () => {
+  const withStep = (step) => recipe({ steps: [{ do: "Cook the rice.", ...step }] });
+  const passes = (recipes) => {
+    const res = buildIndex(recipes);
+    assert.equal(res.ok, true, `expected the build to pass, got:\n${res.output}`);
+    return res;
+  };
+  const warnsAbout = (recipes, pattern) =>
+    assert.ok(passes(recipes).warnings.some((w) => pattern.test(w)), `no warning matching ${pattern} in:\n${buildIndex(recipes).output}`);
+  const quiet = (recipes, pattern) =>
+    assert.ok(!passes(recipes).warnings.some((w) => pattern.test(w)), `unexpected warning matching ${pattern}`);
+
+  test("accepts every field written the way the planner reads it", () => passes({
+    "test-recipe": recipe({
+      serve: "hot", sits: "10 min",
+      ingredients: [{ qty: "1 cup", item: "Rice" }, { qty: "2 tbsp", item: "Chili oil", recipe: "chili-oil", optional: true }],
+      steps: [
+        { do: "Rinse the rice.", hands: "2 min", prep: true, uses: ["Rice"] },
+        { do: "Chop the scallions.", hands: "1 min", prep: "just before", prepOnly: true },
+        { do: "Heat the oven.", hands: "30 sec", preheat: "200C" },
+        { do: "Simmer the rice in a pan.", hands: "1 to 2 min", wait: "15 min", watch: true, burner: true },
+        { do: "Bake in the oven.", hands: "1 min", wait: "10 min", oven: "400F", holds: true },
+        { do: "Broil the top.", hands: "1 min", wait: "2 min", oven: "broil" },
+        { do: "Turn the oven off and leave it in.", wait: "1 hr", oven: "off" },
+        { do: "Warm it in the microwave.", microwave: true, wait: "1 min" },
+        { do: "Char it on the grill.", grill: true, uses: ["Chili oil"] },
+      ],
+    }),
+    "chili-oil": recipe({ title: "Chili Oil", kind: "component", serve: "keeps" }),
+  }));
+
+  test("rejects a hands time it can't read", () => rejects(withStep({ hands: "a while" }), /step 1: "hands" must be a time/));
+  test("rejects a hands time that isn't text", () => rejects(withStep({ hands: 5 }), /step 1: "hands" must be a time/));
+  test("rejects a sits time it can't read", () => rejects(recipe({ sits: "not long" }), /"sits" must be a time/));
+  test("rejects an unknown serve", () => rejects(recipe({ serve: "cold" }), /"serve" must be one of hot, soon, keeps/));
+  test("rejects an oven setting it doesn't know", () =>
+    rejects(withStep({ oven: "hot", wait: "5 min" }), /step 1: oven setting "hot"/));
+  test("rejects an oven temperature without a unit", () => rejects(withStep({ oven: "200" }), /step 1: oven setting "200"/));
+  test("rejects a preheat setting it doesn't know", () => rejects(withStep({ preheat: "medium" }), /step 1: oven setting "medium"/));
+  test("rejects heating the oven to off", () => rejects(withStep({ preheat: "off" }), /step 1: "preheat" can't be "off"/));
+  test("rejects watch on a step without a wait", () => rejects(withStep({ watch: true }), /step 1: "watch" needs a "wait"/));
+  test("rejects prep that isn't true or \"just before\"", () =>
+    rejects(withStep({ prep: "early" }), /step 1: "prep" must be true or "just before"/));
+  test("rejects an equipment flag that isn't true or false", () =>
+    rejects(withStep({ burner: "yes" }), /step 1: "burner" must be true or false/));
+  test("rejects more than one holds in a recipe", () =>
+    rejects(recipe({ steps: [{ do: "Bake.", holds: true }, { do: "Cool.", holds: true }] }), /more than one step with "holds"/));
+  test("counts holds across step groups", () =>
+    rejects(recipe({ steps: [{ group: "A", items: [{ do: "Bake.", holds: true }] }, { group: "B", items: [{ do: "Cool.", holds: true }] }] }),
+      /more than one step with "holds"/));
+
+  describe("recipe links", () => {
+    const linking = (slug, to, extra = {}) =>
+      recipe({ title: slug, ingredients: [{ qty: "1 tbsp", item: "Paste", recipe: to, ...extra }], steps: [{ do: "Stir in the paste.", uses: ["Paste"] }] });
+
+    test("rejects a link to a recipe that doesn't exist", () =>
+      rejects(linking("test-recipe", "no-such-recipe"), /"Paste" links to recipe "no-such-recipe", which doesn't exist/));
+    test("rejects a list of recipes, which the planner can't follow yet", () =>
+      rejects(linking("test-recipe", ["a", "b"]), /"Paste": "recipe" must be one recipe's file name/));
+    test("rejects an optional flag that isn't true or false", () =>
+      rejects(recipe({ ingredients: [{ item: "Rice", optional: "yes" }] }), /"Rice": "optional" must be true or false/));
+    test("rejects a recipe that links to itself", () =>
+      rejects(linking("test-recipe", "test-recipe"), /recipe links loop: test-recipe → test-recipe/));
+    test("rejects links that loop through other recipes", () => {
+      const res = buildIndex({ a: linking("a", "b"), b: linking("b", "c"), c: linking("c", "a") });
+      assert.equal(res.ok, false, res.output);
+      assert.ok(res.errors.some((e) => /recipe links loop: a → b → c → a/.test(e)), res.output);
+    });
+    test("accepts a recipe linked from two others", () =>
+      passes({ a: linking("a", "c"), b: linking("b", "c", { optional: true }), c: recipe({ title: "c" }) }));
+    test("warns when no step uses a linked ingredient", () =>
+      warnsAbout({ "test-recipe": recipe({ ingredients: [{ item: "Paste", recipe: "paste" }] }), paste: recipe({ title: "Paste" }) },
+        /"Paste" links to a recipe but no step uses it/));
+  });
+
+  describe("warns about equipment the text mentions but the step doesn't say", () => {
+    for (const [what, text] of [
+      ["the oven", "Bake in the oven until golden."],
+      ["the broiler", "Broil until bubbling."],
+      ["a skillet", "Warm the oil in a skillet."],
+      ["a pan", "Melt the butter in a pan."],
+      ["a saucepan", "Bring the juice to a simmer in a saucepan."],
+      ["the grill", "Grill the corn, turning."],
+      ["the microwave", "Microwave on high."],
+    ]) {
+      test(what, () => warnsAbout({ "test-recipe": withStep({ do: text }) }, /step 1 mentions .* but has no equipment field/));
+    }
+    test("not when the step has an equipment field", () =>
+      quiet({ "test-recipe": withStep({ do: "Melt the butter in a pan.", burner: true }) }, /equipment field/));
+    test("not when the field says the step doesn't use it", () =>
+      quiet({ "test-recipe": withStep({ do: "Press the dough into the pan.", burner: false }) }, /equipment field/));
+    test("not for words that only contain one", () =>
+      quiet({ "test-recipe": withStep({ do: "Pour the pancake batter over the panko." }) }, /equipment field/));
+  });
+
+  describe("warns about optional ingredients not marked optional", () => {
+    test("in the amount", () =>
+      warnsAbout({ "test-recipe": recipe({ ingredients: [{ qty: "Optional", item: "Lemon curd" }] }) }, /"Lemon curd" says it's optional/));
+    test("in the note", () =>
+      warnsAbout({ "test-recipe": recipe({ ingredients: [{ item: "Chili flakes", note: "optional" }] }) }, /"Chili flakes" says it's optional/));
+    test("in a plain-text ingredient", () =>
+      warnsAbout({ "test-recipe": recipe({ ingredients: ["Mint, to garnish (optional)"] }) }, /"Mint, to garnish \(optional\)" says it's optional/));
+    test("not when it's marked optional", () =>
+      quiet({ "test-recipe": recipe({ ingredients: [{ item: "Chili flakes", note: "optional", optional: true }] }) }, /says it's optional/));
+  });
+});

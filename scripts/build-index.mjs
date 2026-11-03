@@ -71,6 +71,56 @@ function checkUses(r, steps) {
   return problems;
 }
 
+// Planning data for the lineup planner (assets/planner.mjs); see the README's
+// "Planning a lineup". A time is what the planner can read: "10 min", "45 sec",
+// "1 1/2 hr", "7 to 8 min" (the same pattern as the planner's).
+const NUM = String.raw`\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+`;
+const TIME = new RegExp(`(${NUM})\\s*(?:(?:to|-|–)\\s*(${NUM})\\s*)?(sec(?:ond)?s?|min(?:ute)?s?|hrs?|hours?)\\b`, "i");
+const isTime = (x) => typeof x === "string" && TIME.test(x);
+// Oven settings: a temperature with its unit ("200C", "400F"), "broil" or "off".
+const isSetting = (x) => typeof x === "string" && (/^\d+[CF]$/.test(x) || x === "broil" || x === "off");
+const SERVES = ["hot", "soon", "keeps"];
+const FLAGS = ["watch", "burner", "grill", "microwave", "prepOnly", "holds"];
+const EQUIPMENT = ["oven", "preheat", "burner", "grill", "microwave"];
+// Words in a step that mean it needs equipment. A step that has one but doesn't
+// use it (pressing dough into a pan) says so with "burner": false.
+const MENTIONS = /\b(oven|broil\w*|skillet|(?:sauce|frying |sheet )?pan|grill\w*|microwave\w*)\b/i;
+
+function checkPlanning(r, steps, ings) {
+  const problems = [], notes = [];
+  if (r.serve !== undefined && !SERVES.includes(r.serve)) problems.push(`"serve" must be one of ${SERVES.join(", ")}`);
+  if (r.sits !== undefined && !isTime(r.sits)) problems.push(`"sits" must be a time, like "10 min"`);
+  steps.forEach((s, n) => {
+    if (!s || typeof s !== "object") return;
+    const step = `step ${n + 1}`;
+    if (s.hands !== undefined && !isTime(s.hands)) problems.push(`${step}: "hands" must be a time, like "10 min"`);
+    for (const k of ["oven", "preheat"]) {
+      if (s[k] !== undefined && !isSetting(s[k])) problems.push(`${step}: oven setting "${s[k]}" isn't one of "200C", "400F", "broil" or "off"`);
+    }
+    if (s.preheat === "off") problems.push(`${step}: "preheat" can't be "off"; use "oven": "off" to turn it off`);
+    if (s.watch && !s.wait) problems.push(`${step}: "watch" needs a "wait" to watch`);
+    if (s.prep !== undefined && s.prep !== true && s.prep !== "just before") problems.push(`${step}: "prep" must be true or "just before"`);
+    for (const k of FLAGS) if (s[k] !== undefined && typeof s[k] !== "boolean") problems.push(`${step}: "${k}" must be true or false`);
+    const said = MENTIONS.exec(s.do || "");
+    if (said && !EQUIPMENT.some((k) => k in s)) notes.push(`${step} mentions "${said[1]}" but has no equipment field (oven, preheat, burner, grill or microwave)`);
+  });
+  if (steps.filter((s) => s?.holds).length > 1) problems.push(`more than one step with "holds"; only the last one counts`);
+  const usedItems = new Set(steps.flatMap((s) => (Array.isArray(s?.uses) ? s.uses : [])).map((u) => lower(typeof u === "string" ? u : u?.item)));
+  for (const i of ings) {
+    const name = typeof i === "string" ? i : i?.item;
+    if (i?.optional !== undefined && typeof i.optional !== "boolean") problems.push(`"${name}": "optional" must be true or false`);
+    if (i?.recipe !== undefined && typeof i.recipe !== "string") problems.push(`"${name}": "recipe" must be one recipe's file name, like "garlic-paste" (the planner takes one for now)`);
+    if (typeof i?.recipe === "string" && !usedItems.has(lower(name))) notes.push(`"${name}" links to a recipe but no step uses it, so the lineup has it ready before step 1`);
+    const says = typeof i === "string" ? i : [i?.qty, i?.item, i?.note].join(" ");
+    if (/\boptional\b/i.test(says) && i?.optional !== true) notes.push(`"${name}" says it's optional but isn't marked "optional": true`);
+  }
+  return { problems, notes };
+}
+
+// Ingredient links between recipes, slug -> [{ item, to }], checked once every
+// recipe is read: each must exist, and they mustn't loop.
+const links = new Map();
+
 for (const file of readdirSync(DIR).sort()) {
   if (!file.endsWith(".json") || file === "index.json" || file === "vocabulary.json" || file.startsWith("_")) continue;
   const slug = file.slice(0, -5);
@@ -94,6 +144,10 @@ for (const file of readdirSync(DIR).sort()) {
   if (ings.some((i) => !ingText(i) || (typeof i === "object" && !i.item))) errors.push(`${where}: every ingredient needs text or an "item"`);
   if (steps.some((s) => !stepText(s))) errors.push(`${where}: every step needs text or a "do"`);
   errors.push(...checkUses(r, steps).map((e) => `${where}: ${e}`));
+  const planning = checkPlanning(r, steps, ings);
+  errors.push(...planning.problems.map((e) => `${where}: ${e}`));
+  warnings.push(...planning.notes.map((w) => `${where}: ${w}`));
+  links.set(slug, ings.filter((i) => typeof i?.recipe === "string").map((i) => ({ item: i.item, to: i.recipe })));
   if (r.time?.total != null && !Number.isFinite(r.time.total)) errors.push(`${where}: "time.total" must be a number of minutes`);
   if (r.source?.url && !/^https?:\/\//i.test(r.source.url)) errors.push(`${where}: "source.url" must start with https:// or http://`);
   if (r.image && !/^(https:\/\/|images\/)/.test(r.image)) errors.push(`${where}: "image" must be an images/ path or an https:// URL`);
@@ -149,6 +203,22 @@ for (const file of readdirSync(DIR).sort()) {
     search: [r.title, r.description, r.category, r.kind, ...tagWords, ...ings.map(ingText), r.glass, r.garnish, r.origin]
       .filter(Boolean).join(" ").toLowerCase(),
   });
+}
+
+// Every linked recipe exists, and following the links never comes back round.
+{
+  for (const [slug, out] of links) for (const { item, to } of out) {
+    if (!links.has(to)) errors.push(`${DIR}/${slug}.json: "${item}" links to recipe "${to}", which doesn't exist`);
+  }
+  const finished = new Set(), loops = new Set();
+  const visit = (slug, path) => {
+    if (path.includes(slug)) return loops.add([...path.slice(path.indexOf(slug)), slug].join(" → "));
+    if (finished.has(slug) || !links.has(slug)) return;
+    for (const { to } of links.get(slug)) visit(to, [...path, slug]);
+    finished.add(slug);
+  };
+  for (const slug of links.keys()) visit(slug, []);
+  for (const loop of loops) errors.push(`recipe links loop: ${loop}`);
 }
 
 // Values in the vocabulary that no recipe uses yet.

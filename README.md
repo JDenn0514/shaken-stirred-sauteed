@@ -39,8 +39,8 @@ GitHub Actions re-runs the index check on every pull request and push to main, a
 |---|---|---|
 | `title` | yes | |
 | `category` | yes | `baking`, `cooking`, or `cocktails` |
-| `ingredients` | yes | List of ingredients, or `{ "group": "For the sauce", "items": [...] }` sections. An ingredient is a string, or `{ "grams": 150, "qty": "3/4 cup", "ml": 60, "item": "Sugar", "note": "softened" }` (only `item` is required) |
-| `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges", "uses": [...] }`. A `wait` that starts with a time ("12 to 15 min", "About 1 hr in the fridge") gets a timer in cook mode, set to the shortest time. See "Step ingredients" below for `uses` |
+| `ingredients` | yes | List of ingredients, or `{ "group": "For the sauce", "items": [...] }` sections. An ingredient is a string, or `{ "grams": 150, "qty": "3/4 cup", "ml": 60, "item": "Sugar", "note": "softened" }` (only `item` is required). Add `"recipe": "garlic-paste"` when another recipe makes it, and `"optional": true` when the dish works without it |
+| `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges", "uses": [...] }`. A `wait` that starts with a time ("12 to 15 min", "About 1 hr in the fridge") gets a timer in cook mode, set to the shortest time. See "Step ingredients" below for `uses`, and "Planning a lineup" for the fields the lineup planner reads |
 | `kind` | | `dish` (the default) or `component`, for things made to go into other recipes: sauces, curds, syrups, homemade pasta |
 | `description` | | Short blurb shown on the card |
 | `tags` | | Filter tags, e.g. `{ "cuisine": ["thai"], "ingredients": ["chicken", "lime"] }`. See "Tags" below |
@@ -53,6 +53,7 @@ GitHub Actions re-runs the index check on every pull request and push to main, a
 | `image` | | Path like `images/brown-butter-cookies.jpg` |
 | `icon` | | The drawing on the card and recipe page. Usually leave it out: it's picked from the cocktail's `glass`, the baking `type` or the cooking `course`. Set it when that guess is wrong, e.g. `"icon": "donut"`. Allowed values are listed in `assets/recipe-icons.js` |
 | `source` | | `{ "name": "Grandma", "url": "" }` |
+| `serve`, `sits` | | For the lineup: `"hot"`, `"soon"` or `"keeps"`, and how long a hot or soon dish can wait once done, e.g. `"sits": "10 min"`. See "Planning a lineup" below |
 
 Category-specific display fields:
 
@@ -75,6 +76,38 @@ A step's `uses` lists the ingredients it needs, so cook mode can show them with 
 - Leave `uses` out of steps that don't use any ingredients.
 
 The build fails if a step names an ingredient the recipe doesn't have, or one that matches more than one ingredient.
+
+### Planning a lineup
+
+The lineup cooks several recipes in one order (`docs/specs/meal-planner-design.md`). It plans from these optional fields, and every one has a fallback, so a recipe without them still gets a rough plan. Nothing is guessed from a step's wording.
+
+On a step:
+
+| Field | Means | Without it |
+|---|---|---|
+| `hands` | How long your hands are busy, e.g. `"10 min"`, `"30 sec"`, `"3 to 4 min"` | The recipe's active or prep time, spread over the steps without one; otherwise 2 min |
+| `watch` | `true` when the step's `wait` needs you there (searing, whisking a curd). Needs a `wait` | The wait runs on its own |
+| `oven` | The setting the step needs while it runs: `"200C"`, `"400F"`, `"broil"` or `"off"` | No oven |
+| `preheat` | The step heats the oven to this setting (`"200C"`, `"400F"`, `"broil"`), in the background | The planner adds a heating step when a dish needs the oven |
+| `burner`, `grill`, `microwave` | `true` when the step uses one. `false` says a step that mentions one doesn't ("press the dough into the pan") | Not used |
+| `prep` | Knife work, measuring, getting ready. `true` can be done ahead, before any cooking; `"just before"` is done close to when it's needed (cut apples that brown, salting a steak) | Not prep |
+| `prepOnly` | `true` on an added prep step that brings out prep hidden in an ingredient line ("Mince the garlic"). It shows only when steps are in prep-first order | Shown in both orders |
+| `holds` | `true` on the step after which the dish keeps as long as you like (the pavlova's cooled meringue). One per recipe | A hot dish is tied to serving from its first step |
+
+On the recipe, `serve` is `"hot"`, `"soon"` or `"keeps"`, and `sits` is how long a hot or soon dish can wait once done. Without them, components and baking keep, cocktails are soon (5 min), and cooking dishes are hot (10 min).
+
+On an ingredient, `recipe` is the file name of the recipe that makes it. A required ingredient with a recipe is **nested**: it joins the lineup with its dish. An `optional` one is **connected**: it's a dish of its own you add yourself. Either way, the planner has it ready before the first step whose `uses` names it.
+
+```json
+"ingredients": [{ "qty": "1 tsp", "item": "garlic paste", "recipe": "garlic-paste" }],
+"steps": [
+  { "do": "Heat the oven to 200°C / 400°F.", "hands": "1 min", "preheat": "200C" },
+  { "do": "Stir in the garlic paste.", "hands": "2 min", "prep": true, "uses": ["garlic paste"] },
+  { "do": "Bake 40 minutes.", "hands": "3 min", "wait": "40 min", "oven": "200C" }
+]
+```
+
+The build fails on a `hands` or `sits` it can't read as a time, an oven setting it doesn't know, `watch` without a `wait`, more than one `holds`, a `recipe` that doesn't exist (or a list of them, which the planner can't follow yet), and links that loop. It warns when a step mentions the oven, broiler, a pan, the grill or the microwave but has no equipment field, when an ingredient says "optional" but isn't marked `optional`, and when no step uses a linked ingredient.
 
 ### Tags
 
