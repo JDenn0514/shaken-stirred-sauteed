@@ -103,8 +103,12 @@
       "do": "Strain through the fine-mesh strainer into a medium bowl, scraping the underside of the mesh with a spatula. Straining catches any bits of cooked egg, so a few lumps are nothing to worry about."
     },
     {
-      "do": "Press plastic wrap directly onto the surface to stop a skin forming. Set the bowl in the ice bath for 30 minutes, then refrigerate.",
-      "wait": "30 min ice bath, then about 1 hr fridge",
+      "do": "Press plastic wrap directly onto the surface to stop a skin forming. Set the bowl in the ice bath for 30 minutes.",
+      "wait": "30 min in the ice bath"
+    },
+    {
+      "do": "Then refrigerate it.",
+      "wait": "About 1 hr in the fridge",
       "cue": "Cold all the way through"
     }
   ],
