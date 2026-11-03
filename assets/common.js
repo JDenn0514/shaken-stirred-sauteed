@@ -42,5 +42,20 @@ window.SSS = (() => {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON };
+  // Ingredients, steps and notes may be a flat list of entries, or a list of
+  // { "group": "For the sauce", "items": [...] } sections (or a mix).
+  function toGroups(list = []) {
+    const groups = [];
+    for (const entry of list) {
+      if (entry && Array.isArray(entry.items)) {
+        groups.push({ group: entry.group || "", items: entry.items });
+      } else if (entry) {
+        if (!groups.length || groups[groups.length - 1].group) groups.push({ group: "", items: [] });
+        groups[groups.length - 1].items.push(entry);
+      }
+    }
+    return groups;
+  }
+
+  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups };
 })();

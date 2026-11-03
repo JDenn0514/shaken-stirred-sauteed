@@ -45,6 +45,32 @@ const flatten = (list = []) =>
 const ingText = (i) => (typeof i === "string" ? i : [i?.qty, i?.item, i?.note].filter(Boolean).join(" "));
 const stepText = (s) => (typeof s === "string" ? s : s?.do);
 
+// A step's "uses" lists the ingredients it needs (shown in cook mode): each is the
+// ingredient's item (or its whole text, for a plain-string ingredient), or
+// { item, group, amount }. "group" picks between ingredients with the same name;
+// "amount" is the step's own share. Each must match exactly one ingredient.
+const lower = (s) => String(s ?? "").trim().toLowerCase();
+function checkUses(r, steps) {
+  const problems = [];
+  const named = (r.ingredients || []).flatMap((e) => (e && Array.isArray(e.items) ? e.items.map((i) => [e.group, i]) : [["", e]]))
+    .map(([group, i]) => ({ group: lower(group), item: lower(typeof i === "string" ? i : i?.item) }));
+  steps.forEach((s, n) => {
+    if (s?.uses === undefined) return;
+    const step = `step ${n + 1}`;
+    if (!Array.isArray(s.uses)) return problems.push(`${step}: "uses" must be a list`);
+    for (const u of s.uses) {
+      const { item, group, amount } = typeof u === "string" ? { item: u } : u || {};
+      if (!item) { problems.push(`${step}: every entry in "uses" needs an "item"`); continue; }
+      if (amount !== undefined && typeof amount !== "string") problems.push(`${step}: "amount" must be text, like "100 g" or "the rest"`);
+      const hits = named.filter((i) => i.item === lower(item) && (group === undefined || i.group === lower(group)));
+      const what = group === undefined ? `"${item}"` : `"${item}" from "${group}"`;
+      if (!hits.length) problems.push(`${step} uses ${what}, which isn't one of the ingredients`);
+      else if (hits.length > 1) problems.push(`${step} uses ${what}, which matches ${hits.length} ingredients: add its "group"`);
+    }
+  });
+  return problems;
+}
+
 for (const file of readdirSync(DIR).sort()) {
   if (!file.endsWith(".json") || file === "index.json" || file === "vocabulary.json" || file.startsWith("_")) continue;
   const slug = file.slice(0, -5);
@@ -67,6 +93,7 @@ for (const file of readdirSync(DIR).sort()) {
   if (!steps.length) errors.push(`${where}: no steps`);
   if (ings.some((i) => !ingText(i) || (typeof i === "object" && !i.item))) errors.push(`${where}: every ingredient needs text or an "item"`);
   if (steps.some((s) => !stepText(s))) errors.push(`${where}: every step needs text or a "do"`);
+  errors.push(...checkUses(r, steps).map((e) => `${where}: ${e}`));
   if (r.time?.total != null && !Number.isFinite(r.time.total)) errors.push(`${where}: "time.total" must be a number of minutes`);
   if (r.source?.url && !/^https?:\/\//i.test(r.source.url)) errors.push(`${where}: "source.url" must start with https:// or http://`);
   if (r.image && !/^(https:\/\/|images\/)/.test(r.image)) errors.push(`${where}: "image" must be an images/ path or an https:// URL`);

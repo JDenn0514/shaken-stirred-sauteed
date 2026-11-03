@@ -143,11 +143,13 @@
       "group": "Crust",
       "items": [
         {
-          "do": "Rub the lime zest into the sugar with your fingertips until damp and fragrant. Toss in the flour, mint, baking powder and salt."
+          "do": "Rub the lime zest into the sugar with your fingertips until damp and fragrant. Toss in the flour, mint, baking powder and salt.",
+          "uses": ["Finely grated lime zest", { "item": "Granulated sugar", "group": "Shortbread crust" }, "All-purpose flour", "Fresh mint", "Baking powder", { "item": "Diamond Crystal kosher salt", "group": "Shortbread crust" }]
         },
         {
           "do": "Add the cold butter and toss to coat, then smash and pinch it in with your fingertips.",
-          "cue": "Moist crumbs that clump when squeezed"
+          "cue": "Moist crumbs that clump when squeezed",
+          "uses": [{ "item": "Unsalted butter", "group": "Shortbread crust" }]
         },
         {
           "do": "Scatter the crumbs in the pan and press into an even layer, right into the corners and against the sides. Bake at 350°F (175°C).",
@@ -163,21 +165,26 @@
       "group": "Curd",
       "items": [
         {
-          "do": "In a small saucepan, combine the lime juice, lemon juice, cornstarch, salt and half the sugar (100 g). Heat over medium, whisking now and then to dissolve the sugar. Once boiling, whisk constantly for about 1 min until slightly thickened, then take off the heat."
+          "do": "In a small saucepan, combine the lime juice, lemon juice, cornstarch, salt and half the sugar (100 g). Heat over medium, whisking now and then to dissolve the sugar. Once boiling, whisk constantly for about 1 min until slightly thickened, then take off the heat.",
+          "uses": ["Fresh lime juice", "Fresh lemon juice", "Cornstarch", { "item": "Diamond Crystal kosher salt", "group": "Lime curd" }, { "item": "Granulated sugar", "group": "Lime curd", "amount": "100 g" }]
         },
         {
           "do": "Only once the citrus is boiling, whisk the yolks, whole egg and remaining 100 g sugar hard for about 1 min. Combining them any earlier can make the curd lumpy.",
-          "cue": "Smooth, thick and a couple of shades paler"
+          "wait": "About 1 min",
+          "cue": "Smooth, thick and a couple of shades paler",
+          "uses": ["Large egg yolks", "Large egg", { "item": "Granulated sugar", "group": "Lime curd", "amount": "100 g" }]
         },
         {
           "do": "Whisking the whole time, drizzle the hot citrus into the eggs a tablespoon at a time until about half of it is in."
         },
         {
           "do": "Whisk everything back into the saucepan and cook over medium-low, whisking constantly, 3 to 5 min.",
+          "wait": "3 to 5 min",
           "cue": "Opaque, coats a spoon, holds whisk marks, 170°F (77°C)"
         },
         {
-          "do": "Off the heat, whisk in the butter one piece at a time, letting each melt before adding the next, until smooth."
+          "do": "Off the heat, whisk in the butter one piece at a time, letting each melt before adding the next, until smooth.",
+          "uses": [{ "item": "Unsalted butter", "group": "Lime curd" }]
         }
       ]
     },
@@ -195,7 +202,8 @@
           "cue": "The bottom of the pan is cold"
         },
         {
-          "do": "Lift the slab out by the foil, peel the sides down and slide a spatula underneath to free the crust. Cut into 16 squares. Dust with powdered sugar and lime zest just before serving."
+          "do": "Lift the slab out by the foil, peel the sides down and slide a spatula underneath to free the crust. Cut into 16 squares. Dust with powdered sugar and lime zest just before serving.",
+          "uses": ["Powdered sugar and lime zest"]
         }
       ]
     }

@@ -12,8 +12,8 @@
     { "group": "For the sauce", "items": ["2 cloves garlic, minced", "1 can (28 oz) crushed tomatoes"] }
   ],
   "steps": [
-    "First step.",
-    "Second step."
+    { "do": "Warm the oil and cook the garlic.", "wait": "1 min", "cue": "Fragrant, not brown", "uses": ["1 tbsp olive oil", "2 cloves garlic, minced"] },
+    { "do": "Add the tomatoes and simmer.", "wait": "20 min", "uses": ["1 can (28 oz) crushed tomatoes"] }
   ],
   "notes": ["Optional tips, substitutions, or what you'd change next time."],
   "source": { "name": "Where it came from", "url": "" }

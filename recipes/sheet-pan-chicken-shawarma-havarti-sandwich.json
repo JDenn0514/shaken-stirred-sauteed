@@ -156,22 +156,74 @@
   ],
   "steps": [
     {
-      "do": "Toss the chicken with the yogurt, oil, garlic, shallots, paprika, oregano, turmeric, chili flakes and a good pinch of salt. Let it sit 15 minutes while you prep; the yogurt tenderizes and helps the spices cling. Heat the oven to 425F (220C)."
+      "do": "Toss the chicken with the yogurt, oil, garlic, shallots, paprika, oregano, turmeric, chili flakes and a good pinch of salt. Let it sit 15 minutes while you prep; the yogurt tenderizes and helps the spices cling. Heat the oven to 425F (220C).",
+      "wait": "15 min",
+      "uses": [
+        "chicken breasts or thighs, thinly sliced",
+        "full-fat plain Greek yogurt",
+        "extra virgin olive oil",
+        "garlic, chopped",
+        "shallots, chopped",
+        "smoked paprika",
+        "dried oregano",
+        "turmeric",
+        "chili flakes, to taste",
+        "kosher salt"
+      ]
     },
     {
-      "do": "Spread the chicken in one layer on a sheet pan and roast 20 minutes, until cooked through. Switch to broil for 1 to 2 minutes to char the edges, then set the oven back to 425F (220C) for the sandwiches."
+      "do": "Spread the chicken in one layer on a sheet pan and roast 20 minutes, until cooked through. Switch to broil for 1 to 2 minutes to char the edges, then set the oven back to 425F (220C) for the sandwiches.",
+      "wait": "20 min"
     },
     {
-      "do": "While the chicken roasts, blend all the tahini ingredients until smooth. Add water a spoonful at a time until it pours, then taste for salt; it needs some."
+      "do": "While the chicken roasts, blend all the tahini ingredients until smooth. Add water a spoonful at a time until it pours, then taste for salt; it needs some.",
+      "uses": [
+        "tahini",
+        "mixed fresh herbs: parsley, dill, basil or cilantro",
+        "water, plus more to thin",
+        "lemon juice",
+        "jalapeño, seeded if you want it milder",
+        "garlic cloves, grated",
+        "honey",
+        "kosher salt, plus more to taste"
+      ]
     },
     {
-      "do": "Lay the naan flat on a sheet pan. Spread dressing over one half of each, then layer sun-dried tomatoes, pickles, both cheeses and the chicken. Cover with foil and bake 15 minutes, until the cheese melts; the foil keeps the naan soft while the filling heats."
+      "do": "Lay the naan flat on a sheet pan. Spread dressing over one half of each, then layer sun-dried tomatoes, pickles, both cheeses and the chicken. Cover with foil and bake 15 minutes, until the cheese melts; the foil keeps the naan soft while the filling heats.",
+      "wait": "15 min",
+      "uses": [
+        "naan",
+        {
+          "item": "green tahini, Caesar or mayo, plus extra to serve",
+          "amount": "some, to spread"
+        },
+        "oil-packed sun-dried tomatoes, sliced",
+        "sliced dill pickles and/or pepperoncini",
+        "Havarti",
+        "gouda"
+      ]
     },
     {
-      "do": "Uncover. Pile on the sprouts and onions, drizzle with more dressing, and fold the bare half of each naan over the top, pressing gently. Rub the tops with oil, sprinkle with sesame seeds, and bake uncovered 5 to 10 minutes until toasted. Check at 5 minutes: naan overbrowns quickly."
+      "do": "Uncover. Pile on the sprouts and onions, drizzle with more dressing, and fold the bare half of each naan over the top, pressing gently. Rub the tops with oil, sprinkle with sesame seeds, and bake uncovered 5 to 10 minutes until toasted. Check at 5 minutes: naan overbrowns quickly.",
+      "wait": "5 to 10 min",
+      "uses": [
+        "sprouts or microgreens",
+        "pickled red onions (optional)",
+        {
+          "item": "green tahini, Caesar or mayo, plus extra to serve",
+          "amount": "more, to drizzle"
+        },
+        "olive oil and sesame seeds, for the top"
+      ]
     },
     {
-      "do": "Slice and serve warm, with extra dressing on the side."
+      "do": "Slice and serve warm, with extra dressing on the side.",
+      "uses": [
+        {
+          "item": "green tahini, Caesar or mayo, plus extra to serve",
+          "amount": "the extra, to serve"
+        }
+      ]
     }
   ],
   "notes": [

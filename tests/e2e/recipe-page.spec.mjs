@@ -6,7 +6,7 @@ import { test, expect } from "./fixtures.mjs";
 const open = (page, slug) => page.goto(`recipe.html?r=${slug}`);
 const heading = (page) => page.getByRole("heading", { level: 1 });
 const ingredient = (page, name) => page.getByRole("checkbox", { name });
-// Steps are list items you tap; "done" and "current" are only shown by styling for now.
+// Steps are list items you tap. The current step has aria-current="step"; "done" is only shown by styling for now.
 const step = (page, text) => page.locator("ol.steps li", { hasText: text });
 const fact = (page, label) => page.locator(".facts .fact", { has: page.locator("dt", { hasText: label }) }).locator("dd");
 
@@ -118,7 +118,7 @@ test.describe("checking things off", () => {
 });
 
 test.describe("the current step", () => {
-  const current = (page) => page.locator("ol.steps li.current");
+  const current = (page) => page.locator(`ol.steps li[aria-current="step"]`);
 
   test.beforeEach(async ({ page }) => {
     await open(page, "pork-carnitas");
@@ -221,4 +221,20 @@ test.describe("every real recipe", () => {
       expect(errors).toEqual([]);
     });
   }
+});
+
+test("saved progress is dropped when the recipe's ingredients or steps change", async ({ page }) => {
+  await open(page, "pork-carnitas");
+  await ingredient(page, /Pork shoulder/).check();
+  await step(page, "Season the pork.").click();
+  // The recipe gains an ingredient at the top, so every saved position would now point one off.
+  await page.route("**/recipes/pork-carnitas.json", (route) => route.fulfill({ json: {
+    title: "Pork Carnitas", category: "cooking",
+    ingredients: ["2 bay leaves", { grams: 1400, qty: "3 lb", item: "Pork shoulder" }, "1 orange", "2 tsp Kosher salt"],
+    steps: ["Season the pork.", "Braise until tender.", "Shred the pork.", "Crisp it in a hot pan."],
+  } }));
+  await page.reload();
+  await expect(heading(page)).toHaveText("Pork Carnitas");
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(0);
+  await expect(step(page, "Season the pork.")).not.toHaveClass(/\bdone\b/);
 });

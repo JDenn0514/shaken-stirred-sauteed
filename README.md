@@ -11,6 +11,7 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 - Baking, Cooking and Cocktails sections, each with its own filters (cuisine, flavor, base spirit…), plus shared ones (ingredients, time, occasion, season, diet). Pick several options in a filter to widen it; combine filters to narrow down. Sort A–Z, newest, or quickest
 - Tap ingredients to check them off and tap steps to mark them done. Your progress is saved on your phone.
 - "Keep screen on" button so the phone doesn't lock mid-recipe
+- Cook mode ("Start baking", "Start cooking", "Start mixing"): the steps one screen at a time, with each step's ingredients and amounts to tick off, a peek at what's up next, and timers for waits. Timers keep running as you move on, even into another recipe, and ring while cook mode is open on screen. It shares its progress with the recipe page.
 - Add it to your phone's home screen and it opens like an app. Recipes you've already opened also work offline.
 - Clean print layout
 - Each section has its own colour (baking persimmon, cooking holly green, cocktails cobalt), and every recipe has its own drawing: its glass for cocktails, its dish for food
@@ -39,7 +40,7 @@ GitHub Actions re-runs the index check on every pull request and push to main, a
 | `title` | yes | |
 | `category` | yes | `baking`, `cooking`, or `cocktails` |
 | `ingredients` | yes | List of ingredients, or `{ "group": "For the sauce", "items": [...] }` sections. An ingredient is a string, or `{ "grams": 150, "qty": "3/4 cup", "ml": 60, "item": "Sugar", "note": "softened" }` (only `item` is required) |
-| `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges" }` |
+| `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges", "uses": [...] }`. A `wait` that starts with a time ("12 to 15 min", "About 1 hr in the fridge") gets a timer in cook mode, set to the shortest time. See "Step ingredients" below for `uses` |
 | `kind` | | `dish` (the default) or `component`, for things made to go into other recipes: sauces, curds, syrups, homemade pasta |
 | `description` | | Short blurb shown on the card |
 | `tags` | | Filter tags, e.g. `{ "cuisine": ["thai"], "ingredients": ["chicken", "lime"] }`. See "Tags" below |
@@ -60,6 +61,20 @@ Category-specific display fields:
 | Any | `origin` (e.g. `Milan, Italy`), `nutrition` |
 | Baking | `pan`, `heat` with `heatLabel` (`Oven` or `Heat`) |
 | Cocktails | `glass`, `ice`, `garnish`, `method`, `keeps`, `abv`, `standardDrinks` |
+
+### Step ingredients
+
+A step's `uses` lists the ingredients it needs, so cook mode can show them with their amounts. Name each by its `item` (or, for a plain-string ingredient, its whole text):
+
+```json
+"uses": ["Flour", { "group": "Filling", "item": "Sugar" }, { "item": "Lemon juice", "amount": "half" }]
+```
+
+- Add `"group"` when two ingredients share a name (sugar in the crust and in the filling).
+- Add `"amount"` when the step uses only part of an ingredient: `"100 g"`, `"half"`, `"the rest"`. Cook mode shows that instead of the full amount, and ticks each use separately.
+- Leave `uses` out of steps that don't use any ingredients.
+
+The build fails if a step names an ingredient the recipe doesn't have, or one that matches more than one ingredient.
 
 ### Tags
 
@@ -119,6 +134,7 @@ npm test
 - `tests/e2e/` opens the site in Chrome. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
+  - cook mode: moving through the steps, each step's ingredients, timers (on a clock the test controls), and a walk through every real recipe
   - light and dark mode
   - an automated accessibility scan of every page in both modes
 

@@ -59,7 +59,20 @@
   ],
   "steps": [
     {
-      "do": "Put everything in a food processor. Blend until completely smooth, stopping to scrape down the sides a few times so no peanut butter hides at the bottom, about 1 to 2 minutes."
+      "do": "Put everything in a food processor. Blend until completely smooth, stopping to scrape down the sides a few times so no peanut butter hides at the bottom, about 1 to 2 minutes.",
+      "wait": "1 to 2 min",
+      "uses": [
+        "smooth peanut butter",
+        "soy sauce or tamari",
+        "toasted sesame oil",
+        "rice vinegar",
+        "fresh ginger, chopped",
+        "garlic, chopped",
+        "hot sauce",
+        "hoisin sauce",
+        "fresh lime juice",
+        "water"
+      ]
     },
     {
       "do": "Taste and adjust: more hot sauce for heat, a squeeze of lime to brighten, or a splash of water if it's thicker than you want."

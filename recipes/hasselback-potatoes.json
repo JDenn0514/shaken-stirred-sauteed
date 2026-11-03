@@ -59,7 +59,10 @@
       "do": "Heat the oven to 200°C / 400°F. Line a baking tray with parchment or grease it."
     },
     {
-      "do": "Scrub the potatoes under cold water and dry them."
+      "do": "Scrub the potatoes under cold water and dry them.",
+      "uses": [
+        "medium potatoes"
+      ]
     },
     {
       "do": "Working one at a time on a board, hold a potato between thumb and finger and cut crosswise slices about 4 mm apart, stopping short of the base so the slices stay joined. Laying chopsticks along both sides makes this foolproof — the blade stops on the wood."
@@ -68,16 +71,27 @@
       "do": "Set the potatoes on the tray, cut side up."
     },
     {
-      "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl. Hold back roughly half for later."
+      "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl. Hold back roughly half for later.",
+      "uses": [
+        "vegetable oil",
+        "salted butter, melted",
+        "garlic paste",
+        "Salt and freshly ground black pepper"
+      ]
     },
     {
-      "do": "Brush the mixture over each potato, pushing it down into the cuts. Bake 40 minutes."
+      "do": "Brush the mixture over each potato, pushing it down into the cuts. Bake 40 minutes.",
+      "wait": "40 min"
     },
     {
-      "do": "Pull the tray out, baste with the reserved garlic butter, and return to the oven for a further 15–20 minutes, until cooked through and crisp at the edges."
+      "do": "Pull the tray out, baste with the reserved garlic butter, and return to the oven for a further 15–20 minutes, until cooked through and crisp at the edges.",
+      "wait": "15 to 20 min"
     },
     {
-      "do": "Scatter with parsley and serve hot."
+      "do": "Scatter with parsley and serve hot.",
+      "uses": [
+        "Chopped parsley, to finish"
+      ]
     }
   ],
   "notes": [

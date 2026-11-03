@@ -92,10 +92,20 @@
       "group": "Custard (crème anglaise)",
       "items": [
         {
-          "do": "Heat the milk and cream over medium, stirring now and then so the bottom doesn't scorch. Take it off the heat once it steams. Don't let it boil."
+          "do": "Heat the milk and cream over medium, stirring now and then so the bottom doesn't scorch. Take it off the heat once it steams. Don't let it boil.",
+          "uses": [
+            "Whole or 2% milk",
+            "Heavy cream, 35% fat"
+          ]
         },
         {
-          "do": "Meanwhile, whisk the yolks, sugar, salt and vanilla until smooth and pale. Dissolving the sugar into the yolks first cushions them against the heat."
+          "do": "Meanwhile, whisk the yolks, sugar, salt and vanilla until smooth and pale. Dissolving the sugar into the yolks first cushions them against the heat.",
+          "uses": [
+            "Large egg yolks",
+            "Sugar",
+            "Sea salt",
+            "Vanilla extract"
+          ]
         },
         {
           "do": "Pour about half the hot dairy into the yolks in a thin stream, whisking the whole time. Warming the yolks gradually is what keeps them from scrambling. Scrape the bowl and whisk once more."
@@ -112,10 +122,16 @@
       "items": [
         {
           "do": "Pour the hot custard through the sieve onto the chocolate. The sieve catches any bits of cooked egg. Cover the bowl with a plate.",
-          "wait": "1 min"
+          "wait": "1 min",
+          "uses": [
+            "Dark chocolate"
+          ]
         },
         {
-          "do": "Stir until the chocolate is fully melted. Add the butter now, while it's warm, and stir it in."
+          "do": "Stir until the chocolate is fully melted. Add the butter now, while it's warm, and stir it in.",
+          "uses": [
+            "Unsalted butter"
+          ]
         },
         {
           "do": "Blend with a stick blender, keeping the blade fully submerged so you don't whip in air. This emulsifies the cocoa butter into the custard, which is where the silky texture comes from.",

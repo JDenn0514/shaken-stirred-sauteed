@@ -129,13 +129,17 @@
       "group": "Blueberry sauce",
       "items": [
         {
-          "do": "Stir the cornstarch into the lemon juice with a fork until dissolved; set aside."
+          "do": "Stir the cornstarch into the lemon juice with a fork until dissolved; set aside.",
+          "uses": ["Cornstarch", { "item": "Lemon juice", "group": "Blueberry sauce" }]
         },
         {
-          "do": "Warm the blueberries and sugar in a small saucepan over medium heat for 3 min, stirring now and then and mashing the berries against the pan to break them down."
+          "do": "Warm the blueberries and sugar in a small saucepan over medium heat for 3 min, stirring now and then and mashing the berries against the pan to break them down.",
+          "wait": "3 min",
+          "uses": ["Blueberries", { "item": "Granulated sugar", "group": "Blueberry sauce" }]
         },
         {
           "do": "Stir in the slurry and cook 2 min more, then take off the heat and leave at room temperature until the filling goes in. It makes 1/2 to 2/3 cup; about half goes in the tart and the rest is for serving.",
+          "wait": "2 min",
           "cue": "Thickened"
         }
       ]
@@ -145,7 +149,8 @@
       "items": [
         {
           "do": "In a medium bowl, stir together the melted butter, sugar, vanilla and salt. Add the flour and mix until fully combined.",
-          "cue": "Thick and a little greasy, as it should be"
+          "cue": "Thick and a little greasy, as it should be",
+          "uses": ["Unsalted butter", { "item": "Granulated sugar", "group": "Shortbread crust" }, "Pure vanilla extract", "Salt", "All-purpose flour"]
         },
         {
           "do": "Press firmly and evenly into an ungreased 9-inch tart pan, across the bottom and up the sides. It looks like too little but it stretches. The base of a measuring cup helps, though it can stick."
@@ -164,7 +169,8 @@
       "group": "Filling and bake",
       "items": [
         {
-          "do": "Whisk the condensed milk, lemon juice, zest and egg yolk until smooth. Pour into the still-warm crust."
+          "do": "Whisk the condensed milk, lemon juice, zest and egg yolk until smooth. Pour into the still-warm crust.",
+          "uses": ["Sweetened condensed milk", { "item": "Lemon juice", "group": "Filling" }, "Lemon zest", "Large egg yolk"]
         },
         {
           "do": "Stir the sauce to loosen it, since it thickens as it sits; give it 5 to 10 sec in the microwave if needed (warm is fine). Spoon about half over the filling and swirl with a toothpick or knife, then shimmy the pan back and forth two or three times to settle it."
@@ -184,7 +190,8 @@
           "wait": "At least 2 hr in the fridge"
         },
         {
-          "do": "Remove the pan sides, slice, and serve with the reserved sauce and any garnishes."
+          "do": "Remove the pan sides, slice, and serve with the reserved sauce and any garnishes.",
+          "uses": ["Lemon slices, blueberries, leftover sauce, whipped cream"]
         }
       ]
     }

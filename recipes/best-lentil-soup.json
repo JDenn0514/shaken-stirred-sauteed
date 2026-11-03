@@ -95,22 +95,65 @@
   ],
   "steps": [
     {
-      "do": "Heat the oil over medium in a Dutch oven or heavy stainless pot of 5 quarts or more until it shimmers. Add the onion and carrot and cook, stirring often, about 5 minutes, until the onion is soft and translucent."
+      "do": "Heat the oil over medium in a Dutch oven or heavy stainless pot of 5 quarts or more until it shimmers. Add the onion and carrot and cook, stirring often, about 5 minutes, until the onion is soft and translucent.",
+      "wait": "About 5 min",
+      "uses": [
+        "extra virgin olive oil",
+        "yellow or white onion, chopped",
+        "carrots, peeled and chopped"
+      ]
     },
     {
-      "do": "Add the garlic, cumin, curry powder and thyme and stir constantly about 30 seconds, just until fragrant; stainless scorches spices fast, so keep stirring. Add the tomatoes and cook a few minutes more, stirring often."
+      "do": "Add the garlic, cumin, curry powder and thyme and stir constantly about 30 seconds, just until fragrant; stainless scorches spices fast, so keep stirring. Add the tomatoes and cook a few minutes more, stirring often.",
+      "uses": [
+        "garlic, pressed or minced",
+        "ground cumin",
+        "curry powder",
+        "dried thyme",
+        "diced tomatoes, lightly drained"
+      ]
     },
     {
-      "do": "Add the lentils, broth, water, 1 tsp salt, the pepper flakes and plenty of black pepper. Bring to a boil, partially cover, and simmer gently 25 to 30 minutes, until the lentils are tender but still hold their shape."
+      "do": "Add the lentils, broth, water, 1 tsp salt, the pepper flakes and plenty of black pepper. Bring to a boil, partially cover, and simmer gently 25 to 30 minutes, until the lentils are tender but still hold their shape.",
+      "wait": "25 to 30 min",
+      "uses": [
+        "brown or green lentils, picked over and rinsed",
+        "vegetable broth",
+        "water",
+        {
+          "item": "salt, plus more to taste",
+          "amount": "1 tsp"
+        },
+        "red pepper flakes",
+        {
+          "item": "black pepper, freshly ground, to taste",
+          "amount": "plenty"
+        }
+      ]
     },
     {
       "do": "Blend 2 cups of the soup until smooth and stir it back in; this is what makes it creamy without cream. Lock the blender lid and hold a towel over it against the steam. An immersion blender used briefly in the pot works too."
     },
     {
-      "do": "Add the greens and simmer 5 minutes more, until as tender as you like."
+      "do": "Add the greens and simmer 5 minutes more, until as tender as you like.",
+      "wait": "5 min",
+      "uses": [
+        "collard greens or kale, chopped, tough ribs removed"
+      ]
     },
     {
-      "do": "Off the heat, stir in 1 tbsp lemon juice. Taste and adjust with more salt, pepper or lemon. Serve hot."
+      "do": "Off the heat, stir in 1 tbsp lemon juice. Taste and adjust with more salt, pepper or lemon. Serve hot.",
+      "uses": [
+        "lemon juice (1/2 to 1 medium lemon), to taste",
+        {
+          "item": "salt, plus more to taste",
+          "amount": "to taste"
+        },
+        {
+          "item": "black pepper, freshly ground, to taste",
+          "amount": "to taste"
+        }
+      ]
     }
   ],
   "notes": [

@@ -55,19 +55,31 @@
   ],
   "steps": [
     {
-      "do": "Peel the orange and put only the segments into a 4-quart or larger slow cooker; peel and pith make the cider bitter. Quarter the apples, cut out the cores and add them, then the cinnamon, cloves and sugar."
+      "do": "Peel the orange and put only the segments into a 4-quart or larger slow cooker; peel and pith make the cider bitter. Quarter the apples, cut out the cores and add them, then the cinnamon, cloves and sugar.",
+      "uses": [
+        "apples, a sweet and tart mix (about half Honeycrisp, half Granny Smith)",
+        "orange",
+        "cinnamon sticks (or 1 tbsp ground cinnamon)",
+        "ground cloves (or 2 tsp whole cloves)",
+        "granulated sugar (75 g), or to taste"
+      ]
     },
     {
-      "do": "Pour in water until the fruit is just covered. Any more dilutes the flavor."
+      "do": "Pour in water until the fruit is just covered. Any more dilutes the flavor.",
+      "uses": [
+        "water, just enough to cover"
+      ]
     },
     {
-      "do": "Cover and cook on low for 6 to 7 hours (the better option) or on high for 4 hours, until the fruit is very soft."
+      "do": "Cover and cook on low for 6 to 7 hours (the better option) or on high for 4 hours, until the fruit is very soft.",
+      "wait": "6 to 7 hr on low, or 4 hr on high"
     },
     {
       "do": "Fish out the cinnamon sticks, mash the fruit thoroughly with a potato masher or sturdy spoon, then return the sticks and cover."
     },
     {
-      "do": "Cook 1 hour more on either setting."
+      "do": "Cook 1 hour more on either setting.",
+      "wait": "1 hr"
     },
     {
       "do": "Strain slowly through a fine-mesh sieve into a pot or heatproof pitcher, then strain a second time to catch the remaining solids. Serve warm."

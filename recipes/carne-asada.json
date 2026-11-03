@@ -74,22 +74,49 @@
   ],
   "steps": [
     {
-      "do": "Whisk the cilantro, olive oil, soy sauce, orange juice, lime juice, garlic, jalapeño, cumin and 1 tsp pepper in a medium bowl. Take out 1/2 cup and refrigerate it as the finishing sauce. It has to come out now, before anything touches raw meat."
+      "do": "Whisk the cilantro, olive oil, soy sauce, orange juice, lime juice, garlic, jalapeño, cumin and 1 tsp pepper in a medium bowl. Take out 1/2 cup and refrigerate it as the finishing sauce. It has to come out now, before anything touches raw meat.",
+      "uses": [
+        "chopped fresh cilantro leaves",
+        "olive oil",
+        "reduced-sodium soy sauce",
+        "fresh orange juice",
+        "fresh lime juice",
+        "garlic, minced",
+        "jalapeño, seeded and diced",
+        "ground cumin",
+        {
+          "item": "freshly ground black pepper, plus more for seasoning",
+          "amount": "1 tsp"
+        }
+      ]
     },
     {
-      "do": "Put the steak and the rest of the marinade in a gallon zip bag or bowl. Chill 4 to 8 hours, ideally the full 8 hours overnight, turning now and then. Stop at 8 hours: the citrus acid keeps breaking down the muscle and the texture turns mushy rather than tender."
+      "do": "Put the steak and the rest of the marinade in a gallon zip bag or bowl. Chill 4 to 8 hours, ideally the full 8 hours overnight, turning now and then. Stop at 8 hours: the citrus acid keeps breaking down the muscle and the texture turns mushy rather than tender.",
+      "wait": "4 to 8 hr",
+      "uses": [
+        "flank steak (or skirt or flap)"
+      ]
     },
     {
       "do": "Heat the grill to high, about 450F (230C), and scrape the grates clean so the steak doesn't stick and tear off its crust. Indoors, get a cast iron grill pan or skillet very hot; nonstick can't hold enough heat to sear."
     },
     {
-      "do": "Drain the steak and discard the used marinade. Pat both sides completely dry, since any film left on the surface steams instead of charring. Season with salt and pepper."
+      "do": "Drain the steak and discard the used marinade. Pat both sides completely dry, since any film left on the surface steams instead of charring. Season with salt and pepper.",
+      "uses": [
+        "Kosher salt, to taste",
+        {
+          "item": "freshly ground black pepper, plus more for seasoning",
+          "amount": "to taste"
+        }
+      ]
     },
     {
-      "do": "Grill 3 to 6 minutes per side, flipping once, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated."
+      "do": "Grill 3 to 6 minutes per side, flipping once, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated.",
+      "wait": "3 to 6 min per side"
     },
     {
-      "do": "Rest at least 5 minutes so the juices settle back into the meat instead of running onto the board."
+      "do": "Rest at least 5 minutes so the juices settle back into the meat instead of running onto the board.",
+      "wait": "At least 5 min"
     },
     {
       "do": "Slice thin against the grain, across the direction of the fibers. Shortening the fibers is what makes it tender rather than chewy. For tacos, cut the slices crosswise into small cubes."

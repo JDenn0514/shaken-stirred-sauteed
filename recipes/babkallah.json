@@ -131,11 +131,27 @@
         {
           "do": "Warm the milk over low heat, swirling, just until lukewarm, about 105F (40C). The microwave works too; just don't overshoot, since hot milk kills yeast. Pour into a large bowl and whisk in the yeast.",
           "wait": "5 to 10 min",
-          "cue": "Foamy"
+          "cue": "Foamy",
+          "uses": [
+            "Whole milk",
+            "Active dry yeast"
+          ]
         },
         {
           "do": "Whisk in the granulated sugar, yolks and vanilla. Add the flour, salt and butter pieces and stir with a wooden spoon into a shaggy dough. Knead on a lightly floured surface 8 to 10 minutes, adding flour only as needed. Stand mixer with dough hook, medium speed, 5 to 8 minutes.",
-          "cue": "Smooth and supple, no longer shiny"
+          "wait": "8 to 10 min",
+          "cue": "Smooth and supple, no longer shiny",
+          "uses": [
+            "Granulated sugar",
+            "Large egg yolks",
+            "Vanilla extract",
+            "All-purpose flour",
+            "Diamond Crystal kosher salt",
+            {
+              "item": "Unsalted butter",
+              "group": "Dough"
+            }
+          ]
         },
         {
           "do": "Butter a large bowl, set the dough in it as a ball and cover with plastic wrap. Leave in a warm spot; how long it takes depends on the room.",
@@ -148,13 +164,25 @@
       "group": "Filling & assembly",
       "items": [
         {
-          "do": "Toss the chocolate, brown sugar, cinnamon and pinch of salt together in a small bowl."
+          "do": "Toss the chocolate, brown sugar, cinnamon and pinch of salt together in a small bowl.",
+          "uses": [
+            "Semisweet chocolate",
+            "Light brown sugar",
+            "Ground cinnamon",
+            "Kosher salt"
+          ]
         },
         {
           "do": "Divide the dough into 3 equal pieces. Roll each into a 12-inch rope, flatten it with the heel of your hand, then roll it out to a 12 x 6-inch rectangle. It shouldn't need flour."
         },
         {
-          "do": "Brush each rectangle with melted butter and scatter a third of the filling over it, leaving a 1/2-inch bare strip along one long edge. That bare strip is what seals the log."
+          "do": "Brush each rectangle with melted butter and scatter a third of the filling over it, leaving a 1/2-inch bare strip along one long edge. That bare strip is what seals the log.",
+          "uses": [
+            {
+              "item": "Unsalted butter",
+              "group": "Filling & assembly"
+            }
+          ]
         },
         {
           "do": "Starting from the long side opposite the bare strip, roll each rectangle into a spiral log. Pinch the seam firmly along its length; a log that opens during braiding loses its swirl."
@@ -175,7 +203,11 @@
         {
           "do": "Brush the loaf all over with beaten egg and sprinkle generously with demerara.",
           "wait": "35 to 45 min",
-          "cue": "Surface deeply browned"
+          "cue": "Surface deeply browned",
+          "uses": [
+            "Large egg",
+            "Demerara sugar"
+          ]
         },
         {
           "do": "Cool completely on a wire rack before slicing. The filling needs time to set, and a warm loaf tears."

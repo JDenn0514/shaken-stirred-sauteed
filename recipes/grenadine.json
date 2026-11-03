@@ -49,7 +49,13 @@
   "steps": [
     {
       "do": "Combine everything in a medium saucepan over medium heat, about 8 min. Whisk as it warms so the sugar doesn't settle and catch on the bottom. Take it off before it boils.",
-      "cue": "Sugar fully dissolved, small bubbles just starting at the edges"
+      "wait": "About 8 min",
+      "cue": "Sugar fully dissolved, small bubbles just starting at the edges",
+      "uses": [
+        "Pomegranate juice",
+        "Granulated sugar",
+        "Lemon juice"
+      ]
     },
     {
       "do": "Pull from the heat and cool to room temperature, then funnel into the bottle and refrigerate."

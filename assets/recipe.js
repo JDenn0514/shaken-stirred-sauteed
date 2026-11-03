@@ -1,5 +1,5 @@
 (() => {
-  const { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON } = window.SSS;
+  const { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups } = window.SSS;
   const root = document.getElementById("recipe");
   const slug = new URLSearchParams(location.search).get("r") || "";
 
@@ -21,21 +21,6 @@
   const KEY = `sss:progress:${slug}`;
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
   const save = (p) => { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch {} };
-
-  // Ingredients, steps and notes may be a flat list of entries, or a list of
-  // { "group": "For the sauce", "items": [...] } sections (or a mix).
-  const toGroups = (list = []) => {
-    const groups = [];
-    for (const entry of list) {
-      if (entry && Array.isArray(entry.items)) {
-        groups.push({ group: entry.group || "", items: entry.items });
-      } else if (entry) {
-        if (!groups.length || groups[groups.length - 1].group) groups.push({ group: "", items: [] });
-        groups[groups.length - 1].items.push(entry);
-      }
-    }
-    return groups;
-  };
 
   // An ingredient is a plain string, or { grams, qty, ml, item, note }.
   const ingredientHTML = (it) => {
@@ -128,6 +113,7 @@
       ${facts.length ? `<dl class="facts">${facts.map(([k, v]) =>
         `<div class="fact"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
 
+      ${window.SSSCook ? `<button class="btn cook-start" id="cook-start" type="button">${esc(window.SSSCook.startLabel(r))}</button>` : ""}
       <div class="toolbar">
         <button class="btn" id="wake" aria-pressed="false" hidden>☀️ Keep screen on</button>
         <button class="btn" id="reset">↺ Reset checkmarks</button>
@@ -144,10 +130,10 @@
         ? `<a href="${esc(safeURL(r.source.url))}" rel="noopener noreferrer" target="_blank">${esc(r.source.name || r.source.url)}</a>`
         : esc(r.source.name || r.source.url)}</p>` : ""}
     `;
-    wire();
+    wire(r);
   }
 
-  function wire() {
+  function wire(r) {
     // Numbering continues across step groups (set here, not inline, so the
     // page's Content-Security-Policy can forbid inline styles).
     root.querySelectorAll("ol.steps[data-start]").forEach((ol) => {
@@ -155,7 +141,17 @@
     });
     document.getElementById("print").addEventListener("click", () => window.print());
 
-    const progress = Object.assign({ ing: [], steps: [] }, load());
+    // Progress is saved by position, so it's only kept while the recipe's
+    // ingredients and steps are the same shape as when it was saved.
+    const shape = JSON.stringify([
+      toGroups(r.ingredients).flatMap((g) => g.items.map((i) => (typeof i === "string" ? i : i.item))),
+      toGroups(r.steps).reduce((n, g) => n + g.items.length, 0),
+    ]);
+    let fp = 0;
+    for (const ch of shape) fp = (fp * 31 + ch.charCodeAt(0)) | 0;
+    const saved = load();
+    const progress = Object.assign({ ing: [], steps: [] }, saved.fp == null || saved.fp === fp ? saved : {}, { fp });
+    const links = window.SSSCook ? window.SSSCook.linkIngredients(r) : null;
     const boxes = [...root.querySelectorAll("[data-ing]")];
     const steps = [...root.querySelectorAll("[data-step]")];
 
@@ -164,14 +160,18 @@
       const firstOpen = steps.find((s) => !progress.steps.includes(+s.dataset.step));
       steps.forEach((s) => {
         s.classList.toggle("done", progress.steps.includes(+s.dataset.step));
-        s.classList.toggle("current", s === firstOpen && progress.steps.length > 0);
+        const isCurrent = s === firstOpen && progress.steps.length > 0;
+        s.classList.toggle("current", isCurrent);
+        if (isCurrent) s.setAttribute("aria-current", "step"); else s.removeAttribute("aria-current");
       });
     };
     const toggle = (arr, i) => { const k = arr.indexOf(i); k >= 0 ? arr.splice(k, 1) : arr.push(i); };
 
     root.addEventListener("change", (e) => {
       if (!e.target.matches("[data-ing]")) return;
-      toggle(progress.ing, +e.target.dataset.ing); save(progress); paint();
+      if (window.SSSCook) window.SSSCook.tickIngredient(progress, links, +e.target.dataset.ing, e.target.checked);
+      else toggle(progress.ing, +e.target.dataset.ing);
+      save(progress); paint();
     });
     steps.forEach((s) => {
       const flip = () => { toggle(progress.steps, +s.dataset.step); save(progress); paint(); };
@@ -179,9 +179,34 @@
       s.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
     });
     document.getElementById("reset").addEventListener("click", () => {
-      progress.ing = []; progress.steps = []; save(progress); paint();
+      progress.ing = []; progress.steps = []; progress.uses = []; progress.started = false; save(progress); paint();
     });
     paint();
+
+    // Cook mode is open while the URL ends in #cook, so the phone's back
+    // gesture closes it and a reload keeps it open.
+    if (window.SSSCook) {
+      let cook = null;
+      const sync = () => {
+        if (location.hash === "#cook" && !cook) {
+          cook = window.SSSCook.open({ recipe: r, slug, progress, save, onChange: paint, onClose: close });
+        } else if (location.hash !== "#cook" && cook) {
+          cook.close(); cook = null;
+        }
+      };
+      const close = () => {
+        if (history.state && history.state.cook) return history.back();
+        history.replaceState(null, "", location.pathname + location.search);
+        sync();
+      };
+      document.getElementById("cook-start").addEventListener("click", () => {
+        history.pushState({ cook: true }, "", "#cook");
+        sync();
+        window.scrollTo(0, 0);
+      });
+      window.addEventListener("popstate", sync);
+      sync();
+    }
 
     // Keep the phone screen awake while cooking (where the browser supports it).
     const wakeBtn = document.getElementById("wake");

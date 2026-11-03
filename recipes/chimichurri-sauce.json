@@ -64,13 +64,29 @@
   ],
   "steps": [
     {
-      "do": "Mince the onion, bell pepper, parsley, oregano, and garlic fine, so no single piece dominates a bite."
+      "do": "Mince the onion, bell pepper, parsley, oregano, and garlic fine, so no single piece dominates a bite.",
+      "uses": [
+        "red onion, minced",
+        "bell pepper, minced",
+        "flat leaf parsley, minced",
+        "fresh oregano, minced",
+        "fresh garlic, minced"
+      ]
     },
     {
-      "do": "Combine everything in a bowl — oil, vinegar, all the minced ingredients, pepper flakes — and whisk until it comes together."
+      "do": "Combine everything in a bowl — oil, vinegar, all the minced ingredients, pepper flakes — and whisk until it comes together.",
+      "uses": [
+        "extra virgin olive oil",
+        "red wine vinegar",
+        "red pepper flakes"
+      ]
     },
     {
-      "do": "Season with salt and pepper. Let it stand at least 30 minutes before serving so the flavors settle in. Whisk again just before it goes to the table."
+      "do": "Season with salt and pepper. Let it stand at least 30 minutes before serving so the flavors settle in. Whisk again just before it goes to the table.",
+      "wait": "At least 30 min",
+      "uses": [
+        "Salt and pepper to taste"
+      ]
     }
   ],
   "notes": [

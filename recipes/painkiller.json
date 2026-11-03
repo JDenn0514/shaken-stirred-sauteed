@@ -45,7 +45,13 @@
   ],
   "steps": [
     {
-      "do": "Combine everything in a shaker tin, fill with ice and shake hard. The shake whips air into the coconut cream."
+      "do": "Combine everything in a shaker tin, fill with ice and shake hard. The shake whips air into the coconut cream.",
+      "uses": [
+        "Dark rum",
+        "Pineapple juice",
+        "Orange juice",
+        "Sweetened coconut cream"
+      ]
     },
     {
       "do": "Double strain (Hawthorne plus fine strainer) into the glass to keep the foam, then add fresh ice, cubed or crushed."
