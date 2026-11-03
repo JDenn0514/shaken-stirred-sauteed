@@ -27,3 +27,17 @@ Jacob's calls after clicking through it:
 ## Layout mockups (Lineup)
 
 `lineup-prototype.html` at the repo root, with `prototypes/lineup-ui/`. It shows three layouts (A: one long page, B: step by step, C: menu card), each on eight screens: the lineup page empty, searching and ready; the recipe page before and after adding; the recipes page; and cook mode on a step and in a gap. Switch layouts and screens from the bar at the bottom, or the URL hash (`#b-ready`). Run `python3 -m http.server 8000` in the repo and open `/lineup-prototype.html`. It uses the site's real stylesheet and recipe list; nothing behind the buttons works. (Published at https://claude.ai/artifact/4qmYGSPQcdKCuEqQ5HAe3i, private to Jacob.)
+
+### Round 2
+
+`lineup-prototype-v2.html` (script `prototypes/lineup-ui/lineup-ui-v2.js`), published at the same link as round 1. It's one combined layout from Jacob's picks:
+
+- **Empty lineup page:** A's, saying "Let's make something".
+- **Search:** C's compact rows and type tabs, with "Back to your lineup" at the top.
+- **Ready to cook:** C's menu card.
+- **Recipe page:** A's "+ Add to lineup" button. The lineup link sits in the row with the back link, not in the header, and the top of the page doesn't change once the recipe is added.
+- **Browsing:** B's tape marker.
+- **Cook mode:** A's, with "Next step".
+- **Waits:** a "Wait about 12 minutes" step, with a ring that empties and a Start timer button.
+
+Options remain for two open questions: how sub-recipes sit on the menu card (three options), and what tapping "In your lineup" does (two options).
