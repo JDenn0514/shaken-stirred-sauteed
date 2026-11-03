@@ -24,6 +24,8 @@
       "4 hr"
     ]
   ],
+  "serve": "soon",
+  "sits": "15 min",
   "time": {
     "total": 240
   },
@@ -70,11 +72,15 @@
       "items": [
         {
           "qty": "to taste",
-          "item": "Whipped cream"
+          "item": "Whipped cream",
+          "recipe": "whipped-cream",
+          "optional": true
         },
         {
           "qty": "optional",
-          "item": "Lemon curd"
+          "item": "Lemon curd",
+          "recipe": "lemon-curd",
+          "optional": true
         },
         {
           "qty": "to taste",
@@ -88,14 +94,18 @@
       "group": "Meringue",
       "items": [
         {
-          "do": "Heat the oven to 350°F. (You'll drop it to 200°F the moment the pavlova goes in.)"
+          "do": "Heat the oven to 350°F. (You'll drop it to 200°F the moment the pavlova goes in.)",
+          "hands": "1 min",
+          "preheat": "350F"
         },
         {
           "do": "Whip the whites on medium-high to soft peaks.",
           "wait": "~5 min",
           "uses": [
             "Egg whites"
-          ]
+          ],
+          "hands": "30 sec",
+          "watch": true
         },
         {
           "do": "Add the sugar in two parts, beating about 30 sec after each. Then go to high speed.",
@@ -103,21 +113,26 @@
           "cue": "Glossy, stiff peaks that don't move when the whisk is held upright",
           "uses": [
             "Superfine sugar"
-          ]
+          ],
+          "hands": "1 min",
+          "watch": true
         },
         {
           "do": "Beat in the vanilla for 1 minute. If the peaks have softened, keep beating.",
           "wait": "1 min",
           "uses": [
             "Pure vanilla extract"
-          ]
+          ],
+          "hands": "30 sec",
+          "watch": true
         },
         {
           "do": "Gently fold in the cream of tartar and cornstarch with a spatula.",
           "uses": [
             "Cream of tartar",
             "Cornstarch"
-          ]
+          ],
+          "hands": "1 min"
         }
       ]
     },
@@ -125,15 +140,22 @@
       "group": "Shape & bake",
       "items": [
         {
-          "do": "Spread into an 8–9 in circle with tall edges and a clear hollow in the center. Swirl peaks with the back of a spoon if you like."
+          "do": "Spread into an 8–9 in circle with tall edges and a clear hollow in the center. Swirl peaks with the back of a spoon if you like.",
+          "hands": "4 min"
         },
         {
           "do": "Put it in the oven and immediately turn the heat down to 200°F. Rotate once if spots start browning; otherwise keep the door shut.",
           "wait": "~90 min",
-          "cue": "Firm and dry to the touch, and still pale"
+          "cue": "Firm and dry to the touch, and still pale",
+          "hands": "30 sec",
+          "oven": "200F"
         },
         {
-          "do": "Turn the oven off and let the pavlova cool completely inside it. The slow cool keeps cracking down."
+          "do": "Turn the oven off and let the pavlova cool completely inside it. The slow cool keeps cracking down.",
+          "hands": "30 sec",
+          "wait": "About 2 hr",
+          "oven": "off",
+          "holds": true
         }
       ]
     },
@@ -146,7 +168,8 @@
             "Whipped cream",
             "Lemon curd",
             "Fresh berries or fruit"
-          ]
+          ],
+          "hands": "4 min"
         }
       ]
     }

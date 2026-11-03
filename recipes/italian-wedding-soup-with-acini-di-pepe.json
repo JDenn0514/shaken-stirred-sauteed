@@ -20,6 +20,8 @@
       "50 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "20 min",
   "time": {
     "total": 50
   },
@@ -101,7 +103,8 @@
         },
         {
           "qty": "1 cup",
-          "item": "dry acini di pepe or orzo"
+          "item": "dry acini di pepe or orzo",
+          "recipe": "homemade-acini-di-pepe"
         },
         {
           "qty": "6 oz",
@@ -121,30 +124,41 @@
   "steps": [
     {
       "do": "Combine the beef, pork, bread crumbs, parsley, oregano, Parmesan, egg, 1 tsp salt and 1/4 tsp pepper. Toss gently with your hands until evenly mixed. Roll into 3/4 to 1 inch balls, small enough to fit a spoon and spread evenly.",
-      "uses": ["lean ground beef (80 to 90% lean)", "ground pork", "fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)", "fresh parsley, chopped", "fresh oregano, minced (or 3/4 tsp dried)", { "item": "Parmesan, finely shredded", "group": "Meatballs" }, "large egg", "salt", "black pepper, freshly ground"]
+      "uses": ["lean ground beef (80 to 90% lean)", "ground pork", "fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)", "fresh parsley, chopped", "fresh oregano, minced (or 3/4 tsp dried)", { "item": "Parmesan, finely shredded", "group": "Meatballs" }, "large egg", "salt", "black pepper, freshly ground"],
+      "hands": "12 min"
     },
     {
       "do": "Heat 1 tbsp oil in a large nonstick skillet over medium-high. Brown half the meatballs, turning to color 2 or 3 sides, about 4 minutes; two batches leave them room to brown. Drain on paper towels, keep the oil in the pan, and repeat. They finish cooking in the soup.",
       "wait": "About 4 min",
-      "uses": ["olive oil, for browning"]
+      "uses": ["olive oil, for browning"],
+      "hands": "5 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Meanwhile, heat 1 tbsp oil in a large pot over medium-high. Sauté the carrots, onion and celery until soft, 6 to 8 minutes; add the garlic for 1 minute.",
       "wait": "6 to 8 min",
-      "uses": ["olive oil", "carrots, chopped", "yellow onion, chopped", "celery, chopped", "garlic, minced (1 1/2 tbsp)"]
+      "uses": ["olive oil", "carrots, chopped", "yellow onion, chopped", "celery, chopped", "garlic, minced (1 1/2 tbsp)"],
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Add the broth, season with salt and pepper, and bring to a boil. Stir in the pasta and meatballs and lower the heat to medium-low.",
-      "uses": ["low-sodium chicken broth or chicken bone broth (about 70 oz)", "salt and black pepper, to taste", "dry acini di pepe or orzo"]
+      "uses": ["low-sodium chicken broth or chicken bone broth (about 70 oz)", "salt and black pepper, to taste", "dry acini di pepe or orzo"],
+      "hands": "3 min",
+      "burner": true
     },
     {
       "do": "Cover and simmer, stirring now and then, until the pasta is tender and the meatballs are cooked through, about 10 minutes. Stir in the spinach for the last 1 minute.",
       "wait": "About 10 min",
-      "uses": ["baby spinach, roughly chopped"]
+      "uses": ["baby spinach, roughly chopped"],
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Serve hot, with Parmesan over each bowl.",
-      "uses": [{ "item": "Parmesan, finely shredded", "group": "To serve" }]
+      "uses": [{ "item": "Parmesan, finely shredded", "group": "To serve" }],
+      "hands": "2 min"
     }
   ],
   "notes": [

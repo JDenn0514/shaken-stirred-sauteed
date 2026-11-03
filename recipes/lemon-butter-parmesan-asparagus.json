@@ -25,6 +25,8 @@
       "25 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "5 min",
   "time": {
     "total": 25
   },
@@ -61,20 +63,27 @@
   "steps": [
     {
       "do": "Arrange the trimmed asparagus in a single layer on a rimmed baking sheet. Drizzle with the olive oil, season with the salt and pepper, and roll to coat evenly.",
-      "uses": ["asparagus, trimmed", "olive oil", "sea salt, or to taste", "black pepper, freshly ground, or to taste"]
+      "uses": ["asparagus, trimmed", "olive oil", "sea salt, or to taste", "black pepper, freshly ground, or to taste"],
+      "hands": "4 min"
     },
     {
       "do": "Squeeze the juice of half the lemon over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center.",
-      "uses": ["lemon, half juiced and half sliced into rings", "unsalted butter, cut into pats"]
+      "uses": ["lemon, half juiced and half sliced into rings", "unsalted butter, cut into pats"],
+      "hands": "3 min"
     },
     {
       "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes. Pull the pan and switch the oven to broil.",
-      "wait": "8 to 10 min"
+      "wait": "8 to 10 min",
+      "hands": "30 sec",
+      "oven": "400F"
     },
     {
       "do": "Scatter the parmesan over the center of the asparagus and broil 2 to 3 minutes, until melted and golden.",
       "wait": "2 to 3 min",
-      "uses": ["shredded parmesan cheese, or to taste"]
+      "uses": ["shredded parmesan cheese, or to taste"],
+      "hands": "30 sec",
+      "watch": true,
+      "oven": "broil"
     }
   ],
   "notes": [

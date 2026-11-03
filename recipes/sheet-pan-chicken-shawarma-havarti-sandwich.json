@@ -29,6 +29,8 @@
       "1 hr 15 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "10 min",
   "time": {
     "total": 75
   },
@@ -146,7 +148,8 @@
         },
         {
           "qty": "1/2 cup",
-          "item": "pickled red onions (optional)"
+          "item": "pickled red onions (optional)",
+          "optional": true
         },
         {
           "item": "olive oil and sesame seeds, for the top"
@@ -169,11 +172,15 @@
         "turmeric",
         "chili flakes, to taste",
         "kosher salt"
-      ]
+      ],
+      "hands": "4 min",
+      "preheat": "425F"
     },
     {
       "do": "Spread the chicken in one layer on a sheet pan and roast 20 minutes, until cooked through. Switch to broil for 1 to 2 minutes to char the edges, then set the oven back to 425F (220C) for the sandwiches.",
-      "wait": "20 min"
+      "wait": "20 min",
+      "hands": "2 min",
+      "oven": "425F"
     },
     {
       "do": "While the chicken roasts, blend all the tahini ingredients until smooth. Add water a spoonful at a time until it pours, then taste for salt; it needs some.",
@@ -186,7 +193,8 @@
         "garlic cloves, grated",
         "honey",
         "kosher salt, plus more to taste"
-      ]
+      ],
+      "hands": "4 min"
     },
     {
       "do": "Lay the naan flat on a sheet pan. Spread dressing over one half of each, then layer sun-dried tomatoes, pickles, both cheeses and the chicken. Cover with foil and bake 15 minutes, until the cheese melts; the foil keeps the naan soft while the filling heats.",
@@ -201,7 +209,9 @@
         "sliced dill pickles and/or pepperoncini",
         "Havarti",
         "gouda"
-      ]
+      ],
+      "hands": "6 min",
+      "oven": "425F"
     },
     {
       "do": "Uncover. Pile on the sprouts and onions, drizzle with more dressing, and fold the bare half of each naan over the top, pressing gently. Rub the tops with oil, sprinkle with sesame seeds, and bake uncovered 5 to 10 minutes until toasted. Check at 5 minutes: naan overbrowns quickly.",
@@ -214,7 +224,9 @@
           "amount": "more, to drizzle"
         },
         "olive oil and sesame seeds, for the top"
-      ]
+      ],
+      "hands": "4 min",
+      "oven": "425F"
     },
     {
       "do": "Slice and serve warm, with extra dressing on the side.",
@@ -223,7 +235,8 @@
           "item": "green tahini, Caesar or mayo, plus extra to serve",
           "amount": "the extra, to serve"
         }
-      ]
+      ],
+      "hands": "2 min"
     }
   ],
   "notes": [

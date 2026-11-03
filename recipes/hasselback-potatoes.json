@@ -27,6 +27,8 @@
       "55–60 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "10 min",
   "ingredients": [
     {
       "qty": "8",
@@ -36,7 +38,8 @@
     {
       "qty": "1 tsp",
       "item": "garlic paste",
-      "note": "or garlic powder"
+      "note": "or garlic powder",
+      "recipe": "garlic-paste"
     },
     {
       "qty": "2 tbsp",
@@ -56,19 +59,24 @@
   ],
   "steps": [
     {
-      "do": "Heat the oven to 200°C / 400°F. Line a baking tray with parchment or grease it."
+      "do": "Heat the oven to 200°C / 400°F. Line a baking tray with parchment or grease it.",
+      "hands": "1 min",
+      "preheat": "200C"
     },
     {
       "do": "Scrub the potatoes under cold water and dry them.",
       "uses": [
         "medium potatoes"
-      ]
+      ],
+      "hands": "3 min"
     },
     {
-      "do": "Working one at a time on a board, hold a potato between thumb and finger and cut crosswise slices about 4 mm apart, stopping short of the base so the slices stay joined. Laying chopsticks along both sides makes this foolproof — the blade stops on the wood."
+      "do": "Working one at a time on a board, hold a potato between thumb and finger and cut crosswise slices about 4 mm apart, stopping short of the base so the slices stay joined. Laying chopsticks along both sides makes this foolproof — the blade stops on the wood.",
+      "hands": "10 min"
     },
     {
-      "do": "Set the potatoes on the tray, cut side up."
+      "do": "Set the potatoes on the tray, cut side up.",
+      "hands": "1 min"
     },
     {
       "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl. Hold back roughly half for later.",
@@ -77,21 +85,27 @@
         "salted butter, melted",
         "garlic paste",
         "Salt and freshly ground black pepper"
-      ]
+      ],
+      "hands": "2 min"
     },
     {
       "do": "Brush the mixture over each potato, pushing it down into the cuts. Bake 40 minutes.",
-      "wait": "40 min"
+      "wait": "40 min",
+      "hands": "3 min",
+      "oven": "200C"
     },
     {
       "do": "Pull the tray out, baste with the reserved garlic butter, and return to the oven for a further 15–20 minutes, until cooked through and crisp at the edges.",
-      "wait": "15 to 20 min"
+      "wait": "15 to 20 min",
+      "hands": "2 min",
+      "oven": "200C"
     },
     {
       "do": "Scatter with parsley and serve hot.",
       "uses": [
         "Chopped parsley, to finish"
-      ]
+      ],
+      "hands": "1 min"
     }
   ],
   "notes": [

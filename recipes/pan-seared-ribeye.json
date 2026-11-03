@@ -21,6 +21,8 @@
     ["Cook", "8 min"],
     ["Rest", "5 to 10 min"]
   ],
+  "serve": "hot",
+  "sits": "5 min",
   "time": {
     "total": 48
   },
@@ -45,42 +47,55 @@
     },
     {
       "item": "Fresh herbs",
-      "note": "optional; rosemary and thyme"
+      "note": "optional; rosemary and thyme",
+      "optional": true
     },
     {
       "qty": "2 cloves",
       "item": "Garlic",
-      "note": "optional, peeled and left whole"
+      "note": "optional, peeled and left whole",
+      "optional": true
     }
   ],
   "steps": [
     {
       "do": "Take the steak out of the fridge 30 minutes before cooking so it cooks evenly instead of staying raw in the center.",
       "wait": "30 min",
-      "uses": ["Ribeye steak"]
+      "uses": ["Ribeye steak"],
+      "hands": "30 sec"
     },
     {
       "do": "Heat the oil in the skillet over medium-high heat until it just starts to smoke. A pan that isn't hot enough won't give you a golden crust.",
       "cue": "Oil just starting to smoke",
-      "uses": ["Cooking oil"]
+      "uses": ["Cooking oil"],
+      "hands": "3 min",
+      "burner": true
     },
     {
       "do": "Pat the steak dry and season the top side right before it goes in. Salted any earlier, it draws out moisture and won't sear.",
-      "uses": [{ "item": "Steak seasoning", "amount": "half" }]
+      "uses": [{ "item": "Steak seasoning", "amount": "half" }],
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Lay it in seasoned side down, season the new top side, and cook without moving it: 3 to 4 minutes for a 1 in (2.5 cm) steak, 5 minutes for 1 1/2 in (4 cm).",
       "wait": "3 to 5 min, undisturbed",
-      "uses": [{ "item": "Steak seasoning", "amount": "the rest" }]
+      "uses": [{ "item": "Steak seasoning", "amount": "the rest" }],
+      "hands": "30 sec",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Turn it, add the butter, herbs and garlic, and keep spooning the melted butter over the steak as it finishes. Pull it at 130F (54C) inside for medium-rare; it climbs about 5F more as it rests.",
       "cue": "130F (54C) inside for medium-rare",
-      "uses": ["Butter", "Fresh herbs", "Garlic"]
+      "uses": ["Butter", "Fresh herbs", "Garlic"],
+      "hands": "4 min",
+      "burner": true
     },
     {
       "do": "Rest 5 to 10 minutes before slicing and serving.",
-      "wait": "5 to 10 min"
+      "wait": "5 to 10 min",
+      "hands": "30 sec"
     }
   ],
   "notes": [

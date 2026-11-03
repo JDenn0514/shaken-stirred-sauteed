@@ -26,6 +26,8 @@
       "2 hours"
     ]
   ],
+  "serve": "hot",
+  "sits": "30 min",
   "time": {
     "total": 120
   },
@@ -68,7 +70,8 @@
     },
     {
       "qty": "4",
-      "item": "hard-boiled eggs, peeled (optional)"
+      "item": "hard-boiled eggs, peeled (optional)",
+      "optional": true
     },
     {
       "item": "steamed white rice, to serve"
@@ -110,32 +113,44 @@
   "steps": [
     {
       "do": "Tie all the spice bundle ingredients into a square of cheesecloth with kitchen string, so they can be fished out whole before reducing.",
-      "uses": ["star anise", "cinnamon stick (Chinese cassia)", "whole cloves", "bay leaves", "Sichuan peppercorns", "dried tangerine peel", "fresh ginger"]
+      "uses": ["star anise", "cinnamon stick (Chinese cassia)", "whole cloves", "bay leaves", "Sichuan peppercorns", "dried tangerine peel", "fresh ginger"],
+      "hands": "3 min"
     },
     {
       "do": "Bring enough water to cover the pork to a boil. Blanch the pork belly 1 minute, drain, and rinse off any scum.",
       "wait": "1 min",
-      "uses": ["skin-on pork belly, cut into 1/2 in pieces"]
+      "uses": ["skin-on pork belly, cut into 1/2 in pieces"],
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Warm the oil in a wok over low heat and add the sugar. Once it starts to melt, add the onion, raise the heat to medium-high and stir-fry 1 minute. Add the mushrooms and stir-fry 2 minutes more.",
-      "uses": ["neutral oil", "rock sugar (or 1 1/2 tbsp granulated sugar)", "onion, diced (or 2 to 3 shallots)", "shiitake mushrooms, fresh or dried, cut into 1/2 in dice"]
+      "uses": ["neutral oil", "rock sugar (or 1 1/2 tbsp granulated sugar)", "onion, diced (or 2 to 3 shallots)", "shiitake mushrooms, fresh or dried, cut into 1/2 in dice"],
+      "hands": "5 min",
+      "burner": true
     },
     {
       "do": "Add the pork, Shaoxing wine, both soy sauces and the water, and bring to a boil. Drop in the spice bundle and the eggs, then turn the heat to its lowest setting.",
-      "uses": ["Shaoxing wine (60 ml)", "light soy sauce (45 ml)", "dark soy sauce (30 ml)", "water (475 ml)", "hard-boiled eggs, peeled (optional)"]
+      "uses": ["Shaoxing wine (60 ml)", "light soy sauce (45 ml)", "dark soy sauce (30 ml)", "water (475 ml)", "hard-boiled eggs, peeled (optional)"],
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Simmer 1 1/2 hours, stirring now and then so nothing catches on the bottom. Keep it at the barest simmer so the sauce isn't gone before the final reduction.",
-      "wait": "1 1/2 hr"
+      "wait": "1 1/2 hr",
+      "hands": "30 sec",
+      "burner": true
     },
     {
       "do": "Once the pork is falling apart, remove the spice bundle. Raise the heat to medium-high and reduce, stirring occasionally, about 5 minutes, until the sauce coats a spoon but there's still plenty to soak the rice.",
-      "wait": "About 5 min"
+      "wait": "About 5 min",
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Spoon the pork and sauce over steamed rice, with an egg (halved) in each bowl.",
-      "uses": ["steamed white rice, to serve"]
+      "uses": ["steamed white rice, to serve"],
+      "hands": "2 min"
     }
   ],
   "notes": [

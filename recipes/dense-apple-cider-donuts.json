@@ -19,6 +19,7 @@
       "1 hr"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 60
   },
@@ -38,7 +39,8 @@
         {
           "qty": "1 1/2 cups",
           "item": "Apple cider",
-          "note": "360 ml; fresh, not powdered mix"
+          "note": "360 ml; fresh, not powdered mix",
+          "recipe": "homemade-apple-cider"
         }
       ]
     },
@@ -144,11 +146,14 @@
           "cue": "Down to 1/2 cup (120 ml), thick and concentrated",
           "uses": [
             "Apple cider"
-          ]
+          ],
+          "hands": "2 min",
+          "burner": true
         },
         {
           "do": "Take off the heat and let it cool before it goes into the batter.",
-          "wait": "10 min or more"
+          "wait": "10 min or more",
+          "hands": "30 sec"
         }
       ]
     },
@@ -170,7 +175,8 @@
               "group": "Dry bowl"
             },
             "Salt"
-          ]
+          ],
+          "hands": "2 min"
         },
         {
           "do": "In a second bowl, whisk the melted butter, egg, both sugars, milk and vanilla. Pour into the dry ingredients, add the cooled cider reduction, and whisk until smooth. The batter should be a little thick; that's what makes the crumb dense and cakey.",
@@ -187,10 +193,13 @@
             },
             "Milk",
             "Pure vanilla extract"
-          ]
+          ],
+          "hands": "4 min"
         },
         {
-          "do": "Scrape the batter into a large zip-top bag, snip off a corner, and pipe into the pan, filling each cavity about halfway."
+          "do": "Scrape the batter into a large zip-top bag, snip off a corner, and pipe into the pan, filling each cavity about halfway.",
+          "hands": "4 min",
+          "oven": false
         }
       ]
     },
@@ -200,11 +209,15 @@
         {
           "do": "Bake the donuts.",
           "wait": "10 to 11 min",
-          "cue": "Edges and tops lightly browned; the top springs back when poked"
+          "cue": "Edges and tops lightly browned; the top springs back when poked",
+          "hands": "30 sec",
+          "oven": "350F"
         },
         {
           "do": "Cool in the pan, then turn out onto a wire rack. Re-grease the pan and bake the remaining batter.",
-          "wait": "2 min"
+          "wait": "2 min",
+          "hands": "2 min",
+          "oven": "350F"
         }
       ]
     },
@@ -226,7 +239,8 @@
               "item": "Apple pie spice",
               "group": "Topping"
             }
-          ]
+          ],
+          "hands": "1 min"
         },
         {
           "do": "Once the donuts are cool enough to handle, dip both sides quickly in the melted butter, then coat generously in the spiced sugar. Don't let them soak: they drink butter fast, and if the bowl runs low, brush it on instead.",
@@ -235,7 +249,8 @@
               "item": "Unsalted butter",
               "group": "Topping"
             }
-          ]
+          ],
+          "hands": "6 min"
         }
       ]
     }

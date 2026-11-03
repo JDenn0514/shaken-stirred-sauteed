@@ -39,6 +39,7 @@
       "About 1 hr 15 min (to cold)"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 75
   },
@@ -69,18 +70,24 @@
         "Blueberries",
         "Granulated sugar",
         "Water"
-      ]
+      ],
+      "hands": "3 min",
+      "burner": true
     },
     {
       "do": "Keep it at a simmer, mashing the berries against the pan as they soften so they give up their juice, until the sugar has dissolved.",
-      "cue": "Sugar dissolved, berries mashed"
+      "cue": "Sugar dissolved, berries mashed",
+      "hands": "5 min",
+      "burner": true
     },
     {
-      "do": "Strain through the fine-mesh strainer, pressing the solids to get all the syrup out. Discard the solids."
+      "do": "Strain through the fine-mesh strainer, pressing the solids to get all the syrup out. Discard the solids.",
+      "hands": "3 min"
     },
     {
       "do": "Cool, then pour into the jar and refrigerate until cold, about 1 hour.",
-      "wait": "About 1 hr in the fridge"
+      "wait": "About 1 hr in the fridge",
+      "hands": "1 min"
     }
   ],
   "notes": [

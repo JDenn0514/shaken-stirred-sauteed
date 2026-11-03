@@ -24,6 +24,7 @@
       "About 5 hr"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 300
   },
@@ -135,7 +136,10 @@
           "uses": [
             "Whole milk",
             "Active dry yeast"
-          ]
+          ],
+          "hands": "1 min",
+          "watch": true,
+          "burner": true
         },
         {
           "do": "Whisk in the granulated sugar, yolks and vanilla. Add the flour, salt and butter pieces and stir with a wooden spoon into a shaggy dough. Knead on a lightly floured surface 8 to 10 minutes, adding flour only as needed. Stand mixer with dough hook, medium speed, 5 to 8 minutes.",
@@ -151,12 +155,15 @@
               "item": "Unsalted butter",
               "group": "Dough"
             }
-          ]
+          ],
+          "hands": "2 min",
+          "watch": true
         },
         {
           "do": "Butter a large bowl, set the dough in it as a ball and cover with plastic wrap. Leave in a warm spot; how long it takes depends on the room.",
           "wait": "1 1/2 to 2 1/2 hr",
-          "cue": "Doubled in size"
+          "cue": "Doubled in size",
+          "hands": "1 min"
         }
       ]
     },
@@ -170,10 +177,12 @@
             "Light brown sugar",
             "Ground cinnamon",
             "Kosher salt"
-          ]
+          ],
+          "hands": "2 min"
         },
         {
-          "do": "Divide the dough into 3 equal pieces. Roll each into a 12-inch rope, flatten it with the heel of your hand, then roll it out to a 12 x 6-inch rectangle. It shouldn't need flour."
+          "do": "Divide the dough into 3 equal pieces. Roll each into a 12-inch rope, flatten it with the heel of your hand, then roll it out to a 12 x 6-inch rectangle. It shouldn't need flour.",
+          "hands": "8 min"
         },
         {
           "do": "Brush each rectangle with melted butter and scatter a third of the filling over it, leaving a 1/2-inch bare strip along one long edge. That bare strip is what seals the log.",
@@ -182,15 +191,19 @@
               "item": "Unsalted butter",
               "group": "Filling & assembly"
             }
-          ]
+          ],
+          "hands": "5 min"
         },
         {
-          "do": "Starting from the long side opposite the bare strip, roll each rectangle into a spiral log. Pinch the seam firmly along its length; a log that opens during braiding loses its swirl."
+          "do": "Starting from the long side opposite the bare strip, roll each rectangle into a spiral log. Pinch the seam firmly along its length; a log that opens during braiding loses its swirl.",
+          "hands": "5 min"
         },
         {
           "do": "Lay the logs seam side down, side by side, on the lined sheet. Pinch together at one end, braid, pinch the far end and tuck both ends under. Keep the braid a little slack, since tension splits the strands in the oven (only cosmetic if it happens). Cover loosely with plastic and set somewhere warm.",
           "wait": "1 to 2 hr",
-          "cue": "About 1 1/2 times its original size"
+          "cue": "About 1 1/2 times its original size",
+          "hands": "5 min",
+          "oven": false
         }
       ]
     },
@@ -198,7 +211,9 @@
       "group": "Bake",
       "items": [
         {
-          "do": "During the second rise, set a rack in the center of the oven and heat it to 350F (175C)."
+          "do": "During the second rise, set a rack in the center of the oven and heat it to 350F (175C).",
+          "hands": "1 min",
+          "preheat": "350F"
         },
         {
           "do": "Brush the loaf all over with beaten egg and sprinkle generously with demerara.",
@@ -207,10 +222,14 @@
           "uses": [
             "Large egg",
             "Demerara sugar"
-          ]
+          ],
+          "hands": "3 min",
+          "oven": "350F"
         },
         {
-          "do": "Cool completely on a wire rack before slicing. The filling needs time to set, and a warm loaf tears."
+          "do": "Cool completely on a wire rack before slicing. The filling needs time to set, and a warm loaf tears.",
+          "hands": "30 sec",
+          "wait": "About 1 hr"
         }
       ]
     }

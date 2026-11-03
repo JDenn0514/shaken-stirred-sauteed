@@ -17,6 +17,7 @@
   "times": [
     ["Active", "5 min"]
   ],
+  "serve": "keeps",
   "time": {
     "total": 5
   },
@@ -46,10 +47,13 @@
       "do": "Whip the cream, sugar and vanilla on medium-high speed to medium peaks, about 3 to 4 minutes. If it goes too far and looks curdled and heavy, fold in a splash more cold cream by hand until it smooths out.",
       "wait": "3 to 4 min",
       "cue": "Medium peaks: firmer than soft, not yet stiff",
-      "uses": ["Heavy cream", "Sugar", "Pure vanilla extract"]
+      "uses": ["Heavy cream", "Sugar", "Pure vanilla extract"],
+      "hands": "30 sec",
+      "watch": true
     },
     {
-      "do": "Use right away, or cover tightly and refrigerate up to 24 hours."
+      "do": "Use right away, or cover tightly and refrigerate up to 24 hours.",
+      "hands": "30 sec"
     }
   ],
   "notes": [

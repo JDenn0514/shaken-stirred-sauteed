@@ -24,6 +24,7 @@
       "1 hr 45 min, plus cooling and 1 hr chill"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 105
   },
@@ -144,20 +145,26 @@
       "items": [
         {
           "do": "Rub the lime zest into the sugar with your fingertips until damp and fragrant. Toss in the flour, mint, baking powder and salt.",
-          "uses": ["Finely grated lime zest", { "item": "Granulated sugar", "group": "Shortbread crust" }, "All-purpose flour", "Fresh mint", "Baking powder", { "item": "Diamond Crystal kosher salt", "group": "Shortbread crust" }]
+          "uses": ["Finely grated lime zest", { "item": "Granulated sugar", "group": "Shortbread crust" }, "All-purpose flour", "Fresh mint", "Baking powder", { "item": "Diamond Crystal kosher salt", "group": "Shortbread crust" }],
+          "hands": "4 min"
         },
         {
           "do": "Add the cold butter and toss to coat, then smash and pinch it in with your fingertips.",
           "cue": "Moist crumbs that clump when squeezed",
-          "uses": [{ "item": "Unsalted butter", "group": "Shortbread crust" }]
+          "uses": [{ "item": "Unsalted butter", "group": "Shortbread crust" }],
+          "hands": "4 min"
         },
         {
           "do": "Scatter the crumbs in the pan and press into an even layer, right into the corners and against the sides. Bake at 350°F (175°C).",
           "wait": "25 to 30 min",
-          "cue": "Lightly golden"
+          "cue": "Lightly golden",
+          "hands": "4 min",
+          "oven": "350F"
         },
         {
-          "do": "Lower the oven to 300°F (150°C) and let the crust cool while you make the curd."
+          "do": "Lower the oven to 300°F (150°C) and let the crust cool while you make the curd.",
+          "hands": "30 sec",
+          "oven": "300F"
         }
       ]
     },
@@ -166,25 +173,34 @@
       "items": [
         {
           "do": "In a small saucepan, combine the lime juice, lemon juice, cornstarch, salt and half the sugar (100 g). Heat over medium, whisking now and then to dissolve the sugar. Once boiling, whisk constantly for about 1 min until slightly thickened, then take off the heat.",
-          "uses": ["Fresh lime juice", "Fresh lemon juice", "Cornstarch", { "item": "Diamond Crystal kosher salt", "group": "Lime curd" }, { "item": "Granulated sugar", "group": "Lime curd", "amount": "100 g" }]
+          "uses": ["Fresh lime juice", "Fresh lemon juice", "Cornstarch", { "item": "Diamond Crystal kosher salt", "group": "Lime curd" }, { "item": "Granulated sugar", "group": "Lime curd", "amount": "100 g" }],
+          "hands": "3 min",
+          "burner": true
         },
         {
           "do": "Only once the citrus is boiling, whisk the yolks, whole egg and remaining 100 g sugar hard for about 1 min. Combining them any earlier can make the curd lumpy.",
           "wait": "About 1 min",
           "cue": "Smooth, thick and a couple of shades paler",
-          "uses": ["Large egg yolks", "Large egg", { "item": "Granulated sugar", "group": "Lime curd", "amount": "100 g" }]
+          "uses": ["Large egg yolks", "Large egg", { "item": "Granulated sugar", "group": "Lime curd", "amount": "100 g" }],
+          "hands": "30 sec",
+          "watch": true
         },
         {
-          "do": "Whisking the whole time, drizzle the hot citrus into the eggs a tablespoon at a time until about half of it is in."
+          "do": "Whisking the whole time, drizzle the hot citrus into the eggs a tablespoon at a time until about half of it is in.",
+          "hands": "2 min"
         },
         {
           "do": "Whisk everything back into the saucepan and cook over medium-low, whisking constantly, 3 to 5 min.",
           "wait": "3 to 5 min",
-          "cue": "Opaque, coats a spoon, holds whisk marks, 170°F (77°C)"
+          "cue": "Opaque, coats a spoon, holds whisk marks, 170°F (77°C)",
+          "hands": "30 sec",
+          "watch": true,
+          "burner": true
         },
         {
           "do": "Off the heat, whisk in the butter one piece at a time, letting each melt before adding the next, until smooth.",
-          "uses": [{ "item": "Unsalted butter", "group": "Lime curd" }]
+          "uses": [{ "item": "Unsalted butter", "group": "Lime curd" }],
+          "hands": "2 min"
         }
       ]
     },
@@ -194,16 +210,21 @@
         {
           "do": "Pour the hot curd over the crust and shake the pan to level it. Bake at 300°F (150°C).",
           "wait": "30 to 35 min",
-          "cue": "Sides puffed, center set but still slightly wobbly"
+          "cue": "Sides puffed, center set but still slightly wobbly",
+          "hands": "1 min",
+          "oven": "300F"
         },
         {
           "do": "Cool completely in the pan, then refrigerate.",
           "wait": "About 1 hr in the fridge",
-          "cue": "The bottom of the pan is cold"
+          "cue": "The bottom of the pan is cold",
+          "hands": "30 sec",
+          "oven": false
         },
         {
           "do": "Lift the slab out by the foil, peel the sides down and slide a spatula underneath to free the crust. Cut into 16 squares. Dust with powdered sugar and lime zest just before serving.",
-          "uses": ["Powdered sugar and lime zest"]
+          "uses": ["Powdered sugar and lime zest"],
+          "hands": "5 min"
         }
       ]
     }

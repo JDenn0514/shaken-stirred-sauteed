@@ -25,6 +25,8 @@
       "55 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "20 min",
   "time": {
     "total": 55
   },
@@ -101,7 +103,10 @@
         "extra virgin olive oil",
         "yellow or white onion, chopped",
         "carrots, peeled and chopped"
-      ]
+      ],
+      "hands": "1 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Add the garlic, cumin, curry powder and thyme and stir constantly about 30 seconds, just until fragrant; stainless scorches spices fast, so keep stirring. Add the tomatoes and cook a few minutes more, stirring often.",
@@ -111,7 +116,9 @@
         "curry powder",
         "dried thyme",
         "diced tomatoes, lightly drained"
-      ]
+      ],
+      "hands": "3 min",
+      "burner": true
     },
     {
       "do": "Add the lentils, broth, water, 1 tsp salt, the pepper flakes and plenty of black pepper. Bring to a boil, partially cover, and simmer gently 25 to 30 minutes, until the lentils are tender but still hold their shape.",
@@ -129,17 +136,23 @@
           "item": "black pepper, freshly ground, to taste",
           "amount": "plenty"
         }
-      ]
+      ],
+      "hands": "2 min",
+      "burner": true
     },
     {
-      "do": "Blend 2 cups of the soup until smooth and stir it back in; this is what makes it creamy without cream. Lock the blender lid and hold a towel over it against the steam. An immersion blender used briefly in the pot works too."
+      "do": "Blend 2 cups of the soup until smooth and stir it back in; this is what makes it creamy without cream. Lock the blender lid and hold a towel over it against the steam. An immersion blender used briefly in the pot works too.",
+      "hands": "4 min",
+      "burner": true
     },
     {
       "do": "Add the greens and simmer 5 minutes more, until as tender as you like.",
       "wait": "5 min",
       "uses": [
         "collard greens or kale, chopped, tough ribs removed"
-      ]
+      ],
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Off the heat, stir in 1 tbsp lemon juice. Taste and adjust with more salt, pepper or lemon. Serve hot.",
@@ -153,7 +166,8 @@
           "item": "black pepper, freshly ground, to taste",
           "amount": "to taste"
         }
-      ]
+      ],
+      "hands": "1 min"
     }
   ],
   "notes": [

@@ -30,6 +30,8 @@
       "25 min"
     ]
   ],
+  "serve": "soon",
+  "sits": "1 hr",
   "time": {
     "total": 25
   },
@@ -131,7 +133,10 @@
           "item": "ground black pepper",
           "group": "Salad"
         }
-      ]
+      ],
+      "hands": "3 min",
+      "watch": true,
+      "grill": true
     },
     {
       "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape.",
@@ -142,7 +147,8 @@
         "small red bell pepper, cored and finely chopped",
         "green onions, finely chopped",
         "chopped fresh cilantro"
-      ]
+      ],
+      "hands": "6 min"
     },
     {
       "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table.",
@@ -163,7 +169,8 @@
           "group": "Dressing"
         },
         "onion powder"
-      ]
+      ],
+      "hands": "3 min"
     }
   ],
   "notes": [

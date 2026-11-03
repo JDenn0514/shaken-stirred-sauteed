@@ -21,6 +21,8 @@
       "55 minutes"
     ]
   ],
+  "serve": "hot",
+  "sits": "10 min",
   "time": {
     "total": 55
   },
@@ -129,21 +131,28 @@
           "group": "Congee"
         },
         "toasted sesame oil"
-      ]
+      ],
+      "hands": "4 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Stir in the cooked rice to coat, pour in the broth, and bring to a boil. Drop the heat to a simmer.",
       "uses": [
         "cooked rice, preferably day-old (200 g)",
         "chicken broth (400 g)"
-      ]
+      ],
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Simmer 20 to 30 minutes, stirring occasionally, until the grains collapse and it thickens to porridge. Loosen with more broth or reduce further to suit. Salt to taste.",
       "wait": "20 to 30 min",
       "uses": [
         "salt, to taste"
-      ]
+      ],
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Meanwhile, mince the chilies, 5 garlic cloves and scallion whites. Heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",
@@ -156,7 +165,10 @@
           "item": "neutral oil",
           "group": "Chili garlic pork"
         }
-      ]
+      ],
+      "hands": "5 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Turn the heat to high and add the pork with a sprinkle of salt. Break it into small pebbles with a potato masher; the extra surface area is what lets the rendering fat crisp it, 3 to 5 minutes.",
@@ -164,7 +176,10 @@
       "uses": [
         "ground pork (454 g)",
         "salt, a sprinkle"
-      ]
+      ],
+      "hands": "1 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Splash in the water and scrape up the browned bits. Once it has cooked off, add the soy sauce and hoisin and toss until the pork is coated and slightly sticky. Taste and adjust with salt, soy or hoisin.",
@@ -172,7 +187,9 @@
         "water",
         "soy sauce",
         "hoisin"
-      ]
+      ],
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Ladle congee into bowls, spoon the pork over, and finish with ginger, scallion greens and chili crisp.",
@@ -180,7 +197,8 @@
         "fresh ginger, thinly sliced",
         "scallion greens, thinly sliced",
         "chili crisp"
-      ]
+      ],
+      "hands": "3 min"
     }
   ],
   "notes": [

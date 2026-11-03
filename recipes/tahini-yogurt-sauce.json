@@ -21,6 +21,7 @@
       "10 min"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 10
   },
@@ -47,11 +48,13 @@
     },
     {
       "qty": "1 tsp",
-      "item": "lemon juice (optional)"
+      "item": "lemon juice (optional)",
+      "optional": true
     },
     {
       "qty": "1 tsp",
-      "item": "olive oil (optional, for fat-free yogurt)"
+      "item": "olive oil (optional, for fat-free yogurt)",
+      "optional": true
     },
     {
       "group": "To garnish (optional)",
@@ -74,21 +77,24 @@
         "garlic cloves, finely minced (or 1/2 tsp granulated)",
         "salt, plus more to taste",
         "black pepper"
-      ]
+      ],
+      "hands": "2 min"
     },
     {
       "do": "Taste. Add the lemon juice only if your yogurt isn't tangy, since some are sharper than others. With fat-free yogurt, add the olive oil or a little extra tahini for richness. Adjust salt and pepper.",
       "uses": [
         "lemon juice (optional)",
         "olive oil (optional, for fat-free yogurt)"
-      ]
+      ],
+      "hands": "1 min"
     },
     {
       "do": "Refrigerate until serving, then top with herbs and chile flakes if you like.",
       "uses": [
         "parsley, dill, cilantro or chives",
         "Aleppo chile flakes or Urfa biber"
-      ]
+      ],
+      "hands": "1 min"
     }
   ],
   "notes": [
