@@ -142,6 +142,7 @@
     document.getElementById("print").addEventListener("click", () => window.print());
 
     const progress = Object.assign({ ing: [], steps: [] }, load());
+    const links = window.SSSCook ? window.SSSCook.linkIngredients(r) : null;
     const boxes = [...root.querySelectorAll("[data-ing]")];
     const steps = [...root.querySelectorAll("[data-step]")];
 
@@ -159,7 +160,9 @@
 
     root.addEventListener("change", (e) => {
       if (!e.target.matches("[data-ing]")) return;
-      toggle(progress.ing, +e.target.dataset.ing); save(progress); paint();
+      if (window.SSSCook) window.SSSCook.tickIngredient(progress, links, +e.target.dataset.ing, e.target.checked);
+      else toggle(progress.ing, +e.target.dataset.ing);
+      save(progress); paint();
     });
     steps.forEach((s) => {
       const flip = () => { toggle(progress.steps, +s.dataset.step); save(progress); paint(); };
@@ -167,7 +170,7 @@
       s.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
     });
     document.getElementById("reset").addEventListener("click", () => {
-      progress.ing = []; progress.steps = []; progress.started = false; save(progress); paint();
+      progress.ing = []; progress.steps = []; progress.uses = []; progress.started = false; save(progress); paint();
     });
     paint();
 

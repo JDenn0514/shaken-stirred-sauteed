@@ -7,6 +7,63 @@ window.SSSCook = (() => {
   const START = { baking: "Start baking", cooking: "Start cooking", cocktails: "Start mixing" };
   const startLabel = (r) => START[r.category] || "Start cooking";
 
+  // Which ingredients each step uses (its "uses" list), matched the same way
+  // the recipe checker matches them: by item, plus group when two share a name.
+  // Ingredient numbers are positions in the whole list, as in saved progress.
+  // Returns { steps: [[{ i, amount }]], usesOf: ingredient -> [steps using it] }.
+  const lower = (s) => String(s ?? "").trim().toLowerCase();
+  function linkIngredients(r) {
+    const ings = toGroups(r.ingredients).flatMap((g) => g.items.map((it) => ({
+      group: lower(g.group), item: lower(typeof it === "string" ? it : it.item),
+    })));
+    const steps = toGroups(r.steps).flatMap((g) => g.items).map((s) => (Array.isArray(s?.uses) ? s.uses : []).flatMap((u) => {
+      const { item, group, amount } = typeof u === "string" ? { item: u } : u || {};
+      const hits = ings.flatMap((x, i) => (x.item === lower(item) && (group === undefined || x.group === lower(group)) ? [i] : []));
+      return hits.length === 1 ? [{ i: hits[0], amount }] : [];
+    }));
+    const usesOf = new Map();
+    steps.forEach((list, s) => list.forEach(({ i }) => usesOf.set(i, [...(usesOf.get(i) || []), s])));
+    return { steps, usesOf };
+  }
+
+  // An ingredient used by more than one step is ticked once per use
+  // (progress.uses holds "step:ingredient" pairs), and counts as ticked on the
+  // recipe page once every use is.
+  const split = (links, i) => (links.usesOf.get(i) || []).length > 1;
+  const useKey = (s, i) => `${s}:${i}`;
+  function isTicked(progress, links, s, i) {
+    return split(links, i) ? (progress.uses || []).includes(useKey(s, i)) : progress.ing.includes(i);
+  }
+  function setIng(progress, i, on) {
+    progress.ing = progress.ing.filter((x) => x !== i);
+    if (on) progress.ing.push(i);
+  }
+  // Ticks or unticks one step's use of an ingredient.
+  function tickUse(progress, links, s, i, on) {
+    if (!split(links, i)) return setIng(progress, i, on);
+    const k = useKey(s, i);
+    progress.uses = (progress.uses || []).filter((x) => x !== k);
+    if (on) progress.uses.push(k);
+    setIng(progress, i, links.usesOf.get(i).every((t) => progress.uses.includes(useKey(t, i))));
+  }
+  // Ticks or unticks an ingredient everywhere (from the recipe page).
+  function tickIngredient(progress, links, i, on) {
+    setIng(progress, i, on);
+    if (split(links, i)) {
+      const keys = links.usesOf.get(i).map((s) => useKey(s, i));
+      progress.uses = (progress.uses || []).filter((x) => !keys.includes(x)).concat(on ? keys : []);
+    }
+  }
+
+  // "125 g", "1 cup" first then smaller; a step's own share replaces both.
+  function ingredientRow(it, amount) {
+    if (typeof it === "string") return `<span>${esc(it)}</span>`;
+    const units = [it.grams != null && `${it.grams} g`, it.qty, it.ml != null && `${it.ml} ml`].filter(Boolean);
+    const [main, ...alt] = amount ? [amount] : units;
+    return `${main ? `<b>${esc(main)}</b> ` : ""}${alt.length ? `<span class="cook-alt">${esc(alt.join(" · "))}</span> ` : ""}`
+      + `<span>${esc(it.item)}</span>${it.note ? ` <span class="muted">${esc(it.note)}</span>` : ""}`;
+  }
+
   // opts: { recipe, progress, save, onChange, onClose }. progress is the recipe
   // page's { ing: [...], steps: [...] } record; save() stores it and onChange()
   // repaints the recipe page.
@@ -15,6 +72,8 @@ window.SSSCook = (() => {
     const steps = toGroups(r.steps).flatMap((g) => g.items.map((s) => ({ group: g.group, ...(typeof s === "string" ? { do: s } : s) })));
     const before = r.beforeYouStart || [];
     const notes = toGroups(r.notes);
+    const ings = toGroups(r.ingredients).flatMap((g) => g.items);
+    const links = linkIngredients(r);
 
     const el = document.createElement("section");
     el.className = "cook";
@@ -66,7 +125,11 @@ window.SSSCook = (() => {
           ${notes.map((g) => `${g.group ? `<h3>${esc(g.group)}</h3>` : ""}<ul class="cook-list">${g.items.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`).join("")}
           <button class="btn cook-return" type="button">Back to the recipe</button>`;
       } else {
+        const uses = links.steps[i];
         body = `<p class="cook-do" data-testid="instruction">${esc(s.do)}</p>
+          ${uses.length ? `<ul class="cook-ings">${uses.map(({ i: n, amount }) => `
+            <li><label><input type="checkbox" data-use="${n}" ${isTicked(progress, links, i, n) ? "checked" : ""}>
+              <span>${ingredientRow(ings[n], amount)}</span></label></li>`).join("")}</ul>` : ""}
           ${s.wait ? `<p class="cook-wait" data-testid="wait">⏱ ${esc(s.wait)}</p>` : ""}
           ${s.cue ? `<p class="cook-cue" data-testid="cue">✓ ${esc(s.cue)}</p>` : ""}`;
       }
@@ -95,6 +158,12 @@ window.SSSCook = (() => {
       else if (b.matches(".cook-back")) goBack();
       else if (b.matches(".cook-close, .cook-return")) onClose();
       else if (b.matches(".cook-upnext")) b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true"));
+    });
+
+    el.addEventListener("change", (e) => {
+      if (!e.target.matches("[data-use]")) return;
+      tickUse(progress, links, current(), +e.target.dataset.use, e.target.checked);
+      save(progress); onChange();
     });
 
     // Swipe left for the next step, right to go back (touch and pen only, so
@@ -133,5 +202,5 @@ window.SSSCook = (() => {
     };
   }
 
-  return { open, startLabel };
+  return { open, startLabel, linkIngredients, tickIngredient };
 })();

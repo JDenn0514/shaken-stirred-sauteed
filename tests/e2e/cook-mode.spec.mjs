@@ -164,3 +164,83 @@ test.describe("finishing", () => {
     await expect(instruction(page)).toHaveText("Crisp it in a hot pan.");
   });
 });
+
+test.describe("a step's ingredients", () => {
+  const box = (page, name) => cook(page).getByRole("checkbox", { name });
+  // Lemon Bars: Before you start, then step 1 (crust), 2 (bake), 3 (filling), 4 (rest of the juice)...
+  async function toStep(page, n) {
+    await start(page, "lemon-bars");
+    for (let i = 0; i < n; i++) await next(page).click();
+    await expect(stepLabel(page)).toHaveText(new RegExp(`Step ${n} of 6`));
+  }
+  const recipeBox = async (page, name) => {
+    await cook(page).getByRole("button", { name: "Close cook mode" }).click();
+    return page.getByRole("checkbox", { name });
+  };
+
+  test("are listed with their amounts, grams first", async ({ page }) => {
+    await toStep(page, 1);
+    await expect(box(page, /^125 g 1 cup Flour$/)).toBeVisible();
+    await expect(box(page, /^115 g 8 Tbsp Butter melted$/)).toBeVisible();
+    await expect(cook(page).getByRole("checkbox")).toHaveCount(3);
+  });
+
+  test("show the right one when two share a name", async ({ page }) => {
+    await toStep(page, 1);
+    await expect(box(page, /^50 g 1\/4 cup Sugar$/)).toBeVisible();
+    await next(page).click();
+    await next(page).click();
+    await expect(box(page, /^200 g 1 cup Sugar$/)).toBeVisible();
+  });
+
+  test("show a step's own share of a split ingredient", async ({ page }) => {
+    await toStep(page, 3);
+    await expect(box(page, /^1\/4 cup Lemon juice from 4 lemons$/)).toBeVisible();
+    await next(page).click();
+    await expect(box(page, /^the rest Lemon juice from 4 lemons$/)).toBeVisible();
+  });
+
+  test("show a plain ingredient as written", async ({ page }) => {
+    await toStep(page, 6);
+    await expect(box(page, "Powdered sugar, for dusting")).toBeVisible();
+  });
+
+  test("aren't listed for a step that uses none", async ({ page }) => {
+    await toStep(page, 2);
+    await expect(cook(page).getByRole("checkbox")).toHaveCount(0);
+  });
+
+  test("ticked here show as ticked on the recipe page", async ({ page }) => {
+    await toStep(page, 1);
+    await box(page, /Flour/).check();
+    await expect(await recipeBox(page, /Flour/)).toBeChecked();
+  });
+
+  test("ticked on the recipe page show as ticked here", async ({ page }) => {
+    await page.goto("recipe.html?r=lemon-bars");
+    await page.getByRole("checkbox", { name: /Flour/ }).check();
+    await toStep(page, 1);
+    await expect(box(page, /Flour/)).toBeChecked();
+  });
+
+  test("split across steps are ticked once per use", async ({ page }) => {
+    await toStep(page, 3);
+    await box(page, /Lemon juice/).check();
+    await next(page).click();
+    await expect(box(page, /Lemon juice/)).not.toBeChecked();
+    await cook(page).getByRole("button", { name: "Close cook mode" }).click();
+    await expect(page.getByRole("checkbox", { name: /Lemon juice/ })).not.toBeChecked();
+    await page.getByRole("button", { name: "Start baking" }).click();
+    await box(page, /Lemon juice/).check();
+    await expect(await recipeBox(page, /Lemon juice/)).toBeChecked();
+  });
+
+  test("split across steps are all ticked from the recipe page", async ({ page }) => {
+    await page.goto("recipe.html?r=lemon-bars");
+    await page.getByRole("checkbox", { name: /Lemon juice/ }).check();
+    await toStep(page, 3);
+    await expect(box(page, /Lemon juice/)).toBeChecked();
+    await next(page).click();
+    await expect(box(page, /Lemon juice/)).toBeChecked();
+  });
+});
