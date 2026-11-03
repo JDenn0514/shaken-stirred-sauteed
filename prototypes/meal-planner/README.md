@@ -23,3 +23,7 @@ Jacob's calls after clicking through it:
 - `planner.js`: the planner itself, pure functions with no page code. This part is meant to be reused.
 - `library.js`: the recipes in the meals, with the planning data filled in by hand (Claude's estimates).
 - `run.cjs`: `node prototypes/meal-planner/run.cjs` prints the order for each meal.
+
+## Layout mockups (Lineup)
+
+`lineup-prototype.html` at the repo root, with `prototypes/lineup-ui/`. It shows three layouts (A: one long page, B: step by step, C: menu card), each on eight screens: the lineup page empty, searching and ready; the recipe page before and after adding; the recipes page; and cook mode on a step and in a gap. Switch layouts and screens from the bar at the bottom, or the URL hash (`#b-ready`). Run `python3 -m http.server 8000` in the repo and open `/lineup-prototype.html`. It uses the site's real stylesheet and recipe list; nothing behind the buttons works. (Published at https://claude.ai/artifact/4qmYGSPQcdKCuEqQ5HAe3i, private to Jacob.)

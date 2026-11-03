@@ -1,0 +1,180 @@
+/* PROTOTYPE, throwaway: extra styles for the Lineup mockups. Everything else
+   comes from assets/style.css, so the mockups look like the real site. */
+
+/* ===== The prototype switcher (not part of any design) ===== */
+.lu-switcher {
+  position: fixed; z-index: 1000; left: 50%; transform: translateX(-50%);
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 6px; align-items: stretch;
+  width: min(360px, calc(100vw - 24px)); padding: 8px; border-radius: 14px;
+  background: #1b1b1f; color: #f5f5f7; box-shadow: 0 6px 24px rgba(0, 0, 0, .35);
+  font: 500 13px/1.2 system-ui, sans-serif;
+}
+.lu-sw-row { display: flex; align-items: center; gap: 6px; }
+.lu-switcher button {
+  flex: none; width: 40px; height: 36px; border: 0; border-radius: 9px; background: #34343a; color: inherit;
+  font-size: 22px; line-height: 1; cursor: pointer;
+}
+.lu-sw-label { flex: 1; text-align: center; }
+.lu-sw-label b { background: #f5d547; color: #1b1b1f; border-radius: 5px; padding: 2px 7px; margin-right: 4px; }
+.lu-switcher select { width: 100%; height: 34px; border-radius: 9px; border: 0; background: #34343a; color: inherit; font: inherit; padding: 0 8px; }
+body { padding-bottom: 120px; }
+.cook { padding-bottom: 120px !important; }
+
+/* ===== Shared bits ===== */
+.lu-header-slot { position: absolute; top: max(10px, env(safe-area-inset-top)); right: calc(max(16px, env(safe-area-inset-right)) + 48px); display: flex; align-items: center; height: 38px; }
+.lu-header-slot:empty { display: none; }
+/* With a lineup link in the header, the brand makes room for it. */
+.site-header:has(.lu-header-slot:not(:empty)) .brand { padding-right: 140px; }
+@media (max-width: 460px) { .site-header:has(.lu-header-slot:not(:empty)) .brand-name { font-size: 1rem; } }
+.lu-pill { display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border: 1.5px solid var(--text); border-radius: 999px; color: var(--text); text-decoration: none; font: 500 .74rem var(--mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.cook[hidden] { display: none; }
+.lu-eyebrow { margin: 0; font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lu-h1 { font-family: var(--display); font-size: clamp(2rem, 8vw, 2.8rem); line-height: 1.05; margin: 6px 0 10px; letter-spacing: -.02em; text-wrap: balance; }
+.lu-h1.lu-small { font-size: 1.9rem; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.lu-count { font-family: var(--mono); font-size: .8rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.lu-link { font-weight: 600; color: var(--text); }
+.lu-note { margin: -4px 0 10px; color: var(--muted); font-size: .92rem; }
+.lu-chip { display: inline-block; font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 3px; background: var(--section-fill); color: var(--on-section-fill); vertical-align: middle; }
+.lu-mono { font-family: var(--mono); }
+.lu-wide { width: 100%; justify-content: center; text-align: center; }
+.lu-a, .lu-b, .lu-c { display: flex; flex-direction: column; gap: 14px; padding-top: 12px; }
+.lu-a .section, .lu-c .section { margin-top: 10px; }
+.lu-btnrow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.lu-btnrow .cook-start { margin-bottom: 0; }
+.lu-addbtn { border-color: var(--section); color: var(--section); min-height: 46px; padding: 0 18px; font-weight: 600; }
+.lu-addbtn[aria-pressed="true"] { background: var(--section-wash); color: var(--section); }
+.lu-inline { margin: 8px 0 10px; color: var(--muted); }
+.lu-inline a { color: var(--section); font-weight: 600; }
+.lu-cardwrap { position: relative; }
+.lu-plus {
+  position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 50%;
+  border: 1.5px solid var(--section, var(--text)); background: var(--surface); color: var(--section, var(--text));
+  font-size: 24px; line-height: 1; display: grid; place-items: center; cursor: pointer;
+}
+.lu-cardwrap:has(.badge.baking) .lu-plus { --section: var(--baking); }
+.lu-cardwrap:has(.badge.cooking) .lu-plus { --section: var(--cooking); }
+.lu-cardwrap:has(.badge.cocktails) .lu-plus { --section: var(--cocktails); }
+.lu-plus.lu-added { background: var(--section); color: var(--surface); font-size: 18px; }
+.lu-inbadge { background: var(--lime); color: var(--on-lime); border-color: transparent; }
+
+/* Segmented choices */
+.lu-seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.lu-seg button { border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--text); font: inherit; font-size: .88rem; padding: 6px 12px; cursor: pointer; }
+.lu-seg button[aria-checked="true"] { background: var(--text); color: var(--bg); font-weight: 600; }
+.lu-seg.lu-stack { flex-direction: column; }
+.lu-seg.lu-stack button { text-align: left; padding: 11px 14px; border-radius: var(--radius-ctl); }
+
+/* ===== A: one long page ===== */
+.lu-how { margin: 6px 0 0; padding: 14px 14px 14px 34px; border: 1.5px dashed var(--border); border-radius: var(--radius); color: var(--muted); display: grid; gap: 6px; }
+.lu-dishes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.lu-dish { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 12px; border: 1.5px solid var(--border); border-left: 4px solid var(--section); border-radius: var(--radius); background: var(--surface); }
+.lu-dish-icon { width: 40px; height: 40px; }
+.lu-dish-main { display: grid; gap: 8px; min-width: 0; }
+.lu-dish-title { font-family: var(--display); font-size: 1.25rem; font-weight: 600; color: var(--text); text-decoration: none; }
+.lu-dish-row { display: flex; gap: 10px; align-items: center; }
+.lu-dish-row select { font: inherit; font-size: .9rem; padding: 5px 8px; border: 1.5px solid var(--rule-strong); border-radius: var(--radius-ctl); background: var(--surface); color: var(--text); }
+.lu-x { border: 0; background: none; color: var(--muted); font: inherit; font-size: .88rem; text-decoration: underline; cursor: pointer; }
+.lu-sub { display: grid; gap: 5px; font-size: .9rem; color: var(--muted); }
+.lu-sub.lu-nested { padding-left: 14px; border-left: 2px solid var(--border); }
+.lu-q { display: grid; gap: 10px; padding: 14px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--surface); margin-bottom: 10px; }
+.lu-q p { margin: 0; }
+.lu-sticky {
+  position: sticky; bottom: 112px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 12px 14px; background: var(--surface); border: 1.5px solid var(--text); border-radius: var(--radius); box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+}
+.lu-sticky .cook-start { margin: 0; }
+.lu-multibar i.lu-w5 { flex: 5; } .lu-multibar i.lu-w6 { flex: 6; } .lu-multibar i.lu-w8 { flex: 8; }
+.lu-multibar i { background: var(--section); opacity: .2; }
+.lu-multibar i.done { opacity: 1; } .lu-multibar i.now { opacity: .55; }
+.lu-gap { align-items: flex-start; }
+.lu-big { margin: 0; font-family: var(--mono); font-size: clamp(3.2rem, 16vw, 4.6rem); font-weight: 500; line-height: 1; color: var(--section); }
+.lu-dim { color: var(--muted); }
+
+/* ===== B: step by step ===== */
+.lu-center { align-items: center; text-align: center; padding-top: 40px; }
+.lu-center .lede { max-width: 32ch; }
+.lu-plates { display: flex; gap: 8px; }
+.lu-plates span { width: 44px; height: 44px; border-radius: 50%; background: var(--section-wash); border: 2px solid var(--section); }
+.lu-iconbtn { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--rule-strong); color: var(--text); }
+.lu-iconbtn svg { width: 22px; height: 22px; }
+.lu-badgecount { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--lime); color: var(--on-lime); font: 600 .72rem/20px var(--mono); text-align: center; }
+.lu-stepper { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; font-size: .85rem; color: var(--muted); }
+.lu-stepper li { flex: 1; display: flex; align-items: center; gap: 6px; padding-bottom: 8px; border-bottom: 3px solid var(--border); }
+.lu-stepper li span { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; display: grid; place-items: center; font: 500 .72rem var(--mono); }
+.lu-stepper li.done, .lu-stepper li.now { color: var(--text); border-bottom-color: var(--text); }
+.lu-stepper li.now { font-weight: 600; }
+.lu-backdrop { position: fixed; inset: 0; z-index: 40; }
+.lu-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; max-height: 82vh; }
+.lu-rows { list-style: none; margin: 12px 0 0; padding: 0; display: grid; }
+.lu-rows li { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
+.lu-rows .card-icon { width: 32px; height: 32px; }
+.lu-rowtext { display: grid; gap: 2px; color: var(--text); text-decoration: none; min-width: 0; }
+.lu-rowtext span { color: var(--muted); font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lu-rows .lu-plus { position: static; }
+.lu-rows li { --section: var(--text); }
+.lu-rows li.fam-baking { --section: var(--baking); } .lu-rows li.fam-cooking { --section: var(--cooking); } .lu-rows li.fam-cocktails { --section: var(--cocktails); }
+.lu-plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.lu-plan li { display: grid; gap: 3px; padding: 12px 14px; }
+.lu-plan li + li { border-top: 1px solid var(--border); }
+.lu-plan a { color: var(--text); font-size: .9rem; }
+.lu-details summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+.lu-answers { margin: 6px 0 0; display: grid; gap: 0; }
+.lu-answers div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--border); font-size: .92rem; }
+.lu-answers dt { color: var(--muted); } .lu-answers dd { margin: 0; font-weight: 600; text-align: right; }
+.lu-cards { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+.lu-cards legend { font-weight: 600; margin-bottom: 6px; }
+.lu-radiocard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 13px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--surface); cursor: pointer; }
+.lu-radiocard[aria-checked="true"] { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
+.lu-radiocard span { display: grid; gap: 2px; } .lu-radiocard small { color: var(--muted); }
+.lu-radiocard em { font-style: normal; font-family: var(--mono); font-size: .85rem; }
+.lu-square { width: 46px; min-height: 46px; padding: 0; justify-content: center; font-size: 1.5rem; border-color: var(--section); color: var(--section); }
+.lu-square[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); font-size: 1.1rem; }
+.lu-banner { display: flex; justify-content: space-between; margin: 0 -16px; padding: 10px 16px; background: var(--section-wash); color: var(--section); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--border); }
+.lu-banner span { font-family: var(--mono); font-size: .75rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.lu-tape { position: absolute; top: -6px; right: 14px; transform: rotate(3deg); background: var(--lime); color: var(--on-lime); font: 500 .68rem/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; padding: 6px 9px; }
+.lu-rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; scrollbar-width: none; }
+.lu-railitem { flex: none; display: grid; grid-template-columns: 26px auto; grid-template-rows: auto auto; column-gap: 8px; align-items: center; padding: 8px 12px 8px 8px; border: 1.5px solid var(--border); border-radius: var(--radius-ctl); background: var(--surface); }
+.lu-railitem .card-icon { grid-row: 1 / 3; width: 24px; height: 24px; }
+.lu-railitem b { font-size: .9rem; } .lu-railitem small { color: var(--muted); font-size: .76rem; }
+.lu-railitem.lu-now { border-color: var(--section); background: var(--section-wash); }
+.lu-railitem.lu-now small { color: var(--section); font-weight: 600; }
+.lu-centertext { align-items: center; text-align: center; justify-content: center; }
+.lu-ring { width: 150px; height: 150px; border-radius: 50%; border: 6px solid var(--section); display: grid; place-content: center; text-align: center; }
+.lu-ring span { font: 500 3.2rem/1 var(--mono); color: var(--section); } .lu-ring small { font-family: var(--mono); color: var(--muted); }
+
+/* ===== C: menu card ===== */
+.lu-menu { position: relative; padding: 26px 20px 20px; border: 1.5px solid var(--text); border-radius: var(--radius); background: var(--surface); text-align: center; }
+.lu-menu::before { content: ""; position: absolute; top: -9px; left: 28px; width: 70px; height: 18px; background: var(--lime); transform: rotate(-3deg); }
+.lu-menuhead { margin: 0; font: 500 .74rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.lu-course { margin: 18px 0 8px; font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.35rem; }
+.lu-course small { font: 500 .72rem var(--mono); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-left: 6px; }
+.lu-slot { display: block; padding: 12px; border: 1.5px dashed var(--rule-strong); border-radius: var(--radius); color: var(--muted); text-decoration: none; font-weight: 600; margin-top: 8px; }
+.lu-menufoot { margin: 16px 0 0; color: var(--muted); font-size: .92rem; }
+.lu-menufoot a { color: var(--text); }
+.lu-menulist { list-style: none; margin: 0; padding: 0; text-align: left; display: grid; gap: 12px; }
+.lu-menulist > li { display: grid; grid-template-columns: auto minmax(12px, 1fr) auto; align-items: baseline; gap: 6px; }
+.lu-menuname { font-family: var(--display); font-size: 1.12rem; font-weight: 600; color: var(--section); }
+.lu-dots { border-bottom: 2px dotted var(--rule-strong); transform: translateY(-4px); }
+.lu-menutime { font: 500 .85rem var(--mono); color: var(--muted); }
+.lu-with { grid-column: 1 / -1; font-family: var(--display); font-style: italic; color: var(--muted); padding-left: 12px; }
+.lu-with.lu-nested { padding-left: 26px; }
+.lu-ahead { font-style: normal; font-family: var(--sans); font-size: .88rem; }
+.lu-choice { border: 0; border-bottom: 1.5px solid var(--rule-strong); background: none; font: inherit; font-style: normal; font-weight: 600; color: var(--text); padding: 0 2px; cursor: pointer; }
+.lu-switch { display: grid; gap: 4px; text-align: center; }
+.lu-switch label { font-weight: 600; color: var(--text); display: inline-flex; gap: 8px; align-items: center; justify-content: center; }
+.lu-switch input { width: 40px; height: 22px; accent-color: var(--text); }
+.lu-tabs { margin: 0; }
+.lu-rows-c .lu-textbtn { min-height: 36px; padding: 0 12px; font-size: .88rem; border-color: var(--section); color: var(--section); }
+.lu-rows-c span.lu-textbtn { color: var(--section); font-weight: 600; font-size: .88rem; }
+.lu-labelrow dd .lu-addbtn { min-height: 38px; }
+.lu-labelrow dd a { color: var(--section); font-weight: 600; }
+.lu-spined .card::before { content: attr(data-spine) / ""; }
+.lu-cardwrap[data-spine] .card::before { content: "✓ In lineup" / ""; color: var(--section); font-weight: 600; }
+.lu-chipline { margin: 0; }
+.lu-meanwhile { margin-top: 10px; padding-top: 12px; border-top: 1.5px solid var(--border); display: grid; gap: 8px; }
+.cook-timer-what em { font-style: normal; color: var(--text); }
+.lu-nextcard { display: grid; gap: 8px; padding: 14px; border: 1.5px solid var(--section); border-radius: var(--radius); background: var(--section-wash); }
+.lu-nextcard p { margin: 0; }
+.lu-nextcard .lu-addbtn { justify-self: start; }
