@@ -4,14 +4,38 @@
   "kind": "component",
   "description": "Whipped cream flavored and tinted with chilled blueberry syrup.",
   "tags": {
-    "type": ["fillings-creams"],
-    "flavor": ["fruity", "light"],
-    "usesUp": ["heavy-cream"],
-    "ingredients": ["berries", "cream"],
-    "season": ["summer"],
-    "diet": ["vegetarian", "gluten-free"]
+    "type": [
+      "fillings-creams"
+    ],
+    "flavor": [
+      "fruity",
+      "light"
+    ],
+    "usesUp": [
+      "heavy-cream"
+    ],
+    "ingredients": [
+      "berries",
+      "cream"
+    ],
+    "season": [
+      "summer"
+    ],
+    "diet": [
+      "vegetarian",
+      "gluten-free"
+    ]
   },
   "added": "2026-11-03",
+  "times": [
+    [
+      "Active",
+      "About 5 min"
+    ]
+  ],
+  "time": {
+    "total": 5
+  },
   "beforeYouStart": [
     "Make the blueberry syrup ahead and chill it. Warm syrup deflates the cream."
   ],
@@ -36,16 +60,22 @@
     {
       "do": "Whip the cream on its own to soft peaks.",
       "cue": "Peaks that slump over when the whisk lifts out",
-      "uses": ["Heavy whipping cream"]
+      "uses": [
+        "Heavy whipping cream"
+      ]
     },
     {
       "do": "Turn the speed down and add the blueberry syrup.",
-      "uses": ["Blueberry syrup"]
+      "uses": [
+        "Blueberry syrup"
+      ]
     },
     {
       "do": "Add the confectioners' sugar, then turn the speed back up and whip to medium-firm peaks.",
       "cue": "Peaks that hold their shape with just the tip curling over",
-      "uses": ["Confectioners' sugar"]
+      "uses": [
+        "Confectioners' sugar"
+      ]
     }
   ],
   "notes": [

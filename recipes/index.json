@@ -138,7 +138,7 @@
         "component"
       ]
     },
-    "totalMinutes": null,
+    "totalMinutes": 75,
     "search": "blueberry syrup blueberries simmered with sugar and water, mashed in the pan and strained. cocktails component non-alcoholic syrup & mixer fruity & tropical sweet berries make-ahead summer vegan gluten-free 8 oz blueberries 8 oz granulated sugar 4 oz water"
   },
   {
@@ -173,11 +173,15 @@
         "vegetarian",
         "gluten-free"
       ],
+      "time": [
+        "under-30",
+        "under-60"
+      ],
       "kind": [
         "component"
       ]
     },
-    "totalMinutes": null,
+    "totalMinutes": 5,
     "search": "blueberry whipped cream whipped cream flavored and tinted with chilled blueberry syrup. baking component fillings & creams fruity light & airy heavy cream berries cream summer vegetarian gluten-free 1 cup heavy whipping cream cold 3 to 4 tbsp blueberry syrup chilled 1 to 2 spoonfuls confectioners' sugar"
   },
   {
