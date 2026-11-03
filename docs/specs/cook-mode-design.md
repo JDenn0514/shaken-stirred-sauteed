@@ -100,6 +100,15 @@ Claude adds the links to all 36 recipes, and Jacob reviews them. While doing so:
 - The current step is exposed to assistive tech, for example with `aria-current="step"` and a step change that is announced. When that exists, the rule in `.claude/rules/testing.md` says to move the recipe-page tests off the `done`/`current` classes. Do that for any test this touches.
 - The accessibility scan (`tests/e2e/accessibility.spec.mjs`) gets the new states added to `PAGES`: cook mode on a step, "Up next" opened, a timer running and a timer ringing, the "Before you start" screen and the done screen, in light and dark mode. Colour problems the scan finds are shown to Jacob before any colour is changed.
 
+## Later: cooking a whole meal
+
+Jacob would like to add several recipes to one cook-mode session, for example carne asada, the grilled corn salad and hasselback potatoes. The site would then work out the order to do things in. **That is its own project, planned after cook mode ships**, and is out of scope here. Working out an order needs things the recipes don't have yet: roughly how long each hands-on step takes, which steps can run unattended, and which steps compete for the oven, grill or stovetop (and at what temperature).
+
+This design prepares for it in three ways, and none of them should be undone:
+- Timers are shared across recipes and name their recipe.
+- During the data work, every hands-off wait is moved into `wait`, including timings that today appear only in the step text.
+- Progress and timers are kept per recipe and per step, so several recipes can later be in progress at once.
+
 ## Constraints
 
 - Plain HTML, CSS and JavaScript, no frameworks, no build step, no new runtime dependencies (README).
