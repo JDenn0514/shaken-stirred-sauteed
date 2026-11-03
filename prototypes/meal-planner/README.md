@@ -52,3 +52,16 @@ Options remain for two open questions: how sub-recipes sit on the menu card (thr
 - **A component can be a dish on its own.**
 
 The round also covers waits that ring until you press Stop (two options for what Stop does), and another dish's timer ringing in the middle of a step.
+
+### Round 4
+
+`lineup-prototype-v4.html` (script `prototypes/lineup-ui/lineup-ui-v4.js`), published at the same link.
+
+Stop on a wait timer only stops the sound; Next step moves on (round 3, option 1, Jacob's pick).
+
+Jacob split sub-recipes into two kinds:
+
+- **Nested recipes:** an ingredient that has its own recipe card. Garlic paste in the hasselback potatoes, blueberry syrup in the blueberry whipped cream. Shown indented under their dish and always included, with "Make it" or "Already made".
+- **Connected recipes:** separate recipes that go together. A pavlova, lemon curd and whipped cream. Shown side by side, at the same level.
+
+"Goes with" moved from the lineup page to the moment you add a recipe. Adding a connected recipe later asks what it's for.

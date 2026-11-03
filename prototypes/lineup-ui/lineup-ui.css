@@ -234,3 +234,19 @@ body { padding-bottom: 120px; }
 }
 @keyframes lu-pulse { 50% { transform: scale(1.05); } }
 .lu-stop { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
+
+/* ===== Round 4 ===== */
+.lu-nest { grid-column: 1 / -1; list-style: none; margin: 6px 0 0 14px; padding: 0 0 0 12px; border-left: 2px solid var(--border); display: grid; gap: 8px; }
+.lu-nest > li { display: grid; grid-template-columns: auto minmax(12px, 1fr) auto; align-items: baseline; gap: 6px; }
+.lu-nest .lu-menuname { font-size: .98rem; }
+.lu-nest .lu-mh { padding-left: 0; }
+.lu-nest2 { margin-left: 40px; }
+.lu-addsheet .sheet-body { display: grid; gap: 14px; }
+.lu-addsheet p { margin: 0; }
+.lu-gwlist { display: grid; gap: 8px; }
+.lu-gwlist label { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.lu-gwlist label:has(input:checked) { border-color: var(--section); background: var(--section-wash); }
+.lu-gwlist input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--section); }
+.lu-gwlist span { display: grid; gap: 2px; } .lu-gwlist small { color: var(--muted); }
+.lu-sheet .lu-btnrow .cook-start { margin: 0; }
+.lu-addsheet .sheet-body { padding-bottom: 150px; }
