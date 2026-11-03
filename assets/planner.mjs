@@ -24,8 +24,10 @@ function chains(lineup, recipes) {
 
 // Work back from serving at minute `serve`: each step's latest start.
 function latestStarts(dish, serve) {
+  const out = [];
   let t = serve;
-  return dish.steps.map((s) => s).reverse().map((s) => (t -= s.hands + s.wait)).reverse();
+  for (let i = dish.steps.length - 1; i >= 0; i--) out[i] = t -= dish.steps[i].hands + dish.steps[i].wait;
+  return out;
 }
 
 // Move forward through time. Whenever the cook's hands are free, start the
