@@ -132,6 +132,16 @@ describe("the oven", () => {
     assert.ok(at(plan, "Roast the asparagus") >= 16, `roasted at ${at(plan, "Roast the asparagus")}, before the oven was hot`);
   });
 
+  test("a heating step is added for a setting the recipe doesn't heat, even if it heats another", () => {
+    const roastThenBroil = recipe("Asparagus", [
+      ["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "200C" }],
+      ["Switch the oven to broil", { hands: "0.5 min", preheat: "broil" }],
+      ["Broil the asparagus", { hands: "0.5 min", wait: "2.5 min", watch: true, oven: "broil" }],
+    ]);
+    const plan = planLineup({ dishes: [{ slug: "asparagus" }] }, { asparagus: roastThenBroil });
+    assert.equal(plan.steps[0].text, "Heat the oven to 200°C / 400°F");
+  });
+
   test("no heating step is added when another dish has heated the oven to that setting", () => {
     const recipes = {
       asparagus,

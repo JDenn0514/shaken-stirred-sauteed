@@ -58,10 +58,12 @@ function chains(lineup, recipes) {
       oven: s.oven || null, preheat: s.preheat || null,
       uses: Object.keys(CAPACITY).filter((k) => s[k]),
     }));
-    // A dish that needs the oven but never heats it gets a heating step first.
-    const first = steps.find((x) => x.oven);
-    if (first && !steps.some((x) => x.preheat)) {
-      steps.unshift({ slug, text: heatText(first.oven), hands: 1, wait: 0, watch: false, oven: null, preheat: first.oven, uses: [], added: true });
+    // A dish whose first oven setting isn't heated by an earlier step of its own
+    // gets a heating step first.
+    const first = steps.findIndex((x) => x.oven);
+    if (first >= 0 && !steps.slice(0, first).some((x) => x.preheat && sameSetting(x.preheat, steps[first].oven))) {
+      const setting = steps[first].oven;
+      steps.unshift({ slug, text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, uses: [], added: true });
     }
     return { slug, sits: sits(recipes[slug]), steps, lastOven: steps.findLastIndex((s) => s.oven || s.preheat) };
   });
