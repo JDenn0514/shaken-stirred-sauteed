@@ -141,7 +141,16 @@
     });
     document.getElementById("print").addEventListener("click", () => window.print());
 
-    const progress = Object.assign({ ing: [], steps: [] }, load());
+    // Progress is saved by position, so it's only kept while the recipe's
+    // ingredients and steps are the same shape as when it was saved.
+    const shape = JSON.stringify([
+      toGroups(r.ingredients).flatMap((g) => g.items.map((i) => (typeof i === "string" ? i : i.item))),
+      toGroups(r.steps).reduce((n, g) => n + g.items.length, 0),
+    ]);
+    let fp = 0;
+    for (const ch of shape) fp = (fp * 31 + ch.charCodeAt(0)) | 0;
+    const saved = load();
+    const progress = Object.assign({ ing: [], steps: [] }, saved.fp == null || saved.fp === fp ? saved : {}, { fp });
     const links = window.SSSCook ? window.SSSCook.linkIngredients(r) : null;
     const boxes = [...root.querySelectorAll("[data-ing]")];
     const steps = [...root.querySelectorAll("[data-step]")];

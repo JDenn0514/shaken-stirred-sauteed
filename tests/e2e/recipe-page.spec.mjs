@@ -222,3 +222,19 @@ test.describe("every real recipe", () => {
     });
   }
 });
+
+test("saved progress is dropped when the recipe's ingredients or steps change", async ({ page }) => {
+  await open(page, "pork-carnitas");
+  await ingredient(page, /Pork shoulder/).check();
+  await step(page, "Season the pork.").click();
+  // The recipe gains an ingredient at the top, so every saved position would now point one off.
+  await page.route("**/recipes/pork-carnitas.json", (route) => route.fulfill({ json: {
+    title: "Pork Carnitas", category: "cooking",
+    ingredients: ["2 bay leaves", { grams: 1400, qty: "3 lb", item: "Pork shoulder" }, "1 orange", "2 tsp Kosher salt"],
+    steps: ["Season the pork.", "Braise until tender.", "Shred the pork.", "Crisp it in a hot pan."],
+  } }));
+  await page.reload();
+  await expect(heading(page)).toHaveText("Pork Carnitas");
+  await expect(page.getByRole("checkbox", { checked: true })).toHaveCount(0);
+  await expect(step(page, "Season the pork.")).not.toHaveClass(/\bdone\b/);
+});
