@@ -142,6 +142,19 @@ describe("the oven", () => {
     assert.equal(plan.steps[0].text, "Heat the oven to 200°C / 400°F");
   });
 
+  test("turning the oven down or off needs no heating", () => {
+    const meringue = recipe("Meringue", [
+      ["Heat the oven to 350F", { hands: "0.5 min", preheat: "350F" }],
+      ["Shape the meringue", { hands: "4 min" }],
+      ["Bake it at 200F", { hands: "0.5 min", wait: "90 min", oven: "200F" }],
+      ["Cool it in the oven, turned off", { hands: "0.5 min", wait: "60 min", oven: "off" }],
+    ], { category: "baking" });
+    const plan = planLineup({ dishes: [{ slug: "meringue" }] }, { meringue });
+    assert.deepEqual(plan.steps.filter((s) => s.added).map((s) => s.text), []);
+    assert.equal(at(plan, "Bake it at 200F"), 15.5);
+    assert.equal(at(plan, "Cool it in the oven, turned off"), 106);
+  });
+
   test("a recipe's own heating step is skipped when the oven is already at that setting", () => {
     const recipes = {
       potatoes: recipe("Potatoes", [["Heat the oven for the potatoes", { hands: "1 min", preheat: "200C" }], ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }]]),
@@ -240,6 +253,13 @@ describe("a dish that keeps part-way", () => {
       assert.equal(plan.makeAhead.find((x) => x.slug === "pavlova").ahead, false);
     });
 
+    test("isn't asked about for a dish that keeps and is the whole lineup", () => {
+      const cookies = recipe("Cookies", [["Mix and bake", { hands: "10 min", wait: "60 min" }]], { category: "baking" });
+      const plan = planLineup({ dishes: [{ slug: "cookies" }] }, { cookies });
+      assert.deepEqual(plan.makeAhead, []);
+      assert.deepEqual(texts(plan), ["Mix and bake"]);
+    });
+
     test("isn't asked about when it wouldn't save much", () => {
       assert.deepEqual(planLineup(dinner, DINNER).makeAhead, []);
     });
@@ -310,6 +330,18 @@ describe("re-planning as you cook", () => {
     assert.equal(plan.steps[0].done, true);
     assert.ok(plan.steps.slice(1).every((s) => !s.done && s.at >= 20), "a step was planned before now");
     assert.equal(plan.minutes, before.minutes + 10);
+  });
+
+  test("the step to do now, and how long to wait first when nothing needs you yet", () => {
+    const fresh = planLineup(lineup, recipes);
+    assert.equal(fresh.upNow.text, "Slice the potatoes");
+    assert.equal(fresh.wait, 0);
+    // Everything else done, the potatoes in the oven until 52.
+    const plan = planLineup(lineup, recipes, { now: 22, done: [{ slug: "potatoes", step: 0, at: 10 }, { slug: "potatoes", step: 1, at: 12 }, { slug: "applesauce", step: 0, at: 20 }, { slug: "applesauce", step: 1, at: 22 }] });
+    assert.equal(plan.upNow.text, "Scatter with parsley");
+    assert.equal(plan.wait, 30);
+    const finished = planLineup(lineup, recipes, { now: 53, done: [...[0, 1, 2].map((step) => ({ slug: "potatoes", step, at: [10, 12, 53][step] })), { slug: "applesauce", step: 0, at: 20 }, { slug: "applesauce", step: 1, at: 22 }] });
+    assert.equal(finished.upNow, null);
   });
 
   const bakeDone = { slug: "potatoes", step: 1, at: 12 };   // into the oven at 12, out at 52

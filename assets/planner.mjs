@@ -26,6 +26,14 @@ const sameSetting = (a, b) => {
   return fa != null && fb != null ? Math.abs(fa - fb) <= 15 : a === b;
 };
 
+// An oven heated to one setting covers another if it's the same, or hotter
+// (turning it down needs no heating), or the other is "off".
+const covers = (heated, needed) => {
+  if (needed === "off" || sameSetting(heated, needed)) return true;
+  const h = fahrenheit(heated), n = fahrenheit(needed);
+  return h != null && n != null && h >= n;
+};
+
 // Minutes for the oven to heat: 3 for the broiler, otherwise 15.
 const heatTime = (setting) => (setting === "broil" ? 3 : 15);
 
@@ -109,7 +117,7 @@ function chains(lineup, recipes, parts = {}) {
     // A dish whose first oven setting isn't heated by an earlier step of its own
     // gets a heating step first.
     const first = steps.findIndex((x) => x.oven);
-    if (first >= 0 && !steps.slice(0, first).some((x) => x.preheat && sameSetting(x.preheat, steps[first].oven))) {
+    if (first >= 0 && steps[first].oven !== "off" && !steps.slice(0, first).some((x) => x.preheat && covers(x.preheat, steps[first].oven))) {
       const setting = steps[first].oven;
       steps.unshift({ slug, n: "heat", text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
     }
@@ -151,7 +159,7 @@ function latestStarts(dish, serve) {
   for (let i = steps.length - 1; i >= 0; i--) {
     t -= steps[i].hands + steps[i].wait;
     if (steps[i].preheat) {
-      const j = steps.findIndex((x, k) => k > i && x.oven && sameSetting(x.oven, steps[i].preheat));
+      const j = steps.findIndex((x, k) => k > i && x.oven && x.oven !== "off" && covers(steps[i].preheat, x.oven));
       if (j >= 0) t = Math.min(t, out[j] - heatTime(steps[i].preheat) - steps[i].hands);
     }
     out[i] = t;
@@ -209,7 +217,7 @@ function simulate(dishes, serve, early = {}, progress = {}) {
   const left = (d) => next[d] < dishes[d].steps.length;
   const opensAt = (d) => Math.max(readyAt[d], next[d] === dishes[d].servedFrom ? earliest[d] : -Infinity);
   const ovenFree = (d, setting) => [...oven].every(([o, h]) => o === d || h.until <= t || sameSetting(h.setting, setting));
-  const hot = (setting) => !heat || !sameSetting(heat.setting, setting) || heat.hotAt <= t;
+  const hot = (setting) => setting === "off" || !heat || !covers(heat.setting, setting) || heat.hotAt <= t;
   const canStart = (d) => {
     const s = dishes[d].steps[next[d]];
     const setting = s.oven || s.preheat;
@@ -329,13 +337,21 @@ export function planLineup(lineup, recipes, progress = {}) {
   const allToday = search(chains(lineup, recipes), progress);
   const makeAhead = [];
   for (const { slug } of lineup.dishes) {
-    if (keepsWhole(slug) && sits(recipes[slug]) !== Infinity) continue;
+    // A dish that keeps entirely can be made ahead only if something's left for
+    // the day.
+    if (keepsWhole(slug) && (sits(recipes[slug]) !== Infinity || lineup.dishes.length === 1)) continue;
     const saves = dayLength(allToday) - dayLength(search(chains(lineup, recipes, dayParts([slug])), progress));
     if (saves > MAKE_AHEAD_SAVES) makeAhead.push({ slug, saves, ahead: lineup.ahead?.[slug] ?? true });
   }
   const ahead = makeAhead.filter((q) => q.ahead).map((q) => q.slug);
-  if (!ahead.length) return { ...allToday, makeAhead, aheadOfTime: null };
+  // What cook mode shows: the step to do now, and how long to wait before it
+  // when nothing needs you yet.
+  const withNow = (plan) => {
+    const upNow = plan.steps.find((x) => !x.done && !x.skipped) ?? null;
+    return { ...plan, upNow, wait: upNow ? Math.max(0, upNow.at - (progress.now || 0)) : 0 };
+  };
+  if (!ahead.length) return withNow({ ...allToday, makeAhead, aheadOfTime: null });
   const before = search(chains({ dishes: lineup.dishes.filter((d) => ahead.includes(d.slug)) }, recipes,
     Object.fromEntries(ahead.map((slug) => [slug, keepsWhole(slug) ? null : "before"]))));
-  return { ...search(chains(lineup, recipes, dayParts(ahead)), progress), makeAhead, aheadOfTime: { steps: before.steps, minutes: before.minutes } };
+  return withNow({ ...search(chains(lineup, recipes, dayParts(ahead)), progress), makeAhead, aheadOfTime: { steps: before.steps, minutes: before.minutes } });
 }
