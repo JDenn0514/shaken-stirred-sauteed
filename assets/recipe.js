@@ -189,7 +189,7 @@
       let cook = null;
       const sync = () => {
         if (location.hash === "#cook" && !cook) {
-          cook = window.SSSCook.open({ recipe: r, progress, save, onChange: paint, onClose: close });
+          cook = window.SSSCook.open({ recipe: r, slug, progress, save, onChange: paint, onClose: close });
         } else if (location.hash !== "#cook" && cook) {
           cook.close(); cook = null;
         }

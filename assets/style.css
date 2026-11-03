@@ -1059,6 +1059,22 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 .cook-ings input:checked + span { color: var(--muted); text-decoration: line-through var(--strike) var(--section); }
 .cook-ings b { font-weight: 700; font-variant-numeric: tabular-nums; }
 .cook-alt { color: var(--muted); font-size: .88em; }
+.cook-wait { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.cook-timer-start { border-color: var(--section); color: var(--section); }
+.cook-timers { display: flex; flex-direction: column; gap: 6px; }
+.cook-timers:empty { display: none; }
+.cook-timer {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 8px 10px;
+  border: 1.5px solid var(--section); border-radius: var(--radius-ctl); background: var(--section-wash); font-size: .9rem;
+}
+.cook-timer-time { font-family: var(--mono); font-weight: 500; font-size: 1.1rem; color: var(--section); font-variant-numeric: tabular-nums; }
+.cook-timer-what { flex: 1 1 8em; min-width: 0; color: var(--muted); }
+.cook-timer-what a { color: inherit; }
+.cook-timer-actions { display: flex; gap: 6px; }
+.cook-timer .btn { min-height: 36px; padding: 0 12px; font-size: .86rem; }
+.cook-timer.paused .cook-timer-time { color: var(--muted); }
+.cook-timer.ringing { background: var(--section-fill); color: var(--on-section-fill); }
+.cook-timer.ringing .cook-timer-time, .cook-timer.ringing .cook-timer-what { color: var(--on-section-fill); font-weight: 600; }
 .cook-wait, .cook-cue { margin: 0; font-size: 1.02rem; font-weight: 600; line-height: 1.45; }
 .cook-wait { color: var(--muted); }
 .cook-cue { color: var(--section); }

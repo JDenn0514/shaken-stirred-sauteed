@@ -96,6 +96,15 @@ const PAGE_ONLY = {
     source: { name: "Bad link", url: "javascript:alert(1)" },
   },
 };
+// Every way the real recipes write a wait, one per step, for cook mode's timers.
+// Each step's text is the timer its wait should get ("none" for no timer).
+const WAITS = ["15 to 18 min", "About 20 min", "~90 min", "1 1/2 to 2 1/2 hr", "4 hr, ideally overnight",
+  "30 min ice bath, then about 1 hr fridge", "10 min or more", "2 1/2 hours", "1 hr 15 min", "45 sec", "Until it sets"];
+const TIMERS = ["15 min", "20 min", "1 hr 30 min", "1 hr 30 min", "4 hr", "30 min", "10 min", "2 hr 30 min", "1 hr 15 min", "45 sec", "none"];
+PAGE_ONLY["every-wait"] = recipe({
+  title: "Every Wait",
+  steps: WAITS.map((wait, n) => ({ do: TIMERS[n], wait })),
+});
 const FILES = { ...RECIPES, ...PAGE_ONLY };
 
 export const test = base.extend({

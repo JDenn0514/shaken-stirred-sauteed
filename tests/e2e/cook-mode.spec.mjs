@@ -244,3 +244,93 @@ test.describe("a step's ingredients", () => {
     await expect(box(page, /Lemon juice/)).toBeChecked();
   });
 });
+
+test.describe("timers", () => {
+  const timer = (page, name) => cook(page).getByRole("timer", { name });
+  // Lemon Bars step 2 is "Bake the crust", 15 to 18 min.
+  async function toBake(page) {
+    await start(page, "lemon-bars");
+    await next(page).click();
+    await next(page).click();
+    await expect(instruction(page)).toHaveText("Bake the crust.");
+  }
+
+  test.beforeEach(async ({ page }) => {
+    // The clock stands still unless a test moves it on.
+    await page.clock.install({ time: new Date(2026, 10, 2, 17, 59, 0) });
+    await page.clock.pauseAt(new Date(2026, 10, 2, 18, 0, 0));
+  });
+
+  test("each kind of wait gets a timer for its shortest time", async ({ page }) => {
+    await start(page, "every-wait");
+    for (;;) {
+      const expected = await instruction(page).textContent();
+      const button = cook(page).getByRole("button", { name: /^Start .* timer$/ });
+      if (expected === "none") await expect(button).toHaveCount(0);
+      else await expect(button).toHaveText(`Start ${expected} timer`);
+      if (await next(page).textContent() === "Finish") break;
+      await next(page).click();
+    }
+  });
+
+  test("counts down, and stays at the top as you move on", async ({ page }) => {
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await expect(timer(page, "Step 2")).toContainText("15:00");
+    await expect(cook(page).getByRole("button", { name: /^Start .* timer$/ })).toHaveCount(0);
+    await page.clock.runFor(60_000);
+    await expect(timer(page, "Step 2")).toContainText("14:00");
+    await next(page).click();
+    await expect(timer(page, "Step 2")).toContainText("14:00");
+  });
+
+  test("rings with the step's cue, and can be given 2 more minutes or stopped", async ({ page }) => {
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await next(page).click();
+    await page.clock.runFor(15 * 60_000);
+    await expect(timer(page, "Step 2")).toContainText("Pale gold at the edges");
+    await timer(page, "Step 2").getByRole("button", { name: "+2 min" }).click();
+    await expect(timer(page, "Step 2")).toContainText("2:00");
+    await page.clock.runFor(2 * 60_000);
+    await timer(page, "Step 2").getByRole("button", { name: "Stop" }).click();
+    await expect(cook(page).getByRole("timer")).toHaveCount(0);
+  });
+
+  test("can be paused, resumed and cancelled", async ({ page }) => {
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await timer(page, "Step 2").getByRole("button", { name: "Pause" }).click();
+    await page.clock.runFor(60_000);
+    await expect(timer(page, "Step 2")).toContainText("15:00");
+    await timer(page, "Step 2").getByRole("button", { name: "Resume" }).click();
+    await page.clock.runFor(60_000);
+    await expect(timer(page, "Step 2")).toContainText("14:00");
+    await timer(page, "Step 2").getByRole("button", { name: "Cancel timer" }).click();
+    await expect(cook(page).getByRole("timer")).toHaveCount(0);
+  });
+
+  test("keeps time through a reload", async ({ page }) => {
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await page.clock.runFor(5 * 60_000);
+    await page.reload();
+    await expect(timer(page, "Step 2")).toContainText("10:00");
+  });
+
+  test("long ones say when they'll be ready", async ({ page }) => {
+    await start(page, "lemon-bars");
+    for (let i = 0; i < 6; i++) await next(page).click();
+    await cook(page).getByRole("button", { name: "Start 2 hr timer" }).click();
+    await expect(timer(page, "Step 6")).toContainText("Ready around 8:00 pm");
+  });
+
+  test("follow you into another recipe's cook mode, and link back", async ({ page }) => {
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await start(page, "pork-carnitas");
+    await expect(timer(page, "Lemon Bars, step 2")).toContainText("15:00");
+    await timer(page, "Lemon Bars, step 2").getByRole("link", { name: /Lemon Bars/ }).click();
+    await expect(instruction(page)).toHaveText("Bake the crust.");
+  });
+});
