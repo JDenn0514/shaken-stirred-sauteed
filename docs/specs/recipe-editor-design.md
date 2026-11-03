@@ -171,6 +171,8 @@ The rules that turn plain text into a draft:
 
 ## Order of work
 
+The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Work that needs no accounts (the shared checker, the editor without saving, the text rules) starts while the accounts are set up.
+
 1. Set up Cloudflare: the Worker and D1 with Better Auth's tables. Jacob creates the account, GitHub App and keys.
 2. Sign-in end to end, tried on an iPhone first (see "Sign-in across sites"), since the rest depends on it.
 3. The editor, in the order the planning settles on.
@@ -185,7 +187,7 @@ The rules that turn plain text into a draft:
 
 - Plain HTML, CSS and JavaScript on the site, no frameworks and no build step (README). The Worker is its own small program in its own folder, deployed with Cloudflare's `wrangler` tool. It may use npm packages (Better Auth), since it's not part of the site.
 - **The site needs new runtime dependencies**, which the README currently rules out: Tesseract.js (and its English language data) and a PDF reader such as pdf.js. They're committed into the repo as files (no CDN, no build step) and load only on the editor pages. The README's "the site itself still has no dependencies" line changes to say so.
-- The pages' Content-Security-Policy loosens **only on the editor pages**, as far as needed: `connect-src` for the Worker (and `api.github.com` if the browser commits itself), `worker-src` and `'wasm-unsafe-eval'` for Tesseract. The signed-in "Edit" button on recipe pages needs `connect-src` for the Worker there too, and nothing more. Every other page keeps today's policy. Styles are still set through the DOM, not inline.
+- The pages' Content-Security-Policy loosens **only on the editor pages**, as far as needed: `connect-src` for the Worker (and `api.github.com` if the browser commits itself), `worker-src` and `'wasm-unsafe-eval'` for Tesseract. The signed-in "Edit" button on recipe pages needs no CSP change, since the page knows you're signed in from the token kept in the browser (see the plan). Every other page keeps today's policy. Styles are still set through the DOM, not inline.
 - The service worker is network-first and caches same-origin files, so the editor's large files get cached after first use. That's fine. Requests to the Worker and GitHub aren't cached, as today.
 - Tests come first (`mattpocock-skills:tdd`, per `.claude/rules/testing.md`). Browser tests use the fixture recipes and the fixture's request blocking, so GitHub, the Worker and Workers AI are faked in tests, never called. Text-to-recipe rules get unit tests on sample text, including real OCR mistakes. The Worker gets its own tests. The shared checks keep their tests through `tests/helpers/build-index.mjs`. `npm test` passes before it's called done.
 - Work happens on its own branch, so the live site is untouched until it's merged.
