@@ -181,6 +181,30 @@ describe("nested recipes", () => {
   });
 });
 
+describe("connected recipes", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
+  const recipes = {
+    pavlova: recipe("Pavlova", [
+      ["Bake the meringue", { hands: "5 min", wait: "90 min" }],
+      ["Pile on the cream and curd", { hands: "4 min", uses: ["Lemon curd"] }],
+    ], { category: "baking", serve: "soon", sits: "15 min", ingredients: [{ item: "Egg whites" }, { item: "Lemon curd", recipe: "lemon-curd", optional: true }] }),
+    "lemon-curd": recipe("Lemon Curd", [["Cook the curd", { hands: "12 min" }], ["Chill it", { hands: "1 min", wait: "90 min" }]], { kind: "component", serve: "keeps" }),
+  };
+
+  test("an optional ingredient's recipe isn't added by itself", () => {
+    const plan = planLineup({ dishes: [{ slug: "pavlova" }] }, recipes);
+    assert.deepEqual(texts(plan), ["Bake the meringue", "Pile on the cream and curd"]);
+  });
+
+  test("when it's in the lineup too, it's ready before the step that uses it", () => {
+    // The curd takes longer than the meringue, so left to itself it would be
+    // finished at serving, after the pavlova had been put together.
+    const plan = planLineup({ dishes: [{ slug: "pavlova" }, { slug: "lemon-curd" }] }, recipes);
+    assert.ok(at(plan, "Chill it") + 91 <= at(plan, "Pile on the cream and curd"),
+      `the curd was ready at ${at(plan, "Chill it") + 91}, the pavlova put together at ${at(plan, "Pile on the cream and curd")}`);
+  });
+});
+
 describe("other equipment", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
 

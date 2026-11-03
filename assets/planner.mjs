@@ -53,9 +53,9 @@ const sits = (r) => (r.serve === "keeps" ? Infinity : r.sits ? minutes(r.sits) :
 // end of its last.
 //
 // A required ingredient that links to a recipe (`recipe`) is a nested recipe:
-// it's made too, unless the lineup says it's already made, and the step that
-// uses it waits for it. It comes after its dish, with `parent` and `neededBy`
-// (the parent's step index).
+// it's made too, unless the lineup says it's already made. An optional one is
+// a connected recipe: made only if it's in the lineup itself. Either way, the
+// step that uses it waits for it: `neededBy` lists those [dish, step] pairs.
 const lower = (x) => String(x ?? "").trim().toLowerCase();
 const ingredientsOf = (r) => (r.ingredients || []).flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]));
 function chains(lineup, recipes) {
@@ -75,14 +75,17 @@ function chains(lineup, recipes) {
       const setting = steps[first].oven;
       steps.unshift({ slug, text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
     }
-    const index = dishes.push({ slug, sits: sits(r), steps, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), parent: parent?.index ?? null, neededBy: parent?.step ?? null }) - 1;
+    const index = dishes.push({ slug, sits: sits(r), steps, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [] }) - 1;
     for (const ing of ingredientsOf(r)) {
-      if (typeof ing !== "object" || !ing.recipe || ing.optional || made.includes(ing.recipe)) continue;
+      if (typeof ing !== "object" || !ing.recipe || made.includes(ing.recipe)) continue;
       const step = Math.max(0, steps.findIndex((s) => s.needs.includes(lower(ing.item))));
-      add(ing.recipe, made, { index, step });
+      if (ing.optional) links.push({ slug: ing.recipe, by: [index, step] });
+      else add(ing.recipe, made, [index, step]);
     }
   };
+  const links = [];
   for (const { slug, made = [] } of lineup.dishes) add(slug, made);
+  for (const { slug, by } of links) dishes.find((d) => d.slug === slug)?.neededBy.push(by);
   return dishes;
 }
 
@@ -107,10 +110,17 @@ function latestStarts(dish, serve) {
 // most urgent step that can start: the one whose latest start is soonest.
 // `early` plans a dish to be ready that many minutes before serving.
 function simulate(dishes, serve, early = {}) {
-  // A nested recipe has to be ready by the latest start of the step that uses it.
+  // A nested or connected recipe has to be ready by the latest start of the
+  // steps that use it. Work out the dishes that use others first.
   const latest = [];
-  dishes.forEach((d, i) => { latest[i] = latestStarts(d, d.parent == null ? serve - (early[d.slug] || 0) : latest[d.parent][d.neededBy]); });
-  const waits = dishes.map((dish, d) => dishes.flatMap((x, n) => (x.parent === d ? [[n, x.neededBy]] : [])));
+  for (let pass = 0; pass < dishes.length && latest.filter(Boolean).length < dishes.length; pass++) {
+    dishes.forEach((d, i) => {
+      if (latest[i] || d.neededBy.some(([p]) => !latest[p])) return;
+      const by = Math.min(...d.neededBy.map(([p, step]) => latest[p][step]));
+      latest[i] = latestStarts(d, Math.min(by, serve - (early[d.slug] || 0)));
+    });
+  }
+  const waits = dishes.map((_, d) => dishes.flatMap((x, n) => x.neededBy.filter(([p]) => p === d).map(([, step]) => [n, step])));
   const waitingFor = (d) => waits[d].filter(([, step]) => step === next[d]).map(([n]) => n);
   // A hot dish starts no earlier than would leave it sitting too long.
   const earliest = dishes.map((dish, d) => latest[d][0] + (early[dish.slug] || 0) - dish.sits);
