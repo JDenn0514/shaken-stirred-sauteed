@@ -87,15 +87,27 @@ window.SSSCook = (() => {
     return `${h % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
   };
 
-  // A short beep, repeated while a timer rings. The page can only make sound
-  // while it's open, which cook mode's screen wake lock helps with.
+  // A short beep and a buzz, repeated while a timer rings. The page can only
+  // make sound while it's open, which cook mode's screen wake lock helps with,
+  // and only after a tap since the page loaded, so every tap in cook mode
+  // turns sound on. The buzz needs no tap.
   let audio = null;
   const unlockAudio = () => {
-    try { audio = audio || new AudioContext(); audio.resume(); } catch { audio = null; }
+    try { audio = audio || new AudioContext(); audio.resume().catch(() => {}); } catch { audio = null; }
+  };
+  // On an iPhone, "playback" rings through the silent switch. It also pauses
+  // music or a podcast, so it's only set while a timer rings.
+  const throughSilentSwitch = (on) => {
+    const type = on ? "playback" : "auto";
+    if (navigator.audioSession && navigator.audioSession.type !== type) navigator.audioSession.type = type;
   };
   function beep() {
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     try {
       if (!audio) return;
+      throughSilentSwitch(true);
+      // A phone pauses sound when it locks or switches app; try to restart it.
+      if (audio.state !== "running") audio.resume().catch(() => {});
       const osc = audio.createOscillator(), gain = audio.createGain();
       osc.frequency.value = 880;
       gain.gain.setValueAtTime(0.25, audio.currentTime);
@@ -103,7 +115,6 @@ window.SSSCook = (() => {
       osc.connect(gain).connect(audio.destination);
       osc.start(); osc.stop(audio.currentTime + 0.4);
     } catch {}
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
   }
 
   // "125 g", "1 cup" first then smaller; a step's own share replaces both.
@@ -214,7 +225,6 @@ window.SSSCook = (() => {
       return `<button class="btn cook-timer-start" type="button" data-start="${i}">Start ${esc(fmtLength(min))} timer</button>`;
     };
     function startTimer(i) {
-      unlockAudio();
       const total = waitMinutes(steps[i].wait) * 60_000;
       saveTimers([...loadTimers(), { id: `${Date.now()}-${slug}-${i}`, slug, title: r.title, step: i, cue: steps[i].cue || "", ends: Date.now() + total, left: total, total }]);
       paint();
@@ -273,9 +283,14 @@ window.SSSCook = (() => {
       return ringing.length > 0;
     }
     let ticks = 0;
-    const tick = setInterval(() => { if (paintTimers() && ticks++ % 2 === 0) beep(); }, 1000);
+    const tick = setInterval(() => {
+      if (!paintTimers()) throughSilentSwitch(false);
+      else if (ticks++ % 2 === 0) beep();
+    }, 1000);
 
+    el.addEventListener("keydown", unlockAudio);
     el.addEventListener("click", (e) => {
+      unlockAudio();
       const b = e.target.closest("button");
       if (!b) return;
       if (b.matches(".cook-go")) goNext();
@@ -283,7 +298,7 @@ window.SSSCook = (() => {
       else if (b.matches(".cook-close, .cook-return")) onClose();
       else if (b.matches(".cook-upnext")) b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true"));
       else if (b.dataset.start) startTimer(+b.dataset.start);
-      else if (b.dataset.timer) { unlockAudio(); changeTimer(b.dataset.timer, b.dataset.how); }
+      else if (b.dataset.timer) changeTimer(b.dataset.timer, b.dataset.how);
     });
 
     el.addEventListener("change", (e) => {
@@ -321,6 +336,7 @@ window.SSSCook = (() => {
       close() {
         closed = true;
         clearInterval(tick);
+        throughSilentSwitch(false);
         document.removeEventListener("visibilitychange", wake);
         if (lock) lock.release();
         el.remove();

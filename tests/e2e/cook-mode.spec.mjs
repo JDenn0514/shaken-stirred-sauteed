@@ -319,6 +319,62 @@ test.describe("timers", () => {
     await expect(timer(page, "Step 2")).toContainText("10:00");
   });
 
+  // Counts the beeps and buzzes the page asks the phone for. Whether they
+  // can be heard or felt is up to the phone, so that isn't tested.
+  async function listenForAlarm(page) {
+    await page.addInitScript(() => {
+      window.alarm = { beeps: 0, buzzes: 0 };
+      const play = OscillatorNode.prototype.start;
+      OscillatorNode.prototype.start = function (...args) { window.alarm.beeps++; return play.apply(this, args); };
+      navigator.vibrate = () => { window.alarm.buzzes++; return true; };
+      // Safari's audio session, where "playback" rings through the silent switch.
+      navigator.audioSession = { type: "auto" };
+    });
+  }
+  const alarm = (page) => page.evaluate(() => window.alarm);
+  const audioSession = (page) => page.evaluate(() => navigator.audioSession.type);
+
+  // Ringing through the switch pauses other apps' music, so only while it rings.
+  test("rings through an iPhone's silent switch, but only while it rings", async ({ page }) => {
+    await listenForAlarm(page);
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await page.clock.runFor(60_000);
+    expect(await audioSession(page)).toBe("auto");
+    await page.clock.runFor(14 * 60_000 + 3000);
+    await expect(timer(page, "Step 2")).toContainText("Pale gold at the edges");
+    expect(await audioSession(page)).toBe("playback");
+    await timer(page, "Step 2").getByRole("button", { name: "Stop" }).click();
+    await page.clock.runFor(2000);
+    expect(await audioSession(page)).toBe("auto");
+  });
+
+  test("beeps and buzzes when it ends", async ({ page }) => {
+    await listenForAlarm(page);
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await page.clock.runFor(15 * 60_000 + 3000);
+    await expect(timer(page, "Step 2")).toContainText("Pale gold at the edges");
+    const { beeps, buzzes } = await alarm(page);
+    expect(beeps).toBeGreaterThan(0);
+    expect(buzzes).toBeGreaterThan(0);
+  });
+
+  // Browsers only let a page make sound after a tap, so a reloaded page
+  // can buzz straight away but has to wait for a tap to beep.
+  test("still buzzes after a reload, and beeps once you tap anything", async ({ page }) => {
+    await listenForAlarm(page);
+    await toBake(page);
+    await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
+    await page.reload();
+    await page.clock.runFor(15 * 60_000 + 3000);
+    await expect(timer(page, "Step 2")).toContainText("Pale gold at the edges");
+    expect((await alarm(page)).buzzes).toBeGreaterThan(0);
+    await next(page).click();
+    await page.clock.runFor(3000);
+    expect((await alarm(page)).beeps).toBeGreaterThan(0);
+  });
+
   test("long ones say when they'll be ready", async ({ page }) => {
     await start(page, "lemon-bars");
     for (let i = 0; i < 6; i++) await next(page).click();
