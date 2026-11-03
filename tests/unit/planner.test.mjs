@@ -303,6 +303,38 @@ describe("prep", () => {
     assert.equal(plan.minutes, 67);
   });
 
+  test("a dish whose oven the planner heats still has its prep done with the rest", () => {
+    // The added heating step goes after the asparagus' prep, so the prep isn't
+    // held back with the roasting while the steak waits for it.
+    const plan = planLineup({ dishes: [{ slug: "steak" }, { slug: "asparagus" }] }, {
+      steak: recipe("Steak", [
+        ["Take the steak out to sit", { hands: "30 sec", wait: "30 min", prep: "just before" }],
+        ["Cook the steak", { hands: "10 min", burner: true }],
+      ], { serve: "hot", sits: "5 min" }),
+      asparagus: recipe("Asparagus", [
+        ["Trim the asparagus", { hands: "5 min", prep: true }],
+        ["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "400F" }],
+      ], { serve: "hot", sits: "5 min" }),
+    });
+    assert.ok(at(plan, "Trim the asparagus") < at(plan, "Heat the oven to 200°C / 400°F"), "the oven was heated before the asparagus was trimmed");
+    // 5 minutes of prep, then the steak's 30 minutes out of the fridge and 10 in the pan.
+    assert.ok(plan.minutes <= 46, `planned ${plan.minutes} minutes`);
+  });
+
+  test("a recipe that a prep step uses is made during the prep", () => {
+    // The garlic butter is prep, and it needs the garlic paste, whose last step
+    // isn't prep: the paste is made during the prep, not after it.
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }] }, {
+      potatoes: recipe("Potatoes", [
+        ["Mix the garlic butter", { hands: "3 min", prep: true, uses: ["Garlic paste"] }],
+        ["Brush and bake", { hands: "3 min", wait: "40 min" }],
+      ], { ingredients: [{ item: "Garlic paste", recipe: "garlic-paste" }] }),
+      "garlic-paste": recipe("Garlic Paste", [["Chop the garlic", { hands: "4 min", prep: true }], ["Jar the paste", { hands: "1 min" }]], { kind: "component" }),
+    });
+    assert.deepEqual(texts(plan), ["Chop the garlic", "Jar the paste", "Mix the garlic butter", "Brush and bake"]);
+    assert.equal(plan.minutes, 51);
+  });
+
   test("planned fastest, prep fills the waits instead", () => {
     const plan = planLineup({ dishes, prepFirst: false }, recipes);
     assert.ok(at(plan, "Cut the apples") > at(plan, "Boil the potatoes"), "the apples were cut before the potatoes went on");

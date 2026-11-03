@@ -115,11 +115,12 @@ function chains(lineup, recipes, parts = {}) {
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
     }));
     // A dish whose first oven setting isn't heated by an earlier step of its own
-    // gets a heating step first.
+    // gets a heating step, after its prep: prep isn't held back with the cooking.
     const first = steps.findIndex((x) => x.oven);
     if (first >= 0 && steps[first].oven !== "off" && !steps.slice(0, first).some((x) => x.preheat && covers(x.preheat, steps[first].oven))) {
       const setting = steps[first].oven;
-      steps.unshift({ slug, n: "heat", text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
+      const afterPrep = steps.findIndex((x) => !x.prep);
+      steps.splice(afterPrep < 0 ? steps.length : afterPrep, 0, { slug, n: "heat", text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
     }
     // After a `holds` step the dish keeps (a cooled meringue), so only the steps
     // after it are tied to serving.
@@ -147,6 +148,16 @@ function chains(lineup, recipes, parts = {}) {
   for (const { slug, by } of links) dishes.find((d) => d.slug === slug)?.neededBy.push(by);
   // "Prep everything first" (the default) or "Fastest".
   dishes.prepFirst = lineup.prepFirst !== false;
+  // A recipe that a prep step uses is made during the prep, every step of it,
+  // and so is any recipe that one uses.
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const d of dishes) {
+      if (d.duringPrep || !d.neededBy.some(([p, step]) => dishes[p].steps[step].prep || dishes[p].duringPrep)) continue;
+      d.duringPrep = grew = true;
+    }
+  }
   return dishes;
 }
 
@@ -223,7 +234,7 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     const setting = s.oven || s.preheat;
     // Prepping everything first, only prep and heating the oven start until all
     // the meal's prep is under way.
-    if (dishes.prepFirst && !s.prep && !s.preheat && prepLeft()) return false;
+    if (dishes.prepFirst && !s.prep && !s.preheat && !dishes[d].duringPrep && prepLeft()) return false;
     return opensAt(d) <= t && handsFree <= t && !atTable(d, t) && (!setting || ovenFree(d, setting)) && (!s.oven || hot(s.oven)) && s.kit.every(free) && waitingFor(d).every((n) => !left(n) && readyAt[n] <= t);
   };
 
@@ -266,6 +277,8 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     if (!can.length) {
       const events = [handsFree, ...dishes.map((_, d) => d).filter(left).map(opensAt), ...[...oven.values()].map((h) => h.until), heat ? heat.hotAt : 0, ...busy.map((b) => b.until), ...readyAt, ...Object.values(times)];
       t = Math.min(...events.filter((x) => x > t));
+      // Nothing left can ever start: say so rather than loop forever.
+      if (t === Infinity) throw new Error(`No order works: ${dishes.filter((_, x) => left(x)).map((x) => x.slug).join(", ")} can't go on`);
       continue;
     }
     const d = can.reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
