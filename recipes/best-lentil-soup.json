@@ -97,6 +97,17 @@
   ],
   "steps": [
     {
+      "do": "Chop the onion, peel and chop the carrots, and press or mince the garlic.",
+      "hands": "6 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "yellow or white onion, chopped",
+        "carrots, peeled and chopped",
+        "garlic, pressed or minced"
+      ]
+    },
+    {
       "do": "Heat the oil over medium in a Dutch oven or heavy stainless pot of 5 quarts or more until it shimmers. Add the onion and carrot and cook, stirring often, about 5 minutes, until the onion is soft and translucent.",
       "wait": "About 5 min",
       "uses": [
@@ -119,6 +130,17 @@
       ],
       "hands": "3 min",
       "burner": true
+    },
+    {
+      "do": "Pick over and rinse the lentils. Strip the tough ribs from the greens and chop the leaves. Juice the lemon.",
+      "hands": "5 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "brown or green lentils, picked over and rinsed",
+        "collard greens or kale, chopped, tough ribs removed",
+        "lemon juice (1/2 to 1 medium lemon), to taste"
+      ]
     },
     {
       "do": "Add the lentils, broth, water, 1 tsp salt, the pepper flakes and plenty of black pepper. Bring to a boil, partially cover, and simmer gently 25 to 30 minutes, until the lentils are tender but still hold their shape.",

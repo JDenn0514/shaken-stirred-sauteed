@@ -120,6 +120,17 @@
   ],
   "steps": [
     {
+      "do": "Grate the carrot, onion and 2 garlic cloves.",
+      "hands": "4 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "carrot, grated",
+        "onion, grated",
+        "garlic, grated"
+      ]
+    },
+    {
       "do": "Grate the carrot, onion and 2 garlic cloves. Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes.",
       "wait": "2 to 3 min",
       "uses": [
@@ -153,6 +164,19 @@
       ],
       "hands": "1 min",
       "burner": true
+    },
+    {
+      "do": "Mince the chilies, 5 garlic cloves and scallion whites, saving the greens. Thinly slice the scallion greens and ginger for the top.",
+      "hands": "6 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "green bird's eye chilies, minced",
+        "garlic, minced",
+        "scallion, whites minced, greens saved",
+        "scallion greens, thinly sliced",
+        "fresh ginger, thinly sliced"
+      ]
     },
     {
       "do": "Meanwhile, mince the chilies, 5 garlic cloves and scallion whites. Heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",

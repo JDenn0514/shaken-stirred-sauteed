@@ -133,7 +133,8 @@
         {
           "do": "Stir the cornstarch into the lemon juice with a fork until dissolved; set aside.",
           "uses": ["Cornstarch", { "item": "Lemon juice", "group": "Blueberry sauce" }],
-          "hands": "1 min"
+          "hands": "1 min",
+          "prep": true
         },
         {
           "do": "Warm the blueberries and sugar in a small saucepan over medium heat for 3 min, stirring now and then and mashing the berries against the pan to break them down.",
@@ -157,15 +158,24 @@
       "group": "Crust",
       "items": [
         {
+          "do": "Melt the butter for the crust. Zest one lemon, then juice about 2 to make 6 Tbsp for the filling.",
+          "hands": "4 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [{ "group": "Shortbread crust", "item": "Unsalted butter" }, "Lemon zest", { "group": "Filling", "item": "Lemon juice" }]
+        },
+        {
           "do": "In a medium bowl, stir together the melted butter, sugar, vanilla and salt. Add the flour and mix until fully combined.",
           "cue": "Thick and a little greasy, as it should be",
           "uses": ["Unsalted butter", { "item": "Granulated sugar", "group": "Shortbread crust" }, "Pure vanilla extract", "Salt", "All-purpose flour"],
-          "hands": "3 min"
+          "hands": "3 min",
+          "prep": true
         },
         {
           "do": "Press firmly and evenly into an ungreased 9-inch tart pan, across the bottom and up the sides. It looks like too little but it stretches. The base of a measuring cup helps, though it can stick.",
           "hands": "5 min",
-          "oven": false
+          "oven": false,
+          "prep": true
         },
         {
           "do": "Bake at 350°F (175°C).",

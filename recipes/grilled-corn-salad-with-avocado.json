@@ -117,6 +117,15 @@
   ],
   "steps": [
     {
+      "do": "Husk the corn and pull off the silks.",
+      "hands": "4 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "fresh corn, husked, silks removed"
+      ]
+    },
+    {
       "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
       "wait": "7 min",
       "uses": [
@@ -137,6 +146,19 @@
       "hands": "3 min",
       "watch": true,
       "grill": true
+    },
+    {
+      "do": "Halve the tomatoes, core and finely chop the bell pepper, and chop the green onions and cilantro. Squeeze the lime juice.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "cherry tomatoes, halved (about 2 cups)",
+        "small red bell pepper, cored and finely chopped",
+        "green onions, finely chopped",
+        "chopped fresh cilantro",
+        "fresh lime juice (about 2 limes)"
+      ]
     },
     {
       "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape.",

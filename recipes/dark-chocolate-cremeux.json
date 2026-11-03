@@ -94,6 +94,16 @@
       "group": "Custard (crème anglaise)",
       "items": [
         {
+          "do": "Chop the chocolate and put it in a large, deep bowl with room for a stick blender, with a fine sieve over it. Set the butter out to soften, if using.",
+          "hands": "5 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            "Dark chocolate",
+            "Unsalted butter"
+          ]
+        },
+        {
           "do": "Heat the milk and cream over medium, stirring now and then so the bottom doesn't scorch. Take it off the heat once it steams. Don't let it boil.",
           "uses": [
             "Whole or 2% milk",

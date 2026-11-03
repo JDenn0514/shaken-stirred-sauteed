@@ -76,6 +76,19 @@
   ],
   "steps": [
     {
+      "do": "Chop the cilantro, mince the garlic, and seed and dice the jalapeño. Squeeze the orange and lime juice.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "chopped fresh cilantro leaves",
+        "garlic, minced",
+        "jalapeño, seeded and diced",
+        "fresh orange juice",
+        "fresh lime juice"
+      ]
+    },
+    {
       "do": "Whisk the cilantro, olive oil, soy sauce, orange juice, lime juice, garlic, jalapeño, cumin and 1 tsp pepper in a medium bowl. Take out 1/2 cup and refrigerate it as the finishing sauce. It has to come out now, before anything touches raw meat.",
       "uses": [
         "chopped fresh cilantro leaves",
@@ -91,7 +104,8 @@
           "amount": "1 tsp"
         }
       ],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": true
     },
     {
       "do": "Put the steak and the rest of the marinade in a gallon zip bag or bowl. Chill 4 to 8 hours, ideally the full 8 hours overnight, turning now and then. Stop at 8 hours: the citrus acid keeps breaking down the muscle and the texture turns mushy rather than tender.",
@@ -115,7 +129,8 @@
           "amount": "to taste"
         }
       ],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": "just before"
     },
     {
       "do": "Grill 3 to 6 minutes per side, flipping once, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated.",

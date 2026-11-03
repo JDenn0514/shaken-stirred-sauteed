@@ -70,6 +70,15 @@
   ],
   "steps": [
     {
+      "do": "Finely mince the garlic.",
+      "hands": "1 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "garlic cloves, finely minced (or 1/2 tsp granulated)"
+      ]
+    },
+    {
       "do": "Whisk the yogurt, tahini, garlic, salt and pepper in a medium bowl until completely smooth.",
       "uses": [
         "plain yogurt, milk kefir or vegan yogurt",

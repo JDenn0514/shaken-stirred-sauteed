@@ -62,14 +62,23 @@
   ],
   "steps": [
     {
+      "do": "Trim the woody ends off the asparagus. Juice half the lemon and slice the other half into rings. Cut the butter into pats, and shred the parmesan if it isn't already.",
+      "hands": "5 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": ["asparagus, trimmed", "lemon, half juiced and half sliced into rings", "unsalted butter, cut into pats", "shredded parmesan cheese, or to taste"]
+    },
+    {
       "do": "Arrange the trimmed asparagus in a single layer on a rimmed baking sheet. Drizzle with the olive oil, season with the salt and pepper, and roll to coat evenly.",
       "uses": ["asparagus, trimmed", "olive oil", "sea salt, or to taste", "black pepper, freshly ground, or to taste"],
-      "hands": "4 min"
+      "hands": "4 min",
+      "prep": true
     },
     {
       "do": "Squeeze the juice of half the lemon over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center.",
       "uses": ["lemon, half juiced and half sliced into rings", "unsalted butter, cut into pats"],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": "just before"
     },
     {
       "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes. Pull the pan and switch the oven to broil.",

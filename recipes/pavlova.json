@@ -99,6 +99,15 @@
           "preheat": "350F"
         },
         {
+          "do": "Separate the eggs while they're cold, saving the 4 yolks for lemon curd, and let the whites come to room temperature. The bowl and whisk must be completely free of fat or yolk.",
+          "hands": "3 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            "Egg whites"
+          ]
+        },
+        {
           "do": "Whip the whites on medium-high to soft peaks.",
           "wait": "~5 min",
           "uses": [
@@ -106,6 +115,15 @@
           ],
           "hands": "30 sec",
           "watch": true
+        },
+        {
+          "do": "No superfine sugar? Pulse granulated sugar in a food processor a few times. Line the sheet with parchment or a silicone mat; don't grease it.",
+          "hands": "2 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            "Superfine sugar"
+          ]
         },
         {
           "do": "Add the sugar in two parts, beating about 30 sec after each. Then go to high speed.",

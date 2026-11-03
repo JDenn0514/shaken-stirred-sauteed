@@ -72,7 +72,8 @@
       "uses": [
         "Persian cucumbers"
       ],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": true
     },
     {
       "do": "Toss the slices with 1/2 tsp salt and refrigerate at least 20 minutes (up to an hour) to pull the water out.",
@@ -85,6 +86,15 @@
     {
       "do": "Drain, rinse under running water about 10 seconds, squeeze gently, and return to the bowl.",
       "hands": "1 min"
+    },
+    {
+      "do": "Mince the garlic, if using.",
+      "hands": "1 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "garlic, minced (optional)"
+      ]
     },
     {
       "do": "Add the sesame oil, soy sauce, sugar, rice vinegar, chili oil, sesame seeds, and garlic if using. Toss to coat and serve.",

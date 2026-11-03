@@ -144,15 +144,25 @@
       "group": "Crust",
       "items": [
         {
+          "do": "Line the pan with two crossed sheets of foil pressed into the corners and up the sides, and butter the foil. Zest the limes for the crust (and a little extra for serving), then juice them and the lemon. Finely chop the mint. Cut both portions of butter into pieces and keep them cold.",
+          "hands": "12 min",
+          "prep": true,
+          "prepOnly": true,
+          "oven": false,
+          "uses": ["Butter", "Finely grated lime zest", "Fresh lime juice", "Fresh lemon juice", "Fresh mint", { "group": "Shortbread crust", "item": "Unsalted butter" }, { "group": "Lime curd", "item": "Unsalted butter" }]
+        },
+        {
           "do": "Rub the lime zest into the sugar with your fingertips until damp and fragrant. Toss in the flour, mint, baking powder and salt.",
           "uses": ["Finely grated lime zest", { "item": "Granulated sugar", "group": "Shortbread crust" }, "All-purpose flour", "Fresh mint", "Baking powder", { "item": "Diamond Crystal kosher salt", "group": "Shortbread crust" }],
-          "hands": "4 min"
+          "hands": "4 min",
+          "prep": true
         },
         {
           "do": "Add the cold butter and toss to coat, then smash and pinch it in with your fingertips.",
           "cue": "Moist crumbs that clump when squeezed",
           "uses": [{ "item": "Unsalted butter", "group": "Shortbread crust" }],
-          "hands": "4 min"
+          "hands": "4 min",
+          "prep": true
         },
         {
           "do": "Scatter the crumbs in the pan and press into an even layer, right into the corners and against the sides. Bake at 350°F (175°C).",

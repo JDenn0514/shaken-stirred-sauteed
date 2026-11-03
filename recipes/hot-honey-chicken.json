@@ -92,17 +92,20 @@
     {
       "do": "Halve each breast horizontally into 4 cutlets, then pound between plastic wrap to an even 1/2 inch. Even thickness lets lean breast cook through in minutes without drying out.",
       "uses": ["boneless skinless chicken breasts (2)"],
-      "hands": "6 min"
+      "hands": "6 min",
+      "prep": true
     },
     {
       "do": "Pat the cutlets completely dry; wet chicken steams instead of browning. Season both sides with salt and pepper.",
       "uses": ["salt and pepper"],
-      "hands": "2 min"
+      "hands": "2 min",
+      "prep": true
     },
     {
       "do": "Dredge in the flour and shake off the excess. A thin coat is all you want: it crisps and shields the meat.",
       "uses": ["flour"],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": "just before"
     },
     {
       "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Sear the chicken 2 to 3 minutes per side until golden, then move to a plate.",
@@ -111,6 +114,13 @@
       "hands": "4 min",
       "watch": true,
       "burner": true
+    },
+    {
+      "do": "Mince the garlic.",
+      "hands": "2 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": ["garlic, minced"]
     },
     {
       "do": "Add the remaining butter to the pan and cook the garlic until fragrant, about 1 minute.",

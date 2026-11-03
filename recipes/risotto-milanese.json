@@ -85,6 +85,16 @@
   ],
   "steps": [
     {
+      "do": "Mince the shallot and finely grate the Parmigiano.",
+      "hands": "4 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "shallot, minced",
+        "Parmigiano Reggiano, finely grated, plus more to taste"
+      ]
+    },
+    {
       "do": "Melt the butter in a wide pan over medium heat. Cook the shallot 1 to 2 minutes, until soft and fragrant.",
       "wait": "1 to 2 min",
       "uses": [
@@ -134,7 +144,8 @@
         "saffron (a pinch)",
         "water, to bloom the saffron"
       ],
-      "hands": "1 min"
+      "hands": "1 min",
+      "prep": true
     },
     {
       "do": "Taste a grain. If it's still chalky, add reserved broth and keep simmering until the rice and texture are where you want them.",

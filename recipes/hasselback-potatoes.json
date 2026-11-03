@@ -68,15 +68,27 @@
       "uses": [
         "medium potatoes"
       ],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": true
     },
     {
       "do": "Working one at a time on a board, hold a potato between thumb and finger and cut crosswise slices about 4 mm apart, stopping short of the base so the slices stay joined. Laying chopsticks along both sides makes this foolproof — the blade stops on the wood.",
-      "hands": "10 min"
+      "hands": "10 min",
+      "prep": "just before"
     },
     {
       "do": "Set the potatoes on the tray, cut side up.",
       "hands": "1 min"
+    },
+    {
+      "do": "Melt the butter and chop the parsley.",
+      "hands": "3 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "salted butter, melted",
+        "Chopped parsley, to finish"
+      ]
     },
     {
       "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl. Hold back roughly half for later.",
@@ -86,7 +98,8 @@
         "garlic paste",
         "Salt and freshly ground black pepper"
       ],
-      "hands": "2 min"
+      "hands": "2 min",
+      "prep": true
     },
     {
       "do": "Brush the mixture over each potato, pushing it down into the cuts. Bake 40 minutes.",

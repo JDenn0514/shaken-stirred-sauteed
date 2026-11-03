@@ -54,6 +54,16 @@
   ],
   "steps": [
     {
+      "do": "Chill the coupe, and load the atomiser with absinthe. Squeeze the lemon juice.",
+      "hands": "2 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Lemon juice",
+        "Absinthe"
+      ]
+    },
+    {
       "do": "Add everything except the absinthe to the shaker tin.",
       "uses": [
         "Gin",

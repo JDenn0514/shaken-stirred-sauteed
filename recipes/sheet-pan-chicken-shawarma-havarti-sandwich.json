@@ -159,6 +159,17 @@
   ],
   "steps": [
     {
+      "do": "Thinly slice the chicken, and chop the garlic and shallots.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "chicken breasts or thighs, thinly sliced",
+        "garlic, chopped",
+        "shallots, chopped"
+      ]
+    },
+    {
       "do": "Toss the chicken with the yogurt, oil, garlic, shallots, paprika, oregano, turmeric, chili flakes and a good pinch of salt. Let it sit 15 minutes while you prep; the yogurt tenderizes and helps the spices cling. Heat the oven to 425F (220C).",
       "wait": "15 min",
       "uses": [
@@ -183,6 +194,16 @@
       "oven": "425F"
     },
     {
+      "do": "Seed the jalapeño if you want it milder, and grate the garlic for the tahini.",
+      "hands": "2 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "jalapeño, seeded if you want it milder",
+        "garlic cloves, grated"
+      ]
+    },
+    {
       "do": "While the chicken roasts, blend all the tahini ingredients until smooth. Add water a spoonful at a time until it pours, then taste for salt; it needs some.",
       "uses": [
         "tahini",
@@ -194,7 +215,18 @@
         "honey",
         "kosher salt, plus more to taste"
       ],
-      "hands": "4 min"
+      "hands": "4 min",
+      "prep": true
+    },
+    {
+      "do": "Slice the sun-dried tomatoes, and the pickles if they're whole.",
+      "hands": "3 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "oil-packed sun-dried tomatoes, sliced",
+        "sliced dill pickles and/or pepperoncini"
+      ]
     },
     {
       "do": "Lay the naan flat on a sheet pan. Spread dressing over one half of each, then layer sun-dried tomatoes, pickles, both cheeses and the chicken. Cover with foil and bake 15 minutes, until the cheese melts; the foil keeps the naan soft while the filling heats.",

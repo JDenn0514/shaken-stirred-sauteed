@@ -72,6 +72,15 @@
   ],
   "steps": [
     {
+      "do": "Squeeze the lime juice.",
+      "hands": "1 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Lime juice"
+      ]
+    },
+    {
       "do": "Blend everything with about 1 cup of ice for about 5 seconds, just long enough to chill and froth.",
       "wait": "About 5 sec",
       "cue": "Frothy and cold, ice still in small pieces rather than slush",

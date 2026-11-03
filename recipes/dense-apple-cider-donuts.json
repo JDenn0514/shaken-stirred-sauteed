@@ -161,6 +161,21 @@
       "group": "Batter",
       "items": [
         {
+          "do": "Set the egg and milk out to come to room temperature, melt the 2 Tbsp butter for the batter, and coat the donut pan with nonstick spray.",
+          "hands": "3 min",
+          "prep": true,
+          "prepOnly": true,
+          "oven": false,
+          "uses": [
+            "Egg",
+            "Milk",
+            {
+              "group": "Wet bowl",
+              "item": "Unsalted butter"
+            }
+          ]
+        },
+        {
           "do": "Whisk the flour, baking soda, baking powder, cinnamon, apple pie spice and salt in a large bowl.",
           "uses": [
             "All-purpose flour",
@@ -176,7 +191,8 @@
             },
             "Salt"
           ],
-          "hands": "2 min"
+          "hands": "2 min",
+          "prep": true
         },
         {
           "do": "In a second bowl, whisk the melted butter, egg, both sugars, milk and vanilla. Pour into the dry ingredients, add the cooled cider reduction, and whisk until smooth. The batter should be a little thick; that's what makes the crumb dense and cakey.",
@@ -240,7 +256,8 @@
               "group": "Topping"
             }
           ],
-          "hands": "1 min"
+          "hands": "1 min",
+          "prep": true
         },
         {
           "do": "Once the donuts are cool enough to handle, dip both sides quickly in the melted butter, then coat generously in the spiced sugar. Don't let them soak: they drink butter fast, and if the bowl runs low, brush it on instead.",

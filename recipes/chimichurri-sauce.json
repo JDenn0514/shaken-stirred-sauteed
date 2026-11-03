@@ -73,7 +73,8 @@
         "fresh oregano, minced",
         "fresh garlic, minced"
       ],
-      "hands": "6 min"
+      "hands": "6 min",
+      "prep": true
     },
     {
       "do": "Combine everything in a bowl — oil, vinegar, all the minced ingredients, pepper flakes — and whisk until it comes together.",

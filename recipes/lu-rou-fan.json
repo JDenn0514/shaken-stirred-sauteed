@@ -114,7 +114,15 @@
     {
       "do": "Tie all the spice bundle ingredients into a square of cheesecloth with kitchen string, so they can be fished out whole before reducing.",
       "uses": ["star anise", "cinnamon stick (Chinese cassia)", "whole cloves", "bay leaves", "Sichuan peppercorns", "dried tangerine peel", "fresh ginger"],
-      "hands": "3 min"
+      "hands": "3 min",
+      "prep": true
+    },
+    {
+      "do": "Cut the pork belly into 1/2 in pieces. Dice the onion and the shiitakes. Peel the eggs, if using.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": ["skin-on pork belly, cut into 1/2 in pieces", "onion, diced (or 2 to 3 shallots)", "shiitake mushrooms, fresh or dried, cut into 1/2 in dice", "hard-boiled eggs, peeled (optional)"]
     },
     {
       "do": "Bring enough water to cover the pork to a boil. Blanch the pork belly 1 minute, drain, and rinse off any scum.",

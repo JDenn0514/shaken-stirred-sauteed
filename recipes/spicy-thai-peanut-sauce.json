@@ -59,6 +59,17 @@
   ],
   "steps": [
     {
+      "do": "Chop the ginger and garlic, and squeeze the lime juice.",
+      "hands": "4 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "fresh ginger, chopped",
+        "garlic, chopped",
+        "fresh lime juice"
+      ]
+    },
+    {
       "do": "Put everything in a food processor. Blend until completely smooth, stopping to scrape down the sides a few times so no peanut butter hides at the bottom, about 1 to 2 minutes.",
       "wait": "1 to 2 min",
       "uses": [

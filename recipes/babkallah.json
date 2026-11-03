@@ -142,6 +142,18 @@
           "burner": true
         },
         {
+          "do": "Cut the butter for the dough into 1/2-inch pieces and leave it to come to room temperature. Line a rimmed baking sheet with parchment.",
+          "hands": "3 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            {
+              "group": "Dough",
+              "item": "Unsalted butter"
+            }
+          ]
+        },
+        {
           "do": "Whisk in the granulated sugar, yolks and vanilla. Add the flour, salt and butter pieces and stir with a wooden spoon into a shaggy dough. Knead on a lightly floured surface 8 to 10 minutes, adding flour only as needed. Stand mixer with dough hook, medium speed, 5 to 8 minutes.",
           "wait": "8 to 10 min",
           "cue": "Smooth and supple, no longer shiny",
@@ -171,6 +183,15 @@
       "group": "Filling & assembly",
       "items": [
         {
+          "do": "Finely chop the chocolate.",
+          "hands": "4 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            "Semisweet chocolate"
+          ]
+        },
+        {
           "do": "Toss the chocolate, brown sugar, cinnamon and pinch of salt together in a small bowl.",
           "uses": [
             "Semisweet chocolate",
@@ -178,11 +199,25 @@
             "Ground cinnamon",
             "Kosher salt"
           ],
-          "hands": "2 min"
+          "hands": "2 min",
+          "prep": true
         },
         {
           "do": "Divide the dough into 3 equal pieces. Roll each into a 12-inch rope, flatten it with the heel of your hand, then roll it out to a 12 x 6-inch rectangle. It shouldn't need flour.",
           "hands": "8 min"
+        },
+        {
+          "do": "Melt the butter for brushing and let it cool. Beat the egg for the glaze.",
+          "hands": "2 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            {
+              "group": "Filling & assembly",
+              "item": "Unsalted butter"
+            },
+            "Large egg"
+          ]
         },
         {
           "do": "Brush each rectangle with melted butter and scatter a third of the filling over it, leaving a 1/2-inch bare strip along one long edge. That bare strip is what seals the log.",

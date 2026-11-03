@@ -123,9 +123,17 @@
   ],
   "steps": [
     {
+      "do": "Grind the bread into crumbs in a food processor. Chop the parsley, mince the oregano, and shred the Parmesan for the meatballs and for serving.",
+      "hands": "6 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": ["fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)", "fresh parsley, chopped", "fresh oregano, minced (or 3/4 tsp dried)", { "group": "Meatballs", "item": "Parmesan, finely shredded" }, { "group": "To serve", "item": "Parmesan, finely shredded" }]
+    },
+    {
       "do": "Combine the beef, pork, bread crumbs, parsley, oregano, Parmesan, egg, 1 tsp salt and 1/4 tsp pepper. Toss gently with your hands until evenly mixed. Roll into 3/4 to 1 inch balls, small enough to fit a spoon and spread evenly.",
       "uses": ["lean ground beef (80 to 90% lean)", "ground pork", "fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)", "fresh parsley, chopped", "fresh oregano, minced (or 3/4 tsp dried)", { "item": "Parmesan, finely shredded", "group": "Meatballs" }, "large egg", "salt", "black pepper, freshly ground"],
-      "hands": "12 min"
+      "hands": "12 min",
+      "prep": true
     },
     {
       "do": "Heat 1 tbsp oil in a large nonstick skillet over medium-high. Brown half the meatballs, turning to color 2 or 3 sides, about 4 minutes; two batches leave them room to brown. Drain on paper towels, keep the oil in the pan, and repeat. They finish cooking in the soup.",
@@ -134,6 +142,13 @@
       "hands": "5 min",
       "watch": true,
       "burner": true
+    },
+    {
+      "do": "Chop the carrots, onion and celery, and mince the garlic. Roughly chop the spinach.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": ["carrots, chopped", "yellow onion, chopped", "celery, chopped", "garlic, minced (1 1/2 tbsp)", "baby spinach, roughly chopped"]
     },
     {
       "do": "Meanwhile, heat 1 tbsp oil in a large pot over medium-high. Sauté the carrots, onion and celery until soft, 6 to 8 minutes; add the garlic for 1 minute.",

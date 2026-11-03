@@ -67,7 +67,8 @@
     {
       "do": "Cut the tomatoes, cucumber, onion and both peppers into a very small, even dice, and chop the herbs. The finer the cut, the better the salad, so take your time and use your sharpest knife.",
       "uses": ["extra-large tomatoes", "English cucumber", "red onion (about 1/2 medium)", "red bell pepper", "yellow bell pepper", "fresh herbs: parsley, mint, cilantro or a mix"],
-      "hands": "15 min"
+      "hands": "15 min",
+      "prep": true
     },
     {
       "do": "Toss everything in a large bowl with the zest, olive oil, half the lemon's juice, salt and pepper.",
