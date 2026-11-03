@@ -41,9 +41,14 @@ function heatText(setting) {
 // Equipment that holds a set number of things at once.
 const CAPACITY = { burner: 4, microwave: 1, grill: 1 };
 
-// How long a dish can wait once done. Without a `serve`, a cooking dish is hot
-// and can sit 10 minutes.
-const sits = (r) => (r.serve === "keeps" ? Infinity : r.sits ? minutes(r.sits) : 10);
+// How long a dish can wait once done. Without a `serve`, components and baking
+// keep, a cocktail is made just before (5 minutes) and a cooking dish is hot
+// (10 minutes).
+function sits(r) {
+  const serve = r.serve || (r.kind === "component" || r.category === "baking" ? "keeps" : r.category === "cocktails" ? "soon" : "hot");
+  if (serve === "keeps") return Infinity;
+  return r.sits ? minutes(r.sits) : serve === "soon" && r.category === "cocktails" ? 5 : 10;
+}
 
 // Each dish as a chain of steps: hands is how long your hands are busy, then
 // wait runs on its own, unless watch says it needs you there. A hot dish can
@@ -57,6 +62,17 @@ const sits = (r) => (r.serve === "keeps" ? Infinity : r.sits ? minutes(r.sits) :
 // a connected recipe: made only if it's in the lineup itself. Either way, the
 // step that uses it waits for it: `neededBy` lists those [dish, step] pairs.
 const lower = (x) => String(x ?? "").trim().toLowerCase();
+// A step without `hands`: the recipe's active (or prep) time, less what other
+// steps give, spread over the steps without one. Otherwise 2 minutes.
+function handsGuess(r, steps) {
+  const label = (r.times || []).find(([k]) => /active|prep/i.test(k));
+  const active = label ? minutes(label[1]) : r.time?.prep;
+  const without = steps.filter((s) => s.hands == null).length;
+  if (!active || !without) return 2;
+  const given = steps.reduce((a, s) => a + (s.hands == null ? 0 : minutes(s.hands)), 0);
+  return Math.max(0, active - given) / without;
+}
+
 // A recipe's steps as one list, grouped or not, each with its position `n`, the
 // way saved progress counts them.
 const stepsOf = (r) => r.steps.flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]))
@@ -85,7 +101,7 @@ function chains(lineup, recipes, parts = {}) {
     const all = stepsOf(r);
     const ordered = [...all.filter(ahead), ...all.filter((s) => !ahead(s))];
     const steps = ordered.map((s) => ({
-      slug, n: s.n, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
+      slug, n: s.n, text: s.do, hands: s.hands == null ? handsGuess(r, all) : minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
       oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds, prep: ahead(s),
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),

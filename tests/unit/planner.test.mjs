@@ -30,8 +30,8 @@ describe("one recipe", () => {
       curd: recipe("Curd", [
         ["Cook, whisking often", { hands: "About 6 min" }],
         ["Ice bath", { hands: "45 sec", wait: "7 to 8 min" }],
-        ["Chill", { wait: "About 1 hr in the fridge" }],
-        ["Set overnight", { wait: "1 1/2 to 2 1/2 hr" }],
+        ["Chill", { hands: "0 min", wait: "About 1 hr in the fridge" }],
+        ["Set overnight", { hands: "0 min", wait: "1 1/2 to 2 1/2 hr" }],
       ]),
     };
     const plan = planLineup({ dishes: [{ slug: "curd" }] }, recipes);
@@ -330,6 +330,35 @@ describe("a timer ringing in the middle of a step", () => {
     const ahead = plan.steps.filter((s) => !s.done).map((s) => s.text);
     assert.deepEqual(ahead.slice(0, 2), ["Sear without moving it", "Baste the potatoes"]);
     assert.equal(plan.steps.find((s) => s.text === "Sear without moving it").at, 41);
+  });
+});
+
+describe("recipes without planning data", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
+  const potatoes = recipe("Potatoes", [["Bake the potatoes", { hands: "2 min", wait: "60 min" }]], { serve: "hot", sits: "10 min" });
+  const withPotatoes = (slug, r) => planLineup({ dishes: [{ slug: "potatoes" }, { slug, course: "Main" }] }, { potatoes, [slug]: r });
+
+  test("components and baking keep, so they fill the gaps", () => {
+    const paste = recipe("Garlic Paste", [["Make the garlic paste", { hands: "10 min" }]], { kind: "component" });
+    const cookies = recipe("Cookies", [["Bake the cookies", { hands: "10 min" }]], { category: "baking" });
+    assert.equal(at(withPotatoes("garlic-paste", paste), "Make the garlic paste"), 2);
+    assert.equal(at(withPotatoes("cookies", cookies), "Bake the cookies"), 2);
+  });
+
+  test("without hands-on times, the recipe's active time is spread over its steps", () => {
+    const r = recipe("Curd", [["Zest and juice"], ["Cook, whisking"], ["Chill", { wait: "10 min" }]], { times: [["Active", "12 min"], ["Total", "About 2 hr"]] });
+    assert.equal(planLineup({ dishes: [{ slug: "curd" }] }, { curd: r }).minutes, 22);
+  });
+
+  test("or its prep time, and failing that each step counts as 2 minutes", () => {
+    const steps = [["Mix"], ["Shape"], ["Bake", { wait: "20 min" }]];
+    assert.equal(planLineup({ dishes: [{ slug: "a" }] }, { a: recipe("A", steps, { time: { prep: 15, cook: 20 } }) }).minutes, 35);
+    assert.equal(planLineup({ dishes: [{ slug: "b" }] }, { b: recipe("B", steps) }).minutes, 26);
+  });
+
+  test("a cocktail is mixed within 5 minutes of serving", () => {
+    const plan = withPotatoes("painkiller", recipe("Painkiller", [["Shake and pour", { hands: "2 min" }]], { category: "cocktails" }));
+    assert.ok(at(plan, "Shake and pour") + 2 >= plan.minutes - 5, `mixed by ${at(plan, "Shake and pour") + 2}, served at ${plan.minutes}`);
   });
 });
 
