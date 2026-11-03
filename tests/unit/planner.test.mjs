@@ -235,6 +235,50 @@ describe("a dish that keeps part-way", () => {
   });
 });
 
+describe("prep", () => {
+  test("a dish's prep comes before its first step that isn't prep, and just-before prep stays put", () => {
+    const recipes = {
+      steak: recipe("Steak", [
+        ["Heat the skillet", { hands: "1 min", wait: "3 min", burner: true }],
+        ["Season the steak", { hands: "1 min", prep: "just before" }],
+        ["Sear it", { hands: "8 min", burner: true }],
+        ["Chop the herbs", { hands: "3 min", prep: true }],
+        ["Scatter the herbs over", { hands: "1 min" }],
+      ]),
+    };
+    const plan = planLineup({ dishes: [{ slug: "steak" }] }, recipes);
+    assert.deepEqual(texts(plan), ["Chop the herbs", "Heat the skillet", "Season the steak", "Sear it", "Scatter the herbs over"]);
+  });
+
+  const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
+  const recipes = {
+    potatoes: recipe("Potatoes", [["Slice the potatoes", { hands: "3 min", prep: true }], ["Boil the potatoes", { hands: "1 min", wait: "20 min", burner: true }]]),
+    applesauce: recipe("Applesauce", [["Cut the apples", { hands: "8 min", prep: true }], ["Microwave the apples", { hands: "1 min", wait: "15 min", microwave: true }]], { serve: "keeps" }),
+  };
+  const dishes = [{ slug: "potatoes" }, { slug: "applesauce" }];
+
+  test("by default all the meal's prep is done before anything else starts", () => {
+    const plan = planLineup({ dishes }, recipes);
+    assert.ok(at(plan, "Boil the potatoes") >= at(plan, "Cut the apples") + 8, `the potatoes went on at ${at(plan, "Boil the potatoes")}, before the apples were cut`);
+  });
+
+  test("a hot dish's prep is done with the rest of the prep, not held back with its cooking", () => {
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "steak" }] }, {
+      potatoes: recipe("Potatoes", [["Slice the potatoes", { hands: "3 min", prep: true }], ["Bake the potatoes", { hands: "2 min", wait: "60 min" }]]),
+      steak: recipe("Steak", [["Trim the steak", { hands: "2 min", prep: true }], ["Cook the steak", { hands: "10 min" }]], { serve: "hot", sits: "5 min" }),
+    });
+    assert.ok(at(plan, "Trim the steak") < at(plan, "Bake the potatoes"), `the steak was trimmed at ${at(plan, "Trim the steak")}`);
+    // 5 minutes of prep, then 62 of baking.
+    assert.equal(plan.minutes, 67);
+  });
+
+  test("planned fastest, prep fills the waits instead", () => {
+    const plan = planLineup({ dishes, prepFirst: false }, recipes);
+    assert.ok(at(plan, "Cut the apples") > at(plan, "Boil the potatoes"), "the apples were cut before the potatoes went on");
+    assert.ok(plan.minutes < planLineup({ dishes }, recipes).minutes, "fastest wasn't faster");
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {

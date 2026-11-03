@@ -59,6 +59,13 @@ const sits = (r) => (r.serve === "keeps" ? Infinity : r.sits ? minutes(r.sits) :
 const lower = (x) => String(x ?? "").trim().toLowerCase();
 const ingredientsOf = (r) => (r.ingredients || []).flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]));
 //
+// A hot dish is held back from the first step after it starts to keep (or its
+// first step), skipping its prep, which is done whenever there's room.
+const heldFrom = (steps, from) => {
+  const cooking = steps.findIndex((x, i) => i >= from && !x.prep);
+  return cooking < 0 ? steps.length : cooking;
+};
+
 // `parts` splits a dish made ahead: "before" is the part up to where it keeps,
 // planned ahead of time; "after" is the rest, on the day; "skip" leaves out a
 // dish that keeps entirely.
@@ -68,9 +75,13 @@ function chains(lineup, recipes, parts = {}) {
     const part = parent ? null : parts[slug];
     if (part === "skip") return;
     const r = recipes[slug];
-    const steps = r.steps.map((s) => ({
+    // Prep that can be done ahead comes before the dish's first step that isn't
+    // prep; "just before" prep stays where the recipe has it.
+    const ahead = (s) => s.prep === true || s.prepOnly;
+    const ordered = [...r.steps.filter(ahead), ...r.steps.filter((s) => !ahead(s))];
+    const steps = ordered.map((s) => ({
       slug, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
-      oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds,
+      oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds, prep: ahead(s),
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
     }));
@@ -89,7 +100,7 @@ function chains(lineup, recipes, parts = {}) {
     const index = dishes.push({
       slug, course, steps: kept, lastOven: kept.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [],
       sits: part === "before" ? Infinity : sits(r),
-      servedFrom: part ? (part === "before" ? kept.length : 0) : holdsAt,
+      servedFrom: part === "before" ? kept.length : heldFrom(kept, part === "after" ? 0 : holdsAt),
     }) - 1;
     for (const ing of ingredientsOf(r)) {
       if (typeof ing !== "object" || !ing.recipe || made.includes(ing.recipe)) continue;
@@ -105,6 +116,8 @@ function chains(lineup, recipes, parts = {}) {
   // follow their dish.
   for (const { slug, made = [], course } of lineup.dishes) add(slug, made, course || (recipes[slug].category === "baking" ? "Dessert" : "Main"));
   for (const { slug, by } of links) dishes.find((d) => d.slug === slug)?.neededBy.push(by);
+  // "Prep everything first" (the default) or "Fastest".
+  dishes.prepFirst = lineup.prepFirst !== false;
   return dishes;
 }
 
@@ -159,6 +172,7 @@ function simulate(dishes, serve, early = {}) {
   const busy = [];                            // { kind, until } for each piece of equipment in use
   const steps = [];
   let t = 0, handsFree = 0;
+  const prepLeft = () => dishes.some((dish, d) => dish.steps.some((x, i) => i >= next[d] && x.prep));
   const free = (kind) => busy.filter((b) => b.kind === kind && b.until > t).length < CAPACITY[kind];
 
   const left = (d) => next[d] < dishes[d].steps.length;
@@ -168,6 +182,9 @@ function simulate(dishes, serve, early = {}) {
   const canStart = (d) => {
     const s = dishes[d].steps[next[d]];
     const setting = s.oven || s.preheat;
+    // Prepping everything first, only prep and heating the oven start until all
+    // the meal's prep is under way.
+    if (dishes.prepFirst && !s.prep && !s.preheat && prepLeft()) return false;
     return opensAt(d) <= t && handsFree <= t && !atTable(d, t) && (!setting || ovenFree(d, setting)) && (!s.oven || hot(s.oven)) && s.kit.every(free) && waitingFor(d).every((n) => !left(n) && readyAt[n] <= t);
   };
 
