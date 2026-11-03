@@ -104,7 +104,7 @@ One kind of link does all of this: **an ingredient can point to the recipe that 
 
 - **Courses.** Each dish in a lineup is either **Main** or **Dessert**. Baking dishes start as Dessert and everything else as Main, and you can change either.
   - Dessert is served 45 minutes after the main (Jacob agreed). The planner plans it with its own serve time.
-  - Between serving the main and starting dessert, you're at the table, so nothing hands-on is planned in that gap. Unattended steps (a chill, an oven cool-down) keep running.
+  - Between serving the main and dessert, you're at the table. The only hands-on steps planned in that gap are a dessert's finishing touches: steps of a dessert dish that can't be made ahead, such as whipping cream that can only sit 15 minutes. Anything that keeps is done before the main is served. Unattended steps (a chill, an oven cool-down) keep running.
   - A lineup that's all one course (just a pavlova and its parts) has only that course.
   - Nested recipes follow their dish's course.
 - **Making something ahead.** Some dishes hold the oven or a long wait for hours. A pavlova's meringue bakes for 90 minutes and then cools in the oven with the door shut. On the same day as a dinner that needs the oven, that turns a 1½-hour meal into 5½ hours. So **the lineup page asks** (Jacob's decision).
@@ -321,7 +321,7 @@ Jacob checks it at four points, each before the next stage starts:
 
 - One lineup at a time, not saved, named lineups.
 - Baking dishes start as Dessert, everything else as Main. Nested recipes follow their dish's course.
-- Nothing hands-on is planned between serving the main and dessert.
+- Between serving the main and dessert, only a dessert's finishing touches are hands-on (whipping cream that can't sit long). Anything that keeps is done before the main.
 - The make-ahead question appears when doing it ahead would make the day's plan more than 30 minutes shorter, and starts on whichever choice makes the day shorter.
 - A step's own wait (the potatoes' 40-minute bake) starts its timer when you press Next step, while the wait step between dishes has a Start timer button, as Jacob designed it. The difference is because you've just put the potatoes in, and the plan depends on that timer running.
 - No "this took longer" button. Real elapsed time does that job.

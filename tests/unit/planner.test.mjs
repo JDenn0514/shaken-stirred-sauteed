@@ -155,6 +155,28 @@ describe("the oven", () => {
   });
 });
 
+describe("courses", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
+  const recipes = {
+    steak: recipe("Steak", [["Cook the steak", { hands: "10 min" }]], { serve: "hot", sits: "5 min" }),
+    cream: recipe("Cream", [["Whip the cream", { hands: "5 min" }]], { category: "baking", serve: "soon", sits: "15 min" }),
+    curd: recipe("Curd", [["Make the curd", { hands: "20 min" }]], { category: "baking", serve: "keeps" }),
+  };
+  const lineup = { dishes: [{ slug: "steak", course: "Main" }, { slug: "cream", course: "Dessert" }, { slug: "curd", course: "Dessert" }] };
+
+  test("dessert is served 45 minutes after the main", () => {
+    const plan = planLineup(lineup, recipes);
+    assert.deepEqual(plan.courses, { Main: plan.minutes, Dessert: plan.minutes + 45 });
+    const creamReady = at(plan, "Whip the cream") + 5;
+    assert.ok(creamReady <= plan.courses.Dessert && plan.courses.Dessert - creamReady <= 15, `the cream was ready at ${creamReady}, dessert at ${plan.courses.Dessert}`);
+  });
+
+  test("between the courses, only a dessert's finishing touches are hands-on", () => {
+    const plan = planLineup(lineup, recipes);
+    assert.ok(at(plan, "Make the curd") + 20 <= plan.minutes, `the curd was still being made at ${at(plan, "Make the curd") + 20}, after the main was served at ${plan.minutes}`);
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {

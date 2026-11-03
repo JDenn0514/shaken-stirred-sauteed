@@ -60,7 +60,7 @@ const lower = (x) => String(x ?? "").trim().toLowerCase();
 const ingredientsOf = (r) => (r.ingredients || []).flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]));
 function chains(lineup, recipes) {
   const dishes = [];
-  const add = (slug, made, parent = null) => {
+  const add = (slug, made, course, parent = null) => {
     const r = recipes[slug];
     const steps = r.steps.map((s) => ({
       slug, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
@@ -75,16 +75,18 @@ function chains(lineup, recipes) {
       const setting = steps[first].oven;
       steps.unshift({ slug, text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
     }
-    const index = dishes.push({ slug, sits: sits(r), steps, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [] }) - 1;
+    const index = dishes.push({ slug, course, sits: sits(r), steps, lastOven: steps.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [] }) - 1;
     for (const ing of ingredientsOf(r)) {
       if (typeof ing !== "object" || !ing.recipe || made.includes(ing.recipe)) continue;
       const step = Math.max(0, steps.findIndex((s) => s.needs.includes(lower(ing.item))));
       if (ing.optional) links.push({ slug: ing.recipe, by: [index, step] });
-      else add(ing.recipe, made, [index, step]);
+      else add(ing.recipe, made, course, [index, step]);
     }
   };
   const links = [];
-  for (const { slug, made = [] } of lineup.dishes) add(slug, made);
+  // Baking starts as dessert and everything else as the main; nested recipes
+  // follow their dish.
+  for (const { slug, made = [], course } of lineup.dishes) add(slug, made, course || (recipes[slug].category === "baking" ? "Dessert" : "Main"));
   for (const { slug, by } of links) dishes.find((d) => d.slug === slug)?.neededBy.push(by);
   return dishes;
 }
@@ -109,7 +111,15 @@ function latestStarts(dish, serve) {
 // Move forward through time. Whenever the cook's hands are free, start the
 // most urgent step that can start: the one whose latest start is soonest.
 // `early` plans a dish to be ready that many minutes before serving.
+// Dessert is served 45 minutes after the main. In between you're at the table,
+// so the only hands-on steps are a dessert's finishing touches: steps of a
+// dessert dish that can't be made ahead.
+const DESSERT_AFTER = 45;
+const serveTimes = (dishes, serve) => (dishes.some((d) => d.course === "Main") ? { Main: serve, Dessert: serve + DESSERT_AFTER } : { Dessert: serve });
 function simulate(dishes, serve, early = {}) {
+  const times = serveTimes(dishes, serve);
+  const due = dishes.map((d) => times[d.course] ?? serve);
+  const atTable = (d, t) => times.Main != null && t >= times.Main && t < times.Dessert && !(dishes[d].course === "Dessert" && dishes[d].sits !== Infinity);
   // A nested or connected recipe has to be ready by the latest start of the
   // steps that use it. Work out the dishes that use others first.
   const latest = [];
@@ -117,7 +127,7 @@ function simulate(dishes, serve, early = {}) {
     dishes.forEach((d, i) => {
       if (latest[i] || d.neededBy.some(([p]) => !latest[p])) return;
       const by = Math.min(...d.neededBy.map(([p, step]) => latest[p][step]));
-      latest[i] = latestStarts(d, Math.min(by, serve - (early[d.slug] || 0)));
+      latest[i] = latestStarts(d, Math.min(by, due[i] - (early[d.slug] || 0)));
     });
   }
   const waits = dishes.map((_, d) => dishes.flatMap((x, n) => x.neededBy.filter(([p]) => p === d).map(([, step]) => [n, step])));
@@ -141,7 +151,7 @@ function simulate(dishes, serve, early = {}) {
   const canStart = (d) => {
     const s = dishes[d].steps[next[d]];
     const setting = s.oven || s.preheat;
-    return opensAt(d) <= t && handsFree <= t && (!setting || ovenFree(d, setting)) && (!s.oven || hot(s.oven)) && s.kit.every(free) && waitingFor(d).every((n) => !left(n) && readyAt[n] <= t);
+    return opensAt(d) <= t && handsFree <= t && !atTable(d, t) && (!setting || ovenFree(d, setting)) && (!s.oven || hot(s.oven)) && s.kit.every(free) && waitingFor(d).every((n) => !left(n) && readyAt[n] <= t);
   };
 
   while (dishes.some((_, d) => left(d))) {
@@ -153,8 +163,8 @@ function simulate(dishes, serve, early = {}) {
       }
     }
     if (!can.length) {
-      const times = [handsFree, ...dishes.map((_, d) => d).filter(left).map(opensAt), ...[...oven.values()].map((h) => h.until), heat ? heat.hotAt : 0, ...busy.map((b) => b.until), ...readyAt];
-      t = Math.min(...times.filter((x) => x > t));
+      const events = [handsFree, ...dishes.map((_, d) => d).filter(left).map(opensAt), ...[...oven.values()].map((h) => h.until), heat ? heat.hotAt : 0, ...busy.map((b) => b.until), ...readyAt, ...Object.values(times)];
+      t = Math.min(...events.filter((x) => x > t));
       continue;
     }
     const d = can.reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
@@ -173,6 +183,8 @@ function simulate(dishes, serve, early = {}) {
   return {
     steps, end: Math.max(...readyAt),
     ready: Object.fromEntries(dishes.map((dish, d) => [dish.slug, readyAt[d]])),
+    late: Object.fromEntries(dishes.map((dish, d) => [dish.slug, readyAt[d] - due[d]]).filter(([, l]) => l > 0)),
+    courses: times,
     heldUpBy: Object.fromEntries(dishes.map((dish, d) => [dish.slug, [...heldUpBy[d]]])),
   };
 }
@@ -186,12 +198,12 @@ function planFor(dishes, serve) {
   let plan;
   for (let round = 0; round < 8; round++) {
     plan = simulate(dishes, serve, early);
-    const late = Object.entries(plan.ready).filter(([, r]) => r > serve).sort((a, b) => b[1] - a[1])[0];
+    const late = Object.entries(plan.late).sort((a, b) => b[1] - a[1])[0];
     if (!late) return plan;
-    const [slug, ready] = late;
+    const [slug, by] = late;
     let moved = false;
     for (const b of [...plan.heldUpBy[slug], slug]) {
-      const want = Math.min(sitsFor[b], (early[b] || 0) + Math.ceil(ready - serve));
+      const want = Math.min(sitsFor[b], (early[b] || 0) + Math.ceil(by));
       if (want > (early[b] || 0)) { early[b] = want; moved = true; }
     }
     if (!moved) return plan;
@@ -206,7 +218,7 @@ export function planLineup(lineup, recipes) {
   let plan;
   for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
     plan = planFor(dishes, serve);
-    if (plan.end <= serve) return { steps: plan.steps, minutes: serve, ready: plan.ready };
+    if (!Object.keys(plan.late).length) return { steps: plan.steps, minutes: serve, ready: plan.ready, courses: plan.courses };
   }
-  return { steps: plan.steps, minutes: plan.end, ready: plan.ready };
+  return { steps: plan.steps, minutes: plan.end, ready: plan.ready, courses: plan.courses };
 }
