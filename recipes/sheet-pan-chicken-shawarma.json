@@ -93,16 +93,36 @@
   ],
   "steps": [
     {
-      "do": "Heat the oven to 400F (205C) and line a large sheet pan with parchment. Whisk the marinade ingredients together in a small bowl."
+      "do": "Heat the oven to 400F (205C) and line a large sheet pan with parchment. Whisk the marinade ingredients together in a small bowl.",
+      "uses": [
+        "kosher salt",
+        "ground cumin",
+        "ground coriander",
+        "ground turmeric",
+        "granulated garlic (or 2 cloves, finely minced)",
+        "olive oil"
+      ]
     },
     {
-      "do": "Lay the chicken and vegetables on the pan, keeping them apart. Brush the chicken heavily with marinade. Dress the vegetables with olive oil, salt, pepper and a little lemon zest, or with any marinade left over."
+      "do": "Lay the chicken and vegetables on the pan, keeping them apart. Brush the chicken heavily with marinade. Dress the vegetables with olive oil, salt, pepper and a little lemon zest, or with any marinade left over.",
+      "uses": [
+        "boneless, skinless chicken breasts or thighs",
+        "onion, cut into wedges",
+        "red bell pepper, in strips (optional)",
+        "cauliflower, in florets (optional)",
+        "olive oil, salt, pepper and lemon zest, for the vegetables"
+      ]
     },
     {
-      "do": "Roast and check at 20 minutes; breasts finish before thighs. Toss the vegetables and keep roasting until the chicken is cooked through, 165F (74C) inside, and the vegetables are tender, 20 to 30 minutes in all. Cook any grain for bowls meanwhile."
+      "do": "Roast and check at 20 minutes; breasts finish before thighs. Toss the vegetables and keep roasting until the chicken is cooked through, 165F (74C) inside, and the vegetables are tender, 20 to 30 minutes in all. Cook any grain for bowls meanwhile.",
+      "wait": "20 to 30 min"
     },
     {
-      "do": "Slice the chicken. Build bowls over grain, or wraps in warm pitas or tortillas with greens, pickled onions and crunchy vegetables, and finish with sauce."
+      "do": "Slice the chicken. Build bowls over grain, or wraps in warm pitas or tortillas with greens, pickled onions and crunchy vegetables, and finish with sauce.",
+      "uses": [
+        "10 to 12 in wraps or pitas, or cooked rice or quinoa for bowls",
+        "greens, pickled onions, crunchy vegetables and a sauce"
+      ]
     }
   ],
   "notes": [

@@ -141,7 +141,10 @@
         {
           "do": "Simmer the cider in a small saucepan over low heat, stirring now and then. Start measuring at 10 minutes, then every 3 to 5 minutes. Leave any spices or solids that rise to the top; they go into the batter too.",
           "wait": "About 20 min",
-          "cue": "Down to 1/2 cup (120 ml), thick and concentrated"
+          "cue": "Down to 1/2 cup (120 ml), thick and concentrated",
+          "uses": [
+            "Apple cider"
+          ]
         },
         {
           "do": "Take off the heat and let it cool before it goes into the batter.",
@@ -153,10 +156,38 @@
       "group": "Batter",
       "items": [
         {
-          "do": "Whisk the flour, baking soda, baking powder, cinnamon, apple pie spice and salt in a large bowl."
+          "do": "Whisk the flour, baking soda, baking powder, cinnamon, apple pie spice and salt in a large bowl.",
+          "uses": [
+            "All-purpose flour",
+            "Baking soda",
+            "Baking powder",
+            {
+              "item": "Ground cinnamon",
+              "group": "Dry bowl"
+            },
+            {
+              "item": "Apple pie spice",
+              "group": "Dry bowl"
+            },
+            "Salt"
+          ]
         },
         {
-          "do": "In a second bowl, whisk the melted butter, egg, both sugars, milk and vanilla. Pour into the dry ingredients, add the cooled cider reduction, and whisk until smooth. The batter should be a little thick; that's what makes the crumb dense and cakey."
+          "do": "In a second bowl, whisk the melted butter, egg, both sugars, milk and vanilla. Pour into the dry ingredients, add the cooled cider reduction, and whisk until smooth. The batter should be a little thick; that's what makes the crumb dense and cakey.",
+          "uses": [
+            {
+              "item": "Unsalted butter",
+              "group": "Wet bowl"
+            },
+            "Egg",
+            "Brown sugar",
+            {
+              "item": "Granulated sugar",
+              "group": "Wet bowl"
+            },
+            "Milk",
+            "Pure vanilla extract"
+          ]
         },
         {
           "do": "Scrape the batter into a large zip-top bag, snip off a corner, and pipe into the pan, filling each cavity about halfway."
@@ -181,10 +212,30 @@
       "group": "Coat",
       "items": [
         {
-          "do": "Stir the sugar, cinnamon and apple pie spice together in a medium bowl."
+          "do": "Stir the sugar, cinnamon and apple pie spice together in a medium bowl.",
+          "uses": [
+            {
+              "item": "Granulated sugar",
+              "group": "Topping"
+            },
+            {
+              "item": "Ground cinnamon",
+              "group": "Topping"
+            },
+            {
+              "item": "Apple pie spice",
+              "group": "Topping"
+            }
+          ]
         },
         {
-          "do": "Once the donuts are cool enough to handle, dip both sides quickly in the melted butter, then coat generously in the spiced sugar. Don't let them soak: they drink butter fast, and if the bowl runs low, brush it on instead."
+          "do": "Once the donuts are cool enough to handle, dip both sides quickly in the melted butter, then coat generously in the spiced sugar. Don't let them soak: they drink butter fast, and if the bowl runs low, brush it on instead.",
+          "uses": [
+            {
+              "item": "Unsalted butter",
+              "group": "Topping"
+            }
+          ]
         }
       ]
     }

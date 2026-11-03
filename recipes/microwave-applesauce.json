@@ -49,16 +49,20 @@
   ],
   "steps": [
     {
-      "do": "Peel and core the apples. Quarter each one, then cut each quarter crosswise about five times — more or fewer depending on how big the apple is. You want small, even pieces."
+      "do": "Peel and core the apples. Quarter each one, then cut each quarter crosswise about five times — more or fewer depending on how big the apple is. You want small, even pieces.",
+      "uses": ["Honeycrisp apples"]
     },
     {
-      "do": "Put everything in a microwave-safe casserole dish: apples, water, sugar, cinnamon, lemon juice. Stir until every piece is coated."
+      "do": "Put everything in a microwave-safe casserole dish: apples, water, sugar, cinnamon, lemon juice. Stir until every piece is coated.",
+      "uses": ["water", "sugar", "cinnamon", "Juice of ½ lemon"]
     },
     {
-      "do": "Microwave 7–8 minutes on high. Stir it all around again."
+      "do": "Microwave 7–8 minutes on high. Stir it all around again.",
+      "wait": "7 to 8 min"
     },
     {
-      "do": "Microwave another 7–8 minutes on high."
+      "do": "Microwave another 7–8 minutes on high.",
+      "wait": "7 to 8 min"
     },
     {
       "do": "Mash to the texture you want, and eat."

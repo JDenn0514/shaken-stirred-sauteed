@@ -60,13 +60,34 @@
   ],
   "steps": [
     {
-      "do": "Blend everything except the tahini until combined but still a little rough."
+      "do": "Blend everything except the tahini until combined but still a little rough.",
+      "uses": [
+        "water",
+        "lemon juice",
+        "olive oil",
+        "garlic cloves",
+        "fresh herbs: cilantro, parsley, mint, dill or basil",
+        "jalapeño (optional)",
+        {
+          "item": "salt, starting with 1/2 tsp",
+          "amount": "1/2 tsp"
+        }
+      ]
     },
     {
-      "do": "It will look far too thin. Add the tahini and blend until creamy and it thickens, leaving flecks of herb."
+      "do": "It will look far too thin. Add the tahini and blend until creamy and it thickens, leaving flecks of herb.",
+      "uses": [
+        "tahini, stirred"
+      ]
     },
     {
-      "do": "Taste and adjust salt, lemon and chile. Loosen with a little more water if you want a pourable sauce."
+      "do": "Taste and adjust salt, lemon and chile. Loosen with a little more water if you want a pourable sauce.",
+      "uses": [
+        {
+          "item": "salt, starting with 1/2 tsp",
+          "amount": "up to 1/2 tsp more, to taste"
+        }
+      ]
     }
   ],
   "notes": [

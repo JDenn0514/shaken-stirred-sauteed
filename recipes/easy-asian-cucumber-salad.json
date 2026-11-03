@@ -65,16 +65,32 @@
   ],
   "steps": [
     {
-      "do": "Slice the cucumbers on a steep bias so the pieces come out oval rather than round. Thickness is up to you."
+      "do": "Slice the cucumbers on a steep bias so the pieces come out oval rather than round. Thickness is up to you.",
+      "uses": [
+        "Persian cucumbers"
+      ]
     },
     {
-      "do": "Toss the slices with 1/2 tsp salt and refrigerate at least 20 minutes (up to an hour) to pull the water out."
+      "do": "Toss the slices with 1/2 tsp salt and refrigerate at least 20 minutes (up to an hour) to pull the water out.",
+      "wait": "20 min to 1 hr",
+      "uses": [
+        "salt (for sweating)"
+      ]
     },
     {
       "do": "Drain, rinse under running water about 10 seconds, squeeze gently, and return to the bowl."
     },
     {
-      "do": "Add the sesame oil, soy sauce, sugar, rice vinegar, chili oil, sesame seeds, and garlic if using. Toss to coat and serve."
+      "do": "Add the sesame oil, soy sauce, sugar, rice vinegar, chili oil, sesame seeds, and garlic if using. Toss to coat and serve.",
+      "uses": [
+        "sesame oil",
+        "light soy sauce",
+        "sugar",
+        "rice vinegar",
+        "chili oil",
+        "sesame seeds",
+        "garlic, minced (optional)"
+      ]
     }
   ],
   "notes": [

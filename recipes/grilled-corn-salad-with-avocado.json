@@ -115,13 +115,55 @@
   ],
   "steps": [
     {
-      "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl."
+      "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
+      "wait": "7 min",
+      "uses": [
+        "fresh corn, husked, silks removed",
+        {
+          "item": "extra-virgin olive oil",
+          "group": "Salad"
+        },
+        {
+          "item": "kosher salt",
+          "group": "Salad"
+        },
+        {
+          "item": "ground black pepper",
+          "group": "Salad"
+        }
+      ]
     },
     {
-      "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape."
+      "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape.",
+      "uses": [
+        "cherry tomatoes, halved (about 2 cups)",
+        "packed arugula",
+        "medium avocado, peeled, pitted, diced",
+        "small red bell pepper, cored and finely chopped",
+        "green onions, finely chopped",
+        "chopped fresh cilantro"
+      ]
     },
     {
-      "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table."
+      "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table.",
+      "uses": [
+        "fresh lime juice (about 2 limes)",
+        {
+          "item": "extra-virgin olive oil",
+          "group": "Dressing"
+        },
+        "honey",
+        "paprika",
+        {
+          "item": "kosher salt",
+          "group": "Dressing"
+        },
+        {
+          "item": "ground black pepper",
+          "group": "Dressing"
+        },
+        "onion powder"
+      ]
     }
   ],
   "notes": [

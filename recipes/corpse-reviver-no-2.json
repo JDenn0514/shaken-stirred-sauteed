@@ -54,14 +54,23 @@
   ],
   "steps": [
     {
-      "do": "Add everything except the absinthe to the shaker tin."
+      "do": "Add everything except the absinthe to the shaker tin.",
+      "uses": [
+        "Gin",
+        "Cocchi Americano or Lillet Blanc",
+        "Curaçao or other orange liqueur",
+        "Lemon juice"
+      ]
     },
     {
       "do": "Fill with ice and shake hard.",
       "cue": "Tin frosted over"
     },
     {
-      "do": "Mist the chilled coupe with absinthe, so it scents the drink without taking over."
+      "do": "Mist the chilled coupe with absinthe, so it scents the drink without taking over.",
+      "uses": [
+        "Absinthe"
+      ]
     },
     {
       "do": "Double strain into the glass through the Hawthorne and a fine strainer."

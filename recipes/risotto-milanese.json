@@ -83,31 +83,64 @@
   ],
   "steps": [
     {
-      "do": "Melt the butter in a wide pan over medium heat. Cook the shallot 1 to 2 minutes, until soft and fragrant."
+      "do": "Melt the butter in a wide pan over medium heat. Cook the shallot 1 to 2 minutes, until soft and fragrant.",
+      "wait": "1 to 2 min",
+      "uses": [
+        "butter (2 tbsp)",
+        "shallot, minced"
+      ]
     },
     {
-      "do": "Stir in the rice and keep it moving until every grain is glossy with fat and lightly toasted; this helps the grains hold their shape."
+      "do": "Stir in the rice and keep it moving until every grain is glossy with fat and lightly toasted; this helps the grains hold their shape.",
+      "uses": [
+        "arborio rice"
+      ]
     },
     {
-      "do": "Pour in the wine and scrape up the bottom of the pan. Let it cook down until almost gone, so its acidity stays and the raw alcohol edge doesn't."
+      "do": "Pour in the wine and scrape up the bottom of the pan. Let it cook down until almost gone, so its acidity stays and the raw alcohol edge doesn't.",
+      "uses": [
+        "dry white wine (about 3 oz)"
+      ]
     },
     {
-      "do": "Add about 80% of the broth, holding the rest back for adjusting at the end. Bring to a simmer over medium-high, stir once so nothing sticks, then drop to low."
+      "do": "Add about 80% of the broth, holding the rest back for adjusting at the end. Bring to a simmer over medium-high, stir once so nothing sticks, then drop to low.",
+      "uses": [
+        {
+          "item": "broth (about 1 1/2 cups), 3 parts liquid to 1 part rice",
+          "amount": "about 80%"
+        }
+      ]
     },
     {
-      "do": "Simmer about 20 minutes, stirring now and then, until most of the liquid is absorbed. Constant stirring isn't needed."
+      "do": "Simmer about 20 minutes, stirring now and then, until most of the liquid is absorbed. Constant stirring isn't needed.",
+      "wait": "About 20 min"
     },
     {
-      "do": "While it cooks, drop the saffron into a little water to bloom. Crumble or grind it first, or use warm water, for a stronger infusion."
+      "do": "While it cooks, drop the saffron into a little water to bloom. Crumble or grind it first, or use warm water, for a stronger infusion.",
+      "uses": [
+        "saffron (a pinch)",
+        "water, to bloom the saffron"
+      ]
     },
     {
-      "do": "Taste a grain. If it's still chalky, add reserved broth and keep simmering until the rice and texture are where you want them."
+      "do": "Taste a grain. If it's still chalky, add reserved broth and keep simmering until the rice and texture are where you want them.",
+      "uses": [
+        {
+          "item": "broth (about 1 1/2 cups), 3 parts liquid to 1 part rice",
+          "amount": "the rest, as needed"
+        }
+      ]
     },
     {
       "do": "Near the end, stir in the saffron and its water so the whole pot turns gold."
     },
     {
-      "do": "Off the heat, add the Parmigiano and cold butter and stir or toss hard until creamy and emulsified. Salt to taste, loosen with broth or enrich with butter or cheese, and serve right away."
+      "do": "Off the heat, add the Parmigiano and cold butter and stir or toss hard until creamy and emulsified. Salt to taste, loosen with broth or enrich with butter or cheese, and serve right away.",
+      "uses": [
+        "Parmigiano Reggiano, finely grated, plus more to taste",
+        "cold butter",
+        "salt, to taste"
+      ]
     }
   ],
   "notes": [

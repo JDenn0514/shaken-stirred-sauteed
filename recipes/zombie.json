@@ -72,7 +72,19 @@
   "steps": [
     {
       "do": "Blend everything with about 1 cup of ice for about 5 seconds, just long enough to chill and froth.",
-      "cue": "Frothy and cold, ice still in small pieces rather than slush"
+      "wait": "About 5 sec",
+      "cue": "Frothy and cold, ice still in small pieces rather than slush",
+      "uses": [
+        "Jamaican aged rum",
+        "Puerto Rican aged rum",
+        "Overproof rum",
+        "Herbsaint or Pernod",
+        "Lime juice",
+        "Donn’s Mix",
+        "Falernum syrup",
+        "Grenadine",
+        "Angostura bitters"
+      ]
     },
     {
       "do": "No blender? Shake everything hard in a tin with ice instead."

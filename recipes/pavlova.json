@@ -92,18 +92,32 @@
         },
         {
           "do": "Whip the whites on medium-high to soft peaks.",
-          "wait": "~5 min"
+          "wait": "~5 min",
+          "uses": [
+            "Egg whites"
+          ]
         },
         {
           "do": "Add the sugar in two parts, beating about 30 sec after each. Then go to high speed.",
           "wait": "~2 min",
-          "cue": "Glossy, stiff peaks that don't move when the whisk is held upright"
+          "cue": "Glossy, stiff peaks that don't move when the whisk is held upright",
+          "uses": [
+            "Superfine sugar"
+          ]
         },
         {
-          "do": "Beat in the vanilla for 1 minute. If the peaks have softened, keep beating."
+          "do": "Beat in the vanilla for 1 minute. If the peaks have softened, keep beating.",
+          "wait": "1 min",
+          "uses": [
+            "Pure vanilla extract"
+          ]
         },
         {
-          "do": "Gently fold in the cream of tartar and cornstarch with a spatula."
+          "do": "Gently fold in the cream of tartar and cornstarch with a spatula.",
+          "uses": [
+            "Cream of tartar",
+            "Cornstarch"
+          ]
         }
       ]
     },
@@ -127,7 +141,12 @@
       "group": "Finish",
       "items": [
         {
-          "do": "Right before serving, pile on whipped cream, curd, and fruit. Slice and serve."
+          "do": "Right before serving, pile on whipped cream, curd, and fruit. Slice and serve.",
+          "uses": [
+            "Whipped cream",
+            "Lemon curd",
+            "Fresh berries or fruit"
+          ]
         }
       ]
     }

@@ -105,17 +105,46 @@
       "group": "Batter",
       "items": [
         {
-          "do": "Whisk the flour, baking powder, salt, 1 tsp cinnamon and the nutmeg in a medium bowl."
+          "do": "Whisk the flour, baking powder, salt, 1 tsp cinnamon and the nutmeg in a medium bowl.",
+          "uses": [
+            "All-purpose flour",
+            "Baking powder",
+            "Fine sea salt",
+            {
+              "item": "Ground cinnamon",
+              "group": "Batter"
+            },
+            "Nutmeg"
+          ]
         },
         {
           "do": "In the mixer, beat the 10 Tbsp butter with the brown sugar and the 1/4 cup granulated sugar on medium for 3 to 4 minutes. The air beaten in here is what makes these lighter than a one-bowl donut.",
-          "cue": "Light and fluffy"
+          "wait": "3 to 4 min",
+          "cue": "Light and fluffy",
+          "uses": [
+            {
+              "item": "Unsalted butter",
+              "group": "Batter"
+            },
+            "Light brown sugar",
+            {
+              "item": "Granulated sugar",
+              "group": "Batter"
+            }
+          ]
         },
         {
-          "do": "Beat in the eggs one at a time, letting each mix in fully and scraping the bowl as needed. Beat in the vanilla."
+          "do": "Beat in the eggs one at a time, letting each mix in fully and scraping the bowl as needed. Beat in the vanilla.",
+          "uses": [
+            "Eggs",
+            "Vanilla extract"
+          ]
         },
         {
-          "do": "On low, mix in the flour mixture until incorporated. With the mixer still running, pour in the cider in a slow, steady stream. Scrape the bowl well so the batter is even throughout."
+          "do": "On low, mix in the flour mixture until incorporated. With the mixer still running, pour in the cider in a slow, steady stream. Scrape the bowl well so the batter is even throughout.",
+          "uses": [
+            "Apple cider"
+          ]
         },
         {
           "do": "Spoon the batter into the pans, or pipe it from a zip-top bag with a 1/2-inch corner snipped off, filling each cavity about 2/3 full."
@@ -131,7 +160,21 @@
           "cue": "Evenly golden brown; a toothpick in the thickest part comes out clean"
         },
         {
-          "do": "While they bake, whisk the 1/2 cup sugar and 1 tsp cinnamon in a small bowl, and melt the 6 Tbsp butter in another."
+          "do": "While they bake, whisk the 1/2 cup sugar and 1 tsp cinnamon in a small bowl, and melt the 6 Tbsp butter in another.",
+          "uses": [
+            {
+              "item": "Granulated sugar",
+              "group": "Topping"
+            },
+            {
+              "item": "Ground cinnamon",
+              "group": "Topping"
+            },
+            {
+              "item": "Unsalted butter",
+              "group": "Topping"
+            }
+          ]
         }
       ]
     },
