@@ -4,7 +4,7 @@ Projects that came up while designing something else. None of them is planned ye
 
 ## Recipe import tool
 
-2026-11-03 · from the cook mode design (`docs/specs/cook-mode-design.md`, where it's a planned separate project) and the meal planner design (`docs/specs/meal-planner-design.md`)
+2026-11-03 · from the cook mode design (`docs/specs/cook-mode-design.md`, where it's a planned separate project) and the lineup design (`docs/specs/meal-planner-design.md`)
 
 A tool that turns a recipe from a web page or a photo into the site's recipe JSON, ready for Jacob to review.
 
@@ -21,7 +21,7 @@ A tool that turns a recipe from a web page or a photo into the site's recipe JSO
 - **Step ingredients:** `uses` links from each step to its ingredients, including a step's own share of a split ingredient.
 - **Prep:** `prep` marks on steps that can be done before any cooking, `"just before"` where doing it early would hurt the dish, and added `prepOnly` steps for prep hidden in ingredient lines ("garlic, minced"). That lets the recipe show prep first or as written.
 - **Planning data:** hands-on minutes, waits that need you there, oven, broiler, burner, grill or microwave use, the point after which the dish keeps, and how it's served.
-- **Sub-recipes:** an ingredient that's a recipe on the site ("garlic paste", "lemon curd") links to it. One the source makes elsewhere ("steak seasoning, see recipe") is flagged, so Jacob can decide whether to add it.
+- **Linked recipes:** an ingredient that's a recipe on the site ("garlic paste", "lemon curd") links to it, and an optional ingredient is marked `optional`. Required links are nested recipes, which come with the dish; optional ones are connected recipes, added on their own (see the lineup spec). One the source makes elsewhere ("steak seasoning, see recipe") is flagged, so Jacob can decide whether to add it.
 - **Tags** from `recipes/vocabulary.json`. A recipe that belongs in two sections (blueberry syrup in Cocktails and Baking) can only have one `category` today. That's a separate small change.
 
 **Rules it should follow:**
@@ -33,9 +33,9 @@ A tool that turns a recipe from a web page or a photo into the site's recipe JSO
 
 ## Settings page
 
-2026-11-03 · from the meal planner design (`docs/specs/meal-planner-design.md`)
+2026-11-03 · from the lineup design (`docs/specs/meal-planner-design.md`)
 
-A page that holds your cooking preferences so you don't pick them every time. The first one is **prep first**: the meal planner's "Prep everything first" or "Fastest", which also decides whether a single recipe shows its steps prep first or as written. Until this page exists, the meal page and the recipe page's order toggle remember that choice themselves.
+A page that holds your cooking preferences so you don't pick them every time. The first one is **prep first**: the lineup's "Prep everything first" or "Fastest", which also decides whether a single recipe shows its steps prep first or as written. Until this page exists, the lineup page and the recipe page's order toggle remember that choice themselves.
 
 Other settings that could move here:
 
