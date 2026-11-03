@@ -57,6 +57,10 @@ const sits = (r) => (r.serve === "keeps" ? Infinity : r.sits ? minutes(r.sits) :
 // a connected recipe: made only if it's in the lineup itself. Either way, the
 // step that uses it waits for it: `neededBy` lists those [dish, step] pairs.
 const lower = (x) => String(x ?? "").trim().toLowerCase();
+// A recipe's steps as one list, grouped or not, each with its position `n`, the
+// way saved progress counts them.
+const stepsOf = (r) => r.steps.flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]))
+  .map((s, n) => ({ ...(typeof s === "string" ? { do: s } : s), n }));
 const ingredientsOf = (r) => (r.ingredients || []).flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]));
 //
 // A hot dish is held back from the first step after it starts to keep (or its
@@ -78,9 +82,10 @@ function chains(lineup, recipes, parts = {}) {
     // Prep that can be done ahead comes before the dish's first step that isn't
     // prep; "just before" prep stays where the recipe has it.
     const ahead = (s) => s.prep === true || s.prepOnly;
-    const ordered = [...r.steps.filter(ahead), ...r.steps.filter((s) => !ahead(s))];
+    const all = stepsOf(r);
+    const ordered = [...all.filter(ahead), ...all.filter((s) => !ahead(s))];
     const steps = ordered.map((s) => ({
-      slug, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
+      slug, n: s.n, text: s.do, hands: minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
       oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds, prep: ahead(s),
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
@@ -90,7 +95,7 @@ function chains(lineup, recipes, parts = {}) {
     const first = steps.findIndex((x) => x.oven);
     if (first >= 0 && !steps.slice(0, first).some((x) => x.preheat && sameSetting(x.preheat, steps[first].oven))) {
       const setting = steps[first].oven;
-      steps.unshift({ slug, text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
+      steps.unshift({ slug, n: "heat", text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
     }
     // After a `holds` step the dish keeps (a cooled meringue), so only the steps
     // after it are tied to serving.
@@ -146,7 +151,13 @@ function latestStarts(dish, serve) {
 // dessert dish that can't be made ahead.
 const DESSERT_AFTER = 45;
 const serveTimes = (dishes, serve) => (dishes.some((d) => d.course === "Main") ? { Main: serve, Dessert: serve + DESSERT_AFTER } : { Dessert: serve });
-function simulate(dishes, serve, early = {}) {
+//
+// `progress` is what's happened so far: `done` lists finished steps as
+// { slug, step, at }, `at` being the minute you moved on from it, plus
+// `waitUntil` when its timer was given more time or stopped early; `now` is the
+// minute it is. Finished steps stay where they happened, waits run from when
+// you moved on, and nothing new starts before now.
+function simulate(dishes, serve, early = {}, progress = {}) {
   const times = serveTimes(dishes, serve);
   const due = dishes.map((d) => times[d.course] ?? serve);
   const atTable = (d, t) => times.Main != null && t >= times.Main && t < times.Dessert && !(dishes[d].course === "Dessert" && dishes[d].sits !== Infinity);
@@ -172,6 +183,9 @@ function simulate(dishes, serve, early = {}) {
   const busy = [];                            // { kind, until } for each piece of equipment in use
   const steps = [];
   let t = 0, handsFree = 0;
+  const done = new Map((progress.done || []).map((x) => [`${x.slug}:${x.step}`, x]));
+  const doneAt = (d) => (left(d) ? done.get(`${dishes[d].slug}:${dishes[d].steps[next[d]].n}`)?.at : undefined);
+  const waitUntil = (d) => done.get(`${dishes[d].slug}:${dishes[d].steps[next[d] - 1].n}`)?.waitUntil;
   const prepLeft = () => dishes.some((dish, d) => dish.steps.some((x, i) => i >= next[d] && x.prep));
   const free = (kind) => busy.filter((b) => b.kind === kind && b.until > t).length < CAPACITY[kind];
 
@@ -187,6 +201,27 @@ function simulate(dishes, serve, early = {}) {
     if (dishes.prepFirst && !s.prep && !s.preheat && prepLeft()) return false;
     return opensAt(d) <= t && handsFree <= t && !atTable(d, t) && (!setting || ovenFree(d, setting)) && (!s.oven || hot(s.oven)) && s.kit.every(free) && waitingFor(d).every((n) => !left(n) && readyAt[n] <= t);
   };
+
+  // Replay the finished steps, in the order they were done.
+  const start = (d, s, at, finished) => {
+    readyAt[d] = finished ? (waitUntil(d) ?? (s.watch ? finished : finished + s.wait)) : at + s.hands + s.wait;
+    handsFree = Math.max(handsFree, finished ?? (s.watch ? readyAt[d] : at + s.hands));
+    for (const kind of s.kit) busy.push({ kind, until: readyAt[d] });
+    if (s.preheat) heat = { setting: s.preheat, hotAt: at + s.hands + heatTime(s.preheat) };
+    const setting = s.oven || s.preheat;
+    if (setting) oven.set(d, { setting, until: next[d] - 1 === dishes[d].lastOven ? readyAt[d] : Infinity });
+  };
+  for (;;) {
+    const ds = dishes.map((_, d) => d).filter((d) => doneAt(d) !== undefined);
+    if (!ds.length) break;
+    const d = ds.reduce((a, b) => (doneAt(b) < doneAt(a) ? b : a));
+    const finished = doneAt(d), s = dishes[d].steps[next[d]++];
+    const at = finished - s.hands - (s.watch ? s.wait : 0);
+    steps.push({ slug: s.slug, step: s.n, text: s.text, at, done: true, ...(s.added && { added: true }) });
+    start(d, s, at, finished);
+  }
+  t = Math.max(t, progress.now || 0);
+  handsFree = Math.max(handsFree, t);
 
   while (dishes.some((_, d) => left(d))) {
     const can = dishes.map((_, d) => d).filter((d) => left(d) && canStart(d));
@@ -206,13 +241,8 @@ function simulate(dishes, serve, early = {}) {
     const s = dishes[d].steps[i];
     // An added heating step isn't needed if the oven's already at that setting.
     if (s.added && heat && sameSetting(heat.setting, s.preheat)) continue;
-    steps.push({ slug: s.slug, text: s.text, at: t, ...(s.added && { added: true }) });
-    readyAt[d] = t + s.hands + s.wait;
-    handsFree = s.watch ? readyAt[d] : t + s.hands;
-    for (const kind of s.kit) busy.push({ kind, until: readyAt[d] });
-    if (s.preheat) heat = { setting: s.preheat, hotAt: t + s.hands + heatTime(s.preheat) };
-    const setting = s.oven || s.preheat;
-    if (setting) oven.set(d, { setting, until: i === dishes[d].lastOven ? readyAt[d] : Infinity });
+    steps.push({ slug: s.slug, step: s.n, text: s.text, at: t, ...(s.added && { added: true }) });
+    start(d, s, t);
   }
   return {
     steps, end: Math.max(...readyAt),
@@ -226,12 +256,12 @@ function simulate(dishes, serve, early = {}) {
 // Plan for serving at `serve`. If a dish comes out late, plan it, and any dish
 // whose oven use held it up, to be ready a little earlier, but never earlier
 // than it can sit, and try again.
-function planFor(dishes, serve) {
+function planFor(dishes, serve, progress) {
   const sitsFor = Object.fromEntries(dishes.map((d) => [d.slug, d.sits]));
   const early = {};
   let plan;
   for (let round = 0; round < 8; round++) {
-    plan = simulate(dishes, serve, early);
+    plan = simulate(dishes, serve, early, progress);
     const late = Object.entries(plan.late).sort((a, b) => b[1] - a[1])[0];
     if (!late) return plan;
     const [slug, by] = late;
@@ -246,11 +276,11 @@ function planFor(dishes, serve) {
 }
 
 // The earliest serve time one cook can get everything ready for.
-function search(dishes) {
-  const shortest = Math.max(...dishes.map((d) => d.steps.reduce((a, s) => a + s.hands + s.wait, 0)));
+function search(dishes, progress = {}) {
+  const shortest = Math.max(progress.now || 0, ...dishes.map((d) => d.steps.reduce((a, s) => a + s.hands + s.wait, 0)));
   let plan;
   for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
-    plan = planFor(dishes, serve);
+    plan = planFor(dishes, serve, progress);
     if (!Object.keys(plan.late).length) return { steps: plan.steps, minutes: serve, ready: plan.ready, courses: plan.courses };
   }
   return { steps: plan.steps, minutes: plan.end, ready: plan.ready, courses: plan.courses };
@@ -261,20 +291,20 @@ function search(dishes) {
 // 30 minutes shorter, the plan asks (makeAhead), starting on "ahead" unless
 // lineup.ahead says otherwise, and the part made ahead gets its own plan.
 const MAKE_AHEAD_SAVES = 30;
-export function planLineup(lineup, recipes) {
-  const keepsWhole = (slug) => !recipes[slug].steps.some((s) => s.holds);
+export function planLineup(lineup, recipes, progress = {}) {
+  const keepsWhole = (slug) => !stepsOf(recipes[slug]).some((s) => s.holds);
   const dayParts = (slugs) => Object.fromEntries(slugs.map((slug) => [slug, keepsWhole(slug) ? "skip" : "after"]));
   const dayLength = (p) => Math.max(...Object.values(p.courses));
-  const allToday = search(chains(lineup, recipes));
+  const allToday = search(chains(lineup, recipes), progress);
   const makeAhead = [];
   for (const { slug } of lineup.dishes) {
     if (keepsWhole(slug) && sits(recipes[slug]) !== Infinity) continue;
-    const saves = dayLength(allToday) - dayLength(search(chains(lineup, recipes, dayParts([slug]))));
+    const saves = dayLength(allToday) - dayLength(search(chains(lineup, recipes, dayParts([slug])), progress));
     if (saves > MAKE_AHEAD_SAVES) makeAhead.push({ slug, saves, ahead: lineup.ahead?.[slug] ?? true });
   }
   const ahead = makeAhead.filter((q) => q.ahead).map((q) => q.slug);
   if (!ahead.length) return { ...allToday, makeAhead, aheadOfTime: null };
   const before = search(chains({ dishes: lineup.dishes.filter((d) => ahead.includes(d.slug)) }, recipes,
     Object.fromEntries(ahead.map((slug) => [slug, keepsWhole(slug) ? null : "before"]))));
-  return { ...search(chains(lineup, recipes, dayParts(ahead))), makeAhead, aheadOfTime: { steps: before.steps, minutes: before.minutes } };
+  return { ...search(chains(lineup, recipes, dayParts(ahead)), progress), makeAhead, aheadOfTime: { steps: before.steps, minutes: before.minutes } };
 }

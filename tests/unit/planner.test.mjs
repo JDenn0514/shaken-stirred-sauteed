@@ -279,6 +279,44 @@ describe("prep", () => {
   });
 });
 
+describe("re-planning as you cook", () => {
+  const recipes = {
+    potatoes: recipe("Potatoes", [["Slice the potatoes", { hands: "10 min", prep: true }], ["Bake the potatoes", { hands: "2 min", wait: "40 min" }], ["Scatter with parsley", { hands: "1 min" }]]),
+    applesauce: recipe("Applesauce", [["Cut the apples", { hands: "8 min" }], ["Mash them", { hands: "2 min" }]], { serve: "keeps" }),
+  };
+  const lineup = { dishes: [{ slug: "potatoes" }, { slug: "applesauce" }], prepFirst: false };
+
+  test("each step says which recipe step it is", () => {
+    const plan = planLineup(lineup, recipes);
+    assert.deepEqual(plan.steps.map((s) => [s.slug, s.step]), [["potatoes", 0], ["potatoes", 1], ["applesauce", 0], ["applesauce", 1], ["potatoes", 2]]);
+  });
+
+  test("a step that ran long moves the meal later, and the rest is planned from now", () => {
+    const before = planLineup(lineup, recipes);
+    // Slicing was planned to be done at 10, but was done at 20.
+    const plan = planLineup(lineup, recipes, { now: 20, done: [{ slug: "potatoes", step: 0, at: 20 }] });
+    assert.equal(plan.steps[0].text, "Slice the potatoes");
+    assert.equal(plan.steps[0].done, true);
+    assert.ok(plan.steps.slice(1).every((s) => !s.done && s.at >= 20), "a step was planned before now");
+    assert.equal(plan.minutes, before.minutes + 10);
+  });
+
+  const bakeDone = { slug: "potatoes", step: 1, at: 12 };   // into the oven at 12, out at 52
+  const next = (plan) => plan.steps.find((s) => !s.done);
+
+  test("a timer given 2 more minutes moves its dish's next step later", () => {
+    const plan = planLineup(lineup, recipes, { now: 52, done: [{ slug: "potatoes", step: 0, at: 10 }, { ...bakeDone, waitUntil: 54 }, { slug: "applesauce", step: 0, at: 20 }, { slug: "applesauce", step: 1, at: 22 }] });
+    assert.equal(next(plan).text, "Scatter with parsley");
+    assert.equal(next(plan).at, 54);
+  });
+
+  test("a timer stopped early makes its dish's next step the one to do now", () => {
+    const plan = planLineup(lineup, recipes, { now: 30, done: [{ slug: "potatoes", step: 0, at: 10 }, { ...bakeDone, waitUntil: 30 }, { slug: "applesauce", step: 0, at: 20 }, { slug: "applesauce", step: 1, at: 22 }] });
+    assert.equal(next(plan).text, "Scatter with parsley");
+    assert.equal(next(plan).at, 30);
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {
