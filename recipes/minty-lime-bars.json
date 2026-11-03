@@ -32,7 +32,6 @@
   "heat": "350°F (175°C), then 300°F (150°C)",
   "heatLabel": "Oven",
   "beforeYouStart": [
-    "Rack in the center; preheat the oven to 350°F (175°C).",
     "Line the pan with two crossed sheets of foil pressed into the corners and up the sides, then butter the foil. The overhang becomes handles for lifting the bars out.",
     "Zest the limes for the crust (and a little extra for serving) before juicing them.",
     "Keep both portions of butter cold until they go in. Have an instant-read thermometer ready for the curd."
@@ -143,6 +142,11 @@
     {
       "group": "Crust",
       "items": [
+        {
+          "do": "Set a rack in the center and heat the oven to 350°F (175°C).",
+          "hands": "30 sec",
+          "preheat": "350F"
+        },
         {
           "do": "Line the pan with two crossed sheets of foil pressed into the corners and up the sides, and butter the foil. Zest the limes for the crust (and a little extra for serving), then juice them and the lemon. Finely chop the mint. Cut both portions of butter into pieces and keep them cold.",
           "hands": "12 min",

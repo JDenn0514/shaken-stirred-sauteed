@@ -104,7 +104,8 @@
         {
           "qty": "1 cup",
           "item": "dry acini di pepe or orzo",
-          "recipe": "homemade-acini-di-pepe"
+          "recipe": "homemade-acini-di-pepe",
+          "alreadyMade": true
         },
         {
           "qty": "6 oz",

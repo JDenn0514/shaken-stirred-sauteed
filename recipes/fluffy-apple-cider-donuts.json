@@ -18,7 +18,7 @@
   "heatLabel": "Oven",
   "beforeYouStart": [
     "Butter and eggs at room temperature. You need 2 sticks of butter in all: 10 Tbsp soft for the batter, 6 Tbsp melted for the coating.",
-    "Preheat to 350F and lightly grease both donut pans with nonstick spray.",
+    "Lightly grease both donut pans with nonstick spray.",
     "Stand mixer with the paddle attachment."
   ],
   "ingredients": [
@@ -76,7 +76,8 @@
           "qty": "1/2 cup",
           "item": "Apple cider",
           "note": "120 ml",
-          "recipe": "homemade-apple-cider"
+          "recipe": "homemade-apple-cider",
+          "alreadyMade": true
         }
       ]
     },
@@ -105,6 +106,11 @@
     {
       "group": "Batter",
       "items": [
+        {
+          "do": "Heat the oven to 350°F (175°C).",
+          "hands": "30 sec",
+          "preheat": "350F"
+        },
         {
           "do": "Set the 10 Tbsp butter and the eggs out to come to room temperature, grate the nutmeg, and lightly grease both donut pans.",
           "hands": "3 min",

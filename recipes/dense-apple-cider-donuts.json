@@ -29,7 +29,7 @@
   "beforeYouStart": [
     "Reduce the cider at least 30 minutes ahead, or the night before, so it has time to cool.",
     "Egg and milk at room temperature.",
-    "Preheat to 350F and coat the donut pan with nonstick spray.",
+    "Coat the donut pan with nonstick spray.",
     "Two donut pans let you bake everything at once; with one, bake in batches."
   ],
   "ingredients": [
@@ -40,7 +40,8 @@
           "qty": "1 1/2 cups",
           "item": "Apple cider",
           "note": "360 ml; fresh, not powdered mix",
-          "recipe": "homemade-apple-cider"
+          "recipe": "homemade-apple-cider",
+          "alreadyMade": true
         }
       ]
     },
@@ -160,6 +161,11 @@
     {
       "group": "Batter",
       "items": [
+        {
+          "do": "Heat the oven to 350°F (175°C).",
+          "hands": "30 sec",
+          "preheat": "350F"
+        },
         {
           "do": "Set the egg and milk out to come to room temperature, melt the 2 Tbsp butter for the batter, and coat the donut pan with nonstick spray.",
           "hands": "3 min",

@@ -32,7 +32,6 @@
   "heatLabel": "Oven",
   "beforeYouStart": [
     "Make the blueberry sauce first. Once the crust is in the oven, everything moves fast.",
-    "Preheat the oven to 350°F (175°C) while the sauce cooks.",
     "Check the condensed milk: it must be full-fat sweetened, and a full 14 oz can. Evaporated, fat-free or a short can leaves the filling runny.",
     "Don't use a springform pan; the crust leaks."
   ],
@@ -135,6 +134,11 @@
           "uses": ["Cornstarch", { "item": "Lemon juice", "group": "Blueberry sauce" }],
           "hands": "1 min",
           "prep": true
+        },
+        {
+          "do": "Heat the oven to 350°F (175°C) while the sauce cooks.",
+          "hands": "30 sec",
+          "preheat": "350F"
         },
         {
           "do": "Warm the blueberries and sugar in a small saucepan over medium heat for 3 min, stirring now and then and mashing the berries against the pan to break them down.",

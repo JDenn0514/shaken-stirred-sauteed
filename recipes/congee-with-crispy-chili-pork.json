@@ -131,7 +131,7 @@
       ]
     },
     {
-      "do": "Grate the carrot, onion and 2 garlic cloves. Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes.",
+      "do": "Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes.",
       "wait": "2 to 3 min",
       "uses": [
         "carrot, grated",
@@ -179,7 +179,7 @@
       ]
     },
     {
-      "do": "Meanwhile, mince the chilies, 5 garlic cloves and scallion whites. Heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",
+      "do": "Meanwhile, heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",
       "wait": "1 to 2 min",
       "uses": [
         "green bird's eye chilies, minced",

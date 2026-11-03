@@ -62,6 +62,11 @@
   ],
   "steps": [
     {
+      "do": "Heat the oven to 200°C / 400°F.",
+      "hands": "30 sec",
+      "preheat": "400F"
+    },
+    {
       "do": "Trim the woody ends off the asparagus. Juice half the lemon and slice the other half into rings. Cut the butter into pats, and shred the parmesan if it isn't already.",
       "hands": "5 min",
       "prep": true,
@@ -81,10 +86,16 @@
       "prep": "just before"
     },
     {
-      "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes. Pull the pan and switch the oven to broil.",
+      "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes.",
       "wait": "8 to 10 min",
       "hands": "30 sec",
       "oven": "400F"
+    },
+    {
+      "do": "Pull the pan and switch the oven to broil. Give the broiler about 3 minutes to heat.",
+      "wait": "About 3 min",
+      "hands": "30 sec",
+      "preheat": "broil"
     },
     {
       "do": "Scatter the parmesan over the center of the asparagus and broil 2 to 3 minutes, until melted and golden.",

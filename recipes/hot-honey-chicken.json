@@ -108,10 +108,17 @@
       "prep": "just before"
     },
     {
-      "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Sear the chicken 2 to 3 minutes per side until golden, then move to a plate.",
-      "wait": "2 to 3 min per side",
+      "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Lay in the chicken and sear 2 to 3 minutes, until golden underneath.",
+      "wait": "2 to 3 min",
       "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "cooking oil"],
-      "hands": "4 min",
+      "hands": "2 min",
+      "watch": true,
+      "burner": true
+    },
+    {
+      "do": "Turn the cutlets and sear 2 to 3 minutes more, until golden on the second side, then move them to a plate.",
+      "wait": "2 to 3 min",
+      "hands": "1 min",
       "watch": true,
       "burner": true
     },

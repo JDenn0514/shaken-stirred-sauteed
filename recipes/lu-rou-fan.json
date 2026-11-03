@@ -144,6 +144,11 @@
       "burner": true
     },
     {
+      "do": "Start the rice your usual way. It has the whole simmer to cook, and a rice cooker keeps it warm until the pork is done.",
+      "uses": ["steamed white rice, to serve"],
+      "hands": "2 min"
+    },
+    {
       "do": "Simmer 1 1/2 hours, stirring now and then so nothing catches on the bottom. Keep it at the barest simmer so the sauce isn't gone before the final reduction.",
       "wait": "1 1/2 hr",
       "hands": "30 sec",

@@ -133,9 +133,16 @@
       "prep": "just before"
     },
     {
-      "do": "Grill 3 to 6 minutes per side, flipping once, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated.",
-      "wait": "3 to 6 min per side",
-      "hands": "5 min",
+      "do": "Grill the first side 3 to 6 minutes, without moving it, until it's charred underneath.",
+      "wait": "3 to 6 min",
+      "hands": "30 sec",
+      "watch": true,
+      "grill": true
+    },
+    {
+      "do": "Flip it once and grill 3 to 6 minutes more, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated.",
+      "wait": "3 to 6 min",
+      "hands": "1 min",
       "watch": true,
       "grill": true
     },
