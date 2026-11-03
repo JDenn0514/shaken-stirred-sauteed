@@ -1,6 +1,6 @@
 # Testing
 
-- `npm test` runs everything: `npm run check` (the quick checks: lint with Oxlint, broken links, the recipes, and `npm run test:unit`, the recipe and link checker tests on Node's built-in runner) and `npm run test:e2e` (browser tests, Playwright driving the installed Google Chrome).
+- `npm test` runs everything: `npm run check` (the quick checks: lint with Oxlint, broken links, the recipes, and `npm run test:unit`, the recipe and link checker tests on Node's built-in runner) and `npm run test:e2e` (browser tests, Playwright driving the installed Google Chrome, then Playwright's WebKit for Safari; `--project=chrome` or `--project=webkit` runs just one).
 - `npm run check` also runs as a git pre-push hook (`.githooks/pre-push`, turned on by `npm install`). Don't skip it with `--no-verify` to get a push through; fix what it finds.
 - Run `npm test` before saying a change to the site's code is done, and before committing one. If anything fails, show the output; don't call it done.
 - Adding or editing a recipe's JSON doesn't need new tests; `node scripts/build-index.mjs` is the check for that.

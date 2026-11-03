@@ -2,6 +2,7 @@
 // - the page only ever talks to the local test server; requests anywhere else are blocked
 // - the site loads a small, fixed set of test recipes instead of the real ones, so tests
 //   don't break when recipes are added. The index is built by the real build script.
+// - the page makes no sound
 import { test as base, expect } from "@playwright/test";
 import { buildIndex, recipe } from "../helpers/build-index.mjs";
 
@@ -124,6 +125,23 @@ export const test = base.extend({
         }
       }
       return route.continue();
+    });
+    // Playwright mutes Chrome but can't mute WebKit, so the timer alarm would
+    // beep out loud. Every sound goes to the speakers through a volume of zero.
+    await page.addInitScript(() => {
+      const speakers = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, "destination").get;
+      const muted = new WeakMap();
+      Object.defineProperty(BaseAudioContext.prototype, "destination", {
+        get() {
+          if (!muted.has(this)) {
+            const volume = this.createGain();
+            volume.gain.value = 0;
+            volume.connect(speakers.call(this));
+            muted.set(this, volume);
+          }
+          return muted.get(this);
+        },
+      });
     });
     await use(page);
   },
