@@ -2,19 +2,23 @@
 
 2026-11-03 · how to build [recipe-editor-design.md](recipe-editor-design.md), using the answers in [recipe-editor-checks.md](recipe-editor-checks.md)
 
-The work is split into **slices**. Each slice is one branch and one pull request. Each leaves the live site working and `npm test` passing, and each starts with failing tests (`mattpocock-skills:tdd`, per `.claude/rules/testing.md`). Slices 1 to 4 need no accounts, so they can start now while Jacob sets up Cloudflare and the GitHub App (slice 0). Slice 5 is the iPhone sign-in trial. It's the riskiest part, so the save, import and delete slices wait for it.
+The work is split into **slices**. Each slice is one branch and one pull request. Each leaves the live site working and `npm test` passing, and each starts with failing tests (`mattpocock-skills:tdd`, per `.claude/rules/testing.md`). **The lineup comes first.** The lineup (meal planner) is being built on the `lineup-recipe-data` branch. It rewrites `scripts/build-index.mjs`, adds planning fields and links between recipes to every recipe file, and changes the recipe and recipes pages. Slices 1 to 4 touch the same files, so they start only once the lineup's data and checker are merged into `main`. Slice 1 then starts from that version.
 
-| Slice | What | Needs accounts? |
-| --- | --- | --- |
-| 0 | Jacob's setup: Cloudflare, GitHub App, keys | Jacob does it |
-| 1 | One shared recipe checker for the build script, the editor and the Worker | no |
-| 2 | The recipe page's drawing code shared, so the editor can preview with it | no |
-| 3 | The editor page: preview, edit in place, Details, checks, local draft (no saving yet) | no |
-| 4 | Text to recipe: the rules, website data and PDF text, as tested modules | no |
-| 5 | The Worker and sign-in end to end, **tried on an iPhone** | yes |
-| 6 | Saving and deleting through the Worker | yes |
-| 7 | Import: website, PDF, photo and screenshot | yes (website only) |
-| 8 | Optional "Tidy up with AI", after a trial | yes |
+**Sign-in doesn't wait.** Slices 0 and 5 don't touch the site's recipe code, so they can go first. That also brings the iPhone sign-in trial forward. It's the riskiest part, so saving, import and delete wait for it either way.
+
+| Slice | What | Needs accounts? | Waits for the lineup? |
+| --- | --- | --- | --- |
+| 0 | Jacob's setup: Cloudflare, GitHub App, keys | Jacob does it | no |
+| 5 | The Worker and sign-in end to end, **tried on an iPhone** | yes | no |
+| 1 | One shared recipe checker for the build script, the editor and the Worker | no | yes |
+| 2 | The recipe page's drawing code shared, so the editor can preview with it | no | yes |
+| 3 | The editor page: preview, edit in place, Details (with lineup fields), checks, local draft (no saving yet) | no | yes |
+| 4 | Text to recipe: the rules, website data and PDF text, as tested modules | no | yes |
+| 6 | Saving and deleting through the Worker | yes | yes |
+| 7 | Import: website, PDF, photo and screenshot | yes (website only) | yes |
+| 8 | Optional "Tidy up with AI", after a trial | yes | yes |
+
+The slices keep their numbers below. Slice 5 can be done before slices 1 to 4; its browser tests only need "Sign in", "Add recipe" and "Edit" to exist.
 
 ## Calls this plan makes on the builder's questions
 
@@ -24,6 +28,7 @@ The design left these to the builder. They're settled here so the slices fit tog
 - **The Worker makes the GitHub commit.** The GitHub token never leaves the Worker. The browser only ever holds Better Auth's session token.
 - **Only `edit.html` talks to the Worker.** Whether you're signed in is known from the token kept in the browser, so recipe and index pages show "Edit" and "Add recipe" without any network call or CSP change. The sign-in link is a plain link to the Worker. After GitHub, the Worker sends you to `edit.html#ott=…`, which swaps the code for a token and returns you to the page you started from.
 - **The index is patched, not rebuilt, on save.** A full rebuild in the Worker would fetch every recipe file: about 40 requests to GitHub, close to the free plan's 50 per request. Instead the shared checker makes the one recipe's index entry, and the Worker replaces, adds or removes that entry in `main`'s `index.json` and re-sorts. A unit test proves that patching gives the same index as a full rebuild. CI's `check:recipes` re-checks it on every push to `main`.
+- **Links between recipes are checked from the index.** The lineup's link checks (every linked recipe exists, links don't loop) need every recipe at once. So each index entry gains `links`, the slugs its ingredients link to. The Worker checks a save's links, and finds which recipes link to one being deleted, from `index.json` alone.
 - **Conflicts.** The editor loads a recipe from `main` through the Worker, along with the file's Git version (its blob SHA). At save, the Worker compares that with the file on `main` now. If they differ, the save stops with "This recipe changed since you opened it". Changes to other recipes don't block a save, since only this recipe's index entry is replaced. If `main` moves between reading and committing, the Worker retries once from the new `main`, then gives up with the same message.
 - **File format.** Saved recipes are written with a small formatter that keeps short lists on one line, as the hand-written files do (`"course": ["protein"]`). The first edit of an existing recipe may still re-wrap a few lines. That's one-time noise in that commit, nothing more.
 - **Worker tests** use Vitest with Cloudflare's Workers test pool, which runs the real Workers runtime and a local D1 database, with GitHub faked. That adds Vitest to the Worker's own `package.json`, not the site's. `npm test` at the root runs them.
@@ -43,24 +48,31 @@ Jacob does this; Claude never sees the keys. A `mattpocock-skills:wizard` script
 
 ## Slice 1: one shared recipe checker
 
-Today every check lives inside `scripts/build-index.mjs`. Move them into **`assets/recipe-checks.js`**, written the same way as `assets/recipe-icons.js` so it works in Node, the browser and the Worker:
+Starts from `main` once the lineup's checker is merged. Every check lives inside `scripts/build-index.mjs`, including the lineup's planning checks and link checks. Move them into **`assets/recipe-checks.js`**, written the same way as `assets/recipe-icons.js` so it works in Node, the browser and the Worker:
 
-- `checkRecipe(slug, recipe, vocab)` → `{ errors, warnings }`, with the same messages as today, minus the `recipes/<file>:` prefix, which the build script adds.
-- `indexEntry(slug, recipe, vocab)` → that recipe's entry in `index.json`.
+- `checkRecipe(slug, recipe, vocab)` → `{ errors, warnings }`, with the same messages as today, minus the `recipes/<file>:` prefix, which the build script adds. This covers everything about one recipe, including the planning fields.
+- `checkLinks(index)` → errors for links to recipes that don't exist, and for loops, from the index's `links`. The build script runs it on the full index; the Worker runs it on the patched one.
+- `linkedFrom(index, slug)` → the recipes that link to this one, for delete.
+- `indexEntry(slug, recipe, vocab)` → that recipe's entry in `index.json`, now with `links`.
 - `patchIndex(index, slug, entryOrNull)` → the index with that entry replaced, added or removed, sorted by title.
 
-`build-index.mjs` keeps reading files, adding the file name to messages, the "vocabulary values no recipe uses" warning, and writing the file.
+`build-index.mjs` keeps reading files, adding the file name to messages, the "vocabulary values no recipe uses" warning, and writing the file. `recipes/index.json` gains `links` on each entry, in the same commit.
 
 Tests first:
 - The existing `tests/unit/build-index.test.mjs` must pass unchanged. It drives the real script, so it guards the move.
-- New `tests/unit/recipe-checks.test.mjs`: `checkRecipe` on a good and a bad recipe; `patchIndex` adding, replacing and removing, each compared with a full rebuild of the same recipes through `tests/helpers/build-index.mjs`.
-- `npm run check:recipes` still shows no change to `recipes/index.json`.
+- New `tests/unit/recipe-checks.test.mjs`:
+  - `checkRecipe` on a good recipe, a bad one, and one with bad planning data.
+  - `checkLinks` finds a missing link and a loop, with the same messages the build gives.
+  - `linkedFrom` lists the recipes that use one.
+  - `patchIndex` adding, replacing and removing, each compared with a full rebuild of the same recipes through `tests/helpers/build-index.mjs`.
+- `npm run check:recipes`: the only change to `recipes/index.json` is the new `links`.
 
 ## Slice 2: the recipe page's drawing code, shared
 
 The editor's preview must be the real recipe page and the real card. Today the page's HTML is built inside `assets/recipe.js` (`render`) and the card inside `assets/home.js` (`card`), each tied to its page.
 
-- Move the HTML-building parts into **`assets/recipe-view.js`**: `recipePageHTML(recipe, vocab)` and `cardHTML(entry)`. Page wiring (progress, cook mode, the URL) stays in `recipe.js` and `home.js`.
+- Move the HTML-building parts into **`assets/recipe-view.js`**: `recipePageHTML(recipe, vocab)` and `cardHTML(entry)`. Page wiring (progress, cook mode, the lineup buttons, the URL) stays in `recipe.js` and `home.js`.
+- Include the lineup's prep-first order of steps, if the recipe page draws it, so the editor's preview can show both orders.
 - No behaviour changes. The existing browser tests (`recipe-page`, `index-page`, `cook-mode`, `accessibility`) are the safety net. Add the new file to the pages' script tags. The link checker covers it.
 
 ## Slice 3: the editor page, without saving
@@ -71,6 +83,12 @@ What it does:
 - Shows the card, then the full recipe page, both from `recipe-view.js`, in the section's colours, light or dark.
 - **Edit in place**: each editable part (title, description, yield, each ingredient, each step with its wait and cue, group names) is a real button that opens a labelled field in place. Ingredients and steps can be added, removed, moved up and down, split and merged. Groups can be added and renamed.
 - **Details** below: tags as choices from `recipes/vocabulary.json` (only those for the recipe's section), `source`, `added`, `kind`, `icon`, and each step's `uses` and amounts.
+- **Lineup fields** in Details, as the design's "Lineup data" lists them:
+  - per step: `hands`, `watch`, oven or preheat, burner, grill and microwave, `prep`, `holds`;
+  - for the recipe: `serve` and `sits`;
+  - per ingredient: "Made by another recipe" (picked from `recipes/index.json`), `optional`, `alreadyMade`.
+  - "Add a prep step" adds a `prep` + `prepOnly` step, and the preview switches between "as written" and "prep first".
+- **Warnings** from the checker as a to-do list, each naming its step. They don't block Save.
 - **Checks** from `recipe-checks.js` run as you edit, with errors shown next to the part they're about. Save stays off until there are none (in this slice Save does nothing else).
 - **Fields the editor has no control for are kept as they are**, in their original order.
 - **Unsaved draft** kept in the browser per recipe (`sss:draft:<slug>`), offered back on return, and cleared on save.
@@ -79,12 +97,19 @@ What it does:
 Browser tests first, in a new `tests/e2e/editor.spec.mjs`, on the fixture recipes:
 - The preview shows the recipe's title, ingredients and steps as the recipe page does.
 - Editing an ingredient changes the preview; adding, removing, moving, splitting and merging steps work by keyboard.
-- **Field keeping**: a fixture recipe with `nutrition`, `origin`, `abv` and an unknown field comes out of an edit with those unchanged (the anti-goal).
+- **Field keeping**: a fixture recipe with `nutrition`, `origin`, `abv`, lineup fields and an unknown field comes out of an edit with those unchanged (the anti-goal).
+- Lineup fields:
+  - `watch` is only offered on a step with a `wait`;
+  - choosing `holds` on one step clears it from another;
+  - the linked-recipe picker only offers recipes that exist;
+  - a step mentioning the oven shows a to-do item until an oven choice is made;
+  - an added prep step shows only in the prep-first preview.
 - A `uses` naming a missing ingredient shows the checker's message and turns Save off.
 - Tags offered are only the section's; there's no way to type a new one.
 - A reload brings back the unsaved draft.
 - Signed out: no "Edit" or "Add recipe" anywhere; `edit.html` asks you to sign in.
-- `accessibility.spec.mjs` `PAGES`: the editor with a recipe, with check errors, and with Details open, in light and dark.
+- `accessibility.spec.mjs` `PAGES`: the editor with a recipe, with check errors, with Details open (lineup fields included), with the to-do list, and in prep-first order, in light and dark.
+- The fixture recipes gain lineup data and a pair of linked recipes, as these tests need (the lineup branch may already have added some).
 
 ## Slice 4: text to recipe
 
@@ -95,7 +120,8 @@ Pure modules with unit tests, no page yet. They're written the same way as `reci
 
 Tests first, in `tests/unit/import-text.test.mjs` and `tests/unit/import-schema.test.mjs`:
 - Sample texts in `tests/samples/`: a few real `source-pdfs` pages turned into text, plus OCR text with its usual mistakes (½ as "%", "1/2" run into the next word, °F as "OF", broken lines, a two-column mix-up).
-- Every draft passes `checkRecipe` once a title and category are set, and nothing in the input is lost: whatever isn't in the recipe is in `unplaced`.
+- Every draft passes `checkRecipe` once a title and category are set (warnings allowed), and nothing in the input is lost: whatever isn't in the recipe is in `unplaced`.
+- Drafts have no lineup fields: none are guessed from wording.
 - Saved copies of two or three recipe pages' HTML (with JSON-LD in different shapes), and one with none.
 
 ## Slice 5: the Worker and sign-in, tried on an iPhone
@@ -130,15 +156,16 @@ Worker routes, all signed in only:
   1. Gets a fresh GitHub token (Better Auth refreshes it); if GitHub refuses, replies "sign in again".
   2. Reads `main`, and checks the file's current SHA against `baseSha` (or that a new slug is free).
   3. Runs `checkRecipe` against `main`'s vocabulary.
-  4. Patches `index.json`.
+  4. Patches `index.json`, and runs `checkLinks` on the result.
   5. Commits both files in one commit with the Git Data API: "Add …", "Edit …" or "Delete …".
-- `POST /delete`: `{ slug, baseSha }`, the same steps with the file removed and its index entry dropped.
+- `POST /delete`: `{ slug, baseSha }`, the same steps with the file removed and its index entry dropped. It's refused, naming the recipes, when `linkedFrom` finds any.
 
 Editor:
 - Loads from `GET /recipe/:slug`.
 - Save is enabled only with no errors. The slug is made from the title on first save and never changes after.
 - After saving: "Published. The site updates in a minute or two", with a link to the recipe. Clears the draft.
 - Delete: a dialog asking you to type the recipe's title; the button stays off until it matches.
+- For a recipe others link to, Delete is off and names them instead.
 
 Tests first:
 - **Worker**, with GitHub faked:
@@ -148,11 +175,14 @@ Tests first:
   - A recipe failing `checkRecipe` is refused, with nothing committed.
   - A new recipe whose slug exists is refused.
   - Delete removes the file and the index entry together.
+  - Deleting a recipe another links to is refused, naming it.
+  - A save adding a link to a missing recipe, or one that makes a loop, is refused.
   - A refresh failure gives "sign in again".
 - **Browser**, with the fake Worker:
   - The published message, and its link.
   - A 409 shows "changed since you opened it" and keeps the draft.
   - The delete dialog: wrong name keeps Delete off; the right name deletes.
+  - A linked-to recipe's Delete is off and names the recipe that uses it.
   - Someone without access sees "can't edit this site" instead of a failed save.
 - `PAGES`: the delete confirmation; a recipe page signed in (with "Edit").
 
@@ -179,6 +209,7 @@ If it's built:
 - **Worker**: `POST /tidy` sends the original (or the text) with a prompt for the recipe format and the vocabulary's tags. The reply is run through `checkRecipe`. A reply over the day's allowance, or any failure, gets "AI isn't available right now".
 - **Editor**:
   - Every amount, time or temperature that differs from the rule-based draft is marked "Check against the original" until looked at.
+  - Lineup data and added prep steps it suggests are marked the same way.
   - It's skipped by default when a website had structured data.
 
 Tests first:

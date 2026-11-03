@@ -31,7 +31,8 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 
 ## Anti-goals (failures even if it technically works)
 
-- **Editing a recipe silently drops a field the editor doesn't show.** A recipe with `nutrition`, `origin`, `abv` or anything else the editor has no control for must come back out with those fields unchanged.
+- **Editing a recipe silently drops a field the editor doesn't show.** A recipe with `nutrition`, `origin`, `abv`, lineup planning data or anything else the editor has no control for must come back out with those fields unchanged.
+- **A delete or save that breaks another recipe.** Recipes link to each other for the lineup (an ingredient's `recipe`). Deleting a recipe that another links to, or a link to a recipe that doesn't exist, must be stopped before anything is committed.
 - **A save overwrites a change it didn't know about.** If the recipe or the index changed on GitHub since the editor loaded it (an edit from the other device, a commit from the computer), saving must stop and say so, not overwrite it.
 - **A save that leaves the site broken.** A recipe that would fail `build-index.mjs` must never be committed. The recipe file and `recipes/index.json` change together in one commit, or not at all.
 - **A wrong amount slips in unnoticed.** OCR misreads and AI "corrections" both change amounts. Anything the importer guessed or the AI changed must be easy to check against the original before saving.
@@ -125,11 +126,12 @@ The rules that turn plain text into a draft:
 - A step's `uses` is filled by matching ingredient names in the step's text. It must follow the same rules as hand-written `uses` (unambiguous when a name appears twice). When a match is unclear, it's left out and the Details section shows the step as having no ingredients linked, rather than guessing.
 - The category is a best guess (cocktail words, baking words) and is always shown for you to check.
 - Tags, cues and the cocktail fields are left for you.
+- **Lineup data is left for you too** (see "Lineup data"): the steps' hands-on times, equipment, prep marks and `holds`, the recipe's `serve` and `sits`, and links to other recipes. The lineup spec says nothing is guessed from a step's wording, so the rules don't try. The checker's warnings ("step 3 mentions the oven but has no equipment field") show in the editor as a to-do list, and the editor makes each one a quick choice.
 - Anything the rules couldn't place (a headnote, a stray line) is kept in a "Couldn't place" list in the editor, so nothing read is lost. You move it into the recipe or discard it.
 
 ### Optional: "Tidy up with AI"
 
-- A button in the editor sends the original (the photo, or the text read from a page or PDF) to a **vision model on Workers AI**, through the Worker, and gets back a draft in the recipe format, including groups, `uses`, waits and cues, and suggested tags from `recipes/vocabulary.json`.
+- A button in the editor sends the original (the photo, or the text read from a page or PDF) to a **vision model on Workers AI**, through the Worker, and gets back a draft in the recipe format, including groups, `uses`, waits and cues, and suggested tags from `recipes/vocabulary.json`. It may also suggest lineup data and added prep steps; like amounts, every suggestion is marked for checking.
 - It runs on Jacob's Cloudflare account, so nobody else connects to any AI. Rough estimate from Cloudflare's listed prices: well under a cent per recipe, so dozens of imports a day fit in the free daily allowance. Measure it with a real recipe before relying on that.
 - **It's never required.** If it fails, or the day's free allowance is used up, the editor says so and you keep the rule-based draft.
 - **It must not slip in changes unseen.** Wherever the AI's draft differs from what OCR or the page actually said, especially amounts, the editor marks it for checking against the original. The AI draft is also run through the same checks as everything else.
@@ -148,10 +150,21 @@ The rules that turn plain text into a draft:
 - The recipe's file name (its slug) is made from the title when it's first saved, using lowercase letters, numbers and dashes as the README says. Editing the title later **doesn't rename the file**, so links and saved progress keep working (Claude's call).
 - The editor keeps an unsaved draft in the browser, so a reload or an accidental back doesn't lose work.
 
+## Lineup data
+
+The lineup (meal planner, `docs/specs/meal-planner-design.md`, being built on the `lineup-recipe-data` branch) adds optional fields that the editor has to handle. Their meaning and checks are in that spec and the README's "Planning a lineup"; this section is only about editing them.
+
+- **In Details, per step:** `hands` (a time), `watch` (only offered when the step has a `wait`), the oven (a setting the step needs, or a `preheat`), burner, grill and microwave, `prep` (ahead or "just before"), and `holds` (one per recipe, so choosing it on one step clears it from another). A step that mentions equipment but doesn't use it can say so (`false`), which clears the checker's warning.
+- **In Details, for the recipe:** `serve` (hot, soon or keeps) and `sits`, with the fallback shown when they're blank ("Cooking dishes are hot, 10 min unless you say").
+- **On each ingredient:** "Made by another recipe", a picker of the site's recipes (never typed, so a link can't point nowhere), then `optional` and `alreadyMade` (only offered for a required, linked ingredient).
+- **Added prep steps** (`prep` and `prepOnly`): the editor has "Add a prep step", for prep hidden in ingredient lines ("Mince the garlic"). They show in the preview only in prep-first order, so the preview has a switch between "as written" and "prep first", like the lineup's.
+- **The checker's warnings** (equipment mentioned but not set, "optional" in the text but not marked, a linked ingredient no step uses) appear as a short to-do list with the step they're about. They don't block Save, as they don't block the build.
+- These fields don't need to be filled in before saving. Every one has a fallback, so a recipe saved without them still gets a rough plan.
+
 ## Saving
 
 - **Save publishes straight to the live site.** No pull request, no draft.
-- Before anything is sent, the editor runs **the same checks as `scripts/build-index.mjs`**: required fields, allowed categories and tags, and `uses` that match exactly one ingredient. Errors show in place on the preview, and Save stays off until they're fixed. The checks must live in one shared module used by both the build script and the editor (the way `assets/recipe-icons.js` is already shared), so the two can never disagree.
+- Before anything is sent, the editor runs **the same checks as `scripts/build-index.mjs`**: required fields, allowed categories and tags, `uses` that match exactly one ingredient, the lineup's planning fields, and links to recipes that exist and don't loop. Errors show in place on the preview, and Save stays off until they're fixed. The checks must live in one shared module used by both the build script and the editor (the way `assets/recipe-icons.js` is already shared), so the two can never disagree.
 - The editor rebuilds `recipes/index.json` the same way the build script does, then commits **the recipe file and the index in one commit** to `main` through GitHub's API, with the signed-in user's GitHub token. Whether the browser makes that call itself or the Worker makes it on the browser's behalf is the builder's call; the Worker keeping the token is safer.
 - The commit message names the recipe ("Add Brown Butter Cookies", "Edit Carne Asada").
 - The commit is made against the version the editor started from. If `main` has moved and the change touches the same recipe, the save stops with a message instead of overwriting. If only other recipes changed, the editor rebuilds the index from the new version and commits (the builder's call how far to take this).
@@ -161,6 +174,7 @@ The rules that turn plain text into a draft:
 ## Deleting
 
 - Edit existing has a **Delete** button. It asks you to **type the recipe's name to confirm**, then commits the removal of the recipe file, with the rebuilt index, in one commit.
+- **A recipe another recipe links to can't be deleted.** The Delete button says which recipes use it ("Hasselback Potatoes uses this for its garlic paste") and stays off until those links are removed.
 - Git history still has the recipe, so a mistaken delete can be recovered from the repo.
 
 ## Originals
@@ -171,7 +185,7 @@ The rules that turn plain text into a draft:
 
 ## Order of work
 
-The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Work that needs no accounts (the shared checker, the editor without saving, the text rules) starts while the accounts are set up.
+The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Sign-in doesn't depend on the lineup, so it can go first. The editor's code waits until the lineup's recipe data and checker are merged into `main`, since both change `scripts/build-index.mjs`, every recipe file and the recipe pages.
 
 1. Set up Cloudflare: the Worker and D1 with Better Auth's tables. Jacob creates the account, GitHub App and keys.
 2. Sign-in end to end, tried on an iPhone first (see "Sign-in across sites"), since the rest depends on it.
@@ -181,7 +195,7 @@ The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Work th
 ## Accessibility
 
 - Everything in the editor works by keyboard and screen reader, not only by tapping. Edit-in-place parts are real buttons or fields with labels, not just tappable text.
-- The accessibility scan (`tests/e2e/accessibility.spec.mjs`) gets the new pages and states added to `PAGES`: the import screen, the editor with a recipe, the editor showing check errors, Details open, AI changes marked for checking, the delete confirmation, and a recipe page signed in (with Edit), in light and dark mode. Colour problems the scan finds are shown to Jacob before any colour is changed.
+- The accessibility scan (`tests/e2e/accessibility.spec.mjs`) gets the new pages and states added to `PAGES`: the import screen, the editor with a recipe, the editor showing check errors, Details open (with the lineup fields), the to-do list of warnings, the prep-first preview, AI changes marked for checking, the delete confirmation, and a recipe page signed in (with Edit), in light and dark mode. Colour problems the scan finds are shown to Jacob before any colour is changed.
 
 ## Constraints
 
@@ -221,3 +235,6 @@ The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Work th
 - The editor loosens the CSP on its own pages only.
 - The AI step is skipped by default for websites with structured recipe data.
 - `source-pdfs/` is left alone now that originals aren't kept.
+- The importer leaves lineup data blank rather than guessing it, and the checker's warnings become the editor's to-do list.
+- A recipe another recipe links to can't be deleted until the links are removed.
+- Linked recipes are picked from a list, never typed.
