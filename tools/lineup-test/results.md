@@ -110,3 +110,11 @@ Limits: one tester per presentation per meal, all dry runs. Confidence was 2 for
 - The step-by-step views left out each step's "done when" cue, which cook mode shows. The complaint that steps drop the cards' cues is about the test views, not the design.
 - Clock times and a target serving time were left out on purpose: Jacob decided against clock times in the lineup.
 - Checked after the run: the plan doesn't broil while the potatoes bake. Their timer ends at the minute the broil switch is planned, but no step says to take them out, so it reads as a clash. The asparagus problem is real: it finishes roasting about 17 minutes before it's pulled, because "Pull the pan" shares a step with switching to broil, which waits for the oven.
+
+## Fixed since the run
+
+- **Planner:** each step that starts cooking a hot dish is held back, not only its first (the asparagus now waits about 3 minutes out of the oven for the broiler, not 17 in it); and while food on a burner is nearly ready, nothing from another dish starts that would run past it (the curd's juice is tempered as soon as it simmers). `assets/planner.mjs`, spec rules 4 and 5.
+- **Recipes:** the pavlova's egg-white warm-up (about 30 min), refrigerating the yolks, and a last step moving the shell to an airtight container; the hasselback "brush on half, keep half", warming the reserve, taking the potatoes out, and chopping the parsley at the end; the asparagus timer (8 to 12 min), pulling the pan when roasted, and seasoning just before roasting; the syrup's cooling time (about 10 min, an estimate); the curd's damp towel; the ribeye's thermometer; "and eat" off the applesauce.
+- **Not a problem after all:** the ribeye's skillet is on its card (the "pan" field), which the test cards didn't print.
+- **Left for later, as the design already says:** scaling recipes to one meal (the garlic paste, servings), a combined shopping list (1½ lemons, about 10 garlic cloves), sharing equipment between recipes (one strainer), and the pavlova's topping fruit amount ("to taste" on its card).
+- **Not yet re-tested.** The next run should show step by step with done-when cues against step by step with phase headings, with testers told to follow the screen literally.
