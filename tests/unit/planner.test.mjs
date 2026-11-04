@@ -504,6 +504,16 @@ describe("what the plan doesn't know", () => {
     assert.deepEqual(planLineup({ dishes: [{ slug: "pie" }] }, { pie }).unknown, []);
   });
 
+  test("a step in the oven with no time is reported, and so is a rise worded another way", () => {
+    const r = recipe("Pavlova", [
+      ["Put it in the oven and turn the heat down to 200F.", { hands: "1 min", oven: "200F" }],
+      ["Stir the garlic over medium heat until fragrant.", { hands: "1 min", burner: true }],
+      ["Set aside in a warm spot until it's expanded.", { hands: "1 min" }],
+      ["Lay the steak in the hot pan.", { hands: "1 min", burner: true }],
+    ], { category: "baking" });
+    assert.deepEqual(planLineup({ dishes: [{ slug: "a" }] }, { a: r }).unknown.map((u) => u.step), [0, 2]);
+  });
+
   test("words that only look like waits aren't reported", () => {
     const steps = [
       "Whisk the flour, baking soda and baking powder.", "Line a rimmed baking sheet with parchment.",
@@ -513,6 +523,7 @@ describe("what the plan doesn't know", () => {
       "During the second rise, heat the oven to 350F.",
     ].map((t) => [t, { hands: "1 min" }]);
     steps.push(["Soften the butter and let it cool", { hands: "1 min", prep: true }]);
+    steps.push(["Poke holes in the warm crust. Leave the oven on.", { hands: "1 min", oven: "350F" }]);
     assert.deepEqual(planLineup({ dishes: [{ slug: "a" }] }, { a: recipe("A", steps, { category: "baking" }) }).unknown, []);
   });
 

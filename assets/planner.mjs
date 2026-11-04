@@ -434,11 +434,11 @@ const MAKE_AHEAD_SAVES = 30;
 // so the plan comes out short; a dish with no serving time is planned on an
 // assumption. Components, baking and cocktails have safe defaults, so they
 // aren't reported.
-const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight))\b/i;
+const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight)|set (?:it |them )?aside (?:in|somewhere|until)|until (?:it's |they're |it has |they have )?(?:doubled|expanded|puffy|risen))\b/i;
 // Not waits: work done while something else waits, warnings ("Don't let them
 // soak"), keeping it for later ("refrigerate up to 24 hours"), a glass chilled
-// while you mix.
-const NOT_A_WAIT = /^(?:while|meanwhile|as|once|when|after|before|during|don't|do not|never|use (?:it )?(?:right away|immediately))\b|\bwhile you\b|\bup to \d|\buntil (?:serving|needed|you're ready|ready to)\b|\bchill (?:the |a |your )?(?:glass|glasses|coupe|mug|cup)/i;
+// while you mix, the oven left on for later.
+const NOT_A_WAIT = /^(?:while|meanwhile|as|once|when|after|before|during|don't|do not|never|use (?:it )?(?:right away|immediately))\b|\bwhile you\b|\bup to \d|\buntil (?:serving|needed|you're ready|ready to)\b|\bchill (?:the |a |your )?(?:glass|glasses|coupe|mug|cup)|\b(?:leave|keep) the oven on\b/i;
 const TIME_IN = /\b\d+(?:\s+\d+\/\d+)?\s*(?:(?:to|-|–)\s*\d+(?:\s+\d+\/\d+)?\s*)?(?:sec|seconds?|min|minutes?|hrs?|hours?)\b|\bovernight\b/i;
 function unknownsOf(slugs, recipes) {
   const unknown = [];
@@ -447,7 +447,10 @@ function unknownsOf(slugs, recipes) {
     for (const s of stepsOf(r)) {
       // Prep's waits (butter softening) aren't what makes a plan short.
       if (s.wait || s.during || s.prep || s.prepOnly) continue;
-      const waiting = s.do.split(/(?<=[.!?])\s+/).find((x) => !NOT_A_WAIT.test(x) && WAITS.test(x));
+      // A step in the oven always takes time. (Not one on the stove: stirring
+      // "until fragrant" is hands-on time the step already counts.)
+      const cooking = s.oven && s.oven !== "off" && !NOT_A_WAIT.test(s.do);
+      const waiting = s.do.split(/(?<=[.!?])\s+/).find((x) => !NOT_A_WAIT.test(x) && WAITS.test(x)) || (cooking && s.do);
       if (!waiting) continue;
       const time = TIME_IN.exec(waiting);
       unknown.push({ kind: "wait", slug, step: s.n, text: s.do, ...(time && { suggest: time[0] }) });
