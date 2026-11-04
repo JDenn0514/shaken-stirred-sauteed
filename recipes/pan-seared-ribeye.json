@@ -4,22 +4,54 @@
   "kind": "dish",
   "description": "One ribeye seared hard in a smoking skillet, then basted in butter, garlic and herbs.",
   "tags": {
-    "course": ["protein"],
-    "cuisine": ["american"],
-    "method": ["saute"],
-    "flavor": ["rich"],
-    "ingredients": ["beef", "butter", "garlic", "fresh-herbs"],
-    "occasion": ["weeknight", "entertaining"],
-    "season": ["year-round"],
-    "diet": ["gluten-free"]
+    "course": [
+      "protein"
+    ],
+    "cuisine": [
+      "american"
+    ],
+    "method": [
+      "saute"
+    ],
+    "flavor": [
+      "rich"
+    ],
+    "ingredients": [
+      "beef",
+      "butter",
+      "garlic",
+      "fresh-herbs"
+    ],
+    "occasion": [
+      "weeknight",
+      "entertaining"
+    ],
+    "season": [
+      "year-round"
+    ],
+    "diet": [
+      "gluten-free"
+    ]
   },
   "added": "2026-11-03",
   "yield": "Serves 1",
   "times": [
-    ["Sit out", "30 min"],
-    ["Prep", "5 min"],
-    ["Cook", "8 min"],
-    ["Rest", "5 to 10 min"]
+    [
+      "Sit out",
+      "30 min"
+    ],
+    [
+      "Prep",
+      "5 min"
+    ],
+    [
+      "Cook",
+      "8 min"
+    ],
+    [
+      "Rest",
+      "5 to 10 min"
+    ]
   ],
   "serve": "hot",
   "sits": "5 min",
@@ -33,7 +65,8 @@
   "ingredients": [
     {
       "qty": "12 oz",
-      "item": "Ribeye steak"
+      "item": "Ribeye steak",
+      "note": "1 to 1 1/2 in (2.5 to 4 cm) thick"
     },
     {
       "qty": "2 tbsp",
@@ -64,43 +97,66 @@
     {
       "do": "Take the steak out of the fridge 30 minutes before cooking so it cooks evenly instead of staying raw in the center.",
       "wait": "30 min",
-      "uses": ["Ribeye steak"],
+      "uses": [
+        "Ribeye steak"
+      ],
       "hands": "30 sec",
       "prep": "just before"
     },
     {
-      "do": "Heat the oil in the skillet over medium-high heat until it just starts to smoke. A pan that isn't hot enough won't give you a golden crust.",
+      "do": "Heat the oil in the skillet over medium-high heat until it just starts to smoke, about 3 minutes. A pan that isn't hot enough won't give you a golden crust.",
       "cue": "Oil just starting to smoke",
-      "uses": ["Cooking oil"],
-      "hands": "3 min",
-      "burner": true
+      "uses": [
+        "Cooking oil"
+      ],
+      "hands": "30 sec",
+      "burner": true,
+      "wait": "About 3 min"
     },
     {
-      "do": "Pat the steak dry and season the top side right before it goes in. Salted any earlier, it draws out moisture and won't sear.",
-      "uses": [{ "item": "Steak seasoning", "amount": "half" }],
+      "do": "While it heats, pat the steak dry and season the top side. Salted any earlier, it draws out moisture and won't sear.",
+      "uses": [
+        {
+          "item": "Steak seasoning",
+          "amount": "half"
+        }
+      ],
       "hands": "1 min",
-      "burner": true,
-      "prep": "just before"
+      "prep": "just before",
+      "during": true
     },
     {
       "do": "Lay it in seasoned side down, season the new top side, and cook without moving it: 3 to 4 minutes for a 1 in (2.5 cm) steak, 5 minutes for 1 1/2 in (4 cm).",
       "wait": "3 to 5 min, undisturbed",
-      "uses": [{ "item": "Steak seasoning", "amount": "the rest" }],
+      "uses": [
+        {
+          "item": "Steak seasoning",
+          "amount": "the rest"
+        }
+      ],
       "hands": "30 sec",
       "watch": true,
       "burner": true
     },
     {
-      "do": "Peel the garlic cloves, if using, and leave them whole.",
+      "do": "Peel the garlic cloves, if using, and leave them whole. Strip the herb sprigs from any tough stems, and set out the butter.",
       "hands": "1 min",
       "prep": true,
       "prepOnly": true,
-      "uses": ["Garlic"]
+      "uses": [
+        "Garlic",
+        "Fresh herbs",
+        "Butter"
+      ]
     },
     {
       "do": "Turn it, add the butter, herbs and garlic, and keep spooning the melted butter over the steak as it finishes. Pull it at 130F (54C) inside for medium-rare; it climbs about 5F more as it rests.",
       "cue": "130F (54C) inside for medium-rare",
-      "uses": ["Butter", "Fresh herbs", "Garlic"],
+      "uses": [
+        "Butter",
+        "Fresh herbs",
+        "Garlic"
+      ],
       "hands": "4 min",
       "burner": true
     },

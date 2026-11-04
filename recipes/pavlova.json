@@ -4,13 +4,33 @@
   "kind": "dish",
   "description": "Crisp meringue shell with a soft center, dried low and slow.",
   "tags": {
-    "type": ["cakes"],
-    "flavor": ["sweet", "light", "fruity"],
-    "usesUp": ["egg-whites"],
-    "ingredients": ["berries", "eggs", "cream"],
-    "occasion": ["entertaining", "make-ahead"],
-    "season": ["summer"],
-    "diet": ["vegetarian", "gluten-free"]
+    "type": [
+      "cakes"
+    ],
+    "flavor": [
+      "sweet",
+      "light",
+      "fruity"
+    ],
+    "usesUp": [
+      "egg-whites"
+    ],
+    "ingredients": [
+      "berries",
+      "eggs",
+      "cream"
+    ],
+    "occasion": [
+      "entertaining",
+      "make-ahead"
+    ],
+    "season": [
+      "summer"
+    ],
+    "diet": [
+      "vegetarian",
+      "gluten-free"
+    ]
   },
   "added": "2026-09-27",
   "yield": "Serves 8–10",
@@ -21,13 +41,13 @@
     ],
     [
       "Total",
-      "4 hr"
+      "About 4 hr 30 min"
     ]
   ],
   "serve": "soon",
   "sits": "15 min",
   "time": {
-    "total": 240
+    "total": 270
   },
   "pan": "Baking sheet (8–9 in round)",
   "heat": "350°F → 200°F",
@@ -83,7 +103,7 @@
           "optional": true
         },
         {
-          "qty": "to taste",
+          "qty": "2 cups",
           "item": "Fresh berries or fruit"
         }
       ]
@@ -163,7 +183,7 @@
           "hands": "4 min"
         },
         {
-          "do": "Put it in the oven and immediately turn the heat down to 200°F. Rotate once if spots start browning; otherwise keep the door shut.",
+          "do": "Put it in the oven and immediately turn the heat down to 200°F. Keep the door shut; look through the window, and if spots start browning, rotate it once.",
           "wait": "~90 min",
           "cue": "Firm and dry to the touch, and still pale",
           "hands": "30 sec",
@@ -186,7 +206,16 @@
       "group": "Finish",
       "items": [
         {
-          "do": "Right before serving, pile on whipped cream, curd, and fruit. Slice and serve.",
+          "do": "Rinse the fruit and pat it dry; hull and halve any strawberries.",
+          "uses": [
+            "Fresh berries or fruit"
+          ],
+          "hands": "5 min",
+          "prep": true,
+          "prepOnly": true
+        },
+        {
+          "do": "Right before serving, take the shell out of its container and set it on a serving plate. Pile on the whipped cream, curd and fruit, then slice and serve.",
           "uses": [
             "Whipped cream",
             "Lemon curd",

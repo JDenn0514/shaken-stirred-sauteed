@@ -236,6 +236,20 @@ describe("a dish that keeps part-way", () => {
     ], { category: "baking", serve: "soon", sits: "15 min" }),
   };
 
+  test("prep for the part after it keeps is done on the day, not ahead", () => {
+    const pavlova = recipe("Pavlova", [
+      ["Whip and shape the meringue", { hands: "15 min" }],
+      ["Bake the meringue", { hands: "0.5 min", wait: "90 min", oven: "200F" }],
+      ["Cool it in the oven with the door shut", { hands: "0.5 min", wait: "120 min", oven: "off", holds: true }],
+      ["Rinse the fruit", { hands: "5 min", prep: true, prepOnly: true }],
+      ["Pile on the cream and fruit", { hands: "4 min" }],
+    ], { category: "baking", serve: "soon", sits: "15 min" });
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] }, { ...recipes, pavlova });
+    assert.ok(plan.aheadOfTime, "the meringue is made ahead");
+    assert.ok(!plan.aheadOfTime.steps.some((s) => s.text === "Rinse the fruit"), "the fruit was rinsed the day before");
+    assert.ok(plan.steps.some((s) => s.text === "Rinse the fruit"));
+  });
+
   test("once a cooled meringue keeps, only putting it together is tied to dessert", () => {
     // All on the same day, rather than the meringue made ahead.
     const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "pavlova" }], ahead: { pavlova: false } }, recipes);
@@ -584,6 +598,51 @@ describe("food that's cooking isn't left waiting", () => {
     const simmered = at(plan, "Simmer the juice") + 0.5 + 3;
     assert.ok(at(plan, "Temper the eggs with the hot juice") - simmered <= 0.5,
       `the juice was ready at ${simmered} but tempered at ${at(plan, "Temper the eggs with the hot juice")}`);
+  });
+});
+
+describe("food on the heat with no timer", () => {
+  test("a pot kept at a simmer until something happens comes off before other work", () => {
+    const plan = planLineup({ dishes: [{ slug: "syrup" }, { slug: "curd" }], ahead: { curd: false } }, {
+      syrup: recipe("Syrup", [
+        ["Bring the berries to a simmer", { hands: "3 min", burner: true }],
+        ["Keep it at a simmer until the sugar dissolves", { hands: "8 min", burner: true }],
+        ["Strain the syrup", { hands: "3 min" }],
+        ["Chill the syrup", { hands: "1 min", wait: "20 min" }],
+      ], { serve: "keeps" }),
+      curd: recipe("Curd", [
+        ["Rub the zest into the sugar and leave it", { hands: "1 min", wait: "10 min" }],
+        ["Simmer the juice", { hands: "30 sec", wait: "3 min", burner: true }],
+        ["Temper the eggs with the hot juice", { hands: "2 min" }],
+        ["Cook the curd, whisking", { hands: "0.5 min", wait: "6 min", watch: true, burner: true }],
+        ["Chill the curd", { hands: "1 min", wait: "120 min" }],
+      ], { serve: "keeps" }),
+    });
+    const at = (text) => plan.steps.find((s) => s.text === text).at;
+    const off = at("Keep it at a simmer until the sugar dissolves") + 8;
+    assert.equal(at("Strain the syrup"), off, `the syrup was done at ${off} but strained at ${at("Strain the syrup")}, after the juice went on at ${at("Simmer the juice")}`);
+  });
+});
+
+describe("food in the oven with a step that takes it out", () => {
+  test("it comes out when its timer ends, before other work", () => {
+    const plan = planLineup({ dishes: [{ slug: "asparagus" }, { slug: "salad" }] }, {
+      asparagus: recipe("Asparagus", [
+        ["Roast the asparagus", { hands: "0.5 min", wait: "10 min", oven: "200C" }],
+        ["Take the pan out of the oven", { hands: "0.5 min", oven: false }],
+        ["Squeeze lemon over it", { hands: "1 min" }],
+      ], { serve: "keeps" }),
+      salad: recipe("Salad", [
+        ["Wash the greens", { hands: "8 min" }],
+        ["Dry the greens", { hands: "8 min" }],
+        ["Chop the vegetables", { hands: "8 min" }],
+        ["Slice the radishes", { hands: "8 min" }],
+        ["Dress the salad", { hands: "1 min" }],
+      ], { serve: "keeps" }),
+    });
+    const at = (text) => plan.steps.find((s) => s.text === text).at;
+    const done = at("Roast the asparagus") + 10.5;
+    assert.ok(at("Take the pan out of the oven") - done <= 0.5, `the asparagus was done at ${done} but came out at ${at("Take the pan out of the oven")}`);
   });
 });
 

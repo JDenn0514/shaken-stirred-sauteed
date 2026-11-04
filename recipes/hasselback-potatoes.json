@@ -6,21 +6,41 @@
   "description": "Fanned potatoes basted twice in garlic butter — crisp edges, soft centre.",
   "origin": "Sweden",
   "tags": {
-    "course": ["side"],
-    "cuisine": ["nordic"],
-    "method": ["roast-bake"],
-    "flavor": ["rich"],
-    "ingredients": ["potato", "garlic", "butter"],
-    "occasion": ["entertaining", "holiday"],
-    "season": ["year-round"],
-    "diet": ["vegetarian", "gluten-free"]
+    "course": [
+      "side"
+    ],
+    "cuisine": [
+      "nordic"
+    ],
+    "method": [
+      "roast-bake"
+    ],
+    "flavor": [
+      "rich"
+    ],
+    "ingredients": [
+      "potato",
+      "garlic",
+      "butter"
+    ],
+    "occasion": [
+      "entertaining",
+      "holiday"
+    ],
+    "season": [
+      "year-round"
+    ],
+    "diet": [
+      "vegetarian",
+      "gluten-free"
+    ]
   },
   "added": "2026-08-29",
   "yield": "Serves 4",
   "times": [
     [
       "Prep",
-      "15 min"
+      "25 min"
     ],
     [
       "Bake",
@@ -90,7 +110,7 @@
       ]
     },
     {
-      "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl. Hold back roughly half for later.",
+      "do": "Stir the oil, melted butter, garlic paste, salt and pepper together in a small bowl, going easy on the salt (the garlic paste is salted). Hold back roughly half for later.",
       "uses": [
         "vegetable oil",
         "salted butter, melted",
@@ -113,11 +133,16 @@
       "oven": "200C"
     },
     {
-      "do": "Take the potatoes out of the oven, chop the parsley and scatter it over, and serve hot.",
+      "do": "Meanwhile, chop the parsley.",
       "uses": [
         "Chopped parsley, to finish"
       ],
       "hands": "2 min",
+      "during": true
+    },
+    {
+      "do": "Take the potatoes out of the oven, scatter the parsley over, and serve hot.",
+      "hands": "1 min",
       "oven": false
     }
   ],
