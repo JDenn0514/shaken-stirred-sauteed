@@ -125,7 +125,8 @@ function check(plan, lineup, isDay) {
   for (const list of Object.values(bySlug)) list.forEach((s, i) => {
     if (!s.st.burner || !s.wait || s.st.watch || s.end == null || s.st.during) return;
     const next = list.slice(i + 1).find((x) => !x.st.during);
-    if (next && next.at - s.end > 2) report("left on the heat", lineup, `"${s.text.slice(0, 40)}" ready at ${s.end}, next step at ${next.at}`);
+    const last = next && next === list.at(-1);
+    if (next && next.at - s.end > 2) report("left on the heat", lineup, `"${s.text.slice(0, 40)}" ready at ${s.end}, next step at ${next.at}${last ? " (its last step, serving)" : ""}: "${next.text.slice(0, 40)}"`);
   });
   if (!isDay) return;
   // 7. Hot dishes ready within their sitting time of their course.
@@ -164,5 +165,5 @@ if (!kinds.length) console.log("Nothing found.");
 for (const [kind, list] of kinds) {
   const lineups = new Set(list.map((x) => x.split(": ")[0]));
   console.log(`\n${kind}: ${list.length} times, in ${lineups.size} lineups. For example:`);
-  for (const x of list.slice(0, 4)) console.log(`  ${x}`);
+  for (const x of process.argv.includes("--all") ? list : list.slice(0, 4)) console.log(`  ${x}`);
 }
