@@ -96,12 +96,17 @@
       "during": true
     },
     {
-      "do": "Bring the juice to a simmer in the saucepan over medium heat, about 3 minutes. While it heats, whisk the eggs, yolks and salt into the zest-sugar until smooth. Whole eggs plus yolks gives richness without the heavy, eggy thickness of an all-yolk curd.",
+      "do": "Bring the juice to a simmer in the saucepan over medium heat, about 3 minutes.",
       "wait": "About 3 min",
-      "uses": ["Fresh lemon juice", "Large eggs", "Large egg yolks", "Diamond Crystal kosher salt"],
-      "hands": "1 min",
-      "watch": true,
+      "uses": ["Fresh lemon juice"],
+      "hands": "30 sec",
       "burner": true
+    },
+    {
+      "do": "While it heats, whisk the eggs, yolks and salt into the zest-sugar until smooth. Whole eggs plus yolks gives richness without the heavy, eggy thickness of an all-yolk curd.",
+      "uses": ["Large eggs", "Large egg yolks", "Diamond Crystal kosher salt"],
+      "hands": "2 min",
+      "during": true
     },
     {
       "do": "Temper by drizzling the hot juice slowly into the egg mixture, whisking constantly, so the eggs warm gradually instead of scrambling.",
