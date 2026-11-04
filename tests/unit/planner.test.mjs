@@ -487,6 +487,26 @@ describe("nested recipes", () => {
     assert.equal(plan.minutes, 58);
   });
 
+  test("one that's also in the lineup is made once, before the step that uses it", () => {
+    for (const order of [["potatoes", "garlic-paste"], ["garlic-paste", "potatoes"]]) {
+      const plan = planLineup({ dishes: order.map((slug) => ({ slug })) }, recipes);
+      assert.equal(plan.steps.filter((s) => s.text === "Chop the garlic").length, 1, `made twice, listed as ${order.join(", ")}`);
+      assert.ok(at(plan, "Muddle to a paste") + 5 <= at(plan, "Mix the garlic butter"));
+    }
+  });
+
+  test("one that's also in the lineup can be made ahead, and then isn't made on the day", () => {
+    const soup = {
+      soup: recipe("Soup", [["Simmer the broth", { hands: "2 min", wait: "20 min", burner: true }], ["Add the pasta and cook", { hands: "1 min", wait: "8 min", burner: true, uses: ["Pasta"] }]],
+        { serve: "hot", ingredients: [{ item: "Pasta", recipe: "pasta" }] }),
+      pasta: recipe("Pasta", [["Knead the dough", { hands: "10 min" }], ["Cut and dry the beads", { hands: "20 min", wait: "8 hr" }]], { kind: "component", serve: "keeps" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "soup" }, { slug: "pasta" }] }, soup);
+    assert.deepEqual(plan.makeAhead.map((m) => m.slug), ["pasta"]);
+    assert.equal(plan.steps.filter((s) => s.slug === "pasta").length, 0, "the pasta was made on the day too");
+    assert.ok(plan.minutes < 60, `the day takes ${plan.minutes} min`);
+  });
+
   test("one marked already made isn't made, and its dish uses it as usual", () => {
     const plan = planLineup({ dishes: [{ slug: "potatoes", made: ["garlic-paste"] }] }, recipes);
     assert.equal(at(plan, "Chop the garlic"), undefined);

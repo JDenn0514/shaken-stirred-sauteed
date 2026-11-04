@@ -101,8 +101,13 @@ const heldFrom = (steps, from) => {
 function chains(lineup, recipes, parts = {}) {
   const dishes = [];
   const add = (slug, made, course, parent = null) => {
+    // A recipe is made once, even when it's both a dish in the lineup and
+    // another dish's nested recipe: the dish that uses it waits for that one.
+    const already = dishes.find((d) => d.slug === slug);
+    if (already) { if (parent) already.neededBy.push(parent); return; }
+    // Made ahead entirely, it isn't made on the day, even as a nested recipe.
+    if (parts[slug] === "skip") return;
     const part = parent ? null : parts[slug];
-    if (part === "skip") return;
     const r = recipes[slug];
     // Prep that can be done ahead comes before the dish's first step that isn't
     // prep; "just before" prep stays where the recipe has it. A dish that keeps

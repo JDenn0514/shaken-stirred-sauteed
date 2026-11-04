@@ -95,6 +95,7 @@ One kind of link does all of this: **an ingredient can point to the recipe that 
 
 - **The planner connects them by itself.** A pavlova's last step uses its "Lemon curd" ingredient, so a lemon curd recipe in the same lineup is planned to be ready before that step. If it isn't in the lineup, the step still says "pile on the cream, curd and berries", which covers curd you already have. Nothing asks "is this for the pavlova?".
 - **If two dishes in a lineup both use it,** a connected recipe is made once and is ready before the first step that needs it.
+- **A nested recipe that's also in the lineup as a dish of its own** (homemade acini di pepe added beside the wedding soup) is made once, too, and can be made ahead like any dish; made ahead, it isn't made again on the day for the dish that uses it.
 - **Already made** keeps a nested recipe listed under its dish, because it still goes in: the parent's step that uses it is unchanged. Only that recipe's own steps are left out.
 - **Nesting goes deeper:** blueberry syrup sits under blueberry whipped cream, which may itself be connected to a pavlova. A recipe whose required ingredients are its parts (meringue, curd, cream, fruit) shows all of them nested under it.
 - **A component can be a dish on its own.** Lemon curd can go in a lineup with nothing to go into.
