@@ -7,11 +7,12 @@ import { createRequire } from "node:module";
 
 const SKIP_DIRS = new Set([".git", "node_modules", "test-results", "playwright-report"]);
 
-// Every file under the current folder, as paths relative to it.
+// Every file under the current folder, as paths relative to it. The paths use
+// "/" on every system (not "\" on Windows), so reports and matches are the same.
 function* walk(dir = ".") {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (SKIP_DIRS.has(e.name)) continue;
-    const path = dir === "." ? e.name : join(dir, e.name);
+    const path = dir === "." ? e.name : `${dir}/${e.name}`;
     if (e.isDirectory()) yield* walk(path);
     else yield path;
   }
@@ -43,7 +44,7 @@ for (const file of walk()) {
     // Recipe photos are shown by the pages in the top folder.
     const { image } = JSON.parse(readFileSync(file, "utf8"));
     if (image) check(file, image, ".");
-  } else if (file === join("assets", "recipe-icons.js")) {
+  } else if (file === "assets/recipe-icons.js") {
     // The drawings are picked by name in code, so no page links to them directly.
     for (const key of createRequire(import.meta.url)(resolve(file)).KEYS) check(file, `icons/${key}.svg`);
   }
