@@ -409,12 +409,18 @@ function planFor(dishes, serve, progress) {
 // The earliest serve time one cook can get everything ready for.
 function search(dishes, progress = {}) {
   const shortest = Math.max(progress.now || 0, ...dishes.map((d) => -latestStarts(d, 0)[0] || 0));
-  let plan;
+  // If no serve time gets every dish there in time, the plan that has
+  // everything ready soonest wins, rather than the last one tried.
+  // A minute a hot dish sits past its limit counts as much as a minute more
+  // on the meal.
+  const cost = (p) => p.end + dishes.reduce((a, d) => a + Math.max(0, p.end - p.ready[d.slug] - d.sits), 0);
+  let best = null;
   for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
-    plan = planFor(dishes, serve, progress);
+    const plan = planFor(dishes, serve, progress);
     if (!Object.keys(plan.late).length) return { steps: plan.steps, minutes: serve, ready: plan.ready, courses: plan.courses };
+    if (!best || cost(plan) < cost(best)) best = plan;
   }
-  return { steps: plan.steps, minutes: plan.end, ready: plan.ready, courses: plan.courses };
+  return { steps: best.steps, minutes: best.end, ready: best.ready, courses: best.courses };
 }
 
 // Plan the lineup. A dish that keeps, entirely or after a `holds` step, can

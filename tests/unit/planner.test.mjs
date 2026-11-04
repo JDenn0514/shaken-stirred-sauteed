@@ -108,6 +108,18 @@ describe("the oven", () => {
     assert.ok(plan.minutes - plan.ready.potatoes <= 10, `the potatoes sat ${plan.minutes - plan.ready.potatoes} min`);
   });
 
+  // Not yet as soon as it could: this plans 126 min where roasting, then
+  // baking the meringue, takes about 80. The hold-back rules fight when two hot
+  // dishes can't both be fresh (see the design doc, planner rule 8).
+  test("when no order gets every hot dish there in time, it doesn't wait out the day", () => {
+    const recipes = {
+      roast: recipe("Roast", [["Roast it", { hands: "2 min", wait: "30 min", oven: "200C" }]], { serve: "hot", sits: "2 min" }),
+      meringue: recipe("Meringue", [["Bake the meringue", { hands: "2 min", wait: "30 min", oven: "120C" }]], { serve: "hot", sits: "2 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "roast" }, { slug: "meringue" }] }, recipes);
+    assert.ok(plan.minutes <= 180, `served at ${plan.minutes} min`);
+  });
+
   test("dishes share the oven at the same setting, 200C and 400F included", () => {
     const recipes = {
       potatoes: recipe("Potatoes", [
