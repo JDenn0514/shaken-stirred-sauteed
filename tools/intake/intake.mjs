@@ -9,6 +9,7 @@
 // the recipes that make them. See tools/intake/README.md.
 import { parseRecipeText, parseIngredient } from "./parse.mjs";
 import { restructure } from "../restructure/restructure.mjs";
+import { planLineup } from "../../assets/planner.mjs";
 
 const CATEGORIES = ["baking", "cooking", "cocktails"];
 
@@ -48,6 +49,11 @@ export function planningChecks(recipe) {
   if (keeps && last && !steps.some(stores)) {
     flags.push({ kind: "storage", text: last, why: "the recipe says it keeps, but no step says how to store it: add one, so a make-ahead plan can end there" });
   }
+  // "Uncover away from your face" when no step says to cover it.
+  const UNCOVER = /\buncover(?!ed)/i; // "leave it uncovered" is a state, not a step
+  if ([...steps, ...notes].some((t) => UNCOVER.test(t)) && !steps.some((t) => /\bcover/i.test(t.replace(/\buncover\w*/gi, "")))) {
+    flags.push({ kind: "cover", text: [...notes, ...steps].find((t) => UNCOVER.test(t)), why: "it says to uncover the dish, but no step says to cover it: add that to the step that needs it" });
+  }
   for (const i of flatList(recipe.ingredients)) {
     if (typeof i !== "object" || i.grams || i.ml || /\d|[½⅓⅔¼¾⅛]|^(pinch|dash|handful)/i.test(i.qty || "")) continue;
     if (/^(?:juice|zest) of\b|^pinch\b|\d|[½⅓⅔¼¾⅛]/i.test(i.item)) continue; // "Juice of ½ lemon"
@@ -57,12 +63,35 @@ export function planningChecks(recipe) {
   return flags;
 }
 
+// A stated total shorter than the steps add up to, as the lineup plans them
+// (the source's "41 min" curd leaving out an hour in the fridge). Needs the
+// waits, so it runs on the restructured recipe.
+export function totalTimeCheck(recipe) {
+  const stated = recipe.time?.total;
+  const text = recipe.times?.find(([k]) => k === "Total")?.[1] || `${stated} min`;
+  // "1 hr 45 min, plus cooling and 1 hr chill" already says what it leaves out.
+  if (!stated || /\bplus\b/i.test(text)) return [];
+  let planned;
+  // Each range at its short end, as a stated total counts it ("4 to 8 hours"
+  // to marinate, in a total of 4 hr 35 min).
+  const short = (w) => (typeof w === "string" ? w.replace(/(\d+(?:\.\d+)?)\s*(?:to|-|–)\s*\d+(?:\.\d+)?/g, "$1") : w);
+  const shortest = structuredClone(recipe);
+  for (const e of shortest.steps || []) for (const st of e && Array.isArray(e.items) ? e.items : [e]) if (st && typeof st === "object") st.wait = short(st.wait);
+  try { planned = planLineup({ dishes: [{ slug: "draft" }] }, { draft: shortest }).minutes; } catch { return []; }
+  // Totals often leave out heating the oven; only a big gap (an hour in the
+  // fridge) is worth asking about.
+  if (planned <= stated * 1.25 + 10) return [];
+  const about = (m) => { const r = m >= 20 ? Math.round(m / 5) * 5 : Math.round(m); return r >= 60 ? `${Math.floor(r / 60)} hr${r % 60 ? ` ${r % 60} min` : ""}` : `${r} min`; };
+  return [{ kind: "total-time", text, why: `the steps add up to about ${about(planned)}, more than the stated total: check for a rest, rise or chill the total leaves out, and correct it` }];
+}
+
 // Adds planning data (tools/restructure) and drops its bookkeeping.
 function finish(recipe, flags, { category, titles = {} } = {}) {
   flags.push(...planningChecks(recipe));
   if (CATEGORIES.includes(category)) recipe.category = category;
   else flags.push({ kind: "category", text: "", why: "choose Baking, Cooking or Cocktails" });
   const { recipe: out, notes } = restructure({ category: recipe.category || "cooking", ...recipe }, titles, null);
+  flags.push(...totalTimeCheck(out));
   if (!recipe.category) delete out.category;
   // Mark what the restructuring changed, so a person can undo it: steps split
   // out of one written step, and an alternative ("No blender? …") joined to

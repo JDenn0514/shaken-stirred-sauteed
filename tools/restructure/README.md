@@ -16,6 +16,11 @@ free to run.
   on ("Pour the milk into a large bowl…"), so each step has at most one wait
   and one place on the stove or in the oven. Getting ready for a wait ("Butter
   a bowl… Cover and let it rise") and taking a pan off the heat stay whole;
+- splits off what to do when a timer ends ("Microwave 7–8 minutes. Stir it
+  all around again.", "Roast 10 minutes. Pull the pan out."), so the lineup
+  can place it when the timer rings; taking a pan off the heat stays put;
+- marks a step that takes the dish out of the oven (`oven: false`), so the
+  lineup keeps the oven for it until then;
 - splits a "per side" time into one step per side, and a wait that holds two
   waits ("30 min ice bath, then about 1 hr fridge") into two steps;
 - reads waits, oven settings, heating the oven, burner, grill and microwave
@@ -69,6 +74,11 @@ already had, so it's the fair test for the intake.
 | Added prep: code's prep that's right | 94% | 88% |
 | Hands-on minutes per step, median error | 1.1 min | 1.0 min |
 | Hands-on total (reviewed: 598 min) | 721 min | 656 min |
+
+Splitting off what to do when a timer ends (added after the second lineup
+test) brings "split the same way" to 95%: the reviewed data, from before that
+test, keeps the applesauce's stir, the corn's "pull the ears off" and the
+meatballs' "drain on paper towels" in their timed steps.
 
 The recipe links score flatters it: one rule reads "dry acini di pepe or orzo"
 as the homemade acini di pepe, and matching by name will miss links in recipes

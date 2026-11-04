@@ -93,6 +93,13 @@ function waitIn(s) {
 const WAIT_SENTENCE = /^(?:then,?\s*)?(let (?:it |them |the \w+ )?(?:cool|chill|rest|rise|sit|stand|set)|leave (?:it|them)\b|cool\b|chill\b|refrigerate\b|rest\b|set (?:it |them )?aside to cool)/i;
 // Moving off the stove into something else: "Pour the milk into a large bowl…".
 const OFF_THE_STOVE = /^(?:then,?\s*)?(pour|transfer|scrape|tip|ladle|spoon|strain)\b[^.]*\binto (?:a|the)\s+(?:\w+\s+){0,2}(bowl|jar|bottle|container|pitcher|glass|dish)\b/i;
+// Something to do when a timer ends: "Microwave 7–8 minutes. Stir it all
+// around again." or "Roast 10 minutes. Pull the pan out."
+// Taking a pan off the heat stays with the step it ends ("Take it off before
+// it boils"); taking something out is a step of its own.
+const AFTER_TIMER = /^(?:then,?\s*)?(stir|pull|lift|uncover|baste|drain|flip|turn (?:it|them)\b(?! down| up| off| on)|transfer|check|(?:take|remove)\b(?![^.]*\boff\b)(?=[^.]*\b(?:out|from the oven)\b))/i;
+// Taking the dish out of the oven, not putting it in.
+const TAKE_OUT = /\b(?:take|pull|remove|lift)\b[^.]*\bout of the oven\b|\bremove (?:it |them )?from the oven\b|\bpull the (?:pan|tray|sheet|dish|pot)s? out\b/i;
 const isTotal = (s) => /\b(in all|in total|altogether|for the last)\b/i.test(s);
 
 export function restructure(r, titles, slug) {
@@ -131,6 +138,8 @@ export function restructure(r, titles, slug) {
         (t && cur.time) || (set && cur.set && set !== cur.set) || (MEANWHILE.test(sent) && cur.time)
         // A wait after a timed step ("…35 to 45 minutes. Let cool completely"), timed or not.
         || (cur.time && WAIT_SENTENCE.test(sent))
+        // Something to do when the timer ends.
+        || (cur.time && !t && AFTER_TIMER.test(sent))
         // Moving from the stove into another bowl or jar to carry on.
         || (cur.stove && !stove && OFF_THE_STOVE.test(sent)));
       if (!cur || startsNew) { cur = { text: [sent], time: t ? sent : null, set, stove }; parts.push(cur); }
@@ -193,7 +202,9 @@ export function restructure(r, titles, slug) {
     const acts = (sentences(o.do).filter(isAction).join(" ") || o.do).replace(/,?\s*\b(since|because|so that|so it|so they|otherwise)\b[^.;]*/gi, "").replace(/\s*\([^)]*\b(you can|or|too|also|instead|alternatively)\b[^)]*\)/gi, "");
     const t = lower(acts);
     const set = settingIn(acts);
-    if (/\b(pre)?heat the oven\b|\bpreheat\b|heat it to \d{3}/i.test(acts)) {
+    if (TAKE_OUT.test(acts) && !/\b(?:return|back) (?:it |them )?(?:to|into) the oven\b/i.test(acts)) {
+      o.oven = false;
+    } else if (/\b(pre)?heat the oven\b|\bpreheat\b|heat it to \d{3}/i.test(acts)) {
       o.preheat = ovenTemps(acts)[0] || ovenTemp;
       if (o.preheat) ovenTemp = o.preheat;
     } else if (/\bswitch (?:the oven )?to broil\b|\bset the oven to broil\b/i.test(acts) && !/\bbroil (?:\d|for|until)/i.test(acts)) {

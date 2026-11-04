@@ -38,6 +38,8 @@ Each flag is `{ kind, text, why }`, plus `parts` for `split` and `joined`:
 | `joined` | An alternative ("No blender? Shake…") joined to the step before it. `parts` are the original steps |
 | `planning` | A wait the restructuring read from the text |
 | `storage` | Something saved for another recipe or day ("saving the 4 yolks for lemon curd") with no word on how to keep it, or a recipe that says it keeps (a "Do ahead" note) whose steps never say how to store it. Add a step, so a make-ahead lineup can end there |
+| `total-time` | The stated total is well short of what the steps add up to, with each range at its short end (a source's "41 min" lemon curd that leaves out an hour in the fridge). Totals that say "plus …" aren't checked |
+| `cover` | It says to uncover the dish ("Uncover away from your face") but no step says to cover it |
 | `no-amount` | A bought ingredient with no amount ("Fresh berries", "Whipped cream"): add one for shopping. Salt, pepper, water, "juice of ½ lemon" and things "for the pan" aren't flagged |
 | `title`, `ingredients`, `steps` | Nothing found |
 

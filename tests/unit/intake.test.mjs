@@ -196,6 +196,29 @@ describe("splitting a step that does more than one thing", () => {
     assert.equal(first.microwave, undefined);
   });
 
+  test("something to do when the timer ends becomes its own step", () => {
+    const d = draft("Cook the apples: Microwave 7 to 8 minutes on high. Stir it all around again.");
+    const steps = flat(d.recipe.steps).filter((s) => !s.prepOnly);
+    assert.deepEqual(steps.map((s) => s.do), ["Microwave 7 to 8 minutes on high.", "Stir it all around again."]);
+    assert.equal(steps[0].microwave, true);
+    assert.equal(steps[1].wait, undefined);
+    assert.equal(steps[1].microwave, undefined);
+  });
+
+  test("taking food out of the oven is its own step, marked as leaving the oven", () => {
+    const d = draft("Roast: Roast at 400°F for 8 to 12 minutes, until just fork-tender. Pull the pan out.\nFinish: Switch the oven to broil and broil the cheese 2 minutes.");
+    const steps = flat(d.recipe.steps).filter((s) => !s.prepOnly && !s.preheat);
+    assert.equal(steps[0].do, "Roast at 400°F for 8 to 12 minutes, until just fork-tender.");
+    assert.equal(steps[1].do, "Pull the pan out.");
+    assert.equal(steps[1].oven, false);
+  });
+
+  test("a step that takes the dish out of the oven isn't asked about the oven setting", () => {
+    const d = draft("Bake: Bake at 400°F for 40 minutes.\nServe: Take the potatoes out of the oven, scatter the parsley over, and serve hot.");
+    const last = flat(d.recipe.steps).at(-1);
+    assert.equal(last.oven, false);
+  });
+
   test("getting ready for a wait stays in the same step", () =>
     assert.equal(texts(draft("Let it rise: Butter a large bowl and set the dough in it. Cover the bowl and let it sit somewhere warm until doubled, 1 1/2 to 2 1/2 hours.")).length, 1));
 
@@ -269,6 +292,25 @@ describe("checks for what a cook needs to plan ahead", () => {
   test("holding back part of a mixture for later in the same recipe isn't flagged", () => {
     const d = draft("Potatoes\nINGREDIENTS\n4 tbsp butter\nMETHOD\nMelt the butter. Hold back roughly half for later.\nBrush the rest over the potatoes.");
     assert.equal(kinds(d, "storage").length, 0);
+  });
+
+  test("a total time shorter than the steps add up to is flagged", () => {
+    const d = draft("Curd\nActive Time: 15 minutes | Total Time: 40 minutes\nINGREDIENTS\n1 cup lemon juice\nMETHOD\nSimmer the juice for 5 minutes.\nPour into a bowl and refrigerate until cold, about 1 hour.");
+    const f = kinds(d, "total-time");
+    assert.equal(f.length, 1);
+    assert.match(f[0].why, /about 1 hr/);
+  });
+
+  test("not when the total covers the steps", () => {
+    const d = draft("Curd\nActive Time: 15 minutes | Total Time: 1 hour 15 minutes\nINGREDIENTS\n1 cup lemon juice\nMETHOD\nSimmer the juice for 5 minutes.\nPour into a bowl and refrigerate until cold, about 1 hour.");
+    assert.equal(kinds(d, "total-time").length, 0);
+  });
+
+  test("uncovering a dish that no step covers is flagged", () => {
+    const d = draft("Applesauce\nINGREDIENTS\n4 apples\nMETHOD\nPut the apples in a microwave-safe dish.\nMicrowave 8 minutes on high.\nNOTES\nUncover away from your face.");
+    assert.equal(kinds(d, "cover").length, 1);
+    const ok = draft("Applesauce\nINGREDIENTS\n4 apples\nMETHOD\nPut the apples in a microwave-safe dish and cover it.\nMicrowave 8 minutes on high.\nNOTES\nUncover away from your face.");
+    assert.equal(kinds(ok, "cover").length, 0);
   });
 
   test("an amount in the name or a weight counts as an amount", () => {
