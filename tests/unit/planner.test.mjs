@@ -90,6 +90,24 @@ describe("the oven", () => {
       `broiled at ${at(plan, "Broil the asparagus")}, with the potatoes in the oven until ${at(plan, "Bake the potatoes") + 42}`);
   });
 
+  test("a dish that's taken out in a step of its own holds the oven until that step", () => {
+    const recipes = {
+      potatoes: recipe("Potatoes", [
+        ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }],
+        ["Take them out of the oven and scatter with parsley", { hands: "1 min", oven: false }],
+      ], { serve: "hot", sits: "10 min" }),
+      asparagus: recipe("Asparagus", [
+        ["Switch the oven to broil", { hands: "0.5 min", preheat: "broil" }],
+        ["Broil the asparagus", { hands: "1 min", wait: "3 min", watch: true, oven: "broil" }],
+      ], { serve: "hot", sits: "5 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, recipes);
+    const out = at(plan, "Take them out of the oven and scatter with parsley");
+    assert.ok(at(plan, "Switch the oven to broil") >= out + 1,
+      `switched to broil at ${at(plan, "Switch the oven to broil")}, with the potatoes taken out at ${out}`);
+    assert.ok(plan.minutes - plan.ready.potatoes <= 10, `the potatoes sat ${plan.minutes - plan.ready.potatoes} min`);
+  });
+
   test("dishes share the oven at the same setting, 200C and 400F included", () => {
     const recipes = {
       potatoes: recipe("Potatoes", [

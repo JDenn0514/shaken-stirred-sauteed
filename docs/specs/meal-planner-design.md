@@ -63,7 +63,7 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
 5. **Food on the heat comes first.** When something on a burner is about to be ready (the curd's juice coming to a simmer), nothing from another dish starts that would run past that moment, and its next step goes first once it's ready.
 6. **Equipment:** one oven, four burners, one microwave, one grill.
    - Dishes can share the oven only at the same setting. Temperatures within 15°F (about 10°C) count as the same, so 200°C and 400°F share.
-   - A dish holds the oven from its first oven step to its last.
+   - A dish holds the oven from its first oven step to its last, or, when a later step takes it out (`oven: false`), until that step is done. Nothing switches to broil while the potatoes are still in.
    - Heating the oven runs in the background while you carry on.
    - If a dish needs the oven at a setting and its recipe has no step heating it, the planner adds "Heat the oven to 200°C / 400°F" at the start of that dish's cooking, after its prep, marked as added for this meal. If the oven is already at that setting, the added step is skipped.
    - Turning the oven down or off needs no heating time.

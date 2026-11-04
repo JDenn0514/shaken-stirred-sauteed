@@ -87,7 +87,7 @@ On a step:
 |---|---|---|
 | `hands` | How long your hands are busy, e.g. `"10 min"`, `"30 sec"`, `"3 to 4 min"` | The recipe's active or prep time, spread over the steps without one; otherwise 2 min |
 | `watch` | `true` when the step's `wait` needs you there (searing, whisking a curd). Needs a `wait` | The wait runs on its own |
-| `oven` | The setting the step needs while it runs: `"200C"`, `"400F"`, `"broil"` or `"off"`. `false` says a step that mentions the oven doesn't use it ("set somewhere warm, away from the oven") | No oven |
+| `oven` | The setting the step needs while it runs: `"200C"`, `"400F"`, `"broil"` or `"off"`. `false` says a step that mentions the oven doesn't use it ("set somewhere warm, away from the oven"), or takes the dish out ("Take the potatoes out of the oven"): after the dish's last oven step, the planner keeps the oven for it until that step is done | No oven |
 | `preheat` | The step heats the oven to this setting (`"200C"`, `"400F"`, `"broil"`), in the background | The planner adds a heating step when a dish needs the oven |
 | `burner`, `grill`, `microwave` | `true` when the step uses one. `false` says a step that mentions one doesn't ("press the dough into the pan") | Not used |
 | `prep` | Knife work, measuring, getting ready. `true` can be done ahead, before any cooking; `"just before"` is done close to when it's needed (cut apples that brown, salting a steak) | Not prep |
