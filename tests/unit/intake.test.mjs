@@ -5,7 +5,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { parseRecipeText } from "../../tools/intake/parse.mjs";
-import { draftFromText, draftFromSchemaOrg } from "../../tools/intake/intake.mjs";
+import { draftFromText, draftFromSchemaOrg, forSaving } from "../../tools/intake/intake.mjs";
 import { buildIndex } from "../helpers/build-index.mjs";
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
@@ -169,4 +169,59 @@ describe("the whole intake", () => {
 
   test("without a section, it asks for one", () =>
     assert.ok(draftFromText([page1, page2]).flags.some((f) => f.kind === "category")));
+});
+
+describe("splitting a step that does more than one thing", () => {
+  const draft = (method) => draftFromText(`Test Loaf\nINGREDIENTS\n1 cup milk\n2 cups flour\nMETHOD\n${method}`, { category: "baking" });
+  const texts = (d) => flat(d.recipe.steps).filter((s) => !s.prepOnly).map((s) => s.do);
+
+  test("a wait with no time after a timed step becomes its own step", () => {
+    const d = draft("Bake: Brush the loaf with egg. Bake until deeply browned, 35 to 45 minutes. Let cool completely on a wire rack.");
+    assert.deepEqual(texts(d), ["Brush the loaf with egg. Bake until deeply browned, 35 to 45 minutes.", "Let cool completely on a wire rack."]);
+  });
+
+  test("warming on the stove, then pouring into a bowl to wait, becomes two steps", () => {
+    const d = draft("Proof the yeast: In a small saucepan, gently warm the milk over low heat until lukewarm, about 105°F. Pour the milk into a large bowl and whisk in the yeast; let it sit until foamy, 5 to 10 minutes.");
+    const steps = flat(d.recipe.steps).filter((s) => !s.prepOnly);
+    assert.deepEqual(steps.map((s) => s.do.slice(0, 30)), ["In a small saucepan, gently wa", "Pour the milk into a large bow"]);
+    assert.equal(steps[0].burner, true);
+    assert.equal(steps[1].wait, "5 to 10 minutes");
+    assert.equal(steps[1].burner, undefined);
+  });
+
+  test("an alternative in brackets doesn't change what the step uses", () => {
+    const d = draft("Warm the milk: In a small saucepan, warm the milk over low heat until lukewarm (you can do this in the microwave, too). Pour the milk into a large bowl and let it sit, 5 minutes.");
+    const first = flat(d.recipe.steps).find((s) => !s.prepOnly);
+    assert.equal(first.burner, true);
+    assert.equal(first.microwave, undefined);
+  });
+
+  test("getting ready for a wait stays in the same step", () =>
+    assert.equal(texts(draft("Let it rise: Butter a large bowl and set the dough in it. Cover the bowl and let it sit somewhere warm until doubled, 1 1/2 to 2 1/2 hours.")).length, 1));
+
+  test("taking a pan off the heat stays in the same step", () =>
+    assert.equal(texts(draft("Warm the cream: Heat the milk and cream over medium, stirring now and then. Take it off the heat once it steams.")).length, 1));
+
+  test("a split step is marked for review, with the original and its parts", () => {
+    const d = draft("Bake: Bake until deeply browned, 35 to 45 minutes. Let cool completely on a wire rack.");
+    const steps = flat(d.recipe.steps);
+    assert.deepEqual(steps.map((s) => s.review), ["split", "split"]);
+    const f = d.flags.find((x) => x.kind === "split");
+    assert.equal(f.text, "Bake until deeply browned, 35 to 45 minutes. Let cool completely on a wire rack.");
+    assert.deepEqual(f.parts, ["Bake until deeply browned, 35 to 45 minutes.", "Let cool completely on a wire rack."]);
+  });
+
+  test("an alternative joined to the step before is marked too", () => {
+    const d = draft("1. Blend everything with ice for 5 seconds.\n2. No blender? Shake everything hard with ice instead.\n3. Pour into a glass.");
+    const f = d.flags.find((x) => x.kind === "joined");
+    assert.ok(f, JSON.stringify(d.flags));
+    assert.equal(flat(d.recipe.steps).filter((s) => s.review === "joined").length, 1);
+  });
+
+  test("the review marks come off before the recipe is saved", () => {
+    const d = draft("Bake: Bake until deeply browned, 35 to 45 minutes. Let cool completely on a wire rack.");
+    const saved = forSaving(d.recipe);
+    assert.ok(flat(saved.steps).every((s) => s.review === undefined));
+    assert.equal(buildIndex({ "test-loaf": saved }).ok, true);
+  });
 });

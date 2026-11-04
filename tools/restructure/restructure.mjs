@@ -89,6 +89,10 @@ function waitIn(s) {
   }
   return null;
 }
+// A sentence that's a wait of its own: cooling, chilling, resting, rising.
+const WAIT_SENTENCE = /^(?:then,?\s*)?(let (?:it |them |the \w+ )?(?:cool|chill|rest|rise|sit|stand|set)|leave (?:it|them)\b|cool\b|chill\b|refrigerate\b|rest\b|set (?:it |them )?aside to cool)/i;
+// Moving off the stove into something else: "Pour the milk into a large bowl…".
+const OFF_THE_STOVE = /^(?:then,?\s*)?(pour|transfer|scrape|tip|ladle|spoon|strain)\b[^.]*\binto (?:a|the)\s+(?:\w+\s+){0,2}(bowl|jar|bottle|container|pitcher|glass|dish)\b/i;
 const isTotal = (s) => /\b(in all|in total|altogether|for the last)\b/i.test(s);
 
 export function restructure(r, titles, slug) {
@@ -121,9 +125,15 @@ export function restructure(r, titles, slug) {
     let cur = null;
     for (const sent of sentences(s.do)) {
       const t = isAction(sent) ? waitIn(sent) : null, set = isAction(sent) ? settingIn(sent) : null;
-      const startsNew = cur && isAction(sent) && !isTotal(sent) && ((t && cur.time) || (set && cur.set && set !== cur.set) || (MEANWHILE.test(sent) && cur.time));
-      if (!cur || startsNew) { cur = { text: [sent], time: t ? sent : null, set }; parts.push(cur); }
-      else { cur.text.push(sent); cur.time ||= t ? sent : null; cur.set ||= set; }
+      const stove = POT.test(sent) || /\bover (?:low|medium|high)/i.test(sent);
+      const startsNew = cur && isAction(sent) && !isTotal(sent) && (
+        (t && cur.time) || (set && cur.set && set !== cur.set) || (MEANWHILE.test(sent) && cur.time)
+        // A wait after a timed step ("…35 to 45 minutes. Let cool completely"), timed or not.
+        || (cur.time && WAIT_SENTENCE.test(sent))
+        // Moving from the stove into another bowl or jar to carry on.
+        || (cur.stove && !stove && OFF_THE_STOVE.test(sent)));
+      if (!cur || startsNew) { cur = { text: [sent], time: t ? sent : null, set, stove }; parts.push(cur); }
+      else { cur.text.push(sent); cur.time ||= t ? sent : null; cur.set ||= set; cur.stove ||= stove; }
     }
     // A "per side" time becomes two steps, one per side.
     const expanded = [];
@@ -178,7 +188,8 @@ export function restructure(r, titles, slug) {
   newSteps.forEach((o, n) => {
     if (o.added) return;
     // Only what the step does, not why ("…since tension splits the strands in the oven").
-    const acts = (sentences(o.do).filter(isAction).join(" ") || o.do).replace(/,?\s*\b(since|because|so that|so it|so they|otherwise)\b[^.;]*/gi, "");
+    // Brackets hold asides and alternatives ("(you can do this in the microwave, too)").
+    const acts = (sentences(o.do).filter(isAction).join(" ") || o.do).replace(/,?\s*\b(since|because|so that|so it|so they|otherwise)\b[^.;]*/gi, "").replace(/\s*\([^)]*\b(you can|or|too|also|instead|alternatively)\b[^)]*\)/gi, "");
     const t = lower(acts);
     const set = settingIn(acts);
     if (/\b(pre)?heat the oven\b|\bpreheat\b|heat it to \d{3}/i.test(acts)) {

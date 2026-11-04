@@ -18,6 +18,23 @@ function finish(recipe, flags, { category, titles = {} } = {}) {
   else flags.push({ kind: "category", text: "", why: "choose Baking, Cooking or Cocktails" });
   const { recipe: out, notes } = restructure({ category: recipe.category || "cooking", ...recipe }, titles, null);
   if (!recipe.category) delete out.category;
+  // Mark what the restructuring changed, so a person can undo it: steps split
+  // out of one written step, and an alternative ("No blender? …") joined to
+  // the step before it. Each flag carries the original text.
+  const flatSteps = (l) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
+  const before = flatSteps(recipe.steps), after = flatSteps(out.steps);
+  const parts = new Map();
+  for (const s of after) if (!s.added && s.x_from != null) parts.set(s.x_from, [...(parts.get(s.x_from) || []), s]);
+  for (const [i, list] of parts) {
+    if (list.length < 2) continue;
+    for (const s of list) s.review = "split";
+    flags.push({ kind: "split", text: before[i].do, parts: list.map((s) => s.do), why: `split into ${list.length} steps, so each has at most one wait and one place on the stove or in the oven; join them back if it reads better as one` });
+  }
+  for (const s of after) {
+    if (!s.x_merged) continue;
+    s.review = "joined";
+    flags.push({ kind: "joined", text: s.do, parts: [s.x_from, ...s.x_merged].map((i) => before[i].do), why: "another way to do the step before, joined to it; split it back out if you'd rather" });
+  }
   const clean = (s) => { delete s.x_from; delete s.x_merged; delete s.added; return s; };
   out.steps = out.steps.map((e) => (e && Array.isArray(e.items) ? { ...e, items: e.items.map(clean) } : clean(e)));
   // Timers and the lineup planner read waits written the site's way, "1 1/2 hr".
@@ -74,4 +91,12 @@ export function draftFromSchemaOrg(input, opts = {}) {
   const flat = (l) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
   if (!flat(recipe.steps).length) flags.push({ kind: "steps", text: "", why: "the page's recipe data has no steps; copy them from the page" });
   return finish(recipe, flags, opts);
+}
+
+// The draft as it's saved: the review marks are for the form, not the recipe.
+export function forSaving(recipe) {
+  const out = structuredClone(recipe);
+  const strip = (s) => { delete s.review; return s; };
+  out.steps = out.steps.map((e) => (e && Array.isArray(e.items) ? { ...e, items: e.items.map(strip) } : strip(e)));
+  return out;
 }

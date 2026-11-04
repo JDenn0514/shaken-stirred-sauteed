@@ -11,6 +11,11 @@ free to run.
 
 - splits steps that combine several timed actions, keeping explanations and
   alternatives ("Or knead it in a stand mixer…") with the step they belong to;
+  also splits off a wait after a timed step, timed or not ("…35 to 45 minutes.
+  Let cool completely"), and moving off the stove into a bowl or jar to carry
+  on ("Pour the milk into a large bowl…"), so each step has at most one wait
+  and one place on the stove or in the oven. Getting ready for a wait ("Butter
+  a bowl… Cover and let it rise") and taking a pan off the heat stay whole;
 - splits a "per side" time into one step per side, and a wait that holds two
   waits ("30 min ice bath, then about 1 hr fridge") into two steps;
 - reads waits, oven settings, heating the oven, burner, grill and microwave

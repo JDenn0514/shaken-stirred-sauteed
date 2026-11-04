@@ -23,8 +23,10 @@ asks for one. `titles` maps the site's recipe slugs to titles (from
 Both return `{ recipe, flags }`. `recipe` is in the site's format (README,
 "Recipe fields") plus two fields the form shows but the site doesn't use yet:
 `equipment` (from "Special Equipment") and `headnote` (the story before the
-method, to trim into `description` or a note). Each flag is
-`{ kind, text, why }`:
+method, to trim into `description` or a note). Steps the restructuring split
+or joined carry `review: "split"` or `review: "joined"` so the form can show
+them; `forSaving(recipe)` takes those marks off before the recipe is saved.
+Each flag is `{ kind, text, why }`, plus `parts` for `split` and `joined`:
 
 | kind | What to check |
 |---|---|
@@ -32,6 +34,8 @@ method, to trim into `description` or a note). Each flag is
 | `unreadable` | An amount OCR couldn't read ("% cup sugar"): fix it from the photo |
 | `time` | A step that bakes, rises, chills or cools with no time: add one for the timer and the planner |
 | `category` | Choose Baking, Cooking or Cocktails |
+| `split` | A written step split in two or more, so each has at most one wait and one place on the stove or in the oven. `text` is the original, `parts` the new steps; join them back if it reads better as one |
+| `joined` | An alternative ("No blender? Shake…") joined to the step before it. `parts` are the original steps |
 | `planning` | A wait the restructuring read from the text |
 | `title`, `ingredients`, `steps` | Nothing found |
 
@@ -63,9 +67,11 @@ in the layout of a real cookbook page and of a recipe app.
 **The Babkallah from Jacob's photos** (Live Text, two pages), against the site's
 Babkallah: all 15 ingredients found in their 2 groups, 14 with the same amount
 (the 15th is the book's "1 envelope (about 2¼ teaspoons)" yeast, also right),
-all 15 weights the same; 11 steps in 8 named groups; the waits match the
+all 15 weights the same; the book's 10 paragraphs in 8 named groups; the waits match the
 site's, and the one the site added by hand (cooling, about 1 hr) is flagged as
-missing a time. Equipment, the story, "Do ahead" and both footnotes land in
+missing a time. Two steps are split and marked for review: "Proof the yeast"
+(warming the milk on the stove, then the 5 to 10 minute wait in a bowl) and
+"Bake" (the bake, then cooling), giving 13 steps. Equipment, the story, "Do ahead" and both footnotes land in
 their own places. Run it with your own copies of the pages (kept out of the
 repo, since they're from a published book):
 
