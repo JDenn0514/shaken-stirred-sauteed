@@ -3,9 +3,13 @@
 // planner (assets/planner.mjs) and the real recipes, for testing which reads
 // best (see README.md):
 //
-//   detailed      every step of every recipe in one order, as lineup cook mode
-//   phases        the meal in phases; within each, cook from the recipe cards
-//   phases+steps  the same phases, with each phase's steps one tap away
+//   detailed         every step of every recipe in one order, as lineup cook mode
+//   detailed-headed  the same, with the phases as headings along the way
+//   phases           the meal in phases; within each, cook from the recipe cards
+//   phases+steps     the same phases, with each phase's steps one tap away
+//
+// The step-by-step views show each step's "done when" cue and the timers
+// running, as cook mode does. No clock times: the lineup doesn't use them.
 //
 // Also writes each recipe's card (as written). From the repo root:
 //   node tools/lineup-test/views.mjs OUT_DIR
@@ -36,6 +40,7 @@ function card(slug) {
   const lines = [`# ${r.title}`, ""];
   if (r.yield) lines.push(r.yield);
   if (r.times?.length) lines.push(r.times.map(([k, v]) => `${k}: ${v}`).join(" · "));
+  if (r.pan) lines.push(`${r.pan}${r.heat ? ` · ${r.heatLabel || "Heat"}: ${r.heat}` : ""}`);
   if (r.beforeYouStart?.length) lines.push("", "## Before you start", ...r.beforeYouStart.map((b) => `- ${b}`));
   lines.push("", "## Ingredients");
   for (const e of r.ingredients) {
@@ -61,15 +66,27 @@ function detail(steps) {
     const step = s.step === "heat" ? { do: s.text, hands: "1 min" } : all[s.step];
     const cardNo = s.step === "heat" || step.prepOnly ? null : all.slice(0, s.step + 1).filter((x) => !x.prepOnly).length;
     const hands = step.hands ? minutes(step.hands) : 2, wait = minutes(step.wait);
-    return { ...s, step, cardNo, wait, free: s.at + hands + (step.watch ? wait : 0), prep: step.prep === true || !!step.prepOnly, longWait: wait >= 15 && !step.watch };
+    return { ...s, step, cardNo, wait, free: s.at + hands + (step.watch ? wait : 0), ends: s.at + hands + wait, prep: step.prep === true || !!step.prepOnly, longWait: wait >= 15 && !step.watch };
   });
 }
 const label = (d) => `${name(d.slug)}${d.cardNo ? `, card step ${d.cardNo}` : d.added ? " (added for this meal)" : " (prep)"}`;
 
-function detailed(title, plan, steps) {
-  const out = [`# ${title}: step by step`, "", `One step at a time, across all the recipes, in this order. A step with a timer starts it when you move on. "Nothing needs you" means wait (a timer runs on the screen). About ${about(plan.minutes).replace(/^about /, "")} in all.`, ""];
+// The timers still running when step i comes up, as cook mode pins them.
+function running(steps, i) {
+  const now = steps[i].at;
+  return steps.slice(0, i).filter((d) => d.wait && d.ends > now)
+    .map((d) => `${name(d.slug)} ${doing(d)}, ${about(d.ends - now).replace(/^about /, "about ")} left`);
+}
+
+function detailed(title, plan, steps, headings = null) {
+  const out = [`# ${title}: step by step`, "", `One step at a time, across all the recipes, in this order. A step with a timer starts it when you move on; the timers already running are listed under each step. "Nothing needs you" means wait. About ${about(plan.minutes).replace(/^about /, "")} in all.`, ""];
+  if (headings) out.splice(2, 1, out[2] + " The headings mark where the meal moves on (something goes in the oven, rises or chills); they're there to show where you are, so keep going step by step.");
+  const starts = new Map((headings || []).map((p, n) => [p.steps[0], `## Phase ${n + 1}: ${p.name}`]));
   steps.forEach((d, i) => {
-    out.push(`${i + 1}. [${label(d)}] ${d.step.do}${d.wait ? ` — timer: ${d.step.wait}${d.step.watch ? " (stay with it)" : ""}` : ""}`);
+    if (starts.has(d)) out.push(...(i ? [""] : []), starts.get(d), "");
+    out.push(`${i + 1}. [${label(d)}] ${d.step.do}${d.wait ? ` — timer: ${d.step.wait}${d.step.watch ? " (stay with it)" : ""}` : ""}${d.step.cue ? ` — done when: ${d.step.cue}` : ""}`);
+    const timers = running(steps, i);
+    if (timers.length) out.push(`   Timers running as you start this: ${timers.join("; ")}.`);
     const next = steps[i + 1];
     if (next && next.at - Math.max(...steps.slice(0, i + 1).map((x) => x.free)) >= 2) out.push(`   — Nothing needs you for ${about(next.at - Math.max(...steps.slice(0, i + 1).map((x) => x.free)))}. Up next: ${name(next.slug)}.`);
   });
@@ -133,7 +150,7 @@ for (const [key, l] of Object.entries(LINEUPS)) {
   const slugs = new Set(runs.flatMap(([, p]) => p.steps.map((s) => s.slug)));
   writeFileSync(join(out, `${key}.cards.md`), [...slugs].map(card).join("\n---\n\n"));
   const note = plan.makeAhead?.length ? `Made ahead: ${plan.makeAhead.map((m) => name(m.slug)).join(", ")} (the lineup page offered it, since it saves ${about(plan.makeAhead[0].saves)} on the day).\n\n` : "";
-  for (const [variant, make] of [["detailed", (t, p, s) => detailed(t, p, s)], ["phases", (t, p, s, f) => phasesView(t, p, s, false, f)], ["phases-steps", (t, p, s, f) => phasesView(t, p, s, true, f)]]) {
+  for (const [variant, make] of [["detailed", (t, p, s) => detailed(t, p, s)], ["detailed-headed", (t, p, s, f) => detailed(t, p, s, phases(s, f))], ["phases", (t, p, s, f) => phasesView(t, p, s, false, f)], ["phases-steps", (t, p, s, f) => phasesView(t, p, s, true, f)]]) {
     writeFileSync(join(out, `${key}.${variant}.md`), note + runs.map(([t, p], i) => make(t, p, detail(p.steps), i === runs.length - 1 ? l.finalName : null)).join("\n\n"));
   }
   console.log(`${key}: ${about(plan.minutes)}${plan.aheadOfTime ? ` on the day, ${about(plan.aheadOfTime.minutes)} ahead` : ""}; ${slugs.size} recipes`);
