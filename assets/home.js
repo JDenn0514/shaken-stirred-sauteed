@@ -9,6 +9,9 @@
     backdrop: $("backdrop"),
   };
 
+  const menuLink = $("menu-link");
+  if (menuLink && window.SSSMenu) menuLink.textContent = window.SSSMenu.linkText();
+
   let recipes = [];
   let dims = [];         // vocabulary dimensions, in display order
   let openDim = null;    // dimension whose option panel is open
@@ -159,7 +162,9 @@
       r.yield ? `🍽 ${esc(r.yield)}` : "",
     ].filter(Boolean).map((m) => `<span>${m}</span>`).join("");
     const icon = r.icon ? ` data-icon="${esc(r.icon)}"` : "";
-    return `<li><a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}"${icon}>
+    // A recipe on your menu gets lime tape reading "On your menu".
+    const onMenu = window.SSSMenu && window.SSSMenu.has(r.slug) ? `<span class="menu-tape">On your menu</span>` : "";
+    return `<li>${onMenu}<a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}"${icon}>
       ${r.image ? `<img class="card-img" src="${esc(r.image)}" alt="" loading="lazy">` : ""}
       <div class="card-body">
         ${r.icon ? `<span class="card-icon" aria-hidden="true"></span>` : ""}

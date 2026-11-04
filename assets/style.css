@@ -183,19 +183,19 @@
    home page or a recipe of that section is open. */
 .tab[data-cat="baking"], .badge.baking, .card:has(.badge.baking), .fam-baking,
 body:has(.tab[data-cat="baking"][aria-pressed="true"]),
-body:has(.recipe > .back[href*="cat=baking"]) {
+body:has(.recipe .recipe-toprow > .back[href*="cat=baking"]) {
   --section: var(--baking); --section-wash: var(--baking-wash); --section-paper: var(--baking-paper);
   --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
 }
 .tab[data-cat="cooking"], .badge.cooking, .card:has(.badge.cooking), .fam-cooking,
 body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
-body:has(.recipe > .back[href*="cat=cooking"]) {
+body:has(.recipe .recipe-toprow > .back[href*="cat=cooking"]) {
   --section: var(--cooking); --section-wash: var(--cooking-wash); --section-paper: var(--cooking-paper);
   --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
 }
 .tab[data-cat="cocktails"], .badge.cocktails, .card:has(.badge.cocktails), .fam-cocktails,
 body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
-body:has(.recipe > .back[href*="cat=cocktails"]) {
+body:has(.recipe .recipe-toprow > .back[href*="cat=cocktails"]) {
   --section: var(--cocktails); --section-wash: var(--cocktails-wash); --section-paper: var(--cocktails-paper);
   --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
 }
@@ -205,9 +205,9 @@ body:has(.recipe > .back[href*="cat=cocktails"]) {
 }
 
 /* The page itself: sheet and hairlines pick up the family tint too. */
-body:has(.tab[data-cat="baking"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=baking"]), .fam-baking.g-sheet { --surface: var(--baking-sheet); --border: var(--baking-line); }
-body:has(.tab[data-cat="cooking"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=cooking"]), .fam-cooking.g-sheet { --surface: var(--cooking-sheet); --border: var(--cooking-line); }
-body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=cocktails"]), .fam-cocktails.g-sheet { --surface: var(--cocktails-sheet); --border: var(--cocktails-line); }
+body:has(.tab[data-cat="baking"][aria-pressed="true"]), body:has(.recipe .recipe-toprow > .back[href*="cat=baking"]), .fam-baking.g-sheet { --surface: var(--baking-sheet); --border: var(--baking-line); }
+body:has(.tab[data-cat="cooking"][aria-pressed="true"]), body:has(.recipe .recipe-toprow > .back[href*="cat=cooking"]), .fam-cooking.g-sheet { --surface: var(--cooking-sheet); --border: var(--cooking-line); }
+body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe .recipe-toprow > .back[href*="cat=cocktails"]), .fam-cocktails.g-sheet { --surface: var(--cocktails-sheet); --border: var(--cocktails-line); }
 
 /* Each family's plate drawing, used as a mask so it takes the family ink.
    (Cards use their recipe's own drawing; the plate is only a fallback.) */
@@ -304,7 +304,7 @@ code { font-family: var(--mono); font-size: .88em; }
   padding-top: max(10px, env(safe-area-inset-top));
 }
 body:has(.tab:not([data-cat="all"])[aria-pressed="true"]) .site-header,
-body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color: var(--section); }
+body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: var(--section); }
 .brand {
   display: flex; align-items: center; gap: 11px;
   max-width: 1048px; margin: 0 auto;
@@ -643,15 +643,15 @@ body.sheet-open { overflow: hidden; }
 .recipe:has(> .loading)::before, .recipe:has(> .error)::before { content: none; }
 /* A recipe with a photo lets the photo be the plate (the family drawing still closes the sheet). */
 .recipe:has(> .recipe-hero)::before { content: none; }
-.recipe:has(> .back[href*="cat=baking"])::before {
+.recipe:has(.recipe-toprow > .back[href*="cat=baking"])::before {
   -webkit-mask: url("./plate-baking.svg") right top / 78% no-repeat, url("./spec-cinnamon.svg") left bottom / 48% no-repeat;
   mask: url("./plate-baking.svg") right top / 78% no-repeat, url("./spec-cinnamon.svg") left bottom / 48% no-repeat;
 }
-.recipe:has(> .back[href*="cat=cooking"])::before {
+.recipe:has(.recipe-toprow > .back[href*="cat=cooking"])::before {
   -webkit-mask: url("./plate-cooking.svg") right top / 78% no-repeat, url("./spec-chili.svg") left bottom / 46% no-repeat;
   mask: url("./plate-cooking.svg") right top / 78% no-repeat, url("./spec-chili.svg") left bottom / 46% no-repeat;
 }
-.recipe:has(> .back[href*="cat=cocktails"])::before {
+.recipe:has(.recipe-toprow > .back[href*="cat=cocktails"])::before {
   -webkit-mask: url("./plate-cocktails.svg") right top / 80% no-repeat, url("./spec-mint.svg") left bottom / 48% no-repeat;
   mask: url("./plate-cocktails.svg") right top / 80% no-repeat, url("./spec-mint.svg") left bottom / 48% no-repeat;
 }
@@ -868,7 +868,7 @@ body.sheet-open { overflow: hidden; }
 .loading, .error { color: var(--muted); padding: 40px 0; }
 
 /* Colophon: the family plate closes the sheet. */
-.recipe:has(> .back)::after {
+.recipe:has(.back)::after {
   content: "";
   display: block; clear: both;
   width: 34px; height: 34px; margin: 40px auto 0;
@@ -876,9 +876,9 @@ body.sheet-open { overflow: hidden; }
   -webkit-mask: url("./plate-leaf.svg") center / contain no-repeat;
   mask: url("./plate-leaf.svg") center / contain no-repeat;
 }
-.recipe:has(> .back[href*="cat=baking"])::after { -webkit-mask-image: url("./plate-baking.svg"); mask-image: url("./plate-baking.svg"); }
-.recipe:has(> .back[href*="cat=cooking"])::after { -webkit-mask-image: url("./plate-cooking.svg"); mask-image: url("./plate-cooking.svg"); }
-.recipe:has(> .back[href*="cat=cocktails"])::after { -webkit-mask-image: url("./plate-cocktails.svg"); mask-image: url("./plate-cocktails.svg"); }
+.recipe:has(.recipe-toprow > .back[href*="cat=baking"])::after { -webkit-mask-image: url("./plate-baking.svg"); mask-image: url("./plate-baking.svg"); }
+.recipe:has(.recipe-toprow > .back[href*="cat=cooking"])::after { -webkit-mask-image: url("./plate-cooking.svg"); mask-image: url("./plate-cooking.svg"); }
+.recipe:has(.recipe-toprow > .back[href*="cat=cocktails"])::after { -webkit-mask-image: url("./plate-cocktails.svg"); mask-image: url("./plate-cocktails.svg"); }
 
 @media (max-width: 359px) {
   .recipe::before { width: 88px; height: 88px; }
@@ -912,8 +912,7 @@ body.sheet-open { overflow: hidden; }
     justify-self: end; align-self: start;
     width: 168px; height: 168px; margin: -4px -6px 0 0;
   }
-  .recipe > .back, .recipe > h1, .recipe > .lede, .recipe > .badge { grid-column: 1 / 9; }
-  .recipe > .back { justify-self: start; }
+  .recipe > .recipe-toprow, .recipe > h1, .recipe > .lede, .recipe > .badge { grid-column: 1 / 9; }
   .recipe h1 { font-size: 3.6rem; }
   .facts { margin-top: 28px; }
   .fact { background: var(--surface); }
@@ -1100,6 +1099,26 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 }
 
 /* ===== Print: a clean specimen sheet on white ===== */
+/* The back link and the way to your menu share one row; "+ Add to menu" sits
+   beside Start. */
+.recipe-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.recipe-toprow .back { margin: 0; }
+.menu-link {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 5px 10px 4px;
+  font-family: var(--mono); font-size: .78rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text); text-decoration: none; border: 1px solid var(--rule-strong); border-radius: 999px; white-space: nowrap;
+}
+.start-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px; }
+.start-row .cook-start { margin: 0; }
+.menu-on { min-height: 46px; padding: 0 18px; font-weight: 600; border-color: var(--section); color: var(--section); }
+.menu-on[aria-haspopup] { background: var(--section-wash); }
+.start-row .menu-pop { min-width: 220px; }
+.recipes-menu-row { display: flex; justify-content: flex-end; }
+/* A card on your menu gets a strip of lime tape across its corner. */
+.grid > li { position: relative; }
+.menu-tape { position: absolute; z-index: 1; top: -6px; right: 14px; transform: rotate(3deg); background: var(--lime); color: var(--on-lime); font: 500 .68rem/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; padding: 6px 9px; pointer-events: none; }
+.welcome .menu-link { margin: 14px auto 0; }
+
 /* ===== Your menu (menu.html) =====
    The recipes you're cooking together. Empty, it invites a search; with
    dishes it's a menu card: courses in italics, each dish in its family ink
@@ -1184,13 +1203,13 @@ body.cooking > .site-header, body.cooking > main { display: none; }
     --baking-paper: #fff; --cooking-paper: #fff; --cocktails-paper: #fff;
   }
   @page { margin: 14mm 14mm 16mm; }
-  .site-header, .back, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
+  .site-header, .back, .menu-link, .start-row .menu-anchor, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.45; }
   .container { padding: 0; max-width: none; }
   .recipe { padding: 0; margin: 0; max-width: none; display: block; border: 0; background: #fff; }
   .recipe::before, .recipe > .recipe-icon { float: right; width: 72px; height: 72px; background: #000; margin: 0 0 6px 12px; }
   .card-icon { background: #000; }
-  .recipe:has(> .back)::after { width: 22px; height: 22px; margin-top: 18px; background: #000; }
+  .recipe:has(.back)::after { width: 22px; height: 22px; margin-top: 18px; background: #000; }
   .recipe h1 { font-size: 26pt; color: #000; }
   .recipe h1::before { color: #333; }
   .facts::after { display: none; }

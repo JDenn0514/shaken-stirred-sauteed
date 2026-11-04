@@ -61,6 +61,12 @@ const PAGES = [
     await expect(page.getByRole("region", { name: /the recipes don't say/ })).toBeVisible();
   }, ["mystery-stew"]],
   ["menu page when no order works", "menu.html", (page) => expect(page.getByRole("alert")).toBeVisible(), ["loop-a"]],
+  ["recipe page on your menu, with its menu open", "recipe.html?r=lemon-bars", async (page) => {
+    await page.getByRole("button", { name: /On your menu/ }).click();
+    await expect(page.getByRole("menu")).toBeVisible();
+  }, ["lemon-bars"]],
+  ["index page with a recipe on your menu", "recipes.html", (page) => expect(page.getByText("On your menu")).toBeVisible(), ["lemon-bars"]],
+  ["welcome page with a menu", "index.html", (page) => expect(page.getByRole("link", { name: "Your menu · 1 →" })).toBeVisible(), ["lemon-bars"]],
 ];
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }

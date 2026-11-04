@@ -104,7 +104,10 @@
     if (icon) root.dataset.icon = icon; else delete root.dataset.icon;
 
     root.innerHTML = `
-      <a class="back" href="recipes.html?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
+      <div class="recipe-toprow">
+        <a class="back" href="recipes.html?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
+        ${window.SSSMenu ? `<a class="menu-link" href="menu.html">${esc(window.SSSMenu.linkText())}</a>` : ""}
+      </div>
       ${r.image ? `<img class="recipe-hero" src="${esc(r.image)}" alt="">` : ""}
       ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
       ${icon ? `<span class="recipe-icon" aria-hidden="true"></span>` : ""}
@@ -113,7 +116,10 @@
       ${facts.length ? `<dl class="facts">${facts.map(([k, v]) =>
         `<div class="fact"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
 
-      ${window.SSSCook ? `<button class="btn cook-start" id="cook-start" type="button">${esc(window.SSSCook.startLabel(r))}</button>` : ""}
+      <div class="start-row">
+        ${window.SSSCook ? `<button class="btn cook-start" id="cook-start" type="button">${esc(window.SSSCook.startLabel(r))}</button>` : ""}
+        ${window.SSSMenu ? `<span class="menu-anchor" id="on-menu"></span>` : ""}
+      </div>
       <div class="toolbar">
         <button class="btn" id="wake" aria-pressed="false" hidden>☀️ Keep screen on</button>
         <button class="btn" id="reset">↺ Reset checkmarks</button>
@@ -182,6 +188,7 @@
       progress.ing = []; progress.steps = []; progress.uses = []; progress.started = false; save(progress); paint();
     });
     paint();
+    wireMenu();
 
     // Cook mode is open while the URL ends in #cook, so the phone's back
     // gesture closes it and a reload keeps it open.
@@ -223,6 +230,48 @@
         } catch { set(false); }
       });
     }
+  }
+
+  // "+ Add to menu" beside Start, which becomes "✓ On your menu ▾" with a small
+  // menu (Remove from menu, Go to your menu). The top of the page stays the
+  // same either way, and Start always cooks just this recipe.
+  function wireMenu() {
+    const Menu = window.SSSMenu, box = document.getElementById("on-menu");
+    if (!Menu || !box) return;
+    let open = false;
+    const draw = (focus) => {
+      const on = Menu.has(slug);
+      box.innerHTML = on
+        ? `<button class="btn menu-on" type="button" aria-haspopup="menu" aria-expanded="${open}">✓ On your menu <span aria-hidden="true">▾</span></button>
+           ${open ? `<span class="menu-pop" role="menu">
+             <button type="button" role="menuitem" class="menu-danger" data-remove>Remove from menu</button>
+             <a role="menuitem" href="menu.html">Go to your menu</a></span>` : ""}`
+        : `<button class="btn menu-on" type="button">+ Add to menu</button>`;
+      root.querySelector(".menu-link").textContent = Menu.linkText();
+      if (focus === "button") box.querySelector(".menu-on").focus();
+      if (focus === "first") box.querySelector("[role=menuitem]")?.focus();
+    };
+    box.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      if (b.hasAttribute("data-remove")) { Menu.remove(slug); open = false; return draw("button"); }
+      if (!Menu.has(slug)) { Menu.add(slug); return draw("button"); }
+      open = !open;
+      draw(open ? "first" : "button");
+    });
+    box.addEventListener("keydown", (e) => {
+      if (!open) return;
+      if (e.key === "Escape") { e.preventDefault(); open = false; return draw("button"); }
+      const items = [...box.querySelectorAll("[role=menuitem]")], i = items.indexOf(document.activeElement);
+      if (i >= 0 && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+        e.preventDefault();
+        items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
+      }
+    });
+    document.addEventListener("click", (e) => { if (open && !e.composedPath().includes(box)) { open = false; draw(); } });
+    // Another tab may change the menu.
+    window.addEventListener("storage", (e) => { if (e.key === "sss:lineup") draw(); });
+    draw();
   }
 
   // The tag list only adds the tag links, so the recipe still shows if it fails to load.
