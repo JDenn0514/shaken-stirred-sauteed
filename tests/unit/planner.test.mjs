@@ -586,6 +586,49 @@ describe("what the plan doesn't know", () => {
   });
 });
 
+describe("what the page gets", () => {
+  const recipes = {
+    potatoes: recipe("Potatoes", [
+      ["Slice the potatoes", { hands: "10 min" }],
+      ["Bake the potatoes", { hands: "2 min", wait: "35 to 45 min" }],
+      ["Scatter with parsley", { hands: "1 min" }],
+    ], { serve: "hot", sits: "10 min" }),
+    steak: recipe("Steak", [
+      ["Sear the steak", { hands: "1 min", wait: "4 min", watch: true, burner: true }],
+      ["Rest the steak", { hands: "0.5 min", wait: "5 min" }],
+    ], { serve: "hot", sits: "5 min" }),
+  };
+  const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "steak" }] }, recipes);
+  const step = (text) => plan.steps.find((s) => s.text === text);
+
+  test("each step's hands-on time, wait, and whether it needs you there", () => {
+    assert.deepEqual([step("Bake the potatoes").hands, step("Bake the potatoes").wait, step("Bake the potatoes").watch], [2, 40, false]);
+    assert.equal(step("Sear the steak").watch, true);
+  });
+
+  test("a step with a wait has a timer: when it starts and ends, at the short end of the range too, and what comes next", () => {
+    const bake = step("Bake the potatoes");
+    assert.deepEqual(bake.timer, { from: bake.at + 2, short: bake.at + 2 + 35, ends: bake.at + 2 + 40 });
+    assert.equal(plan.steps[bake.followUp].text, "Scatter with parsley");
+    assert.equal(step("Slice the potatoes").timer, undefined);
+  });
+
+  test("how long nothing needs you before each step", () => {
+    const parsley = step("Scatter with parsley");
+    const free = Math.max(...plan.steps.filter((s) => s.at < parsley.at).map((s) => s.at + s.hands + (s.watch ? s.wait : 0)));
+    assert.equal(parsley.idle, Math.max(0, parsley.at - free));
+    assert.equal(plan.steps[0].idle, 0);
+  });
+
+  test("what's served when, and how long each dish waits for it", () => {
+    assert.deepEqual(plan.serving.map((c) => [c.course, c.at, c.dishes.sort()]), [["Main", plan.courses.Main, ["potatoes", "steak"]]]);
+    const steak = plan.serving[0].sitting.steak;
+    assert.equal(steak.limit, 5);
+    assert.equal(steak.waits, plan.courses.Main - plan.ready.steak);
+    assert.equal(steak.over, Math.max(0, steak.waits - 5));
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {
