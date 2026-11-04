@@ -5,9 +5,11 @@
 //
 //   node tools/lineup-test/invariants.mjs            # reviewed recipes
 //   node tools/lineup-test/invariants.mjs --code     # as code alone restructures them
+//   node tools/lineup-test/invariants.mjs --random 1000   # more random lineups
+//   node tools/lineup-test/invariants.mjs --all      # list every problem, not 4 of each
 //
 // Lineups: the eight meals from code-only.mjs, every recipe on its own, and
-// 200 random lineups of 2 to 4 recipes (the same 200 every run). Each plan
+// 200 random lineups of 2 to 4 recipes (the same ones every run). Each plan
 // (and its made-ahead plan) is checked with the recipe data it was made from,
 // so a problem found is the planner breaking its own rules.
 import { execFileSync } from "node:child_process";
@@ -41,7 +43,8 @@ const LINEUPS = [
   ["congee-with-crispy-chili-pork"], ["lu-rou-fan"], ["babkallah", "minty-lime-bars"],
   ...slugs.map((s) => [s]),
 ];
-while (LINEUPS.length < 8 + slugs.length + 200) {
+const RANDOM = process.argv.includes("--random") ? +process.argv[process.argv.indexOf("--random") + 1] : 200;
+while (LINEUPS.length < 8 + slugs.length + RANDOM) {
   const n = 2 + Math.floor(rand() * 3), pick = new Set();
   while (pick.size < n) pick.add(slugs[Math.floor(rand() * slugs.length)]);
   LINEUPS.push([...pick]);
