@@ -4,7 +4,7 @@
 // ingredient lines. Every rule is a pattern or a word list, so a person still
 // confirms the judgement calls. See tools/restructure/README.md.
 
-const NUM = String.raw`\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+|[½¼¾]`;
+const NUM = String.raw`\d+\s*[½⅓⅔¼¾]|\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+|[½⅓⅔¼¾]`;
 const UNIT = String.raw`sec(?:ond)?s?|min(?:ute)?s?|hrs?|hours?`;
 const TIME = new RegExp(String.raw`(?:about |~|at least |another |a further |for )?(${NUM})\s*(?:(?:to|-|–)\s*(${NUM})\s*)?(${UNIT})\b(?:\s*(\d+)\s*min)?`, "i");
 const TIME_G = new RegExp(TIME.source, "gi");
@@ -47,7 +47,8 @@ const SIZE = /\b(?:cut )?(?:into|in) ((?:[\d/½¼¾.]+[\s-]*(?:in(?:ch)?|cm)\.?\
 const BOUGHT = /\b(cans?|jars?|package|packet|bag|box|store-bought|frozen|canned|bottled)\b/i;
 
 function minutesOf(m) {
-  const n = (x) => (/[½¼¾]/.test(x) ? { "½": 0.5, "¼": 0.25, "¾": 0.75 }[x] : x.split(/\s+/).reduce((t, p) => t + (p.includes("/") ? p.split("/")[0] / p.split("/")[1] : +p), 0));
+  const U = { "½": 0.5, "⅓": 1 / 3, "⅔": 2 / 3, "¼": 0.25, "¾": 0.75 };
+  const n = (x) => x.replace(/([½⅓⅔¼¾])/g, " $1").trim().split(/\s+/).reduce((t, p) => t + (U[p] ?? (p.includes("/") ? p.split("/")[0] / p.split("/")[1] : +p)), 0);
   const per = { s: 1 / 60, m: 1, h: 60 }[m[3][0].toLowerCase()];
   return ((n(m[1]) + (m[2] ? n(m[2]) : n(m[1]))) / 2) * per + (m[4] ? +m[4] : 0);
 }
@@ -266,14 +267,14 @@ export function restructure(r, titles, slug) {
       const simple = found.filter((x) => /^\w+ \{x\}$|^\w+ \w+ \{x\}$/.test(x.v)).map((x) => x.v.replace(" {x}", ""));
       const other = found.filter((x) => !/^\w+ \{x\}$|^\w+ \w+ \{x\}$/.test(x.v));
       if (simple.length) lines.push(`${simple.length > 1 ? `${simple.slice(0, -1).join(", ")} and ${simple.at(-1)}` : simple[0]} the ${name}${size && !other.length ? ` into ${size[1]}` : ""}${which}`);
-      for (const x of other) lines.push(x.v.replace("{x}", `the ${name}`));
+      for (const x of other) lines.push(x.v.replace("{x}", `the ${name}${which}`));
     } else if (size) lines.push(`cut the ${name} into ${size[1]}${which}`);
     if (juice) lines.push(`squeeze the ${/juice of/i.test(item) ? item.replace(/^juice of\s*/i, "juice of ").toLowerCase() : `${name.replace(/^fresh /, "")}`}`);
     if (!lines.length) continue;
     // Skip prep the recipe's own steps already do ("Grate the carrot…").
     const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const last = esc(name.split(" ").at(-1));
-    const done = lines.every((l) => new RegExp(`\\b${esc(l.split(" ")[0].slice(0, 4))}\\w*[^.]{0,40}\\b${last}`, "i").test(ownText));
+    const done = lines.every((l) => new RegExp(`(?:^|[.;!?]\\s+|,\\s+|\\band\\s+|\\bthen\\s+)${esc(l.split(" ")[0].slice(0, 4))}\\w*\\s[^.]{0,40}\\b${last}`, "i").test(ownText));
     if (done) continue;
     const key = dup ? { group, item: i.item } : i.item;
     const firstUse = newSteps.findIndex((o) => (o.uses || []).some((u) => lower(typeof u === "string" ? u : u.item) === lower(i.item) && (!dup || !u.group || u.group === group)));

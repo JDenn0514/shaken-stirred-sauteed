@@ -1,5 +1,7 @@
 # Restructuring recipes with code alone
 
+Used by the recipe intake (`tools/intake/`), which reads the recipe text first.
+
 An experiment for the recipe intake: how much of the lineup planning data
 (`docs/specs/meal-planner-design.md`, "Recipe data changes") can be worked out
 from a recipe's text with plain code, no language model, so the intake stays
@@ -58,10 +60,10 @@ already had, so it's the fair test for the intake.
 | Sits | 68% | 73% |
 | Recipe links | 100% | 100% |
 | Optional marks | 95% | 98% |
-| Added prep: reviewed prep the code finds | 64% | 80% |
-| Added prep: code's prep that's right | 94% | 89% |
+| Added prep: reviewed prep the code finds | 64% | 84% |
+| Added prep: code's prep that's right | 94% | 88% |
 | Hands-on minutes per step, median error | 1.1 min | 1.0 min |
-| Hands-on total (reviewed: 598 min) | 721 min | 658 min |
+| Hands-on total (reviewed: 598 min) | 721 min | 656 min |
 
 The recipe links score flatters it: one rule reads "dry acini di pepe or orzo"
 as the homemade acini di pepe, and matching by name will miss links in recipes
