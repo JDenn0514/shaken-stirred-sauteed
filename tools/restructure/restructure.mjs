@@ -107,7 +107,8 @@ export function restructure(r, titles, slug) {
   flat(r.steps).forEach(({ i, group }, index) => {
     const s = typeof i === "string" ? { do: i } : { ...i };
     s.xOrig = index;
-    if (steps.length && ALTERNATIVE.test(s.do)) {
+    // Added prep steps are never joined: "No superfine sugar? Pulse…" is prep of its own.
+    if (steps.length && ALTERNATIVE.test(s.do) && !s.prepOnly && !steps.at(-1).s.prepOnly) {
       steps.at(-1).s.do += ` ${s.do}`;
       steps.at(-1).merged = (steps.at(-1).merged || []).concat(index);
       return;
