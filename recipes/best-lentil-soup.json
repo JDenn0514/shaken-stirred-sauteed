@@ -25,6 +25,8 @@
       "55 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "20 min",
   "time": {
     "total": 55
   },
@@ -95,13 +97,27 @@
   ],
   "steps": [
     {
+      "do": "Chop the onion, peel and chop the carrots, and press or mince the garlic.",
+      "hands": "6 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "yellow or white onion, chopped",
+        "carrots, peeled and chopped",
+        "garlic, pressed or minced"
+      ]
+    },
+    {
       "do": "Heat the oil over medium in a Dutch oven or heavy stainless pot of 5 quarts or more until it shimmers. Add the onion and carrot and cook, stirring often, about 5 minutes, until the onion is soft and translucent.",
       "wait": "About 5 min",
       "uses": [
         "extra virgin olive oil",
         "yellow or white onion, chopped",
         "carrots, peeled and chopped"
-      ]
+      ],
+      "hands": "1 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Add the garlic, cumin, curry powder and thyme and stir constantly about 30 seconds, just until fragrant; stainless scorches spices fast, so keep stirring. Add the tomatoes and cook a few minutes more, stirring often.",
@@ -111,6 +127,19 @@
         "curry powder",
         "dried thyme",
         "diced tomatoes, lightly drained"
+      ],
+      "hands": "3 min",
+      "burner": true
+    },
+    {
+      "do": "Pick over and rinse the lentils. Strip the tough ribs from the greens and chop the leaves. Juice the lemon.",
+      "hands": "5 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "brown or green lentils, picked over and rinsed",
+        "collard greens or kale, chopped, tough ribs removed",
+        "lemon juice (1/2 to 1 medium lemon), to taste"
       ]
     },
     {
@@ -129,17 +158,23 @@
           "item": "black pepper, freshly ground, to taste",
           "amount": "plenty"
         }
-      ]
+      ],
+      "hands": "2 min",
+      "burner": true
     },
     {
-      "do": "Blend 2 cups of the soup until smooth and stir it back in; this is what makes it creamy without cream. Lock the blender lid and hold a towel over it against the steam. An immersion blender used briefly in the pot works too."
+      "do": "Blend 2 cups of the soup until smooth and stir it back in; this is what makes it creamy without cream. Lock the blender lid and hold a towel over it against the steam. An immersion blender used briefly in the pot works too.",
+      "hands": "4 min",
+      "burner": true
     },
     {
       "do": "Add the greens and simmer 5 minutes more, until as tender as you like.",
       "wait": "5 min",
       "uses": [
         "collard greens or kale, chopped, tough ribs removed"
-      ]
+      ],
+      "hands": "1 min",
+      "burner": true
     },
     {
       "do": "Off the heat, stir in 1 tbsp lemon juice. Taste and adjust with more salt, pepper or lemon. Serve hot.",
@@ -153,7 +188,8 @@
           "item": "black pepper, freshly ground, to taste",
           "amount": "to taste"
         }
-      ]
+      ],
+      "hands": "1 min"
     }
   ],
   "notes": [

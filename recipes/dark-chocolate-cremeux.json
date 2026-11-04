@@ -25,6 +25,7 @@
       "5 hr, ideally overnight"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 300
   },
@@ -82,7 +83,8 @@
         {
           "grams": 50,
           "item": "Unsalted butter",
-          "note": "optional, softened"
+          "note": "optional, softened",
+          "optional": true
         }
       ]
     }
@@ -92,11 +94,23 @@
       "group": "Custard (crème anglaise)",
       "items": [
         {
+          "do": "Chop the chocolate and put it in a large, deep bowl with room for a stick blender, with a fine sieve over it. Set the butter out to soften, if using.",
+          "hands": "5 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            "Dark chocolate",
+            "Unsalted butter"
+          ]
+        },
+        {
           "do": "Heat the milk and cream over medium, stirring now and then so the bottom doesn't scorch. Take it off the heat once it steams. Don't let it boil.",
           "uses": [
             "Whole or 2% milk",
             "Heavy cream, 35% fat"
-          ]
+          ],
+          "hands": "3 min",
+          "burner": true
         },
         {
           "do": "Meanwhile, whisk the yolks, sugar, salt and vanilla until smooth and pale. Dissolving the sugar into the yolks first cushions them against the heat.",
@@ -105,15 +119,20 @@
             "Sugar",
             "Sea salt",
             "Vanilla extract"
-          ]
+          ],
+          "hands": "2 min"
         },
         {
-          "do": "Pour about half the hot dairy into the yolks in a thin stream, whisking the whole time. Warming the yolks gradually is what keeps them from scrambling. Scrape the bowl and whisk once more."
+          "do": "Pour about half the hot dairy into the yolks in a thin stream, whisking the whole time. Warming the yolks gradually is what keeps them from scrambling. Scrape the bowl and whisk once more.",
+          "hands": "1 min"
         },
         {
           "do": "Pour it all back into the saucepan, whisk, and set over low heat. Stir constantly with a spatula, scraping the bottom, sides and corners. If it thickens too fast, lift the pan off the heat and keep stirring to spread the heat out, then return it.",
           "wait": "4 to 10 min",
-          "cue": "Coats the back of a spoon, 180F to 185F (82C to 85C). Never let it boil."
+          "cue": "Coats the back of a spoon, 180F to 185F (82C to 85C). Never let it boil.",
+          "hands": "30 sec",
+          "watch": true,
+          "burner": true
         }
       ]
     },
@@ -125,26 +144,31 @@
           "wait": "1 min",
           "uses": [
             "Dark chocolate"
-          ]
+          ],
+          "hands": "1 min"
         },
         {
           "do": "Stir until the chocolate is fully melted. Add the butter now, while it's warm, and stir it in.",
           "uses": [
             "Unsalted butter"
-          ]
+          ],
+          "hands": "2 min"
         },
         {
           "do": "Blend with a stick blender, keeping the blade fully submerged so you don't whip in air. This emulsifies the cocoa butter into the custard, which is where the silky texture comes from.",
-          "cue": "Smooth, thick and glossy"
+          "cue": "Smooth, thick and glossy",
+          "hands": "2 min"
         },
         {
           "do": "Press plastic wrap directly onto the whole surface to stop a skin forming. Chill until set. For tarts or cups, pour into them first and chill there.",
           "wait": "4 hr, ideally overnight",
-          "cue": "Firm and scoopable, like soft ganache"
+          "cue": "Firm and scoopable, like soft ganache",
+          "hands": "1 min"
         },
         {
           "do": "To spread or pipe, let the chilled crémeux sit at room temperature until it softens. It also tastes silkier served at room temperature than cold.",
-          "cue": "Spreads easily without tearing"
+          "cue": "Spreads easily without tearing",
+          "hands": "30 sec"
         }
       ]
     }

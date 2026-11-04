@@ -25,36 +25,53 @@
     },
     {
       "qty": "2 tsp",
-      "item": "olive oil (optional, for storage)"
+      "item": "olive oil (optional, for storage)",
+      "optional": true
     }
   ],
   "steps": [
     {
-      "do": "Trim the tough root end off each clove. If a clove has a green sprout running through it, halve it lengthwise and pull the sprout out — bitter, and it won't break down.",
+      "do": "Peel the garlic cloves.",
+      "hands": "3 min",
+      "prep": true,
+      "prepOnly": true,
       "uses": [
         "garlic cloves, peeled"
       ]
     },
     {
-      "do": "Chop the cloves into rough lentil-sized pieces. Precision doesn't matter; smaller pieces just can't dodge the muddler."
+      "do": "Trim the tough root end off each clove. If a clove has a green sprout running through it, halve it lengthwise and pull the sprout out — bitter, and it won't break down.",
+      "uses": [
+        "garlic cloves, peeled"
+      ],
+      "hands": "3 min",
+      "prep": true
+    },
+    {
+      "do": "Chop the cloves into rough lentil-sized pieces. Precision doesn't matter; smaller pieces just can't dodge the muddler.",
+      "hands": "2 min",
+      "prep": true
     },
     {
       "do": "Scatter the salt over the garlic. The coarse crystals are the abrasive doing the work — fine salt dissolves and grinds nothing.",
       "uses": [
         "coarse kosher salt"
-      ]
+      ],
+      "hands": "30 sec",
+      "prep": true
     },
     {
-      "do": "Tip it all into a narrow, heavy bowl (better than wide and shallow — the garlic stays under the muddler). Press and twist against the bottom and lower sides, scraping the sides down every 30 seconds, until it's sticky and mostly smooth."
-    },
-    {
-      "do": "If the bowl fights you, move to a cutting board. Hold the chef's knife nearly flat and drag it across the pile at an angle, pressing as you go. Re-gather, chop through once, smear again. Repeat until smooth."
+      "do": "Tip it all into a narrow, heavy bowl (better than wide and shallow — the garlic stays under the muddler). Press and twist against the bottom and lower sides, scraping the sides down every 30 seconds, until it's sticky and mostly smooth. If the bowl fights you, move to a cutting board: hold the chef's knife nearly flat and drag it across the pile at an angle, pressing as you go. Re-gather, chop through once, smear again, and repeat until smooth.",
+      "hands": "4 min",
+      "prep": true
     },
     {
       "do": "Use immediately, or stir in the olive oil until the paste is coated, jar it, and refrigerate.",
       "uses": [
         "olive oil (optional, for storage)"
-      ]
+      ],
+      "hands": "1 min",
+      "prep": true
     }
   ],
   "notes": [
@@ -68,5 +85,6 @@
   },
   "time": {
     "total": 10
-  }
+  },
+  "serve": "keeps"
 }

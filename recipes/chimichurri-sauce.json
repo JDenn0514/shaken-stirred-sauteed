@@ -25,6 +25,7 @@
       "30 min"
     ]
   ],
+  "serve": "keeps",
   "ingredients": [
     {
       "qty": "¼ cup",
@@ -71,7 +72,9 @@
         "flat leaf parsley, minced",
         "fresh oregano, minced",
         "fresh garlic, minced"
-      ]
+      ],
+      "hands": "6 min",
+      "prep": true
     },
     {
       "do": "Combine everything in a bowl — oil, vinegar, all the minced ingredients, pepper flakes — and whisk until it comes together.",
@@ -79,14 +82,16 @@
         "extra virgin olive oil",
         "red wine vinegar",
         "red pepper flakes"
-      ]
+      ],
+      "hands": "1 min"
     },
     {
       "do": "Season with salt and pepper. Let it stand at least 30 minutes before serving so the flavors settle in. Whisk again just before it goes to the table.",
       "wait": "At least 30 min",
       "uses": [
         "Salt and pepper to taste"
-      ]
+      ],
+      "hands": "1 min"
     }
   ],
   "notes": [

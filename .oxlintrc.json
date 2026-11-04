@@ -18,6 +18,6 @@
   "overrides": [
     { "files": ["sw.js"], "env": { "serviceworker": true } },
     { "files": ["assets/recipe-icons.js"], "globals": { "module": "readonly" } },
-    { "files": ["scripts/**", "tests/**", "*.config.mjs"], "env": { "node": true } }
+    { "files": ["scripts/**", "tests/**", "tools/**", "*.config.mjs"], "env": { "node": true } }
   ]
 }

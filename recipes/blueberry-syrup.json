@@ -1,0 +1,110 @@
+{
+  "title": "Blueberry Syrup",
+  "category": "cocktails",
+  "kind": "component",
+  "description": "Blueberries simmered with sugar and water, mashed in the pan and strained.",
+  "tags": {
+    "spirit": [
+      "non-alcoholic"
+    ],
+    "style": [
+      "syrup-mixer"
+    ],
+    "flavor": [
+      "fruity",
+      "sweet"
+    ],
+    "ingredients": [
+      "berries"
+    ],
+    "occasion": [
+      "make-ahead"
+    ],
+    "season": [
+      "summer"
+    ],
+    "diet": [
+      "vegan",
+      "gluten-free"
+    ]
+  },
+  "added": "2026-11-03",
+  "times": [
+    [
+      "Active",
+      "About 15 min"
+    ],
+    [
+      "Total",
+      "About 1 hr 15 min (to cold)"
+    ]
+  ],
+  "serve": "keeps",
+  "time": {
+    "total": 75
+  },
+  "beforeYouStart": [
+    "Set out a fine-mesh strainer over a bowl, and a clean jar for the syrup."
+  ],
+  "ingredients": [
+    {
+      "grams": 227,
+      "qty": "8 oz",
+      "item": "Blueberries"
+    },
+    {
+      "grams": 227,
+      "qty": "8 oz",
+      "item": "Granulated sugar"
+    },
+    {
+      "qty": "4 oz",
+      "ml": 120,
+      "item": "Water"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Combine the blueberries, sugar and water in a small saucepan and bring to a simmer over medium heat.",
+      "uses": [
+        "Blueberries",
+        "Granulated sugar",
+        "Water"
+      ],
+      "hands": "3 min",
+      "burner": true
+    },
+    {
+      "do": "Keep it at a simmer, mashing the berries against the pan as they soften so they give up their juice, until the sugar has dissolved.",
+      "cue": "Sugar dissolved, berries mashed",
+      "hands": "5 min",
+      "burner": true
+    },
+    {
+      "do": "Take it off the heat and strain it through the fine-mesh strainer into a bowl, pressing the solids to get all the syrup out. Discard the solids.",
+      "hands": "3 min"
+    },
+    {
+      "do": "Let it cool until it stops steaming, about 10 minutes.",
+      "wait": "About 10 min",
+      "hands": "30 sec"
+    },
+    {
+      "do": "Pour into the jar and refrigerate until cold, about 1 hour.",
+      "wait": "About 1 hr in the fridge",
+      "hands": "1 min"
+    }
+  ],
+  "notes": [
+    "The ratio is 2:2:1 blueberries to sugar to water by weight, so it scales to any batch size.",
+    {
+      "group": "Used in",
+      "items": [
+        "Blueberry Whipped Cream"
+      ]
+    }
+  ],
+  "source": {
+    "name": "Jacob's own, worked out with Claude"
+  }
+}

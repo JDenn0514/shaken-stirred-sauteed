@@ -4,14 +4,36 @@
   "kind": "dish",
   "description": "Oven-roasted asparagus finished under the broiler with lemon, butter, and parmesan.",
   "tags": {
-    "course": ["side"],
-    "cuisine": ["american"],
-    "method": ["roast-bake"],
-    "flavor": ["bright", "rich"],
-    "ingredients": ["asparagus", "lemon", "cheese", "butter"],
-    "occasion": ["weeknight", "entertaining"],
-    "season": ["spring"],
-    "diet": ["vegetarian", "gluten-free"]
+    "course": [
+      "side"
+    ],
+    "cuisine": [
+      "american"
+    ],
+    "method": [
+      "roast-bake"
+    ],
+    "flavor": [
+      "bright",
+      "rich"
+    ],
+    "ingredients": [
+      "asparagus",
+      "lemon",
+      "cheese",
+      "butter"
+    ],
+    "occasion": [
+      "weeknight",
+      "entertaining"
+    ],
+    "season": [
+      "spring"
+    ],
+    "diet": [
+      "vegetarian",
+      "gluten-free"
+    ]
   },
   "added": "2026-09-29",
   "yield": "Serves 8, as a side",
@@ -25,6 +47,8 @@
       "25 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "5 min",
   "time": {
     "total": 25
   },
@@ -60,21 +84,68 @@
   ],
   "steps": [
     {
+      "do": "Heat the oven to 200°C / 400°F.",
+      "hands": "30 sec",
+      "preheat": "400F"
+    },
+    {
+      "do": "Trim the woody ends off the asparagus. Juice half the lemon and slice the other half into rings. Cut the butter into pats, and shred the parmesan if it isn't already.",
+      "hands": "5 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "asparagus, trimmed",
+        "lemon, half juiced and half sliced into rings",
+        "unsalted butter, cut into pats",
+        "shredded parmesan cheese, or to taste"
+      ]
+    },
+    {
       "do": "Arrange the trimmed asparagus in a single layer on a rimmed baking sheet. Drizzle with the olive oil, season with the salt and pepper, and roll to coat evenly.",
-      "uses": ["asparagus, trimmed", "olive oil", "sea salt, or to taste", "black pepper, freshly ground, or to taste"]
+      "uses": [
+        "asparagus, trimmed",
+        "olive oil",
+        "sea salt, or to taste",
+        "black pepper, freshly ground, or to taste"
+      ],
+      "hands": "4 min",
+      "prep": "just before"
     },
     {
-      "do": "Squeeze the juice of half the lemon over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center.",
-      "uses": ["lemon, half juiced and half sliced into rings", "unsalted butter, cut into pats"]
+      "do": "Pour the lemon juice over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center.",
+      "uses": [
+        "lemon, half juiced and half sliced into rings",
+        "unsalted butter, cut into pats"
+      ],
+      "hands": "3 min",
+      "prep": "just before"
     },
     {
-      "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes. Pull the pan and switch the oven to broil.",
-      "wait": "8 to 10 min"
+      "do": "Roast at 400F (200C) for 8 to 12 minutes, until just fork-tender: thin spears finish nearer 8 minutes, thick spears nearer 12 minutes.",
+      "wait": "8 to 12 min",
+      "hands": "30 sec",
+      "oven": "400F"
+    },
+    {
+      "do": "Take the pan out of the oven.",
+      "hands": "30 sec",
+      "oven": false
+    },
+    {
+      "do": "Switch the oven to broil and give the broiler about 3 minutes to heat.",
+      "wait": "About 3 min",
+      "hands": "30 sec",
+      "preheat": "broil"
     },
     {
       "do": "Scatter the parmesan over the center of the asparagus and broil 2 to 3 minutes, until melted and golden.",
       "wait": "2 to 3 min",
-      "uses": ["shredded parmesan cheese, or to taste"]
+      "uses": [
+        "shredded parmesan cheese, or to taste"
+      ],
+      "hands": "30 sec",
+      "watch": true,
+      "oven": "broil"
     }
   ],
   "notes": [

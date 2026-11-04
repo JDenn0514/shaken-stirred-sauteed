@@ -4,13 +4,31 @@
   "kind": "component",
   "description": "Stovetop curd of whole eggs and yolks, tempered and strained.",
   "tags": {
-    "type": ["fillings-creams"],
-    "flavor": ["bright-tart"],
-    "usesUp": ["egg-yolks"],
-    "ingredients": ["lemon", "eggs", "butter"],
-    "occasion": ["make-ahead", "freezer-friendly"],
-    "season": ["year-round"],
-    "diet": ["vegetarian", "gluten-free"]
+    "type": [
+      "fillings-creams"
+    ],
+    "flavor": [
+      "bright-tart"
+    ],
+    "usesUp": [
+      "egg-yolks"
+    ],
+    "ingredients": [
+      "lemon",
+      "eggs",
+      "butter"
+    ],
+    "occasion": [
+      "make-ahead",
+      "freezer-friendly"
+    ],
+    "season": [
+      "year-round"
+    ],
+    "diet": [
+      "vegetarian",
+      "gluten-free"
+    ]
   },
   "added": "2026-09-27",
   "yield": "Makes 2 cups",
@@ -24,6 +42,7 @@
       "About 2 hr (to cold)"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 120
   },
@@ -75,37 +94,85 @@
   ],
   "steps": [
     {
+      "do": "Zest all 6 lemons, then juice them to make 1 cup. Set the butter out to soften, and take out the 3 eggs and the 4 yolks (saved in the fridge if you made a pavlova).",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Lemon zest",
+        "Fresh lemon juice",
+        "Unsalted butter",
+        "Large eggs",
+        "Large egg yolks"
+      ]
+    },
+    {
       "do": "In a medium bowl, rub the zest into the sugar with your fingertips until fragrant, about 30 seconds, then leave it. The sugar draws the oils out of the peel, which is where the deeper lemon aroma comes from.",
       "wait": "10 min",
-      "uses": ["Lemon zest", "Granulated sugar"]
+      "uses": [
+        "Lemon zest",
+        "Granulated sugar"
+      ],
+      "hands": "1 min",
+      "prep": true
     },
     {
-      "do": "Meanwhile, fill a large bowl partway with ice and cold water for chilling the curd later."
-    },
-    {
-      "do": "Bring the juice to a simmer in the saucepan over medium heat, about 3 minutes. While it heats, whisk the eggs, yolks and salt into the zest-sugar until smooth. Whole eggs plus yolks gives richness without the heavy, eggy thickness of an all-yolk curd.",
+      "do": "Bring the juice to a simmer in the saucepan over medium heat, about 3 minutes.",
       "wait": "About 3 min",
-      "uses": ["Fresh lemon juice", "Large eggs", "Large egg yolks", "Diamond Crystal kosher salt"]
+      "uses": [
+        "Fresh lemon juice"
+      ],
+      "hands": "30 sec",
+      "burner": true
     },
     {
-      "do": "Temper by drizzling the hot juice slowly into the egg mixture, whisking constantly, so the eggs warm gradually instead of scrambling."
+      "do": "While it heats, whisk the eggs, yolks and salt into the zest-sugar until smooth. Whole eggs plus yolks gives richness without the heavy, eggy thickness of an all-yolk curd.",
+      "uses": [
+        "Large eggs",
+        "Large egg yolks",
+        "Diamond Crystal kosher salt"
+      ],
+      "hands": "2 min",
+      "during": true
+    },
+    {
+      "do": "Set the egg bowl on a damp towel so it stays put. Temper by drizzling the hot juice slowly into the egg mixture, whisking constantly, so the eggs warm gradually instead of scrambling.",
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Pour it all back into the saucepan and cook over medium heat, whisking slowly but often. Direct heat is fine as long as you keep whisking and don't raise the flame; no double boiler needed.",
       "wait": "About 6 min",
-      "cue": "Slightly thickened, 170F (77C) on an instant-read thermometer"
+      "cue": "Slightly thickened, 170F (77C) on an instant-read thermometer",
+      "hands": "30 sec",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Off the heat, whisk in the butter until melted and the curd is smooth.",
-      "uses": ["Unsalted butter"]
+      "uses": [
+        "Unsalted butter"
+      ],
+      "hands": "1 min"
     },
     {
-      "do": "Strain through the fine-mesh strainer into a medium bowl, scraping the underside of the mesh with a spatula. Straining catches any bits of cooked egg, so a few lumps are nothing to worry about."
+      "do": "Fill a large bowl partway with ice and cold water, for chilling the curd.",
+      "hands": "2 min"
     },
     {
-      "do": "Press plastic wrap directly onto the surface to stop a skin forming. Set the bowl in the ice bath for 30 minutes, then refrigerate.",
-      "wait": "30 min ice bath, then about 1 hr fridge",
-      "cue": "Cold all the way through"
+      "do": "Strain through the fine-mesh strainer into a medium bowl, scraping the underside of the mesh with a spatula. Straining catches any bits of cooked egg, so a few lumps are nothing to worry about.",
+      "hands": "3 min"
+    },
+    {
+      "do": "Press plastic wrap directly onto the surface to stop a skin forming. Set the bowl in the ice bath for 30 minutes.",
+      "wait": "30 min in the ice bath",
+      "hands": "1 min"
+    },
+    {
+      "do": "Then refrigerate it.",
+      "wait": "About 1 hr in the fridge",
+      "cue": "Cold all the way through",
+      "hands": "30 sec"
     }
   ],
   "notes": [
@@ -126,7 +193,7 @@
     {
       "group": "Pairs with",
       "items": [
-        "Pavlova, once built: spend the 4 leftover whites on it and top it with the curd.",
+        "Pavlova: it uses the 4 whites from the eggs whose yolks go in this curd. Top it with the curd once it's built.",
         "Also: thumbprint cookies, tart shells, lemon bars over a buttery crust, crepes, pancakes, vanilla ice cream, swirled into plain yogurt."
       ]
     },

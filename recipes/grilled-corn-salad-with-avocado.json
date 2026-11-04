@@ -30,6 +30,8 @@
       "25 min"
     ]
   ],
+  "serve": "soon",
+  "sits": "1 hr",
   "time": {
     "total": 25
   },
@@ -115,6 +117,15 @@
   ],
   "steps": [
     {
+      "do": "Husk the corn and pull off the silks.",
+      "hands": "4 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "fresh corn, husked, silks removed"
+      ]
+    },
+    {
       "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
       "wait": "7 min",
       "uses": [
@@ -131,6 +142,22 @@
           "item": "ground black pepper",
           "group": "Salad"
         }
+      ],
+      "hands": "3 min",
+      "watch": true,
+      "grill": true
+    },
+    {
+      "do": "Halve the tomatoes, core and finely chop the bell pepper, and chop the green onions and cilantro. Squeeze the lime juice.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "cherry tomatoes, halved (about 2 cups)",
+        "small red bell pepper, cored and finely chopped",
+        "green onions, finely chopped",
+        "chopped fresh cilantro",
+        "fresh lime juice (about 2 limes)"
       ]
     },
     {
@@ -142,7 +169,8 @@
         "small red bell pepper, cored and finely chopped",
         "green onions, finely chopped",
         "chopped fresh cilantro"
-      ]
+      ],
+      "hands": "6 min"
     },
     {
       "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table.",
@@ -163,7 +191,8 @@
           "group": "Dressing"
         },
         "onion powder"
-      ]
+      ],
+      "hands": "3 min"
     }
   ],
   "notes": [

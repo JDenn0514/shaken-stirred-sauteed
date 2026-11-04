@@ -24,6 +24,8 @@
       "25 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "5 min",
   "time": {
     "total": 25
   },
@@ -89,37 +91,70 @@
   "steps": [
     {
       "do": "Halve each breast horizontally into 4 cutlets, then pound between plastic wrap to an even 1/2 inch. Even thickness lets lean breast cook through in minutes without drying out.",
-      "uses": ["boneless skinless chicken breasts (2)"]
+      "uses": ["boneless skinless chicken breasts (2)"],
+      "hands": "6 min",
+      "prep": true
     },
     {
       "do": "Pat the cutlets completely dry; wet chicken steams instead of browning. Season both sides with salt and pepper.",
-      "uses": ["salt and pepper"]
+      "uses": ["salt and pepper"],
+      "hands": "2 min",
+      "prep": true
     },
     {
       "do": "Dredge in the flour and shake off the excess. A thin coat is all you want: it crisps and shields the meat.",
-      "uses": ["flour"]
+      "uses": ["flour"],
+      "hands": "3 min",
+      "prep": "just before"
     },
     {
-      "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Sear the chicken 2 to 3 minutes per side until golden, then move to a plate.",
-      "wait": "2 to 3 min per side",
-      "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "cooking oil"]
+      "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Lay in the chicken and sear 2 to 3 minutes, until golden underneath.",
+      "wait": "2 to 3 min",
+      "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "cooking oil"],
+      "hands": "2 min",
+      "watch": true,
+      "burner": true
+    },
+    {
+      "do": "Turn the cutlets and sear 2 to 3 minutes more, until golden on the second side, then move them to a plate.",
+      "wait": "2 to 3 min",
+      "hands": "1 min",
+      "watch": true,
+      "burner": true
+    },
+    {
+      "do": "Mince the garlic.",
+      "hands": "2 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": ["garlic, minced"]
     },
     {
       "do": "Add the remaining butter to the pan and cook the garlic until fragrant, about 1 minute.",
       "wait": "About 1 min",
-      "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "garlic, minced"]
+      "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "garlic, minced"],
+      "hands": "30 sec",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Turn the heat to low before the honey goes in, since honey scorches fast. Stir in the soy sauce, chili paste, honey, cayenne and garlic powder.",
-      "uses": ["soy sauce", "chili paste, Sriracha or Frank's RedHot", "honey", "cayenne, to taste", "garlic powder"]
+      "uses": ["soy sauce", "chili paste, Sriracha or Frank's RedHot", "honey", "cayenne, to taste", "garlic powder"],
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Return the chicken and turn it in the sauce for 30 seconds to coat. Finish with chili flakes, salt and pepper to taste. If the glaze tightens toward toffee, loosen it with 1 to 2 tbsp warm water.",
       "wait": "30 sec",
-      "uses": ["red chili flakes, or 1/4 tsp chili powder", { "item": "salt and pepper", "amount": "to taste" }]
+      "uses": ["red chili flakes, or 1/4 tsp chili powder", { "item": "salt and pepper", "amount": "to taste" }],
+      "hands": "1 min",
+      "watch": true,
+      "burner": true
     },
     {
-      "do": "Pull off the heat right away. Slice into strips and spoon the pan sauce over. Serve immediately; the glaze softens the crust as it sits."
+      "do": "Pull off the heat right away. Slice into strips and spoon the pan sauce over. Serve immediately; the glaze softens the crust as it sits.",
+      "hands": "2 min",
+      "burner": false
     }
   ],
   "notes": [
