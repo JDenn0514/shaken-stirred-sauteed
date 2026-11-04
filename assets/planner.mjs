@@ -260,7 +260,13 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     if (next[d] === dish.servedFrom) return Math.max(readyAt[d], earliest[d]);
     return cooks(s) ? Math.max(readyAt[d], latest[d][next[d]] + (early[dish.slug] || 0) - dish.sits) : readyAt[d];
   };
-  const ovenFree = (d, setting) => [...oven].every(([o, h]) => o === d || h.until <= t || sameSetting(h.setting, setting));
+  // Dishes share the oven at the same setting, but only if at most one of them
+  // will need it at another setting later: two that both change it (lime bars
+  // down to 300F, a pavlova down to 200F) would each wait for the other.
+  const settingsLeft = (x) => dishes[x].steps.slice(next[x], dishes[x].lastOven + 1).map((s) => s.oven || s.preheat).filter(Boolean);
+  const staysAt = (x, setting) => settingsLeft(x).every((s) => sameSetting(s, setting));
+  const ovenFree = (d, setting) => [...oven].every(([o, h]) => o === d || h.until <= t
+    || (sameSetting(h.setting, setting) && (oven.has(d) || staysAt(d, setting) || staysAt(o, h.setting))));
   const hot = (setting) => setting === "off" || !heat || !covers(heat.setting, setting) || heat.hotAt <= t;
   const canStart = (d) => {
     const s = dishes[d].steps[next[d]];
@@ -293,6 +299,10 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     for (const kind of s.kit) busy.push({ kind, until: end });
     // Turning a hot oven down needs no heating time.
     if (s.preheat) heat = { setting: s.preheat, hotAt: at + s.hands + (heat && heat.hotAt <= at && covers(heat.setting, s.preheat) ? 0 : heatTime(s.preheat)) };
+    // A step that turns the oven down or off ("turn the heat down to 200F",
+    // "turn the oven off and let it cool inside") leaves it at that setting,
+    // so a dish that needs it hotter afterwards heats it again.
+    else if (s.oven && heat && !sameSetting(heat.setting, s.oven) && covers(heat.setting, s.oven)) heat = { setting: s.oven, hotAt: at };
     const setting = s.oven || s.preheat;
     if (setting) oven.set(d, { setting, until: next[d] - 1 === dishes[d].lastOven ? end : Infinity });
     else if (s.out && oven.has(d)) oven.set(d, { ...oven.get(d), until: finished ?? at + s.hands });
