@@ -82,6 +82,7 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
 15. **The plan says what it doesn't know** (`unknown`), so the lineup page can ask the cook before they start and save the answer to the recipe. Recipes from other people will often be missing these, and a plan built on them is wrong without saying so.
     - **A step that waits with no time** (bakes, rises, chills, cools, rests, marinates; goes in the oven; is left somewhere warm) plans as if it took none, so the plan comes out short. Any time in the step's text comes as a suggested answer. Not counted: prep, work done while something else waits, warnings ("don't let them soak"), storage ("refrigerate up to 24 hours"), and stove steps cooked "until fragrant", whose time is already the step's hands-on time.
     - **A dish with no serving time** is planned as hot, sitting up to 10 minutes (Jacob's decision). Components, baking and cocktails have safe defaults, so they aren't reported.
+    - The recipe intake uses the same check to know what to ask: see `intake-lineup-needs.md`.
     - Tested on the recipes as code alone restructures them (`tools/lineup-test/code-only.mjs` on the experiment branch): the steps reported hold about 90% of the missing waiting time, and nothing is reported on the reviewed recipes.
 
 The planner is a pure module (`assets/planner.mjs`) with no page code.
