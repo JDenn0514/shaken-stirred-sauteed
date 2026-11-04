@@ -79,6 +79,10 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
 
     Prep-first makes the meal longer, since the potatoes go in the oven later. In return, nothing time-sensitive starts until the knife work is behind you. The lineup page shows how long each way takes.
 14. **A ringing timer changes the plan, not your step.** When another dish's wait ends (the potatoes' bake), its follow-up step ("baste the potatoes") becomes urgent, so it becomes your next step after the one you're on.
+15. **The plan says what it doesn't know** (`unknown`), so the lineup page can ask the cook before they start and save the answer to the recipe. Recipes from other people will often be missing these, and a plan built on them is wrong without saying so.
+    - **A step that waits with no time** (bakes, rises, chills, cools, rests, marinates; goes in the oven; is left somewhere warm) plans as if it took none, so the plan comes out short. Any time in the step's text comes as a suggested answer. Not counted: prep, work done while something else waits, warnings ("don't let them soak"), storage ("refrigerate up to 24 hours"), and stove steps cooked "until fragrant", whose time is already the step's hands-on time.
+    - **A dish with no serving time** is planned as hot, sitting up to 10 minutes (Jacob's decision). Components, baking and cocktails have safe defaults, so they aren't reported.
+    - Tested on the recipes as code alone restructures them (`tools/lineup-test/code-only.mjs` on the experiment branch): the steps reported hold about 90% of the missing waiting time, and nothing is reported on the reviewed recipes.
 
 The planner is a pure module (`assets/planner.js`, or the builder's choice of name) with no page code. The prototype's `planner.js` is the starting point.
 
