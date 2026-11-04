@@ -509,9 +509,10 @@ describe("what the plan doesn't know", () => {
       ["Put it in the oven and turn the heat down to 200F.", { hands: "1 min", oven: "200F" }],
       ["Stir the garlic over medium heat until fragrant.", { hands: "1 min", burner: true }],
       ["Set aside in a warm spot until it's expanded.", { hands: "1 min" }],
+      ["Cover with plastic. Leave in a warm spot; how long it takes depends on the room.", { hands: "1 min" }],
       ["Lay the steak in the hot pan.", { hands: "1 min", burner: true }],
     ], { category: "baking" });
-    assert.deepEqual(planLineup({ dishes: [{ slug: "a" }] }, { a: r }).unknown.map((u) => u.step), [0, 2]);
+    assert.deepEqual(planLineup({ dishes: [{ slug: "a" }] }, { a: r }).unknown.map((u) => u.step), [0, 2, 3]);
   });
 
   test("words that only look like waits aren't reported", () => {
