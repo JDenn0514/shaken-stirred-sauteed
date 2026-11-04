@@ -434,7 +434,7 @@ const MAKE_AHEAD_SAVES = 30;
 // so the plan comes out short; a dish with no serving time is planned on an
 // assumption. Components, baking and cocktails have safe defaults, so they
 // aren't reported.
-const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight)|set (?:it |them )?aside (?:in|somewhere|until)|until (?:it's |they're |it has |they have )?(?:doubled|expanded|puffy|risen))\b/i;
+const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight)|set (?:it |them )?aside (?:in|somewhere|until)|until (?:it's |they're |it has |they have )?(?:doubled|expanded|puffy|risen)|(?:in a warm (?:spot|place)|somewhere warm))\b/i;
 // Not waits: work done while something else waits, warnings ("Don't let them
 // soak"), keeping it for later ("refrigerate up to 24 hours"), a glass chilled
 // while you mix, the oven left on for later.
