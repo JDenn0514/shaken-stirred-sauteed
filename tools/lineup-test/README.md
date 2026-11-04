@@ -21,4 +21,4 @@ node tools/lineup-test/views.mjs OUT_DIR
 ```
 
 The three were tested by six dry-run cooks (one per lineup and presentation)
-and compared; the results are in `results.md` once the run is done.
+and compared; the results are in `results.md` (summary, with caveats) and `results.json` (every report).
