@@ -108,16 +108,23 @@ describe("the oven", () => {
     assert.ok(plan.minutes - plan.ready.potatoes <= 10, `the potatoes sat ${plan.minutes - plan.ready.potatoes} min`);
   });
 
-  // Not yet as soon as it could: this plans 126 min where roasting, then
-  // baking the meringue, takes about 80. The hold-back rules fight when two hot
-  // dishes can't both be fresh (see the design doc, planner rule 8).
-  test("when no order gets every hot dish there in time, it doesn't wait out the day", () => {
+  test("when no order gets every hot dish there in time, it serves as soon as it reasonably can", () => {
     const recipes = {
       roast: recipe("Roast", [["Roast it", { hands: "2 min", wait: "30 min", oven: "200C" }]], { serve: "hot", sits: "2 min" }),
       meringue: recipe("Meringue", [["Bake the meringue", { hands: "2 min", wait: "30 min", oven: "120C" }]], { serve: "hot", sits: "2 min" }),
     };
     const plan = planLineup({ dishes: [{ slug: "roast" }, { slug: "meringue" }] }, recipes);
-    assert.ok(plan.minutes <= 180, `served at ${plan.minutes} min`);
+    assert.ok(plan.minutes <= 90, `served at ${plan.minutes} min`);
+  });
+
+  test("when not every hot dish can be fresh, everything is still ready by serving, with no gap mid-cook", () => {
+    const recipes = {
+      steak: recipe("Steak", [["Sear and baste the steak", { hands: "20 min", burner: true }]], { serve: "hot", sits: "2 min" }),
+      chicken: recipe("Chicken", [["Fry the chicken", { hands: "20 min", burner: true }]], { serve: "hot", sits: "2 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "steak" }, { slug: "chicken" }] }, recipes);
+    for (const [slug, ready] of Object.entries(plan.ready)) assert.ok(ready <= plan.courses.Main, `${slug} ready at ${ready}, served at ${plan.courses.Main}`);
+    assert.ok(plan.minutes <= 45, `served at ${plan.minutes} min`);
   });
 
   test("dishes share the oven at the same setting, 200C and 400F included", () => {
