@@ -428,11 +428,43 @@ function search(dishes, progress = {}) {
 // 30 minutes shorter, the plan asks (makeAhead), starting on "ahead" unless
 // lineup.ahead says otherwise, and the part made ahead gets its own plan.
 const MAKE_AHEAD_SAVES = 30;
+
+// What the plan doesn't know, for the page to ask the cook. A step that waits
+// (bakes, rises, chills, cools, rests…) with no time plans as if it took none,
+// so the plan comes out short; a dish with no serving time is planned on an
+// assumption. Components, baking and cocktails have safe defaults, so they
+// aren't reported.
+const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight))\b/i;
+// Not waits: work done while something else waits, warnings ("Don't let them
+// soak"), keeping it for later ("refrigerate up to 24 hours"), a glass chilled
+// while you mix.
+const NOT_A_WAIT = /^(?:while|meanwhile|as|once|when|after|before|during|don't|do not|never|use (?:it )?(?:right away|immediately))\b|\bwhile you\b|\bup to \d|\buntil (?:serving|needed|you're ready|ready to)\b|\bchill (?:the |a |your )?(?:glass|glasses|coupe|mug|cup)/i;
+const TIME_IN = /\b\d+(?:\s+\d+\/\d+)?\s*(?:(?:to|-|–)\s*\d+(?:\s+\d+\/\d+)?\s*)?(?:sec|seconds?|min|minutes?|hrs?|hours?)\b|\bovernight\b/i;
+function unknownsOf(slugs, recipes) {
+  const unknown = [];
+  for (const slug of slugs) {
+    const r = recipes[slug];
+    for (const s of stepsOf(r)) {
+      // Prep's waits (butter softening) aren't what makes a plan short.
+      if (s.wait || s.during || s.prep || s.prepOnly) continue;
+      const waiting = s.do.split(/(?<=[.!?])\s+/).find((x) => !NOT_A_WAIT.test(x) && WAITS.test(x));
+      if (!waiting) continue;
+      const time = TIME_IN.exec(waiting);
+      unknown.push({ kind: "wait", slug, step: s.n, text: s.do, ...(time && { suggest: time[0] }) });
+    }
+    if (!r.serve && r.kind !== "component" && r.category !== "baking" && r.category !== "cocktails") {
+      unknown.push({ kind: "serve", slug, assumed: `hot, sitting up to ${sits(r)} min` });
+    }
+  }
+  return unknown;
+}
 export function planLineup(lineup, recipes, progress = {}) {
   const keepsWhole = (slug) => !stepsOf(recipes[slug]).some((s) => s.holds);
   const dayParts = (slugs) => Object.fromEntries(slugs.map((slug) => [slug, keepsWhole(slug) ? "skip" : "after"]));
   const dayLength = (p) => Math.max(...Object.values(p.courses));
-  const allToday = search(chains(lineup, recipes), progress);
+  const everything = chains(lineup, recipes);
+  const unknown = unknownsOf([...new Set(everything.map((d) => d.slug))], recipes);
+  const allToday = search(everything, progress);
   const makeAhead = [];
   for (const { slug } of lineup.dishes) {
     // A dish that keeps entirely can be made ahead only if something's left for
@@ -446,7 +478,7 @@ export function planLineup(lineup, recipes, progress = {}) {
   // when nothing needs you yet.
   const withNow = (plan) => {
     const upNow = plan.steps.find((x) => !x.done && !x.skipped) ?? null;
-    return { ...plan, upNow, wait: upNow ? Math.max(0, upNow.at - (progress.now || 0)) : 0 };
+    return { ...plan, upNow, wait: upNow ? Math.max(0, upNow.at - (progress.now || 0)) : 0, unknown };
   };
   if (!ahead.length) return withNow({ ...allToday, makeAhead, aheadOfTime: null });
   const before = search(chains({ dishes: lineup.dishes.filter((d) => ahead.includes(d.slug)) }, recipes,
