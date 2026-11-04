@@ -291,7 +291,8 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     handsFree = Math.max(handsFree, finished ?? (s.watch ? end : at + s.hands));
     settle(d, end, finished ?? at + s.hands);
     for (const kind of s.kit) busy.push({ kind, until: end });
-    if (s.preheat) heat = { setting: s.preheat, hotAt: at + s.hands + heatTime(s.preheat) };
+    // Turning a hot oven down needs no heating time.
+    if (s.preheat) heat = { setting: s.preheat, hotAt: at + s.hands + (heat && heat.hotAt <= at && covers(heat.setting, s.preheat) ? 0 : heatTime(s.preheat)) };
     const setting = s.oven || s.preheat;
     if (setting) oven.set(d, { setting, until: next[d] - 1 === dishes[d].lastOven ? end : Infinity });
     else if (s.out && oven.has(d)) oven.set(d, { ...oven.get(d), until: finished ?? at + s.hands });
@@ -409,18 +410,21 @@ function planFor(dishes, serve, progress) {
 // The earliest serve time one cook can get everything ready for.
 function search(dishes, progress = {}) {
   const shortest = Math.max(progress.now || 0, ...dishes.map((d) => -latestStarts(d, 0)[0] || 0));
-  // If no serve time gets every dish there in time, the plan that has
-  // everything ready soonest wins, rather than the last one tried.
-  // A minute a hot dish sits past its limit counts as much as a minute more
-  // on the meal.
-  const cost = (p) => p.end + dishes.reduce((a, d) => a + Math.max(0, p.end - p.ready[d.slug] - d.sits), 0);
-  let best = null;
-  for (let serve = shortest; serve < shortest + 24 * 60; serve++) {
-    const plan = planFor(dishes, serve, progress);
-    if (!Object.keys(plan.late).length) return { steps: plan.steps, minutes: serve, ready: plan.ready, courses: plan.courses };
-    if (!best || cost(plan) < cost(best)) best = plan;
+  // Serving later than doing every step back to back never helps.
+  const horizon = shortest + Math.min(24 * 60, dishes.reduce((a, d) => a + d.steps.reduce((b, s) => b + s.hands + s.wait, 0), 60));
+  // When no serve time gets every hot dish there within its sitting time
+  // (three dishes that each must be eaten within 5 minutes, and one cook),
+  // the sitting times are loosened a little at a time until one does: the
+  // dishes sit only as much longer as they must, and the plan stays whole.
+  let plan;
+  for (const extra of [0, 5, 10, 20, 40, 80, Infinity]) {
+    const loose = extra ? Object.assign(dishes.map((d) => ({ ...d, sits: d.sits + extra })), { prepFirst: dishes.prepFirst }) : dishes;
+    for (let serve = shortest; serve < horizon; serve++) {
+      plan = planFor(loose, serve, progress);
+      if (!Object.keys(plan.late).length) return { steps: plan.steps, minutes: serve, ready: plan.ready, courses: plan.courses };
+    }
   }
-  return { steps: best.steps, minutes: best.end, ready: best.ready, courses: best.courses };
+  return { steps: plan.steps, minutes: plan.end, ready: plan.ready, courses: plan.courses };
 }
 
 // Plan the lineup. A dish that keeps, entirely or after a `holds` step, can
