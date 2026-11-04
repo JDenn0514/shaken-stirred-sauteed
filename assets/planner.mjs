@@ -367,11 +367,17 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     const busyFor = (x) => { const s = dishes[x].steps[next[x]]; return s.hands + (s.watch ? s.wait : 0); };
     const cooking = dishes.map((_, x) => [x, onHeat(x)]).filter(([, h]) => h);
     const soon = cooking.filter(([, h]) => h.due > t);
-    const room = soon.length ? Math.min(...soon.map(([, h]) => h.due - h.need)) - t + 0.5 : Infinity;
-    const fits = can.filter((x) => cooking.some(([y]) => y === x) || busyFor(x) <= room);
+    // Room before the next pot is ready, not counting the dish's own: a pot's
+    // next step doesn't run past another pot being ready either.
+    const roomFor = (x) => { const others = soon.filter(([y]) => y !== x); return others.length ? Math.min(...others.map(([, h]) => h.due - h.need)) - t + 0.5 : Infinity; };
+    const fits = can.filter((x) => busyFor(x) <= roomFor(x));
     if (!fits.length) { t = Math.min(...soon.map(([, h]) => h.due)); continue; }
     const ready = fits.filter((x) => cooking.some(([y]) => y === x));
-    const d = (ready.length ? ready : fits).reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
+    // When two pots are ready at once, the shorter step goes first, so less
+    // food waits less time; otherwise the most urgent step.
+    const d = ready.length > 1
+      ? ready.reduce((a, b) => (busyFor(b) < busyFor(a) || (busyFor(b) === busyFor(a) && latest[b][next[b]] < latest[a][next[a]]) ? b : a))
+      : (ready.length ? ready : fits).reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
     const i = next[d]++;
     const s = dishes[d].steps[i];
     // Heating isn't needed if the oven's already at that setting: an added step

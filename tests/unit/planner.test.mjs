@@ -783,6 +783,27 @@ describe("food in the oven with a step that takes it out", () => {
   });
 });
 
+describe("two dishes with food on the heat", () => {
+  test("one's next step doesn't run past the moment the other is ready", () => {
+    const plan = planLineup({ dishes: [{ slug: "pork" }, { slug: "curd" }], ahead: { curd: false } }, {
+      pork: recipe("Pork", [
+        ["Blanch the pork", { hands: "2 min", wait: "1 min", burner: true }],
+        ["Stir-fry the aromatics in the wok", { hands: "5 min", burner: true }],
+        ["Simmer the pork", { hands: "30 sec", wait: "90 min", burner: true }],
+      ], { serve: "hot", sits: "30 min" }),
+      curd: recipe("Curd", [
+        ["Simmer the juice", { hands: "30 sec", wait: "3 min", burner: true }],
+        ["While it heats, whisk the eggs", { hands: "2 min", during: true }],
+        ["Temper the eggs with the hot juice", { hands: "2 min" }],
+        ["Chill the curd", { hands: "1 min", wait: "60 min" }],
+      ], { serve: "keeps" }),
+    });
+    const at = (text) => plan.steps.find((s) => s.text === text).at;
+    const ready = at("Simmer the juice") + 3.5;
+    assert.ok(at("Temper the eggs with the hot juice") - ready <= 0.5, `the juice was ready at ${ready}, tempered at ${at("Temper the eggs with the hot juice")}`);
+  });
+});
+
 describe("food on the heat, with a step done during its wait", () => {
   test("the step after both still comes as soon as the food is ready", () => {
     const plan = planLineup({ dishes: [{ slug: "curd" }, { slug: "syrup" }] }, {
