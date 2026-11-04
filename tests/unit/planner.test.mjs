@@ -108,6 +108,18 @@ describe("the oven", () => {
     assert.ok(plan.minutes - plan.ready.potatoes <= 10, `the potatoes sat ${plan.minutes - plan.ready.potatoes} min`);
   });
 
+  // Not yet as soon as it could: this plans 126 min where roasting, then
+  // baking the meringue, takes about 80. The hold-back rules fight when two hot
+  // dishes can't both be fresh (see the design doc, planner rule 8).
+  test("when no order gets every hot dish there in time, it doesn't wait out the day", () => {
+    const recipes = {
+      roast: recipe("Roast", [["Roast it", { hands: "2 min", wait: "30 min", oven: "200C" }]], { serve: "hot", sits: "2 min" }),
+      meringue: recipe("Meringue", [["Bake the meringue", { hands: "2 min", wait: "30 min", oven: "120C" }]], { serve: "hot", sits: "2 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "roast" }, { slug: "meringue" }] }, recipes);
+    assert.ok(plan.minutes <= 180, `served at ${plan.minutes} min`);
+  });
+
   test("dishes share the oven at the same setting, 200C and 400F included", () => {
     const recipes = {
       potatoes: recipe("Potatoes", [
@@ -469,6 +481,71 @@ describe("recipes without planning data", () => {
   });
 });
 
+describe("what the plan doesn't know", () => {
+  const potatoes = recipe("Potatoes", [["Bake the potatoes", { hands: "2 min", wait: "60 min" }]], { serve: "hot", sits: "10 min" });
+
+  test("a step that waits with no time is reported, so the page can ask how long", () => {
+    const loaf = recipe("Loaf", [
+      ["Knead the dough", { hands: "10 min" }],
+      ["Cover and let it rise until doubled", { hands: "1 min" }],
+      ["Bake until deeply browned", { hands: "1 min", wait: "40 min" }],
+      ["Let it cool completely on a rack", { hands: "1 min" }],
+    ], { category: "baking" });
+    const plan = planLineup({ dishes: [{ slug: "loaf" }] }, { loaf });
+    assert.deepEqual(plan.unknown.map((u) => [u.kind, u.slug, u.step]), [["wait", "loaf", 1], ["wait", "loaf", 3]]);
+    assert.equal(plan.unknown[0].text, "Cover and let it rise until doubled");
+  });
+
+  test("not a step that's done while something else waits", () => {
+    const pie = recipe("Pie", [
+      ["Chill the dough", { hands: "1 min", wait: "1 hr" }],
+      ["While the dough chills, make the filling", { hands: "10 min" }],
+    ], { category: "baking" });
+    assert.deepEqual(planLineup({ dishes: [{ slug: "pie" }] }, { pie }).unknown, []);
+  });
+
+  test("words that only look like waits aren't reported", () => {
+    const steps = [
+      "Whisk the flour, baking soda and baking powder.", "Line a rimmed baking sheet with parchment.",
+      "Slice the cucumbers on a steep bias.", "Don't let them soak: they drink butter fast.",
+      "Use right away, or cover tightly and refrigerate up to 24 hours.", "Refrigerate until serving.",
+      "Lower the oven and let the crust cool while you make the curd.", "Chill the coupe and squeeze the lemon.",
+      "During the second rise, heat the oven to 350F.",
+    ].map((t) => [t, { hands: "1 min" }]);
+    steps.push(["Soften the butter and let it cool", { hands: "1 min", prep: true }]);
+    assert.deepEqual(planLineup({ dishes: [{ slug: "a" }] }, { a: recipe("A", steps, { category: "baking" }) }).unknown, []);
+  });
+
+  test("a time in the step's text, but not in its wait, is reported with that time to suggest", () => {
+    const pie = recipe("Pie", [["Bake for 45 minutes, until golden", { hands: "1 min" }]], { category: "baking" });
+    assert.deepEqual(planLineup({ dishes: [{ slug: "pie" }] }, { pie }).unknown,
+      [{ kind: "wait", slug: "pie", step: 0, text: "Bake for 45 minutes, until golden", suggest: "45 minutes" }]);
+  });
+
+  test("a dish with no serving time is reported, with what the plan assumed", () => {
+    const stew = recipe("Stew", [["Simmer the stew", { hands: "2 min", wait: "60 min", burner: true }]]);
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "stew" }] }, { potatoes, stew });
+    assert.deepEqual(plan.unknown, [{ kind: "serve", slug: "stew", assumed: "hot, sitting up to 10 min" }]);
+  });
+
+  test("a component, baking or a cocktail with no serving time isn't reported: those defaults are safe", () => {
+    const paste = recipe("Garlic Paste", [["Make the garlic paste", { hands: "10 min" }]], { kind: "component" });
+    assert.deepEqual(planLineup({ dishes: [{ slug: "potatoes" }, { slug: "paste" }] }, { potatoes, paste }).unknown, []);
+  });
+
+  test("dishes made ahead are included", () => {
+    const meringue = recipe("Meringue", [
+      ["Whip and shape", { hands: "15 min" }],
+      ["Bake", { hands: "1 min", wait: "90 min" }],
+      ["Let it cool in the oven", { hands: "1 min", holds: true }],
+      ["Top and serve", { hands: "4 min" }],
+    ], { category: "baking", serve: "soon", sits: "15 min" });
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "meringue" }] }, { potatoes, meringue });
+    assert.ok(plan.aheadOfTime, "the meringue is made ahead");
+    assert.deepEqual(plan.unknown.map((u) => u.text), ["Let it cool in the oven"]);
+  });
+});
+
 describe("nested recipes", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text)?.at;
   const recipes = {
@@ -485,6 +562,26 @@ describe("nested recipes", () => {
     assert.ok(at(plan, "Muddle to a paste") + 5 <= at(plan, "Mix the garlic butter"),
       `the paste was done at ${at(plan, "Muddle to a paste") + 5}, the butter mixed at ${at(plan, "Mix the garlic butter")}`);
     assert.equal(plan.minutes, 58);
+  });
+
+  test("one that's also in the lineup is made once, before the step that uses it", () => {
+    for (const order of [["potatoes", "garlic-paste"], ["garlic-paste", "potatoes"]]) {
+      const plan = planLineup({ dishes: order.map((slug) => ({ slug })) }, recipes);
+      assert.equal(plan.steps.filter((s) => s.text === "Chop the garlic").length, 1, `made twice, listed as ${order.join(", ")}`);
+      assert.ok(at(plan, "Muddle to a paste") + 5 <= at(plan, "Mix the garlic butter"));
+    }
+  });
+
+  test("one that's also in the lineup can be made ahead, and then isn't made on the day", () => {
+    const soup = {
+      soup: recipe("Soup", [["Simmer the broth", { hands: "2 min", wait: "20 min", burner: true }], ["Add the pasta and cook", { hands: "1 min", wait: "8 min", burner: true, uses: ["Pasta"] }]],
+        { serve: "hot", ingredients: [{ item: "Pasta", recipe: "pasta" }] }),
+      pasta: recipe("Pasta", [["Knead the dough", { hands: "10 min" }], ["Cut and dry the beads", { hands: "20 min", wait: "8 hr" }]], { kind: "component", serve: "keeps" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "soup" }, { slug: "pasta" }] }, soup);
+    assert.deepEqual(plan.makeAhead.map((m) => m.slug), ["pasta"]);
+    assert.equal(plan.steps.filter((s) => s.slug === "pasta").length, 0, "the pasta was made on the day too");
+    assert.ok(plan.minutes < 60, `the day takes ${plan.minutes} min`);
   });
 
   test("one marked already made isn't made, and its dish uses it as usual", () => {
