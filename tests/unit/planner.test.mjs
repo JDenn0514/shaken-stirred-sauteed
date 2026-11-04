@@ -127,6 +127,27 @@ describe("the oven", () => {
     assert.ok(plan.minutes <= 45, `served at ${plan.minutes} min`);
   });
 
+  test("two dishes that both change the oven's setting don't share it, so neither waits on the other forever", () => {
+    const recipes = {
+      bars: recipe("Lime Bars", [
+        ["Heat the oven to 350F", { hands: "1 min", preheat: "350F" }],
+        ["Bake the crust", { hands: "2 min", wait: "25 min", oven: "350F" }],
+        ["Lower the oven and bake the curd", { hands: "2 min", wait: "30 min", oven: "300F" }],
+      ], { category: "baking" }),
+      pavlova: recipe("Pavlova", [
+        ["Heat the oven to 350F for the pavlova", { hands: "1 min", preheat: "350F" }],
+        ["Bake the meringue at 200F", { hands: "1 min", wait: "90 min", oven: "200F" }],
+        ["Cool it in the oven, off", { hands: "1 min", wait: "120 min", oven: "off" }],
+      ], { category: "baking" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "bars" }, { slug: "pavlova" }] }, recipes);
+    const all = [...(plan.aheadOfTime?.steps || []), ...plan.steps].filter((s) => !s.skipped);
+    assert.equal(all.length, 6);
+    // And an oven turned down or off has to heat up again.
+    const when = (text) => all.find((s) => s.text === text).at;
+    if (when("Bake the crust") > when("Cool it in the oven, off")) assert.ok(when("Bake the crust") >= when("Heat the oven to 350F") + 15, `the crust went in at ${when("Bake the crust")}, the oven heated from ${when("Heat the oven to 350F")}`);
+  });
+
   test("dishes share the oven at the same setting, 200C and 400F included", () => {
     const recipes = {
       potatoes: recipe("Potatoes", [
