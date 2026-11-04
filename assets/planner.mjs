@@ -14,6 +14,11 @@ function minutes(text) {
   const low = num(m[1]), high = m[2] ? num(m[2]) : low;
   return ((low + high) / 2) * per + (m[4] ? +m[4] : 0);
 }
+// The short end of a range, where cook mode's timer starts: "35 to 45 min" is 35.
+function shortEnd(text) {
+  const m = TIME.exec(text || "");
+  return m ? num(m[1]) * { s: 1 / 60, m: 1, h: 60 }[m[3][0].toLowerCase()] + (m[4] ? +m[4] : 0) : 0;
+}
 
 // Two oven settings are the same if they're equal ("broil", "off") or
 // temperatures within 15°F of each other, so 200C and 400F share.
@@ -481,6 +486,48 @@ function unknownsOf(slugs, recipes) {
   }
   return unknown;
 }
+// What the lineup page needs that only the planner knows, added to a finished
+// plan (see the design doc, "What the planner gives the page"):
+// - each step's hands-on time, wait and whether it needs you there (watch);
+// - a step with a wait has a timer: when it starts, when its short end comes
+//   (where cook mode's timer starts) and when it ends, and `followUp`, the index of
+//   the dish's next step, to show when the timer rings;
+// - `idle`: how long nothing needs you before the step, so "nothing needs you"
+//   is only said when it's true;
+// - `serving`: each course with its time, its dishes, and how long each dish
+//   waits between ready and served, against how long it can (`over` > 0 is
+//   worth telling the cook: "the potatoes will be ready an hour early").
+function forThePage(plan, dishes, recipes, lineup) {
+  const info = new Map(dishes.flatMap((d) => d.steps.map((s) => [`${d.slug}:${s.n}`, s])));
+  let free = -Infinity;
+  const steps = plan.steps.map((x, i) => {
+    const s = info.get(`${x.slug}:${x.step}`) || { hands: 1, wait: 0, watch: false };
+    const out = { ...x, hands: s.hands, wait: s.wait, watch: s.watch };
+    if (s.wait > 0) {
+      const from = x.at + s.hands, raw = x.step === "heat" ? null : stepsOf(recipes[x.slug])[x.step]?.wait;
+      out.timer = { from, short: from + (shortEnd(raw) || s.wait), ends: from + s.wait };
+      const next = plan.steps.findIndex((y, j) => j > i && y.slug === x.slug && !info.get(`${y.slug}:${y.step}`)?.during);
+      if (next >= 0) out.followUp = next;
+    }
+    if (!x.skipped) {
+      out.idle = i === 0 || free === -Infinity ? 0 : Math.max(0, x.at - free);
+      free = Math.max(free, x.at + s.hands + (s.watch ? s.wait : 0));
+    }
+    return out;
+  });
+  if (!plan.courses) return { ...plan, steps };
+  const dish = Object.fromEntries(dishes.map((d) => [d.slug, d]));
+  const serving = Object.entries(plan.courses).map(([course, at]) => {
+    const here = lineup.dishes.map((d) => d.slug).filter((slug) => dish[slug]?.course === course);
+    const sitting = Object.fromEntries(here.filter((slug) => plan.ready[slug] != null).map((slug) => {
+      const limit = dish[slug].sits, waits = at - plan.ready[slug];
+      return [slug, { limit: limit === Infinity ? null : limit, waits, over: limit === Infinity ? 0 : Math.max(0, waits - limit) }];
+    }));
+    return { course, at, dishes: here, sitting };
+  }).filter((c) => c.dishes.length);
+  return { ...plan, steps, serving };
+}
+
 export function planLineup(lineup, recipes, progress = {}) {
   const keepsWhole = (slug) => !stepsOf(recipes[slug]).some((s) => s.holds);
   const dayParts = (slugs) => Object.fromEntries(slugs.map((slug) => [slug, keepsWhole(slug) ? "skip" : "after"]));
@@ -499,7 +546,9 @@ export function planLineup(lineup, recipes, progress = {}) {
   const ahead = makeAhead.filter((q) => q.ahead).map((q) => q.slug);
   // What cook mode shows: the step to do now, and how long to wait before it
   // when nothing needs you yet.
-  const withNow = (plan) => {
+  const withNow = (raw) => {
+    const plan = forThePage(raw, everything, recipes, lineup);
+    if (plan.aheadOfTime) plan.aheadOfTime = forThePage(plan.aheadOfTime, everything, recipes, lineup);
     const upNow = plan.steps.find((x) => !x.done && !x.skipped) ?? null;
     return { ...plan, upNow, wait: upNow ? Math.max(0, upNow.at - (progress.now || 0)) : 0, unknown };
   };

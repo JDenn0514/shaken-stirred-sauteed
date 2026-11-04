@@ -84,7 +84,33 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
     - **A dish with no serving time** is planned as hot, sitting up to 10 minutes (Jacob's decision). Components, baking and cocktails have safe defaults, so they aren't reported.
     - Tested on the recipes as code alone restructures them (`tools/lineup-test/code-only.mjs` on the experiment branch): the steps reported hold about 90% of the missing waiting time, and nothing is reported on the reviewed recipes.
 
-The planner is a pure module (`assets/planner.js`, or the builder's choice of name) with no page code. The prototype's `planner.js` is the starting point.
+The planner is a pure module (`assets/planner.mjs`) with no page code.
+
+### What the planner gives the page
+
+`planLineup(lineup, recipes, progress)` returns everything the lineup page and lineup cook mode need that only the planner knows. Times are minutes from the start; there are no clock times (Jacob's decision).
+
+**The lineup it's given:** `{ dishes: [{ slug, made, course }], ahead: { slug: true/false }, prepFirst }`. `made` lists a dish's nested recipes marked "Already made" (the page starts these from the ingredient's `alreadyMade`). `ahead` is the cook's answer to the make-ahead offer.
+
+**Progress, for re-planning as you cook:** `{ now, done: [{ slug, step, at, waitUntil }], current }`. The page sends this each time you move on; the plan comes back with finished steps marked `done`.
+
+| Field | What it is | What the page does with it |
+|---|---|---|
+| `steps` | Every step in order: `slug`, `step` (its index in the recipe, or `"heat"` for an added heating step), `text`, `at`. Also `done`, `current`, `skipped` (oven already hot), `added` (not on the recipe card). | The list, one step at a time in cook mode. |
+| `steps[].hands`, `.wait`, `.watch` | Hands-on minutes, the wait after them (a range planned from its middle) and whether the wait needs you there. | Durations; "stay with it" on watched waits. |
+| `steps[].timer` | On a step with a wait: `from` (it starts), `short` (the short end of the range, where the timer starts, so you check early) and `ends`. | The timer, pinned at the top while it runs. |
+| `steps[].followUp` | On a step with a wait: the index of the dish's next step. | **What to do when the timer rings** ("Pull the pan out", "Stir it all around again"). The second test's testers lost these when they sat on the step that started the timer. |
+| `steps[].idle` | How long nothing needs you before this step. | Say "Nothing needs you for 8 min" only when this is over a minute or two, and never on a hands-on stretch. |
+| `minutes`, `courses` | When it's served, and each course's time (dessert follows the main). | The total, and a closing step per course. |
+| `serving` | Each course: `at`, its `dishes`, and `sitting`: for each dish, how long it waits between ready and served (`waits`), how long it can (`limit`, `null` if it keeps) and by how much it's over (`over`). | **One closing "plate everything" step** per course, naming the dishes, so no dish's own "serve hot" ends the meal early. When `over` is more than a few minutes, tell the cook before they start ("the potatoes will be ready about an hour early: one oven, two temperatures"). |
+| `ready` | When each dish is done. | |
+| `upNow`, `wait` | The step to do now, and how long until it when nothing needs you yet. | Cook mode's current step. |
+| `makeAhead`, `aheadOfTime` | Dishes worth making ahead (each with the minutes it `saves` and whether it's set `ahead`), and the made-ahead plan, with the same step fields. | The make-ahead offer, and the day-before plan. |
+| `unknown` | What the plan doesn't know (rule 15): a step that waits with no time (`suggest` is a time from its text), and a dish planned on an assumed serving time (`assumed`). | Ask the cook before they start; save the answer to the recipe and re-plan. |
+
+**The page's own work, from the recipe data:** quantities on each step (from its `uses` and the ingredients), the gather list (each dish's "Before you start"), a shopping list, and how far behind you are (keep the first plan's `minutes` and compare). The planner doesn't do these.
+
+**Left to the design:** whether to show landmarks in the list (the second test found phase headings no help where they were; testers asked for them at the busy hand-offs and at serving), how the unknowns are asked, and the wording of the warnings.
 
 ## Nested and connected recipes
 
