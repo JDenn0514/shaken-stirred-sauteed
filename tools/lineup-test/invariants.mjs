@@ -133,11 +133,15 @@ function check(plan, lineup, isDay) {
     const r = recipes[slug], limit = sitsOf(r);
     if (limit === Infinity || plan.ready[slug] == null) continue;
     const served = plan.courses[r.category === "baking" ? "Dessert" : "Main"] ?? plan.minutes;
-    if (served - plan.ready[slug] > limit + 1) report("hot dish sits too long", lineup, `${slug} ready at ${plan.ready[slug]}, served at ${served}, can sit ${limit}`);
+    // Expected when not every hot dish can be fresh: the planner then loosens
+    // sitting times until a plan works. Listed to see how much.
+    if (served - plan.ready[slug] > limit + 1) report("(information) hot dish sits past its limit", lineup, `${slug} ready at ${plan.ready[slug]}, served at ${served}, can sit ${limit}`);
     if (plan.ready[slug] > served + 0.5) report("ready after serving", lineup, `${slug} ready at ${plan.ready[slug]}, served at ${served}`);
   }
-  // 8. No long stretch with nothing happening: nothing in hand or running.
-  const spans = timed.map((s) => [s.at, Math.max(s.end, s.busyTo)]).sort((a, b) => a[0] - b[0]);
+  // 8. No long stretch with nothing happening: nothing in hand or running,
+  // apart from eating the main course before dessert.
+  const table = plan.courses?.Main != null && plan.courses?.Dessert != null ? [plan.courses.Main, plan.courses.Dessert] : null;
+  const spans = [...timed.map((s) => [s.at, Math.max(s.end, s.busyTo)]), ...(table ? [table] : [])].sort((a, b) => a[0] - b[0]);
   let reach = spans[0]?.[1] ?? 0;
   for (const [a, b] of spans) { if (a - reach > 20) report("nothing happening for over 20 min", lineup, `${Math.round(reach)} to ${Math.round(a)}`); reach = Math.max(reach, b); }
 }
@@ -145,7 +149,11 @@ function check(plan, lineup, isDay) {
 let planned = 0;
 for (const lineup of LINEUPS) {
   let plan;
-  try { plan = planLineup({ dishes: lineup.map((slug) => ({ slug })) }, recipes); } catch (e) { report("can't plan", lineup, e.message); continue; }
+  // As the lineup page starts it: a linked recipe marked "already made" isn't
+  // made, unless it's in the lineup itself.
+  const made = (slug) => (recipes[slug].ingredients || []).flatMap((g) => (g && Array.isArray(g.items) ? g.items : [g]))
+    .filter((i) => i && i.recipe && i.alreadyMade && !lineup.includes(i.recipe)).map((i) => i.recipe);
+  try { plan = planLineup({ dishes: lineup.map((slug) => ({ slug, made: made(slug) })) }, recipes); } catch (e) { report("can't plan", lineup, e.message); continue; }
   planned++;
   check(plan, lineup, true);
   if (plan.aheadOfTime) check({ ...plan.aheadOfTime, ready: {}, courses: {} }, lineup, false);
