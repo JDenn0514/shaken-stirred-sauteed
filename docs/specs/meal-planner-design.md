@@ -59,25 +59,26 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
    - the recipes it uses are ready;
    - its equipment is free.
 3. **Waits run on their own,** unless the step marks them as needing you (searing, broiling, whisking a curd). While one runs, your hands go to the next most urgent step. That can be a later step of the same dish when the recipe marks it `during` (frying the pork while the congee simmers); the step after those waits for both.
-4. **Hot dishes are held back.** A hot dish doesn't start so early that it would sit longer than it can once done. Dishes that keep have no such limit and fill the gaps.
-5. **Equipment:** one oven, four burners, one microwave, one grill.
+4. **Hot dishes are held back.** A hot dish doesn't start so early that it would sit longer than it can once done, and the same goes for each later step that starts cooking it (in the oven, on a burner): the asparagus isn't roasted early only to wait for the broiler. Dishes that keep have no such limit and fill the gaps.
+5. **Food on the heat comes first.** When something on a burner is about to be ready (the curd's juice coming to a simmer), nothing from another dish starts that would run past that moment, and its next step goes first once it's ready.
+6. **Equipment:** one oven, four burners, one microwave, one grill.
    - Dishes can share the oven only at the same setting. Temperatures within 15°F (about 10°C) count as the same, so 200°C and 400°F share.
    - A dish holds the oven from its first oven step to its last.
    - Heating the oven runs in the background while you carry on.
    - If a dish needs the oven at a setting and its recipe has no step heating it, the planner adds "Heat the oven to 200°C / 400°F" at the start of that dish's cooking, after its prep, marked as added for this meal. If the oven is already at that setting, the added step is skipped.
    - Turning the oven down or off needs no heating time.
-6. **Heating time counts.** Heating takes 15 minutes, or 3 minutes for the broiler. When the step straight after a heating step needs the oven hot, the heating time counts in the backward pass.
-7. **Fixing a late dish.** If a dish comes out late, the planner plans it to finish a little earlier, and does the same for any dish whose oven use held it up. It never moves a dish earlier than it can sit once done. If no order is on time, it serves at the earliest time it can get everything ready.
-8. **The earliest serve time wins.** The planner tries serve times from the shortest possible upward and keeps the first one that works.
-9. **Re-planning.** Each time you move on, the planner runs again from that moment. Finished steps and running waits stay as they happened, using real elapsed time, so a slow step moves the rest of the meal later. There's no "this took longer" button, because the planner can see it.
-10. **Ranges plan from the middle.** "7 to 8 min" plans as 7.5. Timers still start at the short end, as in cook mode, so you check early.
-11. **Prep before heat, always.** A dish's prep steps (marked `prep`, see Recipe data) come before its first step that isn't prep. Prep marked "just before" (cutting apples that would brown, salting a steak) is done as late as it can be, but still before the step that needs it.
-12. **"Prep everything first" or "Fastest".** These are the two ways to plan a meal.
+7. **Heating time counts.** Heating takes 15 minutes, or 3 minutes for the broiler. When the step straight after a heating step needs the oven hot, the heating time counts in the backward pass.
+8. **Fixing a late dish.** If a dish comes out late, the planner plans it to finish a little earlier, and does the same for any dish whose oven use held it up. It never moves a dish earlier than it can sit once done. If no order is on time, it serves at the earliest time it can get everything ready.
+9. **The earliest serve time wins.** The planner tries serve times from the shortest possible upward and keeps the first one that works.
+10. **Re-planning.** Each time you move on, the planner runs again from that moment. Finished steps and running waits stay as they happened, using real elapsed time, so a slow step moves the rest of the meal later. There's no "this took longer" button, because the planner can see it.
+11. **Ranges plan from the middle.** "7 to 8 min" plans as 7.5. Timers still start at the short end, as in cook mode, so you check early.
+12. **Prep before heat, always.** A dish's prep steps (marked `prep`, see Recipe data) come before its first step that isn't prep. Prep marked "just before" (cutting apples that would brown, salting a steak) is done as late as it can be, but still before the step that needs it.
+13. **"Prep everything first" or "Fastest".** These are the two ways to plan a meal.
     - **Prep everything first** (the default, Jacob's decision): no step that isn't prep starts until all the meal's ahead-of-time prep is done. Only heating the oven, which runs in the background, can start during prep, and so can a nested or connected recipe that a prep step uses (the garlic paste for the potatoes' garlic butter), all of it.
     - **Fastest:** prep fills waits like any other step, as in the prototype.
 
     Prep-first makes the meal longer, since the potatoes go in the oven later. In return, nothing time-sensitive starts until the knife work is behind you. The lineup page shows how long each way takes.
-13. **A ringing timer changes the plan, not your step.** When another dish's wait ends (the potatoes' bake), its follow-up step ("baste the potatoes") becomes urgent, so it becomes your next step after the one you're on.
+14. **A ringing timer changes the plan, not your step.** When another dish's wait ends (the potatoes' bake), its follow-up step ("baste the potatoes") becomes urgent, so it becomes your next step after the one you're on.
 
 The planner is a pure module (`assets/planner.js`, or the builder's choice of name) with no page code. The prototype's `planner.js` is the starting point.
 
@@ -182,7 +183,7 @@ When nothing needs you yet, the next screen is a wait step, laid out like any ot
 ### When another dish's timer rings
 
 - **It doesn't interrupt the step you're on.** Its strip at the top rings, in the section colour, with its own **Stop** and its follow-up: "Potatoes, bake · Time's up: then baste them".
-- **The plan makes the follow-up your next step** (planner rule 13), and Up next changes to show it.
+- **The plan makes the follow-up your next step** (planner rule 14), and Up next changes to show it.
 - **Two timers at once** stack, each with its own Stop, and one sound plays until all are stopped.
 - "+2 min" on a ringing timer, or cancelling one early, re-plans.
 

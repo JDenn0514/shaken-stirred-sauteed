@@ -73,7 +73,7 @@
     },
     {
       "do": "Working one at a time on a board, hold a potato between thumb and finger and cut crosswise slices about 4 mm apart, stopping short of the base so the slices stay joined. Laying chopsticks along both sides makes this foolproof — the blade stops on the wood.",
-      "hands": "10 min",
+      "hands": "15 min",
       "prep": "just before"
     },
     {
@@ -81,13 +81,12 @@
       "hands": "1 min"
     },
     {
-      "do": "Melt the butter and chop the parsley.",
+      "do": "Melt the butter.",
       "hands": "3 min",
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "salted butter, melted",
-        "Chopped parsley, to finish"
+        "salted butter, melted"
       ]
     },
     {
@@ -102,23 +101,24 @@
       "prep": true
     },
     {
-      "do": "Brush the mixture over each potato, pushing it down into the cuts. Bake 40 minutes.",
+      "do": "Brush half the mixture over the potatoes, pushing it down into the cuts, and keep the rest for basting. Bake 40 minutes.",
       "wait": "40 min",
       "hands": "3 min",
       "oven": "200C"
     },
     {
-      "do": "Pull the tray out, baste with the reserved garlic butter, and return to the oven for a further 15–20 minutes, until cooked through and crisp at the edges.",
+      "do": "Pull the tray out, baste with the reserved garlic butter (warm it for a few seconds if it has set), and return to the oven for a further 15–20 minutes, until cooked through and crisp at the edges.",
       "wait": "15 to 20 min",
       "hands": "2 min",
       "oven": "200C"
     },
     {
-      "do": "Scatter with parsley and serve hot.",
+      "do": "Take the potatoes out of the oven, chop the parsley and scatter it over, and serve hot.",
       "uses": [
         "Chopped parsley, to finish"
       ],
-      "hands": "1 min"
+      "hands": "2 min",
+      "oven": false
     }
   ],
   "notes": [

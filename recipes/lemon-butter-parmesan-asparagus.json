@@ -77,7 +77,7 @@
       "do": "Arrange the trimmed asparagus in a single layer on a rimmed baking sheet. Drizzle with the olive oil, season with the salt and pepper, and roll to coat evenly.",
       "uses": ["asparagus, trimmed", "olive oil", "sea salt, or to taste", "black pepper, freshly ground, or to taste"],
       "hands": "4 min",
-      "prep": true
+      "prep": "just before"
     },
     {
       "do": "Squeeze the juice of half the lemon over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center.",
@@ -86,13 +86,13 @@
       "prep": "just before"
     },
     {
-      "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes.",
-      "wait": "8 to 10 min",
+      "do": "Roast at 400F (200C) for 8 to 10 minutes, until just fork-tender — thin spears finish nearer 8 minutes, thick spears nearer 12 minutes. Pull the pan out.",
+      "wait": "8 to 12 min",
       "hands": "30 sec",
       "oven": "400F"
     },
     {
-      "do": "Pull the pan and switch the oven to broil. Give the broiler about 3 minutes to heat.",
+      "do": "Switch the oven to broil and give the broiler about 3 minutes to heat.",
       "wait": "About 3 min",
       "hands": "30 sec",
       "preheat": "broil"

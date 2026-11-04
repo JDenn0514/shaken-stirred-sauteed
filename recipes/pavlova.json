@@ -99,7 +99,8 @@
           "preheat": "350F"
         },
         {
-          "do": "Separate the eggs while they're cold, saving the 4 yolks for lemon curd, and let the whites come to room temperature. The bowl and whisk must be completely free of fat or yolk.",
+          "do": "Separate the eggs while they're cold, saving the 4 yolks for lemon curd (cover them and refrigerate; they keep 2 days), and let the whites come to room temperature, about 30 minutes. The bowl and whisk must be completely free of fat or yolk.",
+          "wait": "About 30 min",
           "hands": "3 min",
           "prep": true,
           "prepOnly": true,
@@ -172,7 +173,11 @@
           "do": "Turn the oven off and let the pavlova cool completely inside it. The slow cool keeps cracking down.",
           "hands": "30 sec",
           "wait": "About 2 hr",
-          "oven": "off",
+          "oven": "off"
+        },
+        {
+          "do": "Once it's cool, move the shell to an airtight container and keep it at room temperature until you top it, up to 2 days.",
+          "hands": "1 min",
           "holds": true
         }
       ]

@@ -85,7 +85,8 @@
       "hands": "3 min"
     },
     {
-      "do": "Let it cool.",
+      "do": "Let it cool until it stops steaming, about 10 minutes.",
+      "wait": "About 10 min",
       "hands": "30 sec"
     },
     {

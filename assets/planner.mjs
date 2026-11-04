@@ -235,7 +235,17 @@ function simulate(dishes, serve, early = {}, progress = {}) {
   const free = (kind) => busy.filter((b) => b.kind === kind && b.until > t).length < CAPACITY[kind];
 
   const left = (d) => next[d] < dishes[d].steps.length;
-  const opensAt = (d) => Math.max(readyAt[d], next[d] === dishes[d].servedFrom ? earliest[d] : -Infinity);
+  // A hot dish is held back from its first step tied to serving, and again at
+  // each later step that starts cooking (oven, burner, grill, microwave): such a
+  // step starts no earlier than its sitting time before it's due, so nothing
+  // roasts early and then waits for the oven. Hands-on steps aren't held.
+  const cooks = (s) => (s.oven && s.oven !== "off") || s.kit.length > 0;
+  const opensAt = (d) => {
+    const dish = dishes[d], s = dish.steps[next[d]];
+    if (next[d] < dish.servedFrom || dish.sits === Infinity) return readyAt[d];
+    if (next[d] === dish.servedFrom) return Math.max(readyAt[d], earliest[d]);
+    return cooks(s) ? Math.max(readyAt[d], latest[d][next[d]] + (early[dish.slug] || 0) - dish.sits) : readyAt[d];
+  };
   const ovenFree = (d, setting) => [...oven].every(([o, h]) => o === d || h.until <= t || sameSetting(h.setting, setting));
   const hot = (setting) => setting === "off" || !heat || !covers(heat.setting, setting) || heat.hotAt <= t;
   const canStart = (d) => {
@@ -305,7 +315,30 @@ function simulate(dishes, serve, early = {}, progress = {}) {
       if (t === Infinity) throw new Error(`No order works: ${dishes.filter((_, x) => left(x)).map((x) => x.slug).join(", ")} can't go on`);
       continue;
     }
-    const d = can.reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
+    // Food left on the heat comes first. A dish has food on the heat while the
+    // last step it started that isn't "during" another's wait used a burner and
+    // has a wait: the juice simmering, even while its eggs are whisked. Nothing
+    // from another dish starts that would run past the moment it's ready (less
+    // the dish's own steps still to do during the wait), and once it's ready its
+    // next step goes first.
+    const onHeat = (x) => {
+      if (!left(x) || next[x] === 0) return null;
+      const st = dishes[x].steps;
+      let k = next[x] - 1;
+      while (k > 0 && st[k].during) k--;
+      if (!st[k].kit.includes("burner") || !(st[k].wait > 0)) return null;
+      let need = 0;
+      for (let j = next[x]; j < st.length && st[j].during; j++) need += st[j].hands;
+      return { due: st[next[x]].during ? background[x] : readyAt[x], need };
+    };
+    const busyFor = (x) => { const s = dishes[x].steps[next[x]]; return s.hands + (s.watch ? s.wait : 0); };
+    const cooking = dishes.map((_, x) => [x, onHeat(x)]).filter(([, h]) => h);
+    const soon = cooking.filter(([, h]) => h.due > t);
+    const room = soon.length ? Math.min(...soon.map(([, h]) => h.due - h.need)) - t + 0.5 : Infinity;
+    const fits = can.filter((x) => cooking.some(([y]) => y === x) || busyFor(x) <= room);
+    if (!fits.length) { t = Math.min(...soon.map(([, h]) => h.due)); continue; }
+    const ready = fits.filter((x) => cooking.some(([y]) => y === x));
+    const d = (ready.length ? ready : fits).reduce((a, b) => (latest[b][next[b]] < latest[a][next[a]] ? b : a));
     const i = next[d]++;
     const s = dishes[d].steps[i];
     // Heating isn't needed if the oven's already at that setting: an added step
