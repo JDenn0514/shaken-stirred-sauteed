@@ -105,10 +105,14 @@ function chains(lineup, recipes, parts = {}) {
     if (part === "skip") return;
     const r = recipes[slug];
     // Prep that can be done ahead comes before the dish's first step that isn't
-    // prep; "just before" prep stays where the recipe has it.
+    // prep; "just before" prep stays where the recipe has it. A dish that keeps
+    // part-way (`holds`) does this for each part, so the fruit for a pavlova's
+    // topping is prepped on the day, not with the meringue.
     const ahead = (s) => s.prep === true || s.prepOnly;
     const all = stepsOf(r);
-    const ordered = [...all.filter(ahead), ...all.filter((s) => !ahead(s))];
+    const prepFirst = (l) => [...l.filter(ahead), ...l.filter((s) => !ahead(s))];
+    const keepsAt = all.findLastIndex((s) => s.holds) + 1;
+    const ordered = [...prepFirst(all.slice(0, keepsAt)), ...prepFirst(all.slice(keepsAt))];
     const steps = ordered.map((s) => ({
       slug, n: s.n, text: s.do, hands: s.hands == null ? handsGuess(r, all) : minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
       oven: s.oven || null, preheat: s.preheat || null, out: s.oven === false, holds: !!s.holds, during: !!s.during, prep: ahead(s),
@@ -233,7 +237,10 @@ function simulate(dishes, serve, early = {}, progress = {}) {
   const done = new Map((progress.done || []).map((x) => [`${x.slug}:${x.step}`, x]));
   const doneAt = (d) => (left(d) ? done.get(`${dishes[d].slug}:${dishes[d].steps[next[d]].n}`)?.at : undefined);
   const waitUntil = (d) => done.get(`${dishes[d].slug}:${dishes[d].steps[next[d] - 1].n}`)?.waitUntil;
-  const prepLeft = () => dishes.some((dish, d) => dish.steps.some((x, i) => i >= next[d] && x.prep));
+  // Only the prep at the head of a dish counts: prep for the part after it
+  // keeps comes later.
+  const leadPrep = dishes.map((dish) => { const i = dish.steps.findIndex((x) => !x.prep); return i < 0 ? dish.steps.length : i; });
+  const prepLeft = () => dishes.some((dish, d) => next[d] < leadPrep[d]);
   const free = (kind) => busy.filter((b) => b.kind === kind && b.until > t).length < CAPACITY[kind];
 
   const left = (d) => next[d] < dishes[d].steps.length;
@@ -320,7 +327,9 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     }
     // Food left on the heat comes first. A dish has food on the heat while the
     // last step it started that isn't "during" another's wait used a burner and
-    // has a wait: the juice simmering, even while its eggs are whisked. Nothing
+    // has a wait, or that ends off the stove: the juice simmering, even while its
+    // eggs are whisked, or the syrup simmering until its sugar dissolves; or that
+    // used the oven, with a wait, when the next step takes the food out. Nothing
     // from another dish starts that would run past the moment it's ready (less
     // the dish's own steps still to do during the wait), and once it's ready its
     // next step goes first.
@@ -329,7 +338,12 @@ function simulate(dishes, serve, early = {}, progress = {}) {
       const st = dishes[x].steps;
       let k = next[x] - 1;
       while (k > 0 && st[k].during) k--;
-      if (!st[k].kit.includes("burner") || !(st[k].wait > 0)) return null;
+      // A pot with no timer ("keep it at a simmer until the sugar dissolves")
+      // is ready as soon as the step is, unless the next step is on the stove too.
+      // Food in the oven counts when the next step takes it out.
+      const pot = st[k].kit.includes("burner") && (st[k].wait > 0 || !st[next[x]].kit.includes("burner"));
+      const roasting = st[k].oven && st[k].oven !== "off" && st[k].wait > 0 && st[next[x]].out;
+      if (!pot && !roasting) return null;
       let need = 0;
       for (let j = next[x]; j < st.length && st[j].during; j++) need += st[j].hands;
       return { due: st[next[x]].during ? background[x] : readyAt[x], need };
