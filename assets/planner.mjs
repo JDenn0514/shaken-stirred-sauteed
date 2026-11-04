@@ -63,7 +63,8 @@ function sits(r) {
 // sit only `sits` minutes once done; one that keeps can sit as long as it likes.
 // `oven` is the setting a step needs, and `preheat` heats the oven to a setting
 // in the background; the dish holds the oven from its first such step to the
-// end of its last.
+// end of its last, or, if a later step takes it out (`oven: false`), until
+// that step is done.
 //
 // A required ingredient that links to a recipe (`recipe`) is a nested recipe:
 // it's made too, unless the lineup says it's already made. An optional one is
@@ -110,7 +111,7 @@ function chains(lineup, recipes, parts = {}) {
     const ordered = [...all.filter(ahead), ...all.filter((s) => !ahead(s))];
     const steps = ordered.map((s) => ({
       slug, n: s.n, text: s.do, hands: s.hands == null ? handsGuess(r, all) : minutes(s.hands), wait: minutes(s.wait), watch: !!s.watch,
-      oven: s.oven || null, preheat: s.preheat || null, holds: !!s.holds, during: !!s.during, prep: ahead(s),
+      oven: s.oven || null, preheat: s.preheat || null, out: s.oven === false, holds: !!s.holds, during: !!s.during, prep: ahead(s),
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
     }));
@@ -127,8 +128,9 @@ function chains(lineup, recipes, parts = {}) {
     const holdsAt = steps.findLastIndex((x) => x.holds) + 1;
     const from = part === "after" ? holdsAt : 0, to = part === "before" ? holdsAt : steps.length;
     const kept = steps.slice(from, to);
+    const lastSetting = kept.findLastIndex((s) => s.oven || s.preheat), takenOut = kept.findIndex((s, k) => k > lastSetting && s.out);
     const index = dishes.push({
-      slug, course, steps: kept, lastOven: kept.findLastIndex((s) => s.oven || s.preheat), neededBy: parent ? [parent] : [],
+      slug, course, steps: kept, lastOven: lastSetting >= 0 && takenOut >= 0 ? takenOut : lastSetting, neededBy: parent ? [parent] : [],
       sits: part === "before" ? Infinity : sits(r),
       servedFrom: part === "before" ? kept.length : heldFrom(kept, part === "after" ? 0 : holdsAt),
     }) - 1;
@@ -280,6 +282,7 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     if (s.preheat) heat = { setting: s.preheat, hotAt: at + s.hands + heatTime(s.preheat) };
     const setting = s.oven || s.preheat;
     if (setting) oven.set(d, { setting, until: next[d] - 1 === dishes[d].lastOven ? end : Infinity });
+    else if (s.out && oven.has(d)) oven.set(d, { ...oven.get(d), until: finished ?? at + s.hands });
   };
   for (;;) {
     const ds = dishes.map((_, d) => d).filter((d) => doneAt(d) !== undefined);
