@@ -37,6 +37,8 @@ Each flag is `{ kind, text, why }`, plus `parts` for `split` and `joined`:
 | `split` | A written step split in two or more, so each has at most one wait and one place on the stove or in the oven. `text` is the original, `parts` the new steps; join them back if it reads better as one |
 | `joined` | An alternative ("No blender? Shake…") joined to the step before it. `parts` are the original steps |
 | `planning` | A wait the restructuring read from the text |
+| `storage` | Something saved for another recipe or day ("saving the 4 yolks for lemon curd") with no word on how to keep it, or a recipe that says it keeps (a "Do ahead" note) whose steps never say how to store it. Add a step, so a make-ahead lineup can end there |
+| `no-amount` | A bought ingredient with no amount ("Fresh berries", "Whipped cream"): add one for shopping. Salt, pepper, water, "juice of ½ lemon" and things "for the pan" aren't flagged |
 | `title`, `ingredients`, `steps` | Nothing found |
 
 ## What the text reader does (`parse.mjs`)

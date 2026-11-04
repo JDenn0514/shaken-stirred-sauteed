@@ -12,8 +12,54 @@ import { restructure } from "../restructure/restructure.mjs";
 
 const CATEGORIES = ["baking", "cooking", "cocktails"];
 
+// What a cook needs to plan ahead, which recipes often leave out:
+// - how to keep something saved for later ("saving the 4 yolks for lemon curd"),
+//   and how to store a dish that keeps once it's done (the make-ahead plan ends
+//   there);
+// - an amount for each ingredient that's bought (berries "to taste"), apart from
+//   salt, pepper, water and the like.
+const STORE = /\b(refrigerat|fridge|freez|airtight|cover|wrap|store|room temperature|jar|container)\w*/i;
+const BASICS = /^(salt|pepper|kosher salt|sea salt|flaky salt|black pepper|salt and (?:freshly ground )?(?:black )?pepper|water|ice|cooking spray|nonstick spray)\b/i;
+const FOR_THE_PAN = /\bfor (?:the )?(?:pan|bowl|dish|tray|sheet|greasing|dusting|kneading|the work surface)\b/i;
+export function planningChecks(recipe) {
+  const flags = [];
+  const flatList = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
+  const steps = flatList(recipe.steps).map((s) => (typeof s === "string" ? s : s.do));
+  for (const step of steps) {
+    for (const sentence of step.split(/(?<=[.!?])\s+/)) {
+      // Saved for another recipe or another day ("saving the 4 yolks for lemon
+      // curd"), not for the garnish later in this one, nor part of a mixture
+      // held back for a later step ("Hold back roughly half for later").
+      const heldBack = /\b(?:hold|keep)(?:ing)? back\b/i.test(sentence);
+      const saved = !heldBack && (/\b(?:sav(?:e|ing)|reserv(?:e|ing)|set(?:ting)? aside)\b[^.]*\bfor (?!(?:the )?(?:garnish|top|topping|serving|finish|basting|sauce)\b)\w/i.test(sentence) || /\bfor (?:later|tomorrow|another day)\b/i.test(sentence));
+      if (saved && !STORE.test(sentence)) {
+        flags.push({ kind: "storage", text: sentence, why: "something is saved for later: say how to keep it (covered, in the fridge) and for how long" });
+      }
+    }
+  }
+  const notes = flatList(recipe.notes).map((n) => (typeof n === "string" ? n : n.do || ""));
+  // A recipe meant to be made ahead (a "Do ahead" note), not one whose notes
+  // say how to keep leftovers.
+  const keeps = (recipe.notes || []).some((g) => /^(do|make) ahead$/i.test(g.group || "")) || [...notes, ...steps].some((t) => /\b(?:make|do) (?:it |this )?ahead\b/i.test(t));
+  const last = steps.at(-1);
+  // Storing it can come before the finishing touches (the pavlova's shell).
+  // Covering dough to rise or softening butter isn't storing the dish.
+  const stores = (t) => t.split(/(?<=[.!?])\s+/).some((x) => STORE.test(x) && !/\b(?:rise|rises|proof|double[ds]?|expand(?:s|ed)?|warm (?:place|spot)|come to room temperature)\b/i.test(x));
+  if (keeps && last && !steps.some(stores)) {
+    flags.push({ kind: "storage", text: last, why: "the recipe says it keeps, but no step says how to store it: add one, so a make-ahead plan can end there" });
+  }
+  for (const i of flatList(recipe.ingredients)) {
+    if (typeof i !== "object" || i.grams || i.ml || /\d|[½⅓⅔¼¾⅛]|^(pinch|dash|handful)/i.test(i.qty || "")) continue;
+    if (/^(?:juice|zest) of\b|^pinch\b|\d|[½⅓⅔¼¾⅛]/i.test(i.item)) continue; // "Juice of ½ lemon"
+    if (BASICS.test(i.item) || FOR_THE_PAN.test(`${i.item}, ${i.note || ""}`)) continue;
+    flags.push({ kind: "no-amount", text: i.item, why: "no amount: add one so you know how much to buy, and so a shopping list can add it up" });
+  }
+  return flags;
+}
+
 // Adds planning data (tools/restructure) and drops its bookkeeping.
 function finish(recipe, flags, { category, titles = {} } = {}) {
+  flags.push(...planningChecks(recipe));
   if (CATEGORIES.includes(category)) recipe.category = category;
   else flags.push({ kind: "category", text: "", why: "choose Baking, Cooking or Cocktails" });
   const { recipe: out, notes } = restructure({ category: recipe.category || "cooking", ...recipe }, titles, null);

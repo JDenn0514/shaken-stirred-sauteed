@@ -5,7 +5,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { parseRecipeText } from "../../tools/intake/parse.mjs";
-import { draftFromText, draftFromSchemaOrg, forSaving } from "../../tools/intake/intake.mjs";
+import { draftFromText, draftFromSchemaOrg, forSaving, planningChecks } from "../../tools/intake/intake.mjs";
 import { buildIndex } from "../helpers/build-index.mjs";
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
@@ -223,5 +223,62 @@ describe("splitting a step that does more than one thing", () => {
     const saved = forSaving(d.recipe);
     assert.ok(flat(saved.steps).every((s) => s.review === undefined));
     assert.equal(buildIndex({ "test-loaf": saved }).ok, true);
+  });
+});
+
+describe("checks for what a cook needs to plan ahead", () => {
+  const draft = (text) => draftFromText(text, { category: "baking" });
+  const kinds = (d, kind) => d.flags.filter((f) => f.kind === kind);
+
+  test("something saved for later with no word on how to keep it is flagged", () => {
+    const d = draft("Meringue\nINGREDIENTS\n4 egg whites\n1 cup sugar\nMETHOD\nSeparate the eggs, saving the 4 yolks for lemon curd.\nWhip the whites with the sugar.");
+    assert.deepEqual(kinds(d, "storage").map((f) => f.text), ["Separate the eggs, saving the 4 yolks for lemon curd."]);
+  });
+
+  test("not when the step says how to keep it", () => {
+    const d = draft("Meringue\nINGREDIENTS\n4 egg whites\nMETHOD\nSeparate the eggs, saving the 4 yolks for lemon curd; cover and refrigerate them.\nWhip the whites.");
+    assert.equal(kinds(d, "storage").length, 0);
+  });
+
+  test("a dish that keeps, whose last step doesn't say how to store it, is flagged", () => {
+    const d = draft("Loaf\nINGREDIENTS\n2 cups flour\nMETHOD\nBake: Bake until browned, 40 minutes.\nLet cool completely on a rack.\nDO AHEAD\nThe loaf, well wrapped, keeps up to 4 days at room temperature.");
+    assert.equal(kinds(d, "storage").length, 1);
+    assert.match(kinds(d, "storage")[0].why, /keeps/);
+  });
+
+  test("covering dough to rise or letting butter come to room temperature isn't storing it", () => {
+    const d = draft("Loaf\nINGREDIENTS\n2 cups flour\n4 tbsp butter\nMETHOD\nSet the butter out to come to room temperature.\nCover the bowl with plastic wrap and let rise until doubled, 1 hour.\nBake until browned, 40 minutes.\nLet cool on a rack.\nDO AHEAD\nKeeps up to 4 days.");
+    assert.equal(kinds(d, "storage").length, 1);
+  });
+
+  test("not when the last step stores it", () => {
+    const d = draft("Loaf\nINGREDIENTS\n2 cups flour\nMETHOD\nBake until browned, 40 minutes.\nOnce cool, wrap it well and keep it at room temperature.\nDO AHEAD\nKeeps up to 4 days.");
+    assert.equal(kinds(d, "storage").length, 0);
+  });
+
+  test("not when an earlier step stores it before the finishing touches", () => {
+    const d = draft("Shell\nINGREDIENTS\n4 egg whites\nMETHOD\nBake 90 minutes.\nMove the cooled shell to an airtight container.\nRight before serving, pile on the cream.\nNOTES\nThe shell keeps up to 2 days.");
+    assert.equal(kinds(d, "storage").length, 0);
+  });
+
+  test("saving something for later in the same recipe isn't flagged", () => {
+    const d = draft("Congee\nINGREDIENTS\n1 scallion\nMETHOD\nMince the scallion whites, saving the greens.\nSlice the greens and scatter them over.");
+    assert.equal(kinds(d, "storage").length, 0);
+  });
+
+  test("holding back part of a mixture for later in the same recipe isn't flagged", () => {
+    const d = draft("Potatoes\nINGREDIENTS\n4 tbsp butter\nMETHOD\nMelt the butter. Hold back roughly half for later.\nBrush the rest over the potatoes.");
+    assert.equal(kinds(d, "storage").length, 0);
+  });
+
+  test("an amount in the name or a weight counts as an amount", () => {
+    const d = draftFromSchemaOrg({ "@type": "Recipe", name: "Dressing", recipeIngredient: ["Juice of ½ lemon", "Zest of 1 lemon"], recipeInstructions: ["Whisk."] }, { category: "cooking" });
+    assert.equal(kinds(d, "no-amount").length, 0);
+    assert.equal(planningChecks({ ingredients: [{ item: "Dark chocolate", grams: 200 }], steps: ["Melt it."] }).length, 0);
+  });
+
+  test("an ingredient with no amount is flagged, but not salt, pepper or butter for the pan", () => {
+    const d = draft("Pavlova\nINGREDIENTS\n4 egg whites\nFresh berries, to taste\nWhipped cream\nSalt and pepper\nButter, for the pan\nWater\nMETHOD\nTop and serve.");
+    assert.deepEqual(kinds(d, "no-amount").map((f) => f.text), ["Fresh berries", "Whipped cream"]);
   });
 });
