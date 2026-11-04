@@ -528,6 +528,63 @@ describe("steps that run during another's wait", () => {
   });
 });
 
+describe("food that's cooking isn't left waiting", () => {
+  const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
+
+  test("a hot dish isn't cooked early only to wait for the oven partway through", () => {
+    // The asparagus roasts while the potatoes bake, then needs the oven for the
+    // broiler: it should finish roasting about when the potatoes come out, not
+    // roast early and sit in the oven.
+    const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "asparagus" }] }, {
+      potatoes: recipe("Potatoes", [
+        ["Heat the oven for the potatoes", { hands: "1 min", preheat: "200C" }],
+        ["Bake the potatoes", { hands: "2 min", wait: "40 min", oven: "200C" }],
+        ["Serve the potatoes", { hands: "1 min" }],
+      ], { serve: "hot", sits: "10 min" }),
+      asparagus: recipe("Asparagus", [
+        ["Roast the asparagus", { hands: "1 min", wait: "10 min", oven: "200C" }],
+        ["Pull the asparagus and switch to broil", { hands: "30 sec", preheat: "broil" }],
+        ["Broil the parmesan", { hands: "30 sec", wait: "3 min", watch: true, oven: "broil" }],
+      ], { serve: "hot", sits: "5 min" }),
+    });
+    const roasted = at(plan, "Roast the asparagus") + 1 + 10;
+    assert.ok(at(plan, "Pull the asparagus and switch to broil") - roasted <= 5,
+      `the asparagus finished roasting at ${roasted} and waited until ${at(plan, "Pull the asparagus and switch to broil")}`);
+  });
+
+  test("when something on the stove is about to be ready, nothing long starts in the way", () => {
+    // The juice simmers 3 minutes, then the eggs are tempered with it at once.
+    // Straining the syrup (4 minutes) mustn't start in between and leave the
+    // juice boiling down.
+    const plan = planLineup({ dishes: [{ slug: "curd" }, { slug: "syrup" }] }, {
+      curd: recipe("Curd", [
+        ["Simmer the juice", { hands: "30 sec", wait: "3 min", burner: true }],
+        ["Temper the eggs with the hot juice", { hands: "2 min" }],
+      ], { serve: "keeps" }),
+      syrup: recipe("Syrup", [["Strain the syrup", { hands: "4 min" }]], { serve: "keeps" }),
+    });
+    const simmered = at(plan, "Simmer the juice") + 0.5 + 3;
+    assert.ok(at(plan, "Temper the eggs with the hot juice") - simmered <= 0.5,
+      `the juice was ready at ${simmered} but tempered at ${at(plan, "Temper the eggs with the hot juice")}`);
+  });
+});
+
+describe("food on the heat, with a step done during its wait", () => {
+  test("the step after both still comes as soon as the food is ready", () => {
+    const plan = planLineup({ dishes: [{ slug: "curd" }, { slug: "syrup" }] }, {
+      curd: recipe("Curd", [
+        ["Simmer the juice", { hands: "30 sec", wait: "3 min", burner: true }],
+        ["Whisk the eggs while it heats", { hands: "2 min", during: true }],
+        ["Temper the eggs with the hot juice", { hands: "2 min" }],
+      ], { serve: "keeps" }),
+      syrup: recipe("Syrup", [["Strain the syrup", { hands: "3 min" }]], { serve: "keeps" }),
+    });
+    const at = (text) => plan.steps.find((s) => s.text === text).at;
+    assert.ok(at("Temper the eggs with the hot juice") - (at("Simmer the juice") + 3.5) <= 0.5,
+      `the juice was ready at ${at("Simmer the juice") + 3.5} but tempered at ${at("Temper the eggs with the hot juice")}`);
+  });
+});
+
 describe("other equipment", () => {
   const at = (plan, text) => plan.steps.find((s) => s.text === text).at;
 
