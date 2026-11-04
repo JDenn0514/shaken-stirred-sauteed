@@ -2,7 +2,7 @@
 // against WCAG 2.1 A and AA. It catches things like low colour contrast and
 // missing labels; it can't judge everything, so it's a floor, not a guarantee.
 import AxeBuilder from "@axe-core/playwright";
-import { test, expect } from "./fixtures.mjs";
+import { test, expect, onMenu } from "./fixtures.mjs";
 
 const PAGES = [
   ["welcome page", "index.html", (page) => expect(page.locator('[data-count="all"]')).toHaveText("all 6")],
@@ -48,6 +48,19 @@ const PAGES = [
     await page.getByRole("button", { name: "Start mixing" }).click();
     await expect(cook(page)).toBeVisible();
   }],
+  ["menu page, empty", "menu.html", (page) => expect(page.getByRole("heading", { level: 1 })).toHaveText("Let's make something")],
+  ["menu page, searching", "menu.html?q=lemon", (page) => expect(page.getByRole("button", { name: "+ Add" })).toBeVisible()],
+  ["menu page with dishes, a nested recipe and a make-ahead line", "menu.html", async (page) => {
+    await expect(page.getByRole("region", { name: "Ahead of time" })).toBeVisible();
+  }, ["roast-chicken", "green-beans", "slow-cake"]],
+  ["menu page with a dish's menu open", "menu.html", async (page) => {
+    await page.getByRole("button", { name: "Green Beans", exact: true }).click();
+    await expect(page.getByRole("menu")).toBeVisible();
+  }, ["roast-chicken", "green-beans"]],
+  ["menu page asking what a recipe doesn't say", "menu.html", async (page) => {
+    await expect(page.getByRole("region", { name: /the recipes don't say/ })).toBeVisible();
+  }, ["mystery-stew"]],
+  ["menu page when no order works", "menu.html", (page) => expect(page.getByRole("alert")).toBeVisible(), ["loop-a"]],
 ];
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }
@@ -69,8 +82,9 @@ for (const scheme of ["light", "dark"]) {
   test.describe(`${scheme} mode`, () => {
     test.use({ colorScheme: scheme });
 
-    for (const [name, url, ready] of PAGES) {
+    for (const [name, url, ready, menu] of PAGES) {
       test(`${name} has no detectable accessibility problems`, async ({ page }) => {
+        if (menu) await onMenu(page, menu);
         await page.goto(url);
         await ready(page);
         const { violations } = await new AxeBuilder({ page })
