@@ -1,0 +1,2058 @@
+{
+ "reports": [
+  {
+   "lineup": "steak-dinner",
+   "presentation": "A",
+   "run": 1,
+   "presentation_is": "every step of every recipe in one order, one step at a time, with each step's done-when cue and the timers already running",
+   "report": {
+    "total_time": "About 1 hr 57 min, from peeling garlic to the asparagus coming out from under the broiler, plus about 2 more minutes to slice the steak and plate. The screen promised \"about 1 hr 55 min\", so that was close. My clock: potatoes went in at about 0:46. Applesauce was mashed by about 1:15. Potatoes came out at about 1:46 and the asparagus was done at about 1:55. Prep ran a little long, because peeling 8 cloves, muddling the paste and hasselback-slicing 8 potatoes took me about 45 min before the first timer. The later steps then had small gaps that soaked up the difference.",
+    "lookups": 10,
+    "literal_failures": [
+     {
+      "step": "28 (asparagus roast: '... Pull the pan out.')",
+      "what_goes_wrong": "'Pull the pan out' is in a step you leave a few seconds after the pan goes in. The asparagus timer then rings during step 31's 'Nothing needs you for about 4 min. Up next: Hasselback Potatoes', and no step tells you to take the asparagus out. Step 32 doesn't even list its timer any more. Done literally, the asparagus stays in the oven through the potato step and is still inside when step 33 switches the oven to broil, so it overcooks before the parmesan goes on."
+     },
+     {
+      "step": "34 (last step: broil parmesan 2-3 min)",
+      "what_goes_wrong": "The screen ends here. No step says to take the asparagus out from under the broiler, and none says to slice the steak or serve the meal. Done literally, the asparagus stays under the broiler and the steak is never sliced."
+     },
+     {
+      "step": "32 (potatoes: '... and serve hot')",
+      "what_goes_wrong": "It says to serve now, but the asparagus still needs about 3 min of broiler heating and 2-3 min of broiling, and the steak is still resting. Followed literally, the potatoes are served on their own about 6-8 min before the rest of the meal."
+     },
+     {
+      "step": "19 (applesauce: 'Microwave 7-8 minutes on high. Stir it all around again.')",
+      "what_goes_wrong": "The stir happens after the timer, but by then the screen has moved on to steps 20 and 21. When the timer rings you're looking at step 21, 'Microwave another 7-8 minutes', which doesn't mention stirring. Following the current screen, you skip the stir and get uneven cooking."
+     },
+     {
+      "step": "9 (potatoes: stir oil, butter, garlic paste, salt, pepper)",
+      "what_goes_wrong": "No amounts are given, and the screen just had you make a whole batch of garlic paste (8 cloves, about 3 tbsp). Done literally, you stir in all of it, but the card wants 1 tsp. That's about 9 times too much garlic, plus the paste's 1/2 tsp of salt on top of the salt you add."
+     },
+     {
+      "step": "13 (applesauce prep: 'Juice the half lemon')",
+      "what_goes_wrong": "Step 11 has just used a whole lemon for the asparagus (half juiced, half sliced into rings), so 'the half lemon' doesn't exist. You either take the asparagus juice or need a second lemon the screen never mentions."
+     },
+     {
+      "step": "30 (steak: pull at 130F inside; add butter, herbs and garlic)",
+      "what_goes_wrong": "This is the first time the screen mentions a thermometer. The card's 'Before you start: have an instant-read thermometer ready' never reaches the screen, so you have to go and find one during a 'stay with it' step. The herbs and the steak's butter were never prepped either."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "Steps 26-29: oil heating to smoking, then season the steak, then put the asparagus in the oven, then lay the steak in",
+      "what": "Putting the asparagus in the oven comes between seasoning the steak 'right before it goes in' and laying it in the pan. The oil is already smoking and keeps overheating while you deal with the oven."
+     },
+     {
+      "moment": "Step 30 (basting the steak, 'stay with it') while the asparagus timer runs",
+      "what": "The asparagus timer is 8-12 min. If it is set to the short end, or the steak takes a bit long, it rings while you're spooning butter over the steak and checking the temperature. You'd have to leave the pan to pull the asparagus tray."
+     },
+     {
+      "moment": "Step 25 (pull the potatoes, baste, warm the reserved garlic butter)",
+      "what": "The steak's sit-out timer rings during this step. That's harmless, but the very next step needs a smoking-hot pan, so in practice you're starting the skillet while you finish basting."
+     },
+     {
+      "moment": "Steps 32-33 (take potatoes out, chop and scatter parsley, switch the oven to broil)",
+      "what": "This is also when the asparagus has just come out (unprompted) and the steak rest timer is about to ring. A short burst of juggling three dishes."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Step 1, 'Peel the garlic cloves'",
+      "unclear": "How many cloves? Nothing on the screen gives quantities. I had to check the card (8)."
+     },
+     {
+      "moment": "Step 5, 'Scatter the salt'",
+      "unclear": "How much salt, and what kind? The card says 1/2 tsp coarse kosher, and the reason given on screen only works with coarse salt."
+     },
+     {
+      "moment": "Step 6, muddling",
+      "unclear": "No muddler or narrow heavy bowl was flagged in advance. I improvised with the knife-on-board method."
+     },
+     {
+      "moment": "Step 7, 'Melt the butter'",
+      "unclear": "How much (2 tbsp, from the card), and how: microwave or pan."
+     },
+     {
+      "moment": "Step 8, 'Use immediately, or stir in olive oil... jar it'",
+      "unclear": "Which applies? The paste is used in the next step, but most of the batch is left over, so I had to decide whether to jar the rest."
+     },
+     {
+      "moment": "Step 10, 'Peel the garlic cloves, if using'",
+      "unclear": "Which cloves, and how many? It comes right after the garlic paste, so it's easy to think these were already done in step 1. The card says 2, optional."
+     },
+     {
+      "moment": "Step 13, 'Juice the half lemon'",
+      "unclear": "Which half lemon? The asparagus lemon has just been used up."
+     },
+     {
+      "moment": "Step 19 and 21, 'timer: 7 to 8 min'",
+      "unclear": "Which end of the range does the timer ring at? Should the dish be covered? The card's notes talk about uncovering it, but no step says to cover it."
+     },
+     {
+      "moment": "Step 24, 'Squeeze the juice of half the lemon'",
+      "unclear": "It was already juiced in step 11, so I assumed this means pour that juice over, not squeeze another half."
+     },
+     {
+      "moment": "Step 28, 8 to 10 min vs timer 8 to 12",
+      "unclear": "How long to roast. The text says 8 to 10, then says thick spears take nearer 12."
+     },
+     {
+      "moment": "Step 31 wait, asparagus timer rings",
+      "unclear": "No step says what to do. 'Up next' says potatoes. I guessed I should pull the asparagus, from the text of step 28."
+     },
+     {
+      "moment": "Step 32, potatoes timer 15-20 min",
+      "unclear": "Whether to go by the timer or check 'cooked through and crisp at the edges'. If they aren't done, they would have to stay in the oven when it switches to broil."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Timers listed under steps 20-22",
+      "what": "The countdowns don't line up. Between steps 20 and 21 the potatoes drop from 30 to 20 min while the steak drops only from 30 to 25. Between 21 and 22 the potatoes drop 6 min and the steak 9. Both timers run in the same real time, so you can't trust the printed 'min left' figures."
+     },
+     {
+      "where": "Step 28",
+      "what": "The text says 'for 8 to 10 minutes' and then 'thick spears nearer 12 minutes'. The timer says 8 to 12. The card has the same inconsistency."
+     },
+     {
+      "where": "Step 11 vs step 24",
+      "what": "The prep step has you juice half the lemon. Step 24 says 'Squeeze the juice of half the lemon' again, as if it hadn't been done."
+     },
+     {
+      "where": "Step 11 vs step 13",
+      "what": "Step 11 uses the whole lemon. Step 13 refers to 'the half lemon' as if half is left. The cards need 1.5 lemons, and the screen never says so."
+     },
+     {
+      "where": "Step 28 vs steps 31-33",
+      "what": "Step 28 says 'Pull the pan out', but after the asparagus timer rings no step shows it. Step 32's timer list quietly drops the asparagus timer."
+     },
+     {
+      "where": "Step 32 ('serve hot') vs steps 33-34",
+      "what": "It tells you to serve the potatoes before the asparagus is finished and the steak has rested. The meal has no single serving point."
+     },
+     {
+      "where": "Ribeye card 'Before you start' vs screen",
+      "what": "The card's 'have an instant-read thermometer ready' isn't on the screen anywhere before step 30."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Stirring the applesauce between the two microwave runs (the end of step 19's text)",
+      "consequence": "The pieces cook unevenly and the sugar and cinnamon sit unmixed. A minor quality loss, but very easy to skip because the screen has moved on."
+     },
+     {
+      "what": "Pulling the asparagus when its timer rings",
+      "consequence": "No step says to, so it may stay in the oven, overcook, and still be there when the oven switches to broil."
+     },
+     {
+      "what": "Getting the thermometer out, and prepping the herbs and butter for the steak",
+      "consequence": "You hunt for them in the middle of a 'stay with it' sear, and the steak overshoots 130F."
+     },
+     {
+      "what": "Using only 1 tsp of the garlic paste",
+      "consequence": "The potatoes get far too much garlic and salt."
+     },
+     {
+      "what": "Buying a second lemon",
+      "consequence": "The applesauce or the asparagus goes without lemon juice."
+     },
+     {
+      "what": "Taking the asparagus out from under the broiler, slicing the steak, and plating everything",
+      "consequence": "The screen just stops, so the parmesan can burn under the broiler."
+     },
+     {
+      "what": "Chopping the parsley",
+      "consequence": "It only comes up in step 32, at the busiest moment, so the potatoes wait while you chop."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "Steps 29-30, the steak sear and baste. A realistic cause is having to go and find the thermometer, which the screen never asked for in advance, or a thicker steak needing longer.",
+     "what_happens": "The asparagus timer (started at step 28) and the potato timer (started at step 25) keep running. The asparagus rings while you're stuck at the pan, so you either leave the steak or let the asparagus roast up to 10 min too long and go limp. The potatoes ring and sit in the oven 5-10 min past the plan; they're forgiving, but the garlic coating starts to darken. The broiler step is pushed back, so the potatoes and steak wait even longer. The pinned live timers do show what's really running and how long is left, which helps. But the static 'Timers running as you start this' and 'Nothing needs you for about N min' lines under each step are now wrong. The screen has no 'you're behind' signal and no clock, so you have to work out from the live timers that the asparagus needs pulling now. Nothing on the current step tells you."
+    },
+    "food_risks": [
+     {
+      "dish": "Lemon Butter Parmesan Asparagus",
+      "risk": "No step tells you to pull it when the timer rings, so it can overcook or be left in while the broiler heats. If it is pulled, it sits about 6-9 min before broiling. And no step says to take it out from under the broiler, where parmesan burns in under a minute."
+     },
+     {
+      "dish": "Pan-Seared Ribeye",
+      "risk": "The rest starts at about 1:42 and serving is around 1:57, so it rests about 15 min against the card's 5-10, and comes to the table lukewarm. Seasoning 'right before it goes in' is interrupted by loading the asparagus while the oil smokes."
+     },
+     {
+      "dish": "Hasselback Potatoes",
+      "risk": "Step 32 takes them out and says 'serve hot' about 8-10 min before the meal is ready, so they cool and lose their crisp edges. If they need the full 20 min, they clash with switching the oven to broil."
+     },
+     {
+      "dish": "Microwave Applesauce",
+      "risk": "It's done about 40 min early. Harmless, since the card says it's good warm or cold, but it isn't warm if that was intended."
+     }
+    ],
+    "headings": "The screen had no phase headings, only the [Recipe, card step N] tag on each step. The tags helped me know which card to check. Landmarks would have helped in three places:\n- Before step 16: \"Prep done; potatoes go in; first timer starts\". The 15 prep steps blur together.\n- Before step 25: \"Final stretch, about 30 min to the table: steak and asparagus\". This is where the hands-on load jumps.\n- At the end: a \"Serve\" step that gathers slicing the steak, pulling the asparagus and plating.",
+    "confidence": 3,
+    "top_problems": [
+     "The ends of dishes are missing or misplaced. The asparagus 'Pull the pan out' is buried in the step where it goes in, and no step follows its timer ringing. The last step never takes the asparagus out from under the broiler. There is no slice-steak or serve-everything step, and the potatoes are told to 'serve hot' about 8 min before anything else is ready.",
+     "No quantities or equipment on the screen. Every measuring step sends you to a card (about 10 lookups). Literally, 'garlic paste' in step 9 means the whole 3 tbsp batch instead of 1 tsp. The thermometer and the second lemon are never flagged.",
+     "Actions that follow a timer are attached to the step that starts the timer. The applesauce stir after the first 7-8 min and the asparagus pull both get lost because the screen has moved on when the timer rings. Also, the printed 'min left' figures under steps 20-22 contradict each other."
+    ],
+    "worked_well": [
+     "The 'Timers running as you start this' lists and the 'Nothing needs you for about N min. Up next: X' cues made the long middle stretch (applesauce, steak sit-out, potatoes baking) calm and easy to follow.",
+     "Done-when cues and 'stay with it' flags at the critical moments (oil just smoking, 130F inside, undisturbed sear, broiling parmesan) told me exactly when to stand at the stove.",
+     "The overall order is sensible. Potatoes go in first and get their mid-bake baste, the steak comes out of the fridge at a reasonable time, and the asparagus shares the 200C oven with the potatoes before the oven switches to broil after the potatoes are out."
+    ],
+    "data_issues": [
+     "The garlic paste recipe makes about 3 tbsp from 8 cloves, but the potatoes use 1 tsp. The plan makes the full batch, which takes about 12 min of extra work. The card itself notes that a microplane into the butter would be faster for a small amount.",
+     "Yields don't match. Ribeye serves 1 (one 12 oz steak), potatoes serve 4 (8 potatoes), asparagus serves 8 (2 lb), and the applesauce makes 3 cups.",
+     "The meal needs 1.5 lemons: 1 for the asparagus, half for the applesauce. Both prep steps assume one lemon.",
+     "The asparagus card says 'for 8 to 10 minutes' but also 'thick spears nearer 12'. The timer is 8-12.",
+     "The applesauce card's notes say to uncover away from your face, but no step says to cover the dish.",
+     "The ribeye card's 'Before you start' (thermometer) and its ingredients (herbs, butter) have no prep step in the plan. Ribeye prep only peels garlic.",
+     "Hasselback card 'Prep: 15 min' is optimistic. Scrubbing and hasselback-slicing 8 potatoes takes more like 15-20 min on its own.",
+     "The plan puts asparagus loading (step 28) between seasoning the steak and laying it in the pan, while the oil is already smoking. It should come before the pan goes on.",
+     "The plan's timer bookkeeping is internally inconsistent (potatoes 30 to 20 vs steak 30 to 25 over the same gap), which suggests the step-duration estimates behind it are off.",
+     "Asparagus prep (step 11) has you juice the lemon, and step 24 repeats the squeeze. The data duplicates the action across the prep and card steps."
+    ]
+   }
+  },
+  {
+   "lineup": "steak-dinner",
+   "presentation": "A",
+   "run": 2,
+   "presentation_is": "every step of every recipe in one order, one step at a time, with each step's done-when cue and the timers already running",
+   "report": {
+    "total_time": "About 1 hr 55 min to 2 hr from peeling garlic to the asparagus coming out from under the broiler, close to the screen's \"about 1 hr 55 min\". The hands-on prep before the potatoes go in (steps 1-16) took me about 44 min: garlic paste about 15, potato scrub and slicing 8 medium potatoes about 15, asparagus and lemon prep about 6, and the rest. That leaves about 70 min from potatoes-in to the last step. If slicing 8 potatoes carefully at 4 mm takes 20 min rather than 12, the total drifts past 2 hr. The screen has no explicit serve step, so the true \"everything on the plate\" moment comes 2-4 min after step 34 ends, once the steak is sliced and the potatoes are plated.",
+    "lookups": 15,
+    "literal_failures": [
+     {
+      "step": "19 (Microwave Applesauce, card step 3)",
+      "what_goes_wrong": "The step says 'Microwave 7-8 minutes on high. Stir it all around again.' The timer starts when you tap Next, so you put the dish in and move on to step 20 (steak out). When the microwave timer rings, the screen is on step 20 ('Nothing needs you... Up next: Microwave Applesauce'), and step 21 only says 'Microwave another 7-8 minutes'. Followed literally, the stir between the two rounds never happens, and you get uneven cooking and sugar settling on the bottom."
+     },
+     {
+      "step": "28 (Asparagus roast) and 31 (Rest steak)",
+      "what_goes_wrong": "'Pull the pan out' belongs to step 28, which you left before the timer ran. The asparagus timer rings about 2 min into step 31, and step 31 says 'Nothing needs you for about 4 min. Up next: Hasselback Potatoes.' No later step says to take the asparagus out. Step 32 pulls the potatoes, step 33 switches the oven to broil, and step 34 scatters parmesan and broils. Followed literally, the asparagus stays in the oven through the potato removal and the 3-min broiler heat-up, about 5-6 extra min, and then gets broiled. That turns 'just fork-tender' into limp, overcooked asparagus."
+     },
+     {
+      "step": "30 (Turn steak, baste, pull at 130F)",
+      "what_goes_wrong": "The done-when cue needs an instant-read thermometer. The card's 'Before you start' says to have one ready, but the screen never mentions it. A cook who reads only the screen is basting a steak in smoking butter, one-handed, when they find they need to go and look for a thermometer."
+     },
+     {
+      "step": "32 (Take the potatoes out... serve hot)",
+      "what_goes_wrong": "'Serve hot' comes about 6-7 min before the asparagus is done (3 min broiler heat-up plus 2-3 min broil) and before the steak is sliced. Followed literally, the potatoes go on the plate alone and wait there. Chopping the parsley is also a new prep task dropped into the busiest moment, when it could have been done during an earlier 'nothing needs you' gap."
+     },
+     {
+      "step": "31 (Rest 5 to 10 minutes before slicing and serving)",
+      "what_goes_wrong": "There is never a step to slice and serve the steak. The rest timer rings during step 33 (broiler heating), and step 34 is the last step. Followed literally, the steak is never sliced or plated, and no step brings the meal together."
+     },
+     {
+      "step": "13 (Juice the half lemon)",
+      "what_goes_wrong": "Step 11 has already used the whole lemon: half juiced, half cut into rings. 'Juice THE half lemon' reads as the leftover half, which doesn't exist. Literally you either reuse the asparagus juice (and the asparagus then lacks it at step 24) or get stuck. The screen never says this meal needs 1.5 lemons."
+     },
+     {
+      "step": "26-28 (Heat oil to smoking, season steak, then put asparagus in oven)",
+      "what_goes_wrong": "The pan reaches smoking point at step 26. Then you pat and season the steak and go load a sheet pan into the oven (step 28) while the oil keeps heating unattended. Done in this order, the oil goes past 'just starting to smoke' toward overheating and fills the kitchen with smoke before the steak goes in."
+     },
+     {
+      "step": "8 (Use immediately, or stir in olive oil and jar it)",
+      "what_goes_wrong": "The step offers a choice but doesn't say which applies. The potatoes need only 1 tsp of the roughly 3 tbsp this makes, so the cook has to decide alone whether to jar the rest, and when."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "Steps 26-28",
+      "what": "Watching oil come up to smoking on the stove while patting and seasoning the steak and loading the asparagus into the oven. Better to put the asparagus in before heating the pan."
+     },
+     {
+      "moment": "Steps 29-30 if the potato or asparagus timer drifts early (both are given as ranges)",
+      "what": "Steak sear ('stay with it') and continuous butter-basting, while the asparagus (8-12 min range) or potato (15-20 min range) timer could ring. Taking a tray out of a 200C oven while spooning butter needs two pairs of hands."
+     },
+     {
+      "moment": "Step 31 into 32-33 (about a 4-min window)",
+      "what": "The asparagus rings and has to come out, the potatoes ring and have to come out, parsley gets chopped, and the oven goes to broil, all inside the steak's rest. It's doable alone, but it's a scramble the screen calls 'Nothing needs you'."
+     },
+     {
+      "moment": "Step 34 (broil parmesan, 'stay with it')",
+      "what": "The steak rest timer has already rung. Slicing the steak and plating the potatoes compete with watching the broiler, where parmesan can burn in seconds."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Steps 1, 5, 7, 9, 11, 17, 18, 23, 26, 27, 30, 34",
+      "unclear": "No quantities on the screen (how many garlic cloves, how much salt, butter, oil, sugar, water, parmesan, seasoning). Every one needed a card lookup."
+     },
+     {
+      "moment": "Step 13",
+      "unclear": "Which lemon: the asparagus has already used both halves of the one lemon."
+     },
+     {
+      "moment": "Steps 18-19",
+      "unclear": "Cover the dish in the microwave or not? The card's notes say 'uncover away from your face', which implies it's covered, but no step says to cover it. Also, 7 or 8 minutes?"
+     },
+     {
+      "moment": "Step 25",
+      "unclear": "Whether to set the timer for 15 or 20 min and how to judge 'cooked through' (the screen gives no done-when check such as a knife test). The screen's own later numbers seem to assume about 17-20."
+     },
+     {
+      "moment": "Step 28",
+      "unclear": "Where to put the second tray: the potatoes already fill one rack. Rack position and moving racks aren't mentioned. Also 8, 10 or 12 min: the step text says '8 to 10' but then 'thick spears nearer 12'."
+     },
+     {
+      "moment": "Step 29",
+      "unclear": "Timer '3 to 5 min': you have to know or measure the steak's thickness. The screen doesn't ask for it."
+     },
+     {
+      "moment": "Step 30",
+      "unclear": "How long this takes (no timer, only the 130F cue). The card says Cook: 8 min overall, so about 3-4 min. You also have to work out that the thermometer is needed."
+     },
+     {
+      "moment": "Steps 31-34",
+      "unclear": "When to pull the asparagus, when to slice the steak, and whether 'serve hot' in step 32 means plate the potatoes now or wait for the rest of the meal."
+     },
+     {
+      "moment": "Step 8",
+      "unclear": "Whether to oil and jar the leftover paste now or later. The card's note that the paste's salt should come off the potato seasoning isn't on the screen."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Running-timer lines, steps 20-25",
+      "what": "The steak timer is started at step 20 with potatoes 'about 30 min left', so it should always run about 0 min ahead of the potatoes. Instead the gap moves: at step 21 potatoes 20 left vs steak 25 left (5 apart), at steps 22-24 it's 2 apart (14/16, 10/12, 6/8), and at step 25 the potatoes are done with steak 3 left. Two running timers can't change their gap, so the static 'timers running' text is internally inconsistent."
+     },
+     {
+      "where": "Step 31",
+      "what": "Says 'Nothing needs you for about 4 min. Up next: Hasselback Potatoes', but the same line shows the asparagus with about 2 min left, and that tray has to come out when it rings."
+     },
+     {
+      "where": "Step 19 vs card step 3",
+      "what": "On the card, the stir comes after the 7-8 min microwave. The screen moves on when the timer starts and never brings the stir back."
+     },
+     {
+      "where": "Step 13 vs step 11 and the cards",
+      "what": "The screen's 'Juice the half lemon' implies a leftover half. The asparagus card uses the whole lemon, and the applesauce needs a separate half."
+     },
+     {
+      "where": "Step 32",
+      "what": "'Serve hot' (copied from the potato card) is wrong in the combined meal: two more asparagus steps follow, and the steak hasn't been sliced."
+     },
+     {
+      "where": "Step 28",
+      "what": "The text says 'Roast ... for 8 to 10 minutes' but the timer is '8 to 12 min' (the card has the same inconsistency)."
+     },
+     {
+      "where": "Steak 'Before you start' on the card",
+      "what": "The card has a thermometer prerequisite that the screen leaves out entirely."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Taking the asparagus out when its timer rings (step 28's 'Pull the pan out')",
+      "consequence": "It overcooks by about 5-6 min in the oven, then gets broiled, and comes out limp and khaki."
+     },
+     {
+      "what": "Stirring the applesauce between microwave rounds",
+      "consequence": "It cooks unevenly, with hard pieces and sugar caught on the bottom, so it needs more mashing and may need extra time."
+     },
+     {
+      "what": "Getting the thermometer out",
+      "consequence": "A scramble mid-baste, or guessing doneness and over- or under-cooking the steak."
+     },
+     {
+      "what": "A second lemon (half needed for the applesauce)",
+      "consequence": "The applesauce goes without lemon, or the asparagus loses its juice."
+     },
+     {
+      "what": "Slicing and serving the steak",
+      "consequence": "The steak rests well past 10 min while the asparagus broils, and is lukewarm when it's served."
+     },
+     {
+      "what": "Leftover garlic paste (about 3 tbsp made, 1 tsp used)",
+      "consequence": "Left out on the counter. The card says never leave oil-covered garlic at room temperature."
+     },
+     {
+      "what": "A free second oven rack for the asparagus sheet",
+      "consequence": "Fumbling to move racks with the hot potato tray inside at step 28, while the oil smokes on the stove."
+     },
+     {
+      "what": "Taking the salt in the garlic paste off the potato seasoning (card note)",
+      "consequence": "The potatoes may come out oversalted."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "Around steps 25-26: the potato baste takes longer (the reserved butter has set and needs re-warming, the tray is awkward), or the pan is slow to reach smoking point, so the steak goes in about 10 min later than planned.",
+     "what_happens": "The potato second-bake timer started at step 25 keeps running. It rings while the steak is searing or being basted (steps 29-30), but the sequence still puts potato removal at step 32, after the steak rest. You either leave the steak mid-baste to pull a tray or leave the potatoes in about 10 min too long (dark, possibly burnt edges, garlic scorching). The asparagus, which goes in at step 28 after the pan heats, ends 10 min later too. It finishes during or after the steak rest, then needs the broiler heat-up and broil, so the steak rests 15+ min and the potatoes sit out longer. The pinned live timers help: you can see the potatoes at 0 while you're on a steak step. But the step list doesn't re-plan, the 'timers running as you start this' lines and the 'Nothing needs you for X min' notes go stale and wrong, and there's no clock or phase marker showing how far behind you are. So the screen shows you're behind, but not what to do about it. Being late earlier (prep before step 16, or the applesauce) is harmless, because the timers only start on tap."
+    },
+    "food_risks": [
+     {
+      "dish": "Lemon Butter Parmesan Asparagus",
+      "risk": "Overcooked if pulled only when the screen next mentions it. Even when pulled on time, it cools for about 4-5 min while the broiler heats, then broils. It's the last thing finished, so the rest of the plate waits for it."
+     },
+     {
+      "dish": "Pan-Seared Ribeye",
+      "risk": "The rest runs past 10 min: rest starts at step 31, then potatoes, broiler heat-up and the parmesan broil all have to happen before anyone eats, and slicing is never scheduled. It's served lukewarm."
+     },
+     {
+      "dish": "Hasselback Potatoes",
+      "risk": "Pulled at step 32 and told to 'serve hot', then they sit about 6-7 min while the asparagus finishes. Hasselbacks hold heat, so the risk is moderate."
+     },
+     {
+      "dish": "Pan-Seared Ribeye (sear)",
+      "risk": "The oil can overheat while you load the asparagus into the oven between heating the pan and laying in the steak, giving acrid smoke and a bitter crust."
+     },
+     {
+      "dish": "Microwave Applesauce",
+      "risk": "The missed stir makes it uneven. It's done about 40 min before serving, but the card says it's good warm or cold, so the timing itself is fine."
+     }
+    ],
+    "headings": "My screen had no phase headings. Landmarks would have helped in three places: (1) a 'Before you start / prep' block (steps 1-16), which takes about 45 min with no timers running, and where a heading could carry a gather list with the thermometer, 1.5 lemons, two oven racks and the quantities; (2) 'While the potatoes bake' (steps 17-24), to show these are flexible and safe to fall behind on; (3) 'Final stretch: about 20 min, stay in the kitchen' before step 25, where oven, stove and timers all converge and a mistake costs food. A closing 'Plate up' landmark is also missing; the screen just stops after the parmesan broil.",
+    "confidence": 3,
+    "top_problems": [
+     "When an action comes after a step's timer, it gets lost because the screen moves on as soon as the timer starts. The applesauce stir (step 19) is skipped, and the asparagus's 'Pull the pan out' (step 28) is never repeated. The asparagus timer rings during a step that says 'Nothing needs you', so the asparagus overcooks.",
+     "The ending is broken. The potatoes are told to 'serve hot' (step 32) about 6-7 min before the asparagus is done, the steak is never sliced or served, its rest overruns, and there's no final plate-up step, so the cook has to put the meal together alone during the busiest moment.",
+     "Steps carry no quantities and leave out prerequisites from the cards: about 15 card lookups, no thermometer warning, a lemon count that doesn't add up ('the half lemon' after the whole lemon is used), no mention of a second oven rack. The static 'timers running' lines also disagree with each other (the steak-to-potato gap jumps between 0, 5, 2 and 3 min)."
+    ],
+    "worked_well": [
+     "The running-timer list and the 'Nothing needs you for about X min. Up next: ...' notes made the waits clear. I always knew the next thing coming and roughly how long I had.",
+     "The interleaving is sensible overall. The garlic paste comes first because the potato mixture needs it, the oven is switched on in time for the potatoes, and the applesauce and asparagus prep fit into the 40-min bake. The steak's 30-min sit-out ends right as the potatoes get basted, and the asparagus shares the 200C oven with no temperature change until the broil.",
+     "Done-when cues and 'stay with it' flags on the critical steps (smoking oil, 130F, undisturbed sear, watching the broil) show where attention matters."
+    ],
+    "data_issues": [
+     "Garlic Paste makes about 3 tbsp from 8 cloves, but the potatoes use only 1 tsp. The plan doesn't scale it down or say what to do with the rest, and the card's note about subtracting the paste's salt isn't carried into the potato seasoning.",
+     "Mismatched servings: the ribeye serves 1, the potatoes serve 4 (8 potatoes), the asparagus serves 8 (2 lb). Nothing in the plan scales them to a common number of diners.",
+     "The asparagus card gives '8 to 10 minutes' in the text, 'thick nearer 12' in the same sentence, and a timer of 8-12 min.",
+     "The applesauce card never says whether to cover the dish, but its notes say 'Uncover away from your face'.",
+     "The ribeye has no time for step 5 (flip and baste to 130F); only the overall 'Cook: 8 min' hints at it.",
+     "The plan schedules the asparagus into the oven (step 28) after heating the steak pan (step 26) instead of before, so smoking oil sits unattended.",
+     "The plan orders the asparagus finish (broiler heat-up plus broil, about 6 min) after the steak rest and potato removal, so the steak's rest overruns. Starting the asparagus a few minutes earlier, or holding the potatoes in the oven, would line things up.",
+     "Parsley chopping and steak slicing have no slot in the plan. The parsley falls into the final crunch and the slicing never appears.",
+     "The lemon requirement across recipes adds up to 1.5 lemons, but nothing in the plan totals shared ingredients."
+    ]
+   }
+  },
+  {
+   "lineup": "steak-dinner",
+   "presentation": "D",
+   "run": 1,
+   "presentation_is": "the same step-by-step list, with phase headings along the way (prep, then wherever something goes in the oven, rises or chills) as landmarks",
+   "report": {
+    "total_time": "About 1 hr 55 min to 2 hr 05 min in my dry run, so roughly what the screen promised (about 1 hr 55 min). Prep (steps 1-16) took me about 45-52 min: garlic paste about 10-12, scrubbing 8 potatoes about 3, asparagus prep about 8-10, and slicing 8 hasselbacks about 12-16. From the potatoes going in to the last broil was about 64-66 min: potatoes go in at T=0 and ring at T=40, I baste and return them at about T=42, the steak goes in at about T=48, the steak rests at about T=56, potatoes come out at about T=58-60, then 3 min of broiler heat-up plus 2-3 min of broil ends at about T=65. Wherever you fall behind, it adds straight to the total, because every timer only starts when you tap Next.",
+    "lookups": 12,
+    "literal_failures": [
+     {
+      "step": "19 (applesauce: Microwave 7-8 min. Stir it all around again.)",
+      "what_goes_wrong": "The stir has to happen after the 7-8 min timer, but the timer only starts when you tap Next, and that moves you on to step 20 (steak out). When the timer rings, step 21 just says 'Microwave another 7-8 minutes', with no stir. A literal cook never stirs between the two rounds, so the apples cook unevenly and the top pieces dry out."
+     },
+     {
+      "step": "28 (asparagus: Roast 8-12 min... Pull the pan out.)",
+      "what_goes_wrong": "'Pull the pan out' belongs to the end of the timer, but you tap Next straight onto the steak sear. The timer rings during step 30 (basting) or step 31. Step 31 says 'Nothing needs you for about 4 min. Up next: Hasselback Potatoes', and nothing on screen tells you to take the asparagus out. A literal cook leaves it in until step 33, then switches the oven to broil with the asparagus still inside. It overcooks, and step 34's 'scatter the parmesan and broil' assumes the pan is out on the counter."
+     },
+     {
+      "step": "30 (steak: pull at 130F inside)",
+      "what_goes_wrong": "You need an instant-read thermometer, but the screen never says to have one ready. The card's 'Before you start' line was dropped. If you find out at this point, you are mid-baste with no way to check doneness."
+     },
+     {
+      "step": "32 (potatoes: take out, chop parsley, serve hot)",
+      "what_goes_wrong": "Parsley was never prepped, so you chop it now while the potatoes cool. 'Serve hot' comes before the asparagus has even had its broil: about 3 min of broiler heat-up plus 2-3 min of broiling are still to come, and the steak is still resting. Doing exactly what it says means serving potatoes alone, about 6 min before the rest of the meal."
+     },
+     {
+      "step": "34 (last step)",
+      "what_goes_wrong": "The screen ends at 'broil 2 to 3 minutes'. There is no step to take the asparagus out, slice the steak, plate everything or bring out the applesauce. Steak slicing is only implied in step 31."
+     },
+     {
+      "step": "8 (garlic paste: use immediately, or stir in oil, jar and refrigerate)",
+      "what_goes_wrong": "You make about 3 tbsp of paste but the potatoes need 1 tsp. The screen offers 'use immediately OR jar', when the real answer is to do both: use 1 tsp and jar the rest. Taken literally, you could put all the paste into the potato butter."
+     },
+     {
+      "step": "26 to 29 (heat oil until smoking, then pat and season the steak, then put the asparagus in the oven, then lay the steak in)",
+      "what_goes_wrong": "Following the order, the oil reaches the smoking point and then you leave it for 1-2 min while you pat and season the steak and walk the asparagus tray into the oven. The pan overheats and the kitchen fills with smoke. The asparagus should go in before the pan is heated."
+     },
+     {
+      "step": "13 (applesauce: Juice the half lemon.)",
+      "what_goes_wrong": "Step 11 has already used the whole asparagus lemon (half juiced, half sliced into rings), so there is no 'half lemon' left. You need a second lemon, and the screen never says so."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "Step 30 (turning and continuously basting the steak)",
+      "what": "Spooning butter over the steak nonstop and checking its temperature, while the asparagus timer rings (about 6 min left at the start of the step) and has to be pulled out of the oven. If you set the potato timer to 15 min, it can ring in this same window too."
+     },
+     {
+      "moment": "Steps 26-28",
+      "what": "Watching the oil come up to smoking while you pat and season the steak and load the asparagus tray into the oven. The pan is left unattended at its hottest."
+     },
+     {
+      "moment": "Around steps 24-25",
+      "what": "The potato timer and the steak sit-out timer ring within a minute or two of each other, while you are pulling the tray, warming the set basting butter and basting. The steak timer needs no action, but you have to work that out for yourself."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Step 1 (Peel the garlic cloves)",
+      "unclear": "No count is given. The card says 8, even though the potatoes only need 1 tsp of paste."
+     },
+     {
+      "moment": "Steps 7 and 9 (melt butter; mix oil, butter, paste, salt and pepper)",
+      "unclear": "No quantities (2 tbsp butter, 1/3 cup oil, 1 tsp paste). The card note that the paste already contains salt, so you should cut back on salt, is missing."
+     },
+     {
+      "moment": "Steps 11 and 13 (lemons)",
+      "unclear": "Whether it is one lemon or two, and which half goes where. Step 24 then says 'squeeze the juice of half the lemon' when you juiced it back in step 11."
+     },
+     {
+      "moment": "Steps 17-18 (applesauce)",
+      "unclear": "How many apples and how much water, sugar and cinnamon. Covered or uncovered in the microwave? The card's steam note implies covered."
+     },
+     {
+      "moment": "Step 25 timer '15 to 20 min' (and step 31 '5 to 10', step 28 '8 to 12')",
+      "unclear": "Which end of the range the pinned timer uses, and what to do at the low end versus the high end."
+     },
+     {
+      "moment": "Step 28",
+      "unclear": "Whether two trays fit and which rack each goes on. The potatoes are already in the oven."
+     },
+     {
+      "moment": "Steak sit-out timer ringing (about step 25)",
+      "unclear": "The ring has nothing tied to it. Is the steak late? It actually sits out about 37 min before it goes in."
+     },
+     {
+      "moment": "Steps 26/27/30",
+      "unclear": "Which pan and how much oil, what 'season' means (steak seasoning, 1/2 tbsp), and how much butter and which herbs. All of it is only on the card."
+     },
+     {
+      "moment": "Step 34",
+      "unclear": "How much parmesan, and what happens after the broil."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Step 13 vs step 11 and the cards",
+      "what": "The screen says 'Juice the half lemon' as if one is left over. The cards need 1 lemon for the asparagus plus half a lemon for the applesauce, so 1.5 lemons in total."
+     },
+     {
+      "where": "Step 24 vs step 11",
+      "what": "Step 11 already juiced half the lemon, but step 24 says 'squeeze the juice of half the lemon', as if it were still whole."
+     },
+     {
+      "where": "'Timers running' estimates, steps 20 to 22",
+      "what": "Between steps 20 and 21 the potato timer drops 10 min (30 to 20) but the steak timer only drops 5 (30 to 25). Between steps 21 and 22 the potato timer drops 6 min and the steak timer drops 9. Step 21 also says 'nothing needs you for about 8 min', but the potato timer drops only 6. The estimates don't agree with each other, so you can't use them to judge where you are."
+     },
+     {
+      "where": "Step 28 (asparagus)",
+      "what": "The text says 'Roast ... for 8 to 10 minutes' and then 'thick spears nearer 12', and the timer says 8 to 12 min. The same mismatch is on the card."
+     },
+     {
+      "where": "Phase 5 heading vs step 25",
+      "what": "The heading says the potatoes are in the oven for '18 min'; the step says '15 to 20 min'."
+     },
+     {
+      "where": "Phase 5 heading '\u2014 then serve' vs steps 32-34",
+      "what": "The heading suggests you serve as soon as the potatoes come out, but about 6 min of asparagus broiler work comes after that."
+     },
+     {
+      "where": "Screen vs Ribeye card 'Before you start'",
+      "what": "The screen leaves out the card's thermometer reminder."
+     },
+     {
+      "where": "Step 19 vs card step 3",
+      "what": "Same words, but on the card the 'stir' clearly comes after microwaving. On the screen it is attached to a step you leave the moment the timer starts."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Pulling the asparagus out when its timer rings (the instruction was back in step 28)",
+      "consequence": "It overcooks, and it is still in the oven when you switch to broil at step 33, so it scorches under the broiler before the parmesan even goes on."
+     },
+     {
+      "what": "Having an instant-read thermometer ready",
+      "consequence": "No way to pull the steak at 130F. You guess, and risk overcooking a ribeye."
+     },
+     {
+      "what": "Stirring the applesauce between the two microwave rounds",
+      "consequence": "Uneven cooking and dry top pieces."
+     },
+     {
+      "what": "A second lemon",
+      "consequence": "No juice for the applesauce. You find out at step 13, or step 18 at the latest."
+     },
+     {
+      "what": "Prepping the parsley",
+      "consequence": "You chop it at step 32 while the potatoes cool."
+     },
+     {
+      "what": "Warming the set basting butter (step 25)",
+      "consequence": "It is on screen, but easy to skim past. The butter has sat about 50 min and gone solid, so it won't brush into the cuts."
+     },
+     {
+      "what": "Bringing out the applesauce and plating at the end",
+      "consequence": "There is no serve step, so the applesauce can be forgotten in the microwave or on the counter."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "Phase 5, steps 25-30. For example, the set butter fights you at step 25 and the pan is slow to smoke at step 26, so you start the steak about 10 min later than planned.",
+     "what_happens": "The potato timer (started at step 25) keeps running, so the potatoes ring while the steak is in its undisturbed sear or while you are basting it. On screen the potato step (32) is still four steps away, so a literal cook leaves them in about 10 min too long and they come out over-browned and dry. Because the asparagus only goes in at step 28, it shifts too, and its ring lands in the middle of basting. The broil at the end gets pushed back, so the potatoes, already out, sit 10-15 min and go lukewarm. The pinned live timers show the potato time running out. But the screen shows no clock times, and its printed 'about N min left' estimates are already inconsistent (steps 20-22), so comparing them with the live timers doesn't show you how far behind you are. The Phase 5 heading only tells you that you are in the final stretch. Being late during prep, by contrast, costs nothing, because no timer is running yet."
+    },
+    "food_risks": [
+     {
+      "dish": "Lemon Butter Parmesan Asparagus",
+      "risk": "High risk of overcooking: the 'pull the pan out' instruction is lost, and its ring comes during the steak baste. It is also served last, about 6 min after the potatoes. Roasted at T\u224847-57, then pulled, then broiled at about T\u224863."
+     },
+     {
+      "dish": "Hasselback Potatoes",
+      "risk": "'Serve hot' at step 32, then they wait about 6 min for the broiler heat-up and broil. If you're behind, they overbake because their finish step is queued behind the steak."
+     },
+     {
+      "dish": "Pan-Seared Ribeye",
+      "risk": "Resting starts at about T=56 and the meal is ready at about T=65. That is within the 5-10 min rest, but the steak cools if the asparagus runs long. If you don't notice the missing thermometer, the doneness is a guess."
+     },
+     {
+      "dish": "Microwave Applesauce",
+      "risk": "Done about 35-40 min before serving, so it is room temperature by dinner. The card says that's fine warm or cold, but if you wanted it warm it isn't. It is also unevenly cooked if the stir between rounds is missed."
+     }
+    ],
+    "headings": "The headings helped somewhat. 'Phase 1: Prep' clearly bounds the mise en place, and 'Phase 3: Hasselback Potatoes in the oven (40 min)' is a good anchor, because the potato timer drives everything after it. Three headings were weak or misleading. 'Phase 2: Start cooking' covers only slicing the potatoes and putting them on the tray, so no cooking happens in it. 'Phase 4: Pan-Seared Ribeye sitting out (30 min)' is named after a timer that needs nothing from you, while the actual work in it is applesauce and asparagus. 'Phase 5: Hasselback Potatoes in the oven (18 min) \u2014 then serve' puts the steak sear, the busiest part of the meal, under a potato label, and its 'then serve' clashes with the broil tail after the potatoes come out. A separate landmark such as 'Steak in the pan' or 'Final broil' would have helped more at the crunch.",
+    "confidence": 3,
+    "top_problems": [
+     "Instructions that belong to the end of a timer ('Pull the pan out' in step 28, 'Stir it all around again' in step 19) sit on the step that starts the timer and disappear when you tap Next. The asparagus is left in the oven during the steak baste and is still in when you switch to broil.",
+     "The final stretch is overloaded and poorly shown. The continuous steak baste (no thermometer reminder) overlaps the asparagus and potato rings. The pan sits smoking while you load the asparagus. Potatoes are 'served hot' at step 32 about 6 min before the asparagus is ready, and there is no final serve or plating step.",
+     "Too many quantities and too much ingredient logic live only on the cards (about 12 lookups). That includes lemon confusion ('the half lemon' when a second lemon is needed) and a 3-tbsp garlic paste for a 1-tsp use. The printed 'timers running' estimates also disagree with each other."
+    ],
+    "worked_well": [
+     "Timers start on Next, and all the hands-on prep comes before the first timer, so a slow cook can't wreck anything during prep.",
+     "The 'Nothing needs you for about N min. Up next: X' lines, together with the timers pinned at the top, make the waits in Phases 3-4 calm and clear.",
+     "The steak sit-out is started alongside the potatoes' first bake, and the asparagus is fitted into the potato oven so the oven is never preheated twice. The overall order is sensible."
+    ],
+    "data_issues": [
+     "The garlic paste recipe makes about 3 tbsp from 8 cloves (about 10-12 min of work), but the potatoes use 1 tsp. The plan doesn't scale it down or say to jar the rest, and the card's own note says a microplane would be faster.",
+     "The servings don't match: the steak serves 1, the potatoes serve 4 (8 potatoes), the asparagus serves 8 (2 lb) and the applesauce makes about 3 cups.",
+     "Lemons: the asparagus needs 1 whole lemon and the applesauce needs half another, but the data words the applesauce prep as 'Juice the half lemon'.",
+     "The asparagus card contradicts itself: 'Roast 8 to 10 minutes' versus 'thick spears nearer 12' and the 8-12 min timer.",
+     "The ribeye's thermometer requirement ('Before you start') isn't carried into the step data.",
+     "The salt already in the garlic paste isn't subtracted from the potato seasoning, so the potatoes may be over-salted.",
+     "The order puts heating the steak pan (step 26) and seasoning it (step 27) before the asparagus goes in the oven (step 28), so the oil smokes unattended. The asparagus should go in first.",
+     "The plan has no closing serve step for the steak, asparagus or applesauce. The potato 'serve hot' step comes before the asparagus broil, and the broil can't start until the potatoes leave the oven.",
+     "Steps whose action happens when a timer ends ('Stir it all around again', 'Pull the pan out') aren't split into their own after-timer step.",
+     "The steak's 30-min sit-out actually becomes about 37 min before it goes in the pan. That's harmless, but the timer rings with nothing to do.",
+     "The 'timers running' estimates in steps 20-22 don't agree with each other: the potato and steak timers lose different amounts of time between the same steps."
+    ]
+   }
+  },
+  {
+   "lineup": "steak-dinner",
+   "presentation": "D",
+   "run": 2,
+   "presentation_is": "the same step-by-step list, with phase headings along the way (prep, then wherever something goes in the oven, rises or chills) as landmarks",
+   "report": {
+    "total_time": "About 2 hr (roughly 119 min from peeling the first garlic clove to the parmesan coming out from under the broiler), against the 1 hr 55 min the screen promises. The plan's timers hold up. The extra few minutes come from hands-on work the screen gives little or no time: peeling and muddling 8 garlic cloves (about 17 min before the butter is melted), hasselback-slicing 8 potatoes slowly (about 16 min), and chopping parsley at serving time. At the end the steak has rested about 11 min, and the potatoes have sat out about 8 min, by the time the asparagus is ready.",
+    "lookups": 11,
+    "literal_failures": [
+     {
+      "step": "19 (Microwave 7\u20138 min. Stir it all around again.)",
+      "what_goes_wrong": "The stir is due when this timer ends. By then the screen shows step 20 or 21, and step 21 only says 'Microwave another 7\u20138 minutes', with no stir. Read literally, you either stir before the first microwave or never stir between the two runs, so the apples cook unevenly."
+     },
+     {
+      "step": "20 (take steak out, 30 min timer) with 'Nothing needs you for about 6 min'",
+      "what_goes_wrong": "The steak timer only starts when you tap Next. But the wait note sits on step 20, which suggests you stay on it for 6 min. If you stay, the steak timer doesn't run. If you tap Next, you land on step 21 ('Microwave another...') while the microwave is still running its first round."
+     },
+     {
+      "step": "27 to 28 (season steak, then put asparagus in the oven)",
+      "what_goes_wrong": "Step 26 has the oil already smoking. Step 27 says to season 'right before it goes in', then step 28 sends you to the oven before step 29 puts the steak in the pan. Followed literally, the oil smokes on high heat for an extra minute or more, and the seasoning sits on the steak longer than the card wants."
+     },
+     {
+      "step": "28 (Roast 8 to 12 min ... Pull the pan out)",
+      "what_goes_wrong": "The 'pull the pan out' instruction is on step 28. When the timer rings, you're on step 30 or 31, and step 31 says 'Nothing needs you for about 4 min. Up next: Hasselback Potatoes'. A literal cook leaves the asparagus in until step 33, and it overcooks before it's even broiled."
+     },
+     {
+      "step": "30 (pull at 130F inside)",
+      "what_goes_wrong": "The screen never asks you to have a thermometer ready. That's only in the card's 'Before you start'. A literal cook reaches this step without one and has to guess doneness."
+     },
+     {
+      "step": "32 (Take the potatoes out ... and serve hot)",
+      "what_goes_wrong": "'Serve hot' comes while the asparagus still needs about 6 min (3 min broiler preheat plus 2\u20133 min broil) and the steak is resting. Served literally, the potatoes go out alone and the meal arrives in pieces."
+     },
+     {
+      "step": "34 (last step)",
+      "what_goes_wrong": "The meal ends at 'broil 2 to 3 minutes'. No step takes the asparagus out, slices the steak, or serves the steak, asparagus and applesauce. A literal cook is left standing at the broiler."
+     },
+     {
+      "step": "8 (Garlic Paste: use immediately, or stir in the olive oil, jar it and refrigerate)",
+      "what_goes_wrong": "This gives the cook a choice the plan has already made: the paste goes straight into step 9. A literal cook might jar and refrigerate it, which makes step 9 awkward."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "Steps 26\u201329",
+      "what": "The oil is heating to smoking point, and you have to pat dry and season the steak and load the asparagus into the oven before the steak goes in. A smoking pan can't be left alone while you deal with the oven."
+     },
+     {
+      "moment": "Steps 29\u201331 (sear and baste, steak 'stay with it')",
+      "what": "The asparagus timer (8 min for thin spears) rings at about the same moment you're spooning butter and taking the steak's temperature. Pulling the sheet means leaving a pan of hot butter and a steak about to overshoot 130F."
+     },
+     {
+      "moment": "Step 31\u201333",
+      "what": "The asparagus has to come out, the potatoes ring and need pulling and parsley chopped, and the oven needs switching to broil, all in the same couple of minutes."
+     },
+     {
+      "moment": "Steps 25 / 20\u201321",
+      "what": "Basting the potatoes lines up with the steak timer ringing and the pan needing heat. That's manageable, but they all land together."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Step 1 (peel the garlic cloves)",
+      "unclear": "How many cloves? The screen gives no count, so I checked the card: 8 cloves, for 1 tsp of paste."
+     },
+     {
+      "moment": "Step 5 (scatter the salt)",
+      "unclear": "No amount given (the card says 1/2 tsp coarse kosher salt)."
+     },
+     {
+      "moment": "Step 6",
+      "unclear": "A muddler is assumed but never listed as equipment."
+     },
+     {
+      "moment": "Step 7 (melt the butter)",
+      "unclear": "No amount (2 tbsp), and no method (microwave or pan)."
+     },
+     {
+      "moment": "Step 9",
+      "unclear": "Quantities are missing: 1/3 cup oil, 1 tsp of the 3 tbsp of paste just made. It doesn't say how much salt either, though the paste is already salted."
+     },
+     {
+      "moment": "Step 13 (Juice the half lemon)",
+      "unclear": "'The' half lemon: the asparagus in step 11 already used one whole lemon, half juiced and half sliced. Is this that juice, or a second lemon? You actually need 1.5 lemons."
+     },
+     {
+      "moment": "Step 20 and its wait note",
+      "unclear": "Should I stay on step 20 or tap Next to start the steak timer? (See literal_failures.)"
+     },
+     {
+      "moment": "Steps 25, 28, 29, 31 (timer ranges)",
+      "unclear": "Which end of each range should I run to: 15 or 20, 8 or 12, 3 or 5, 5 or 10? Steak thickness isn't given anywhere, so the 3\u20134 vs 5 min sear is a guess."
+     },
+     {
+      "moment": "Step 26 (heat the oil)",
+      "unclear": "How much oil (2 tbsp, from the card), and what pan (the card says heavy, ideally cast iron)."
+     },
+     {
+      "moment": "Step 30 (herbs and garlic)",
+      "unclear": "Herbs were never prepped, and the butter wasn't measured (1 tbsp)."
+     },
+     {
+      "moment": "Step 32 (chop the parsley)",
+      "unclear": "The parsley was never prepped, so it gets chopped during the busiest minute of the meal."
+     },
+     {
+      "moment": "Step 18",
+      "unclear": "Should the dish be covered? The applesauce card's notes say 'uncover away from your face', but no step says to cover it."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Steps 20\u201322 'timers running'",
+      "what": "At step 20 both the potato and steak timers read about 30 min (steak just starting). At step 21 they read potatoes 20 and steak 25, so 10 min passed for one and 5 for the other. By step 22 the gap is back to 2 min (14/16). The steak figure at step 21 should be about 22."
+     },
+     {
+      "where": "Step 21 'Nothing needs you for about 8 min' vs step 22 timers",
+      "what": "The wait says 8 min, and the microwave runs 7\u20138, yet the potato timer only drops from 20 to 14 (6 min) by step 22."
+     },
+     {
+      "where": "Step 28",
+      "what": "The text says roast '8 to 10 minutes' (and 'thick spears nearer 12'), but the timer is '8 to 12 min'. The card has the same inconsistency."
+     },
+     {
+      "where": "Phase 5 heading 'Hasselback Potatoes in the oven (18 min) \u2014 then serve'",
+      "what": "Step 25's timer is 15\u201320 min, not 18. The phase also runs past the potatoes into a 3 min preheat and a 2\u20133 min broil, so 'then serve' comes about 6 min after the potatoes are out."
+     },
+     {
+      "where": "Phase 2 heading 'Start cooking'",
+      "what": "Nothing cooks in this phase. It's only slicing potatoes and putting them on the tray, which is still prep."
+     },
+     {
+      "where": "Step 32 'serve hot'",
+      "what": "It tells you to serve while two more asparagus steps remain and the steak is resting."
+     },
+     {
+      "where": "Step 13 vs step 11 and the cards",
+      "what": "'The half lemon' implies one lemon is shared, but the asparagus card uses a whole lemon and the applesauce needs another half."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Pulling the asparagus out when its timer rings (the instruction is only on step 28)",
+      "consequence": "It keeps roasting through the steak rest and the potato step, comes out limp and olive-drab, then gets broiled on top of that."
+     },
+     {
+      "what": "Stirring the applesauce between microwave runs",
+      "consequence": "Uneven cooking, with dry top pieces and a sugary layer at the bottom."
+     },
+     {
+      "what": "An instant-read thermometer",
+      "consequence": "Steak doneness becomes a guess. Over- or undercooking a single 12 oz ribeye is the most likely way to ruin the centerpiece."
+     },
+     {
+      "what": "Prepping herbs for the steak and parsley for the potatoes",
+      "consequence": "A scramble at the last minute, or they get left out."
+     },
+     {
+      "what": "Subtracting the paste's salt from the potato seasoning (card note only)",
+      "consequence": "Over-salted potatoes."
+     },
+     {
+      "what": "Warming the reserved garlic butter (step 25), which was mixed about 70 min earlier at step 9",
+      "consequence": "Set butter won't brush into the cuts, so you have to warm it in the middle of the basting."
+     },
+     {
+      "what": "Slicing and plating the steak, and bringing out the applesauce",
+      "consequence": "No step covers it. The applesauce, mashed about 35 min before dinner, could be forgotten in the microwave."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "Step 26 onward: the pan is slow to smoke, or I fumble the seasoning and asparagus, and fall 10 min behind while the potatoes' 15\u201320 min timer is running.",
+     "what_happens": "The potato timer rings in the middle of steps 29\u201330, while I'm searing and basting the steak with 'stay with it'. The screen's next potato step (32) comes only after the steak rest, so following the order leaves the potatoes in about 10 extra minutes. They over-brown, and the garlic butter may scorch. The asparagus goes in 10 min late too, so it finishes during the rest or after it, and the broil pushes serving later still: the steak rests about 15\u201320 min and goes lukewarm. The pinned timers do show that the potato timer has run out, which is the only cue I have. But all of this happens inside Phase 5, so the heading doesn't help me see where I am, and no step tells me what to drop or reorder. If instead I fall behind earlier (say apple prep in step 17 takes 20 min), the slack around the applesauce and the steak's sitting time absorbs most of it, and the potatoes just bake a few minutes past 40 before basting. Not a disaster."
+    },
+    "food_risks": [
+     {
+      "dish": "Lemon Butter Parmesan Asparagus",
+      "risk": "The timer rings during the steak rest, when the screen says nothing needs you. If you miss the pull it overcooks. Even if you pull it on time, it sits about 6 min while the oven is switched to broil and preheats. It also roasts in an oven that's been opened for the potatoes."
+     },
+     {
+      "dish": "Pan-Seared Ribeye",
+      "risk": "It goes into the pan about 33 min before the asparagus is done. The rest stretches past 10 min (about 11 in my run, more if anything slips), so it's lukewarm at the table. The smoking pan is also left waiting through steps 27\u201328."
+     },
+     {
+      "dish": "Hasselback Potatoes",
+      "risk": "They come out and get 'served hot' at step 32, then sit about 6\u20138 min while the asparagus broils. They lose crispness and heat."
+     },
+     {
+      "dish": "Microwave Applesauce",
+      "risk": "It's done about 35 min before dinner and cools. The card says it's good warm or cold, so this is a minor risk."
+     }
+    ],
+    "headings": "Mixed. Phase 1 (Prep) and Phase 3 ('Hasselback Potatoes in the oven (40 min)') were useful landmarks: they told me the long passive stretch had started. Phase 2 'Start cooking' was misleading, since it's only slicing. Phase 4 'Ribeye sitting out (30 min)' marks a timer, but most of the work under it is applesauce and asparagus, so the heading names the least important thing. Phase 5 is where headings should help most and do least. It's labelled for the potatoes, gives '18 min', which matches no timer, and says '\u2014 then serve'. But it holds the whole crunch: heat the pan, sear, baste, roast and pull the asparagus, rest, potatoes out, preheat the broiler, broil. A separate heading for 'Final sear and finish (everything at once)', or one at the broil, would have warned me to clear the decks. When I was running late they didn't help me find my place, because everything late happens under one heading.",
+    "confidence": 3,
+    "top_problems": [
+     "The finishing stretch (steps 26\u201334) piles the steak sear, the asparagus roast with its pull-out, the potatoes coming out, and the broil into about 15 min. The asparagus 'pull the pan out' instruction lives on step 28, so nothing tells you to act when its timer rings during the rest. Step 32 also says 'serve hot' with about 6 min of asparagus still to go.",
+     "Timer/Next mechanics break on split steps: the step 19 stir falls after its own timer, and the step 20 wait note conflicts with having to tap Next to start the steak timer. The screen's own timer readouts at steps 21\u201322 don't agree with each other.",
+     "The screen leaves out essentials the cook has to dig for on the cards: quantities on most prep steps, the thermometer, herbs and parsley prep, the second lemon. It also has no final step to slice the steak and plate everything."
+    ],
+    "worked_well": [
+     "The long early wait is used well: applesauce, steak tempering and asparagus prep all fit inside the potatoes' first 40 min bake, and the steak timer ends almost exactly when the pan goes on.",
+     "Pinned 'timers running' lines and 'Nothing needs you for about N min. Up next: X' make passive stretches clear, and helped me spot a timer that had run out when I was behind.",
+     "Grouping all the knife work (garlic, asparagus, lemons) into Phase 1 before the oven is hot keeps the later phases mostly hands-free until the final sear."
+    ],
+    "data_issues": [
+     "Garlic paste overproduction: 8 cloves (about 3 tbsp, about 15 min of work) to supply 1 tsp to the potatoes. The card's own note says a microplane would be faster for a quantity this small. Its salt also isn't subtracted from the potatoes' 'salt and pepper'.",
+     "Lemon count: the asparagus uses a whole lemon (half juiced, half rings) and the applesauce needs another half. Step 13's 'the half lemon' hides that you need 1.5 lemons.",
+     "Asparagus card: step text says 8\u201310 min, timer says 8\u201312. Card step 1 (heat oven) is silently merged into the potato preheat, which is fine since both are at 200\u00b0C.",
+     "The applesauce card never says to cover the dish, but its notes say to 'uncover away from your face'.",
+     "Yields don't match: ribeye serves 1, potatoes serve 4 (8 potatoes), asparagus serves 8 (2 lb), applesauce makes 3 cups.",
+     "The thermometer requirement is only in the ribeye card's 'Before you start', which the plan drops. Steak thickness (needed to pick 3\u20134 vs 5 min) isn't given anywhere.",
+     "The plan mixes the potato butter mixture at step 9, about 70 min before the second half is used, so it will likely have set. Card order (mixing right before brushing) would have avoided this for the first half.",
+     "No ending step: nothing covers slicing the steak, taking the asparagus out after the broil, or bringing all four dishes to the table together. Potato step 8 'serve hot' is used as the serving moment, but it isn't the last step.",
+     "Order of steps 26\u201328: an oven task is placed between seasoning the steak and laying it in the smoking pan, and the asparagus goes in only about 10 min before the potatoes finish, so the broil has to come after everything else."
+    ]
+   }
+  },
+  {
+   "lineup": "pavlova",
+   "presentation": "A",
+   "run": 1,
+   "presentation_is": "every step of every recipe in one order, one step at a time, with each step's done-when cue and the timers already running",
+   "report": {
+    "total_time": "Day before: about 4 hr 15\u201320 min in my dry run (30 min for the whites to warm up, about 3 min of prep, about 12 min to whip, fold and shape, 90 min baking, 2 hr cooling, 2 min to put the shell away). The screen says about 4 hr 25 min, so that matches. On the day: about 2 hr 10\u201315 min. Zesting and juicing 6 lemons took about 12 min. The ice bath timer started about 36 min in, the curd went into the fridge about 66 min in and was ready about 126 min in, and I assembled at about 130 min. The screen says about 2 hr 10 min, which matches if the lemon prep takes 12 min or less. The total does not update when you run late. The Pavlova card says \"Total: 4 hr\" for the shell. That leaves out the 30 min the whites spend warming up, which the screen includes.",
+    "lookups": 11,
+    "literal_failures": [
+     {
+      "step": "On the day, steps 5 to 6 (Blueberry Syrup card step 2, then Lemon Curd card step 3)",
+      "what_goes_wrong": "Step 5 ends when the sugar has dissolved, but no step says to take the syrup off the heat. Then 7 curd steps come next (simmer, temper, 6 min of cooking, butter, strain, ice bath). Taken literally, the syrup keeps simmering on medium for about another 15\u201320 min until step 13 strains it. It reduces toward jam and may catch on the bottom of the pan. On the card, steps 2 and 3 come straight after each other, so 'off the heat' is implied. Splitting them up loses that."
+     },
+     {
+      "step": "On the day, step 13 (strain the syrup)",
+      "what_goes_wrong": "Two minutes earlier, step 11 used 'the fine-mesh strainer' for the curd. It is still full of zest and bits of cooked egg. Nothing says to rinse it or to use a second one. The step also doesn't say what to strain into. The card's 'Before you start' says a strainer over a bowl, and the screen never shows that."
+     },
+     {
+      "step": "On the day, step 7 (whisk the eggs, yolks and salt)",
+      "what_goes_wrong": "The step doesn't say how many eggs or how much salt. It also doesn't remind you that the yolks are the 4 you put in the fridge yesterday. Neither on-the-day prep step mentions getting them out, so a cook might go looking for yolks or separate fresh eggs."
+     },
+     {
+      "step": "On the day, step 19, then 'Nothing needs you for about 13 min'",
+      "what_goes_wrong": "The whipped cream is finished and then left on the counter for about 13\u201315 min while the curd's fridge timer runs down. Nothing says to refrigerate it, so it softens and starts to weep before it goes on the pavlova."
+     },
+     {
+      "step": "On the day, step 20 (pile on whipped cream, curd and fruit)",
+      "what_goes_wrong": "Fruit is mentioned here for the first time. No step says to get, wash or prepare berries. You'd find out you have none at the moment you serve. The step also doesn't say to take the shell out of its container and put it on a plate. It doesn't give an order or amounts for the toppings either (all 2 cups of curd?)."
+     },
+     {
+      "step": "Day before, steps 1 to 3 ('Nothing needs you for about 30 min', then line the sheet, then heat the oven)",
+      "what_goes_wrong": "Taken literally, you sit through the 30 min wait and only then line the sheet and turn the oven on. The oven gets only about 12 min (the whipping time) to reach 350\u00b0F, and step 9 never says to wait until it's hot. The meringue may go into an oven that hasn't reached temperature, so the initial blast never happens."
+     },
+     {
+      "step": "Day before, step 9 ('keep the door shut', done when firm and dry to the touch)",
+      "what_goes_wrong": "The done-when cue means opening the door and touching the shell, which goes against 'keep the door shut'. The step doesn't say when to check (only once the 90 min timer rings?)."
+     },
+     {
+      "step": "On the day, step 17 ('Whip the cream ... to soft peaks', then 'Nothing needs you for about 3 min')",
+      "what_goes_wrong": "The screen has you whip the cream while the syrup still has about 6 min left in the fridge. Then it parks the soft-peaked cream for about 3 min until the syrup timer rings. Taken literally, the cream sits half-whipped for no reason. It would be better to wait and then whip."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "On the day, steps 8\u20139 (tempering, then 6 min of curd cooking where you have to stay with it)",
+      "what": "You need constant whisking and both hands at the curd pan while the blueberry syrup is still simmering on the next burner, unwatched and never taken off the heat. You can't both look after the syrup and keep whisking."
+     },
+     {
+      "moment": "On the day, step 8 (temper)",
+      "what": "You drizzle hot juice from the saucepan with one hand and whisk constantly with the other. The damp towel under the bowl makes this manageable, but it is a two-handed job with a hot pan."
+     },
+     {
+      "moment": "On the day, steps 11\u201313",
+      "what": "You strain the curd, wrap it and set up the ice bath, then strain the syrup straight away with the same strainer. You need to wash the strainer between them while the hot syrup is waiting (and, taken literally, still on the burner)."
+     },
+     {
+      "moment": "Day before, step 5 (add the sugar in two parts, then go to high speed)",
+      "what": "With a hand mixer you hold the beater and pour the sugar at the same time. A stand mixer is fine. The screen doesn't say which one it assumes."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Day before, step 5",
+      "unclear": "How much sugar (1 cup, card). The screen gives no amounts for the meringue: the vanilla, cream of tartar and cornstarch in steps 6\u20137 also needed a card lookup."
+     },
+     {
+      "moment": "Day before, step 1 \u2192 step 2",
+      "unclear": "Whether I may line the sheet and pulse the sugar during the 30 min 'nothing needs you' wait, or must wait first. Also whether to start the oven early."
+     },
+     {
+      "moment": "Day before, step 9",
+      "unclear": "Whether to wait for the oven to reach 350\u00b0F before the pavlova goes in, and when to check for browning or test whether it's firm."
+     },
+     {
+      "moment": "On the day, step 1",
+      "unclear": "How much butter to set out (5 tbsp). Also whether 6 lemons will really give 1 cup of juice, and whether 1/3 cup of zest is what I need (amount only on the card)."
+     },
+     {
+      "moment": "On the day, step 2",
+      "unclear": "How much sugar to rub with the zest (3/4 cup, card)."
+     },
+     {
+      "moment": "On the day, step 4",
+      "unclear": "Syrup amounts (8 oz berries, 8 oz sugar, 4 oz water). None are on the screen."
+     },
+     {
+      "moment": "On the day, step 5 \u2192 6",
+      "unclear": "Whether the syrup stays on the heat while I make the curd. I guessed it should come off (or go to the lowest heat), but the screen never says."
+     },
+     {
+      "moment": "On the day, step 9",
+      "unclear": "The done-when needs an instant-read thermometer. The screen's prep never says to set one out (only the card does)."
+     },
+     {
+      "moment": "On the day, step 13",
+      "unclear": "What to strain the syrup into (a bowl, then pour it into the jar in step 15?), and whether to rinse the strainer first."
+     },
+     {
+      "moment": "On the day, steps 17\u201319",
+      "unclear": "How much cream, syrup and confectioners' sugar (1 cup, 3\u20134 tbsp, 1\u20132 spoonfuls: card lookup). Also whether to start whipping now or after the syrup timer rings."
+     },
+     {
+      "moment": "On the day, after step 19",
+      "unclear": "Where to keep the finished whipped cream during the 13 min wait."
+     },
+     {
+      "moment": "On the day, step 20",
+      "unclear": "Which fruit and how much, the order of the layers (curd under the cream, or cream first as written?), how much of the 2 cups of curd to use, and whether to move the shell onto a serving plate."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Day-before header vs Pavlova card",
+      "what": "The screen says about 4 hr 25 min in all. The card says Total: 4 hr and never says how long the whites take to reach room temperature (the screen adds 30 min)."
+     },
+     {
+      "where": "On the day, timers on steps 14\u201315",
+      "what": "Step 14 starts with 'Lemon Curd in the ice bath, about 25 min left', then waits 'about 10 min'. Step 15 then shows 'about 17 min left' when it should be about 15. The screen's own countdown doesn't add up."
+     },
+     {
+      "where": "On the day, prep vs Lemon Curd card 'Before you start'",
+      "what": "The card says to set out an instant-read thermometer, a whisk, a fine-mesh strainer and plastic wrap, and to use fresh juice only. The screen's prep step mentions only the zest, the juice and the butter. The thermometer is needed at step 9 and the plastic wrap at step 12."
+     },
+     {
+      "where": "On the day vs Blueberry Syrup card 'Before you start'",
+      "what": "The card says to set out the strainer over a bowl and a clean jar. The screen never shows this prep, so the jar first appears at step 15 and the bowl never does."
+     },
+     {
+      "where": "Step 5 vs step 6 on the day vs Blueberry Syrup card",
+      "what": "On the card, straining comes straight after the simmer, so it is clear the syrup comes off the heat. On the screen, 7 curd steps come in between and no instruction to take it off the heat was added."
+     },
+     {
+      "where": "On the day, step 17 vs Blueberry Whipped Cream card",
+      "what": "The card says to make the syrup ahead and chill it because 'warm syrup deflates the cream'. The screen starts the cream while the syrup still has about 6 min to go in the fridge (it does wait before adding the syrup). The syrup has had only about 1 hr in a jar, so 'cold' is doubtful."
+     },
+     {
+      "where": "On the day, step 20 vs Pavlova card ingredients",
+      "what": "The card lists 'Fresh berries or fruit' as a topping. The screen has no step to prepare them. The card also marks lemon curd as optional, while the screen builds the whole day around it."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Taking the blueberry syrup off the heat after step 5",
+      "consequence": "It simmers about 15\u201320 extra minutes on medium while you make the curd. It reduces into a thick, jammy or scorched syrup that won't mix smoothly into the cream."
+     },
+     {
+      "what": "Getting, washing and drying the fruit",
+      "consequence": "You find out at step 20, with everything ready, that there are no berries, or they're wet and make the shell soggy."
+     },
+     {
+      "what": "Getting yesterday's 4 yolks out of the fridge (and having 3 whole eggs)",
+      "consequence": "You hunt for them in the middle of step 7, or separate fresh eggs and waste whites. Meanwhile the juice is already simmering on its 3 min timer."
+     },
+     {
+      "what": "Refrigerating the whipped cream during the 13 min wait",
+      "consequence": "The cream softens and weeps, and the topping slumps on the pavlova."
+     },
+     {
+      "what": "Rinsing the strainer between the curd and the syrup",
+      "consequence": "Lemon zest and bits of egg get into the blueberry syrup, or you scramble to wash it while the syrup is still hot on the stove."
+     },
+     {
+      "what": "Setting out the thermometer and plastic wrap",
+      "consequence": "You go looking for them in the middle of the 6 min of curd cooking, when you're meant to be whisking constantly. The curd can overcook or catch on the bottom."
+     },
+     {
+      "what": "Softening the butter early enough",
+      "consequence": "It's set out only about 30 min before step 10, so it may still be firm and slow to whisk into the hot curd. Minor."
+     },
+     {
+      "what": "Starting the oven early on the day before",
+      "consequence": "The oven isn't at 350\u00b0F when the meringue goes in, so the bake is less reliable."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "On the day, steps 8\u201312: tempering and cooking the curd, with the syrup still simmering on the next burner (for example, the juice takes longer to simmer or the curd takes 16 min to reach 170\u00b0F instead of 6)",
+     "what_happens": "Everything that has to be done right now slips together. The syrup gets about 10 more minutes on medium heat, on top of the 15\u201320 the screen already gives it. It reduces hard and may scorch, so it's useless for the cream. The curd needs constant whisking, so you can't break away to save the syrup. Later steps just slide: the timers start when you tap Next, so the ice bath and fridge timers start 10 min later and dessert is 10 min late, or the curd goes on less cold. The presentation helps a bit, because the 'Timers running as you start this' lines show what is in progress. But no step warns that the syrup is still on the heat, and the screen gives no total time left or serving time that updates. So you can't see how late dessert will be. Losing 10 min during the 13 min wait at the end would cost nothing, because there is slack there."
+    },
+    "food_risks": [
+     {
+      "dish": "Blueberry Syrup",
+      "risk": "It stays on medium heat for about 15\u201320 min longer than the recipe means, through the whole curd sequence, so it over-reduces or scorches. It also gets only about 1 hr in the fridge before it goes into the cream, so it may not be fully cold, which risks deflated cream."
+     },
+     {
+      "dish": "Blueberry Whipped Cream",
+      "risk": "It's whipped about 15\u201320 min before serving and left at room temperature, plus it's paused at soft peaks for about 3 min while it waits for the syrup. It goes onto the pavlova softer and weepier than freshly whipped."
+     },
+     {
+      "dish": "Pavlova (shell)",
+      "risk": "With the screen's order, the oven is turned on only about 12 min before the meringue goes in, so it probably hasn't reached 350\u00b0F. That makes the set and spread less predictable. After step 11 the shell is fine overnight in an airtight container."
+     },
+     {
+      "dish": "Lemon Curd",
+      "risk": "It's fine if you stay with it. The risk is overcooking while you're distracted by the syrup on the next burner, or by looking for the thermometer that the screen never had you set out."
+     }
+    ],
+    "headings": "The screen has only two section headings: 'made ahead (the day before)' and 'on the day'. They helped: the yolks and the 2-day keeping time made sense, and the long waits stood out. The bracketed tags on each step ([Lemon Curd, card step 4]) were the most useful landmark, because they made every card lookup instant. Within the day there are no phase headings, and a landmark would have helped in two places. Before step 6, something like 'Curd at the stove, about 15 min hands-on: take the syrup off the heat first, have the thermometer, strainer and plastic wrap ready'. And at step 16, '40 min free: prepare the fruit, wash up, chill the cream bowl'. Without them, the stretch of 7 curd steps in the middle hides the fact that the syrup is still on the burner.",
+    "confidence": 3,
+    "top_problems": [
+     "Splitting up the steps breaks the syrup. Blueberry Syrup step 2 (simmer) and step 3 (strain) are separated by 7 curd steps, and no step says to take the syrup off the heat. Taken literally, it simmers about 15\u201320 extra minutes and turns jammy or scorches, while the curd needs both hands.",
+     "The screen gives no ingredient amounts, and the card's 'Before you start' items (thermometer, plastic wrap, strainer over a bowl, jar) are missing. About 11 card lookups, several of them during hands-on moments (curd step 7, step 9).",
+     "The finish is underspecified. Fruit is never prepared. The whipped cream sits out unrefrigerated for about 13\u201315 min, after a needless 3 min pause at soft peaks. And step 20 doesn't say how to plate the shell or in what order and amounts to add the toppings. Also, the curd and syrup keep for days but are made on the day, which takes up 2 hr 10 min."
+    ],
+    "worked_well": [
+     "The 'Timers running as you start this' lines and the 'Nothing needs you for about X. Up next: Y' lines made the waits and parallel timers easy to follow. You always know what is in progress and what comes next.",
+     "Each step is tagged with its recipe and card step number, so every lookup took seconds. The yolks are linked clearly across the two days (save them, they keep 2 days, use them in the curd).",
+     "Splitting into 'day before' and 'on the day' with separate totals is clear. Within the curd, the order is clean: the ice bath is set up during the zest rest, the juice heats while you whisk the eggs, and the ice bath leads into the fridge. The 30 min whites rest is made explicit, though the card leaves it out."
+    ],
+    "data_issues": [
+     "The Blueberry Syrup recipe has no explicit 'take off the heat' step. Strain directly follows simmer, so that only works when the steps are consecutive. The plan inserts 7 curd steps between them.",
+     "The plan makes the lemon curd (keeps 5 days) and the syrup (keeps for days) on the day, which takes 2 hr 10 min. Both could be made the day before, during the pavlova's 3.5 hr in the oven. The curd card itself says it uses the 4 leftover yolks. Only the pavlova was offered as make-ahead.",
+     "The plan schedules the whipped cream about 13 min before the curd is ready, so the cream waits unrefrigerated. Whipping it last, after the curd's fridge timer, would be better. Step 17 also starts the cream about 6 min before the syrup is ready, then pauses it for about 3 min.",
+     "The plan has no step for the fruit, even though the Pavlova card lists fresh berries as a topping.",
+     "The same fine-mesh strainer is scheduled for the curd (step 11) and the syrup (step 13) about 2 min apart, with no time for washing.",
+     "The plan's timer math is off: step 14 says the ice bath has 25 min left, then a 10 min wait, then step 15 says 17 min left.",
+     "The plan puts 'Heat the oven' after the 30 min whites rest and only about 12 min before the bake, and nothing waits for the oven to reach temperature.",
+     "The Pavlova card's Total: 4 hr leaves out the 30 min for the whites to warm up. The screen says 4 hr 25 min.",
+     "The recipe folds the cream of tartar in at the end and adds the sugar in two big additions. Both are unusual (cream of tartar usually goes in at the start to stabilise the whites; sugar goes in gradually). Noted only as a recipe-data oddity.",
+     "The butter is set out to soften only about 30 min before it's needed. One hour of syrup chilling in a jar may not be 'cold', even though the cream card insists on chilled syrup."
+    ]
+   }
+  },
+  {
+   "lineup": "pavlova",
+   "presentation": "A",
+   "run": 2,
+   "presentation_is": "every step of every recipe in one order, one step at a time, with each step's done-when cue and the timers already running",
+   "report": {
+    "total_time": "Day before: about 4 hr 30 min (30 min whites rest, ~5 min lining/pulsing, ~5 min waiting at step 3 for the oven to reach 350\u00b0F, ~12 min whipping and shaping, 90 min bake, 2 hr cooling in the oven, a minute to box it). The screen said about 4 hr 25 min, so it was close. The extra time came from the oven only being switched on after the 30-minute wait. On the day: about 2 hr 15 min (~12 min zesting and juicing 6 lemons, ~10 min under the zest timer for the ice bath and getting the syrup going, ~15 min of hands-on curd work, then the 30 min ice bath and 1 hr fridge for the curd, with the syrup and cream fitted in, plus a few minutes to assemble). The screen said about 2 hr 10 min. The chilling of the curd is the critical path, so the estimate holds unless the curd itself runs long.",
+    "lookups": 9,
+    "literal_failures": [
+     {
+      "step": "On the day, steps 5 to 13 (Blueberry Syrup card step 2, then the curd steps, then syrup card step 3)",
+      "what_goes_wrong": "Step 5 says to keep the syrup at a simmer until the sugar dissolves, and then the screen moves straight to the lemon curd. Nothing says to take the syrup off the heat. If you do only what the screen says, the syrup simmers for about 15 to 20 minutes on medium while you whisk the curd (steps 6 to 12). It reduces into a jammy, sticky syrup and can catch on the bottom of the small pan. You only come back to it at step 13 (strain)."
+     },
+     {
+      "step": "On the day, step 13 (strain the blueberry syrup)",
+      "what_goes_wrong": "Step 13 says to strain through 'the fine-mesh strainer'. That strainer was used two steps earlier (step 11) for the curd and is coated in curd, zest and bits of cooked egg. The screen never says to rinse it or to have a second one ready, so following it literally puts lemon curd into the syrup."
+     },
+     {
+      "step": "Day before, step 3 (Heat the oven to 350\u00b0F)",
+      "what_goes_wrong": "The oven is only switched on after the 30-minute whites rest and the lining step, and the screen goes straight on to whipping. The meringue is ready about 10 to 12 minutes later, which can be before the oven reaches 350\u00b0F. Following it literally, the meringue either goes into an oven that isn't hot yet or sits on the sheet while you wait. The 30-minute 'Nothing needs you' wait was the obvious time to preheat, and the screen didn't use it."
+     },
+     {
+      "step": "On the day, step 16 ('Then refrigerate it')",
+      "what_goes_wrong": "This comes straight after a Blueberry Syrup step, so 'it' first reads as the syrup, which is already in the fridge. Only the [Lemon Curd] tag tells you it means the curd. It also doesn't say to lift the bowl out of the ice bath, or to keep the plastic wrap on."
+     },
+     {
+      "step": "On the day, step 20 (pile on whipped cream, curd, and fruit)",
+      "what_goes_wrong": "The fruit appears here for the first time. No step ever tells you to have berries bought, washed and dried. It also doesn't say to take the shell out of its container, how much curd to use (the recipe makes 2 cups), or what order to layer things in."
+     },
+     {
+      "step": "On the day, step 8 (Set the egg bowl on a damp towel)",
+      "what_goes_wrong": "There's no damp towel ready, and the step happens while hot juice is waiting in the pan. The instant-read thermometer that step 9's done-when cue (170F) needs was never set out either. The card's 'Before you start' (thermometer, whisk, strainer, plastic wrap) was dropped from the screen's prep step."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "On the day, steps 5 and 6: zest timer running out, syrup at a simmer",
+      "what": "Step 5 has you mashing berries at a simmer with no time given. The zest timer rings in the middle of that, and step 6 puts the lemon juice on a second burner. You're watching two pans and the mashing isn't finished."
+     },
+     {
+      "moment": "On the day, steps 8 and 9 (temper, then the 6-minute 'stay with it' curd cook)",
+      "what": "The curd needs constant whisking and a thermometer check. Unless you turned it off on your own initiative, the syrup is still simmering on the next burner and needs stirring and watching too."
+     },
+     {
+      "moment": "On the day, step 8 (tempering)",
+      "what": "You pour hot juice from the pan with one hand and whisk constantly with the other. The damp towel holds the bowl, so it's possible, but only if the towel is already there."
+     },
+     {
+      "moment": "On the day, step 11 (strain the curd and scrape the underside)",
+      "what": "You hold or balance the strainer over the bowl, push the curd through and scrape underneath with a spatula. It's awkward alone unless the strainer sits steadily on the bowl rim."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Day before, step 3",
+      "unclear": "Should I wait for the oven to reach 350\u00b0F before whipping? There's no preheat cue and no timer."
+     },
+     {
+      "moment": "Day before, steps 2, 5, 6 and 7",
+      "unclear": "The amounts of sugar, vanilla, cream of tartar and cornstarch aren't on the screen. I had to look at the card for each."
+     },
+     {
+      "moment": "Day before, step 9",
+      "unclear": "How do I check 'firm and dry to the touch' while keeping the door shut? And what if it isn't dry at 90 minutes? The card mentions humid days needing extra time, but the screen doesn't."
+     },
+     {
+      "moment": "Day before, step 10",
+      "unclear": "'Cool completely' only has an 'About 2 hr' timer and no cue for checking it."
+     },
+     {
+      "moment": "On the day, step 1",
+      "unclear": "How much butter to set out (5 tbsp, from the card). I also had to decide whether to get the equipment out now."
+     },
+     {
+      "moment": "On the day, steps 2, 4 and 7",
+      "unclear": "The amounts of sugar, eggs, salt, and berries/sugar/water for the syrup weren't shown. I needed the cards (and a scale for the ounces)."
+     },
+     {
+      "moment": "On the day, step 5",
+      "unclear": "How long the mashing takes, and what to do with the syrup once the sugar has dissolved: keep it simmering, or take it off the heat?"
+     },
+     {
+      "moment": "On the day, step 9",
+      "unclear": "What to do if the curd hasn't reached 170F after about 6 minutes. Keep going? Turn the heat up? (The step says not to raise the flame.)"
+     },
+     {
+      "moment": "On the day, step 16",
+      "unclear": "What 'it' refers to, and whether to take the bowl out of the ice bath first."
+     },
+     {
+      "moment": "On the day, after step 19 ('Nothing needs you for about 13 min')",
+      "unclear": "Should the finished whipped cream go into the fridge during the 13-minute wait? Should I be getting the shell and fruit ready then? The screen says nothing needs me."
+     },
+     {
+      "moment": "On the day, step 20",
+      "unclear": "Which fruit, how much curd and cream, the layer order, and whether 1 hr in the fridge has really made the curd 'cold all the way through'."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "On the day, step 1 (Lemon Curd prep) vs. the Lemon Curd and Blueberry Syrup 'Before you start' sections",
+      "what": "The cards say to set out an instant-read thermometer, whisk, fine-mesh strainer and plastic wrap, and for the syrup a strainer over a bowl and a clean jar. The screen's prep step leaves all of that out. It only covers zesting, juicing and softening the butter."
+     },
+     {
+      "where": "Day before, header ('About 4 hr 25 min') vs. Pavlova card ('Total: 4 hr')",
+      "what": "The card's total leaves out the 30-minute rest for the whites to reach room temperature. The screen's figure is the more honest one."
+     },
+     {
+      "where": "On the day, step 16 vs. Lemon Curd card step 10",
+      "what": "On the card, 'Then refrigerate it' follows the ice bath directly, so it makes sense there. On the screen it follows two syrup steps, so 'it' is ambiguous."
+     },
+     {
+      "where": "On the day, step 15 running-timer line",
+      "what": "It says 'Lemon Curd in the ice bath, about 17 min left'. Step 14 started with 25 min left and then had a 10-minute timer, so it should be about 15. This is minor, but it doesn't add up."
+     },
+     {
+      "where": "Pavlova card step 7 / screen step 9",
+      "what": "'Keep the door shut' conflicts with the done-when cue 'Firm and dry to the touch', which means opening the door to check."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Taking the blueberry syrup off the heat once the sugar has dissolved",
+      "consequence": "It simmers through the whole curd sequence and over-reduces or scorches. You get a thicker syrup that could make the 3 to 4 tbsp in the cream gluey or too strong, or a burnt pan."
+     },
+     {
+      "what": "Washing the fine-mesh strainer between the curd (step 11) and the syrup (step 13)",
+      "consequence": "Curd gets into the syrup, or you lose time scrubbing a sticky strainer while the syrup cools in the pan."
+     },
+     {
+      "what": "Getting fresh berries or fruit bought, washed and dried",
+      "consequence": "At step 20 there's no fruit to pile on, or wet berries go onto the cream and make it weep."
+     },
+     {
+      "what": "Preheating the oven during the 30-minute whites rest",
+      "consequence": "The finished meringue waits for the oven. It can start to weep sugar syrup and lose volume, and the first blast at 350\u00b0F is cooler than intended."
+     },
+     {
+      "what": "Setting out the thermometer, damp towel, plastic wrap, a second medium bowl and the jar",
+      "consequence": "You scramble for them mid-tempering or mid-cook, the moment when the curd can't be left."
+     },
+     {
+      "what": "Putting the finished whipped cream in the fridge during the final 13-minute wait",
+      "consequence": "The cream softens and starts to weep at room temperature before it goes on."
+     },
+     {
+      "what": "Keeping the ice bath cold (made about 25 minutes before it's used)",
+      "consequence": "Some of the ice has melted by step 12, so the curd chills more slowly and may not be cold all the way through at the end of the 1 hr fridge timer."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "On the day, in the middle of the curd (steps 6 to 9), for example if zesting ran long or the curd took 16 minutes to reach 170F instead of about 6",
+     "what_happens": "The curd is the critical path, so serving simply slips by about 10 minutes. The real damage is to the syrup. With nothing telling me to take it off the heat, it sits simmering for 25 to 30 minutes instead of 15 to 20 and turns thick and jammy or catches. The syrup's cooling chain (10 min plus 1 hr) has about 20 minutes of slack against the curd's 90-minute chill, so the cream step still works. The pinned timers show how long each running timer has left, which helps a bit. But a timer that is just 'About 6 min (stay with it)' and has run out tells me nothing about how far behind I am overall. There's no running total or end time, and the 'About 2 hr 10 min' estimate never updates. So I can't tell whether serving is now 10 minutes late or more, and the screen gives no warning that the syrup is the thing at risk."
+    },
+    "food_risks": [
+     {
+      "dish": "Blueberry Syrup",
+      "risk": "It's left on medium heat with no instruction to turn it off while the curd is made (about 15 to 20 minutes). It over-reduces or scorches, and it will set thicker once cold."
+     },
+     {
+      "dish": "Blueberry Whipped Cream",
+      "risk": "It's whipped about 13 to 15 minutes before assembly and left out, with no instruction to chill it, so it softens and weeps. It also pauses about 3 minutes at soft peaks waiting for the syrup timer. The cream would be better whipped last, after the curd is cold."
+     },
+     {
+      "dish": "Lemon Curd",
+      "risk": "It gets only 30 minutes in an ice bath (made about 25 minutes earlier, so partly melted) plus 1 hr in the fridge. Two cups in a bowl may not be fully set and cold, and a loose curd runs off the pavlova and makes the shell soggy."
+     },
+     {
+      "dish": "Pavlova (day before)",
+      "risk": "If the meringue finishes before the oven reaches 350\u00b0F (the oven is only switched on at step 3), it sits and can weep or deflate before it goes in."
+     }
+    ],
+    "headings": "The screen has two day headings ('made ahead (the day before)' and 'on the day') but no phase headings within a day. The day split was clearly helpful, and the note about saving the yolks for the curd tied the two days together well. Within the day itself, landmarks would have helped in two places. One before steps 4 to 13, something like 'Stove: syrup and curd together'. It would warn you that two pans are going and that the syrup needs to come off the heat before the curd starts. One before step 17, something like 'Finish: whip cream, prep fruit, assemble'. It would prompt you to get the fruit and shell ready and to keep the cream cold. On the day before, a landmark at the 30-minute wait ('Get ready: oven, sheet, sugar') would have moved the preheat into the wait.",
+    "confidence": 3,
+    "top_problems": [
+     "After its sugar dissolves (step 5), the blueberry syrup is left simmering through the whole curd sequence with no 'take it off the heat' step. Then it is strained (step 13) through the same strainer the curd just went through, with no instruction to wash it.",
+     "The prep steps leave out the cards' 'Before you start' equipment (thermometer, plastic wrap, strainer, jar, damp towel) and never prepare the fresh fruit that step 20 needs. Ingredient amounts are never on the screen, which forced about 9 card lookups.",
+     "Timing of the bookend steps: on the day before, the oven is only switched on after the 30-minute wait, so the meringue may wait for it; on the day, the whipped cream is made about 15 minutes before assembly and left out while the curd finishes chilling."
+    ],
+    "worked_well": [
+     "The running timers under each step, with minutes left, made it easy to see what was in progress, for example that the zest rest was still running during the ice bath and the syrup.",
+     "The 'Nothing needs you for about X. Up next: Y' lines made the long waits (bake, cool, ice bath, fridge) clear and stress-free.",
+     "The make-ahead split, the inline done-when cues (stiff glossy peaks, 170F, peaks with the tip curling over) and the clear note about saving and storing the 4 yolks for the next day's curd."
+    ],
+    "data_issues": [
+     "The plan places the curd between Blueberry Syrup steps 2 and 3, but the syrup recipe has no 'remove from heat' step, so the syrup is left on the burner. Either the data needs that step or the plan should strain the syrup right after step 5.",
+     "The fine-mesh strainer is used for both the curd and the syrup back to back. The plan doesn't account for washing it or needing two strainers.",
+     "The 'Fresh berries or fruit' topping has no prep step anywhere in the plan.",
+     "Oven preheat (Pavlova card step 1) is scheduled after the 30-minute whites rest instead of during it.",
+     "The Pavlova card's 'Total: 4 hr' leaves out the 30-minute rest for the whites.",
+     "The whipped cream is scheduled 13 to 15 minutes before assembly while the curd is still chilling. It should come last, just before serving, and there is no 'refrigerate the cream' step.",
+     "The Lemon Curd note 'spend the 4 leftover whites on it [pavlova]' is backwards for this meal. The pavlova was made first and supplied the yolks, and the curd uses 3 whole eggs plus those yolks, so it leaves no whites.",
+     "The ice bath is made at the start of the day (step 3) but used about 25 minutes later, so some of the ice will have melted.",
+     "Step 15's running-timer figure (17 min left on the curd) doesn't match the timers before it (about 15)."
+    ]
+   }
+  },
+  {
+   "lineup": "pavlova",
+   "presentation": "D",
+   "run": 1,
+   "presentation_is": "the same step-by-step list, with phase headings along the way (prep, then wherever something goes in the oven, rises or chills) as landmarks",
+   "report": {
+    "total_time": "The day before took me about 4 hr 20 min: 30 min for the whites to warm, about 12 min of whipping and shaping, 90 min baking and 2 hr cooling. The screen says about 4 hr 25 min, so that matches. The card's \"Total: 4 hr\" leaves out the 30-minute room-temperature wait. On the day it took about 2 hr 15\u201320 min against the 2 hr 10 min the screen promised. The extra came from zesting and juicing 6 lemons (12+ min of hands-on work that the screen never times), washing the one fine-mesh strainer between the curd and the syrup, and assembling the pavlova. The curd's chain (10 min zest rest, about 15 min of cooking, 30 min ice bath, 1 hr fridge) sets the length of the day, and the screen got that right.",
+    "lookups": 11,
+    "literal_failures": [
+     {
+      "step": "On the day, step 5 (Blueberry Syrup: keep at a simmer until the sugar dissolves)",
+      "what_goes_wrong": "Nothing tells you to take the pan off the heat. The next syrup step is step 13 (strain), which comes after the whole curd cook: heat the juice, temper, cook 6 min, butter, strain, wrap, about 15\u201320 min in all. Read literally, the syrup keeps simmering on its burner all that time. It reduces toward jam and may catch on the bottom, and it does this while you are whisking the curd and can't watch it."
+     },
+     {
+      "step": "Day before, step 1 then steps 2\u20133 ('Nothing needs you for about 30 min. Up next: Pavlova')",
+      "what_goes_wrong": "Steps 2 and 3 have no timer, so if you tap through them while the whites are still warming, step 4 is next. Step 4 never says 'when the 30-minute timer rings', so a literal cook starts whipping cold whites. If you instead wait the full 30 min before step 2 (as 'nothing needs you' suggests), the oven only goes on after that. It then has about 10\u201312 min of whipping to reach 350\u00b0F, which may not be enough."
+     },
+     {
+      "step": "On the day, step 1 (Prep: zest, juice, soften butter)",
+      "what_goes_wrong": "It never says to set out the instant-read thermometer, fine-mesh strainer, plastic wrap and syrup jar (they're on the cards' 'Before you start'), or to take yesterday's yolks out of the fridge. Step 9 needs the thermometer in the middle of constant whisking. If you have to hunt for it then, the curd can overcook."
+     },
+     {
+      "step": "On the day, step 13 (strain the syrup through 'the fine-mesh strainer')",
+      "what_goes_wrong": "That strainer was just used for the curd in step 11 and is coated in it. The screen doesn't say to rinse it, so a literal cook strains the syrup through curd residue."
+     },
+     {
+      "step": "On the day, step 16 \u2192 17 ('Nothing needs you for about 40 min. Up next: Blueberry Whipped Cream')",
+      "what_goes_wrong": "No timer ends at 40 min, so nothing tells you when to start step 17. You have to watch the curd's fridge timer and guess at about 20 min left."
+     },
+     {
+      "step": "On the day, step 19 \u2192 20 ('Nothing needs you for about 13 min')",
+      "what_goes_wrong": "The finished whipped cream sits out for about 13\u201315 min. Nothing says to refrigerate it, so a literal cook leaves it at room temperature."
+     },
+     {
+      "step": "On the day, step 20 (pile on whipped cream, curd, and fruit)",
+      "what_goes_wrong": "The fruit is never mentioned before this step: no buying, washing or prepping. A literal cook reaches assembly with no fruit ready. It also doesn't say to take the shell out of its container, or how much of the 2 cups of curd to use."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "On the day, steps 5\u20136: mashing the simmering syrup when the zest timer rings and step 6 starts the juice",
+      "what": "Both saucepans are on the heat and each needs attention. The syrup needs mashing and keeping at a simmer, and the juice has to be watched until it simmers."
+     },
+     {
+      "moment": "On the day, step 8 (temper)",
+      "what": "Pouring the hot juice slowly while whisking constantly takes two hands. The damp towel under the bowl makes it workable alone."
+     },
+     {
+      "moment": "On the day, step 9 (6 min of whisking the curd and checking its temperature)",
+      "what": "If the syrup was left on the heat after step 5 (as written), it is still simmering on the next burner and needs watching. Meanwhile the curd needs you whisking and holding a thermometer."
+     },
+     {
+      "moment": "Day before, steps 2\u20133, during the 30-min whites wait",
+      "what": "Not really two at once, but you have to decide whether to prep and preheat during the wait or after it. The screen says 'nothing needs you' while also giving you two tasks."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Day before, step 1 \u2192 2",
+      "unclear": "Should steps 2\u20133 (sugar, lining the sheet, preheating) be done during the 30-minute wait or after it? And should step 4 only start when the 30-min timer rings?"
+     },
+     {
+      "moment": "Day before, step 1",
+      "unclear": "How many eggs to separate. You can work out 4 from '4 yolks', but the screen never says so."
+     },
+     {
+      "moment": "Day before, steps 2, 5, 6, 7",
+      "unclear": "How much sugar, vanilla, cream of tartar and cornstarch. The screen gives no amounts, so I had to look at the card."
+     },
+     {
+      "moment": "On the day, step 5",
+      "unclear": "How long to simmer the syrup. There's no timer, just 'until the sugar has dissolved'. Then what happens to the pan: leave it on, take it off, cover it?"
+     },
+     {
+      "moment": "On the day, steps 1, 2, 4, 7",
+      "unclear": "Butter, sugar, syrup weights, eggs, yolks and salt are all on the cards only. The syrup is given in ounces by weight, so you need a scale."
+     },
+     {
+      "moment": "On the day, step 16 \u2192 17",
+      "unclear": "When to start whipping the cream: there's a 40-min wait with no timer of its own."
+     },
+     {
+      "moment": "On the day, step 17 ('Nothing needs you for about 3 min')",
+      "unclear": "This step is whipping the cream, yet the note says nothing needs you. Do I walk away from the mixer? When do I tap Next, at the 'done when' cue or after 3 min?"
+     },
+     {
+      "moment": "On the day, steps 18\u201319",
+      "unclear": "How much syrup (3\u20134 tbsp), confectioners' sugar and cream (1 cup) to use, all from the card. The syrup recipe makes about 1.5 cups, so it's unclear what to do with the rest."
+     },
+     {
+      "moment": "On the day, step 20",
+      "unclear": "How much curd to use, what fruit, and in what order. The screen says cream, then curd, then fruit; many cooks would put the curd down first."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Day before, intro vs Pavlova card",
+      "what": "The screen says about 4 hr 25 min; the card says 'Total: 4 hr'. The difference is the 30 min for the whites to warm, which the card's total leaves out."
+     },
+     {
+      "where": "On the day, timers listed at steps 14 \u2192 15",
+      "what": "At step 14 the ice bath has about 25 min left. Step 14 is a 10-min cooling timer, yet at step 15 the ice bath shows about 17 min left, not about 15."
+     },
+     {
+      "where": "On the day, timers listed at steps 17 \u2192 18",
+      "what": "At step 17 the syrup's fridge timer has about 6 min left and the curd's about 20. At step 18 the curd shows 16 (4 min later), but the syrup timer has gone, though it should still have about 2 min. So the cream gets syrup before its 1-hr chill is done."
+     },
+     {
+      "where": "On the day, step 18 vs Blueberry Whipped Cream card",
+      "what": "The card says to use chilled syrup ('Warm syrup deflates the cream'), but the screen has you add it before its fridge timer ends. The syrup also only cooled for 10 min ('until it stops steaming') before going in the fridge."
+     },
+     {
+      "where": "On the day, step 1 vs Lemon Curd card 'Before you start'",
+      "what": "The card tells you to set out the thermometer, whisk, strainer and plastic wrap, and the syrup card the strainer and jar. The screen's prep step leaves all of this out."
+     },
+     {
+      "where": "On the day, step 17",
+      "what": "'Nothing needs you for about 3 min' is attached to a step that is itself hands-on whipping with a 'done when' cue."
+     },
+     {
+      "where": "Day before, step 9",
+      "what": "It says 'Rotate once if spots start browning', which means watching the oven. The same step then says 'Nothing needs you for about 1 hr 30 min'."
+     },
+     {
+      "where": "Pavlova card, 'Toppings'",
+      "what": "The card lists lemon curd as 'optional' and the whipped cream and fruit as 'to taste'. The screen treats the curd as a required part of the meal and never mentions preparing the fruit."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Taking the blueberry syrup off the heat after step 5",
+      "consequence": "It simmers unattended for about 15\u201320 min during the curd cook, turns thick and jammy or scorches, and gives less syrup that won't blend into the cream."
+     },
+     {
+      "what": "Setting out the thermometer, strainer, plastic wrap and jar before starting",
+      "consequence": "You scramble mid-curd. The curd can pass 170\u00b0F or curdle while you look for the thermometer."
+     },
+     {
+      "what": "Buying and preparing fresh fruit for the topping",
+      "consequence": "At step 20 there is no fruit, or you're washing berries while the cream sits."
+     },
+     {
+      "what": "Rinsing the fine-mesh strainer between the curd (step 11) and the syrup (step 13)",
+      "consequence": "Curd residue in the syrup, or a few extra minutes of washing that the plan doesn't allow for."
+     },
+     {
+      "what": "Putting the whipped cream in the fridge during the 13\u201315 min wait before assembly",
+      "consequence": "The cream softens and starts to weep at room temperature before it goes on the meringue."
+     },
+     {
+      "what": "Taking the 4 saved yolks out of the fridge on the day",
+      "consequence": "A small one: step 7 mentions yolks without saying where they are. A cook might crack fresh eggs, or forget the saved ones."
+     },
+     {
+      "what": "Starting the oven on time on the day before (if you wait out the full 30 min before step 2)",
+      "consequence": "The meringue is ready before the oven reaches 350\u00b0F, so it sits and may weep, or goes into an oven that isn't hot enough."
+     },
+     {
+      "what": "Using cold cream for the whipped cream",
+      "consequence": "The card says the cream should be cold and the screen doesn't. Warm cream whips poorly, which matters more when the syrup isn't fully chilled either."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "On the day, steps 5\u20139: syrup on one burner, curd juice heating, then tempering and 6 min of whisking. For example, zesting 6 lemons took 20 min instead of 10, or you hunt for the thermometer at step 9.",
+     "what_happens": "Everything on the curd's path (ice bath, then 1 hr fridge) moves 10 min later, so serving is 10 min later too. The serious damage is to the syrup. It has no timer and, as written, is still on the heat, so it simmers about 25\u201330 min instead of a few: it over-reduces, may scorch, and leaves too little thick syrup for the cream. Being late at step 13 (strain the syrup) does further harm. The syrup goes into the fridge 10 min later, but step 17 is triggered by the curd's fridge timer, so the cream gets syrup that has only chilled about 45 min. The headings show where you are ('Phase 2: Start cooking'), and the pinned timers show the zest timer has ended. Nothing on screen shows the syrup pan, though, because it has no timer, and with no clock times you can't tell how late you are against serving. The headings mark long waits, not the busy stretch where you fell behind."
+    },
+    "food_risks": [
+     {
+      "dish": "Blueberry Syrup",
+      "risk": "As written it stays at a simmer from step 5 until step 13, about 15\u201320 min with nobody watching. It over-reduces or scorches, and you get less syrup that is thicker and possibly bitter."
+     },
+     {
+      "dish": "Blueberry Whipped Cream",
+      "risk": "It's whipped about 15\u201320 min before the curd is cold and assembly can start, and left at room temperature. It's also made with syrup that hasn't finished its 1-hr chill after only 10 min of cooling. The card warns that warm syrup deflates the cream, so it may be soft or loose."
+     },
+     {
+      "dish": "Pavlova (meringue)",
+      "risk": "If you tap through steps 2\u20133 during the wait, step 4 has you whip whites before they reach room temperature, so they whip to less volume. If you wait first, the oven may not be at 350\u00b0F when the meringue is spread."
+     },
+     {
+      "dish": "Lemon Curd",
+      "risk": "With no equipment set out, finding the thermometer during step 9's constant whisking risks overshooting 170\u00b0F. If the syrup boils over next to it, you're pulled away from the curd."
+     },
+     {
+      "dish": "Lemon Curd (ice bath)",
+      "risk": "A small risk: the ice bath is made at step 3 and used about 25 min later at step 12. Some ice will have melted, so it chills less well."
+     }
+    ],
+    "headings": "They helped a little, mostly on the day before, where they map neatly onto the real stages: prep, whipping, 90 min in the oven, 2 hr cooling. Each tells you at a glance what is happening and for how long. On the day they helped less. The busiest and riskiest stretch (steps 4\u201311: syrup and curd on two burners) sits under one heading, 'Phase 2: Start cooking', with no landmark inside it. Headings then appear for each wait ('Lemon Curd in the ice bath', 'Blueberry Syrup in the fridge', 'Lemon Curd in the fridge'), where little is happening. The waits overlap, but the phases read as one after another: 'Phase 4: Blueberry Syrup in the fridge (1 hr)' gives way to Phase 5 after one step and 16 min, though the syrup still has 45 min to go. That muddles 'where am I'. They didn't get in the way, but a landmark like 'Two pans at once: syrup + curd' or 'Off the heat' would have mattered more than the wait headings.",
+    "confidence": 3,
+    "top_problems": [
+     "On the day, the blueberry syrup is never taken off the heat after step 5. As written it keeps simmering through the whole curd cook (about 15\u201320 min) and over-reduces or scorches. It has no timer, so the pinned list doesn't show it either.",
+     "The screen gives no quantities and no equipment set-up. Almost every ingredient step needs a card lookup, and the thermometer, strainer, plastic wrap, jar and topping fruit are never mentioned until the moment you need them.",
+     "The order and timing at the end are off. The whipped cream is made about 15 min before the curd is ready and left at room temperature. It uses syrup whose fridge timer hasn't finished, against the card's own warning. Steps 16\u219217 and 17 ('nothing needs you' while whipping) leave you guessing when to start and when to move on."
+    ],
+    "worked_well": [
+     "The running timers listed under each step, with 'Up next', made the overlapping chill times on the day easy to track. I always knew which timer to wait for before the next step (except step 16\u219217).",
+     "Splitting the work into the day before and the day itself, and linking the recipes (save the 4 yolks for the curd, refrigerate them, they keep 2 days), made the make-ahead clear and spread the effort well.",
+     "The 'done when' cues (glossy stiff peaks, 170\u00b0F, soft vs medium-firm peaks) and the practical tips (damp towel under the bowl while tempering, the oven drop to 200\u00b0F) made each step doable without guessing doneness."
+    ],
+    "data_issues": [
+     "Blueberry Syrup card step 2 has no duration and no 'remove from heat'. The plan then puts the whole curd cook between syrup steps 2 and 3, so the syrup is left on the heat.",
+     "The blueberry syrup only cools 10 min before going in the fridge. Then the plan whips the cream before the syrup's 1-hr fridge timer ends, which goes against the whipped cream card's 'chilled syrup' requirement.",
+     "The plan whips the cream when the curd still has about 20 min left in the fridge, so the finished cream waits about 15 min. Moving the cream to after the curd is cold (the syrup would then be fully chilled too) costs nothing.",
+     "The syrup recipe (8 oz berries, 8 oz sugar, 4 oz water, about 1.5 cups) makes far more than the 3\u20134 tbsp the whipped cream uses, and nothing says what to do with the rest. Likewise, the curd makes 2 cups and the pavlova says nothing about how much to use.",
+     "Fresh fruit is a topping in the Pavlova card and in step 20, but the plan has no prep step for it.",
+     "Both curd and syrup use 'the fine-mesh strainer' a few minutes apart, and the plan doesn't allow for washing it.",
+     "The on-the-day prep step leaves out the cards' 'Before you start' equipment (thermometer, strainer, plastic wrap, jar) and the reminder to use cold cream.",
+     "The Pavlova card's 'Total: 4 hr' leaves out the 30 min of warming the whites that the plan includes, so the screen shows 4 hr 25 min.",
+     "The Pavlova card folds cream of tartar in at the very end, after the sugar. It is usually beaten into the whites early to stabilise them, so this may be a data error.",
+     "The Lemon Curd card's note 'Pavlova, once built: spend the 4 leftover whites on it' has the relationship backwards here: the pavlova uses the whites and leaves the yolks for the curd.",
+     "On the day before, the plan doesn't say whether the sugar, lining the sheet and preheating (steps 2\u20133) belong inside the 30-min wait for the whites or after it, and nothing ties whipping (step 4) to the end of that wait.",
+     "The ice bath is made (step 3) about 25 min before it is used (step 12)."
+    ]
+   }
+  },
+  {
+   "lineup": "pavlova",
+   "presentation": "D",
+   "run": 2,
+   "presentation_is": "the same step-by-step list, with phase headings along the way (prep, then wherever something goes in the oven, rises or chills) as landmarks",
+   "report": {
+    "total_time": "Day before: about 4 hr 25-30 min (5 min separating eggs, the 30 min warm-up with the sugar, sheet and oven done inside it, about 12 min whipping, folding and spreading, 90 min bake, 2 hr cool, 2 min to box the shell). That matches the screen's \"about 4 hr 25 min\". On the day: about 2 hr 15-20 min against the screen's 2 hr 10 min. The overrun is realistic hands-on time. Zesting 6 lemons and juicing them to a cup took about 12 min. Weighing the syrup ingredients after looking up the amounts added about 2 min. Washing the strainer between the curd and the syrup added time. Assembly takes about 5 min after the curd's fridge timer ends, and the screen's total doesn't seem to include it. Over an hour of the day-of time is idle waiting on chill timers.",
+    "lookups": 12,
+    "literal_failures": [
+     {
+      "step": "Day before, steps 3 -> 4 (heat oven, then whip whites)",
+      "what_goes_wrong": "Step 3 takes a minute. The next tap is 'Whip the whites', but the 30-min room-temperature timer from step 1 still has about 25 min left. No step says to wait for it to ring. The only hint is the 'Nothing needs you for about 30 min' line under step 1, and steps 2 and 3 are themselves hands-on inside that window. A literal follower whips cold whites into a cold oven, since 350\u00b0F isn't reached yet."
+     },
+     {
+      "step": "Day of, step 5 -> step 6 onward (blueberry syrup)",
+      "what_goes_wrong": "Step 5 says to keep the syrup at a simmer until the sugar dissolves. Nothing on the screen (or the card) ever says to take it off the heat. Straining comes at step 13, roughly 20-25 min later. A literal follower leaves it simmering on medium the whole time through the curd steps. It reduces into a thick, jammy or near-candied syrup, may scorch, and is far less than 3-4 tbsp of pourable syrup. The syrup has no timer, so it never shows in the pinned timers to remind you it's on."
+     },
+     {
+      "step": "Day of, step 20 (assemble)",
+      "what_goes_wrong": "'Pile on whipped cream, curd, and fruit'. No step prepares fruit, and the screen never says to buy fresh berries. The syrup's blueberries are strained out and discarded. You reach the last step with nothing to put on top unless you happened to buy extra."
+     },
+     {
+      "step": "Day of, step 13 (strain syrup)",
+      "what_goes_wrong": "It uses 'the fine-mesh strainer', the same one that just strained the curd in step 11 and is coated in curd. The screen doesn't say to rinse it or to set out a second strainer and bowl. The syrup card's 'Before you start' (strainer over a bowl, clean jar) never appears on the screen."
+     },
+     {
+      "step": "Day of, step 19 -> 20 (whipped cream waits)",
+      "what_goes_wrong": "The cream is finished, then 'Nothing needs you for about 13 min'. No step says to refrigerate it. Left on the counter, it softens before assembly. If dessert is served after a meal, it sits much longer."
+     },
+     {
+      "step": "Day of, step 17 (whip cream)",
+      "what_goes_wrong": "Under a hands-on whipping step, the screen says 'Nothing needs you for about 3 min'. In fact you whip for about 3 min, then wait on the syrup timer. It's unclear whether the 3 min is whipping or waiting."
+     }
+    ],
+    "two_at_once": [
+     {
+      "moment": "Day of, step 9 (curd cooking, 'stay with it', whisking often, checking 170F)",
+      "what": "If you read step 5 as 'keep it at a simmer, mashing', the syrup is still on the next burner needing mashing and watching while you whisk the curd and hold a thermometer in it. You can't do both properly."
+     },
+     {
+      "moment": "Day of, step 8 (tempering)",
+      "what": "You pour the hot juice from the saucepan with one hand and whisk constantly with the other. The damp towel holding the bowl makes this workable, so it isn't really two jobs, but there's no slack."
+     },
+     {
+      "moment": "Day of, step 11 (strain curd, scraping the underside)",
+      "what": "You hold or balance the strainer over the bowl, push the curd through, and scrape the underside of the mesh. It's fine if the strainer rests on the bowl rim, awkward otherwise."
+     }
+    ],
+    "guesses": [
+     {
+      "moment": "Day before, after step 3",
+      "unclear": "Whether to start whipping now or wait for the whites timer to ring. I waited, which leaves the oven sitting at 350\u00b0F about 10-15 min longer than needed."
+     },
+     {
+      "moment": "Day before, steps 5, 6, 7",
+      "unclear": "How much sugar, vanilla, cream of tartar and cornstarch. The screen gives no amounts, so I looked at the card three times."
+     },
+     {
+      "moment": "Day before, step 9",
+      "unclear": "'Rotate once if spots start browning; otherwise keep the door shut'. How do I check for browning without opening the door: the oven window only? And how often should I look during the 90 min?"
+     },
+     {
+      "moment": "Day of, step 2",
+      "unclear": "How much sugar to rub the zest into (3/4 cup, from the card)."
+     },
+     {
+      "moment": "Day of, step 4",
+      "unclear": "Amounts of blueberries, sugar and water (8/8/4 oz, from the card), and that they're by weight."
+     },
+     {
+      "moment": "Day of, step 5 -> 6",
+      "unclear": "Whether the syrup stays on the heat while I do the curd. I guessed: turn it off once the sugar dissolves and leave it in the pan."
+     },
+     {
+      "moment": "Day of, step 7",
+      "unclear": "How many whole eggs (3), and where the yolks come from. They're the ones saved yesterday, but the day-of screen never says to get them from the fridge."
+     },
+     {
+      "moment": "Day of, step 10",
+      "unclear": "How much butter (5 tbsp)."
+     },
+     {
+      "moment": "Day of, steps 17-19",
+      "unclear": "How much cream (1 cup), how much syrup (3-4 tbsp) and how much confectioners' sugar ('1 to 2 spoonfuls'). Also whether to wait for the syrup timer to ring before step 18. The screen's timers are inconsistent here: the syrup had 6 min left at step 17 and vanishes by step 18, although only 4 min pass on the curd timer."
+     },
+     {
+      "moment": "Day of, step 20",
+      "unclear": "What fruit and how much. The card only says 'to taste', and the plan never prepared any."
+     }
+    ],
+    "contradictions": [
+     {
+      "where": "Day of, steps 14 -> 15",
+      "what": "Step 14 starts a 10-min timer with the ice bath at 'about 25 min left'. Step 15 then shows the ice bath at 'about 17 min left', so only 8 min have passed although the step-14 timer was 10 min."
+     },
+     {
+      "where": "Day of, steps 17 -> 18",
+      "what": "At step 17 the syrup has 'about 6 min left' and the curd 20. At step 18 the curd has 16 (4 min later), but the syrup timer is gone. It should still have about 2 min, so either the syrup isn't cold yet or the timers are off."
+     },
+     {
+      "where": "Day of, step 17",
+      "what": "'Nothing needs you for about 3 min' sits under a hands-on whipping step."
+     },
+     {
+      "where": "Day before, step 1",
+      "what": "'Nothing needs you for about 30 min' sits under step 1, but steps 2 and 3 (sugar, lining the sheet, heating the oven) are hands-on jobs inside that window."
+     },
+     {
+      "where": "Day before, header vs Pavlova card",
+      "what": "The card says Total 4 hr and the screen says about 4 hr 25 min. The difference is the 30-min whites warm-up, which the card doesn't count. Not wrong, but the numbers don't match."
+     },
+     {
+      "where": "Day before, step 1 vs Pavlova card",
+      "what": "The screen adds 'they keep 2 days' for the yolks. The card doesn't say this. It's consistent with the shell keeping 2 days, but it comes from neither card."
+     },
+     {
+      "where": "Day of, phase headings",
+      "what": "'Phase 4: Blueberry Syrup in the fridge (1 hr)' lasts only about 16 min before Phase 5 begins. The durations in the headings are the timer lengths, not how long the phase lasts, which is misleading if you read them as a countdown."
+     }
+    ],
+    "missed": [
+     {
+      "what": "Buying and preparing fresh fruit for the topping",
+      "consequence": "Nothing to put on the pavlova at step 20. The berries from the syrup were discarded."
+     },
+     {
+      "what": "Taking the blueberry syrup off the heat after step 5",
+      "consequence": "It simmers about 20 more minutes, over-reduces or scorches, and comes out too thick to fold into cream."
+     },
+     {
+      "what": "Getting the saved yolks out of the fridge (day of, step 7)",
+      "consequence": "You hunt for them mid-recipe while the juice is heating on a 3-min timer, or crack 4 fresh eggs and waste them."
+     },
+     {
+      "what": "Rinsing the strainer and setting out a bowl and jar for the syrup (step 13)",
+      "consequence": "You scramble and wash up while the syrup cools in the pan. Curd residue could end up in the syrup."
+     },
+     {
+      "what": "Refrigerating the finished whipped cream",
+      "consequence": "It slumps or weeps on the counter during the 13+ min wait for the curd."
+     },
+     {
+      "what": "Setting out the instant-read thermometer, plastic wrap and fine-mesh strainer (curd card 'Before you start')",
+      "consequence": "You go looking for the thermometer at step 9, while you're supposed to be whisking constantly."
+     },
+     {
+      "what": "Waiting for the egg whites timer before whipping (day before)",
+      "consequence": "Cold whites whip to less volume, and the meringue goes into an oven that isn't up to 350\u00b0F yet."
+     }
+    ],
+    "ten_minutes_late": {
+     "when": "Day of, during zesting and juicing (step 1) running long, or a 10-min slip in steps 6-11 while the curd cooks",
+     "what_happens": "Nothing has a fixed serving time, so most of the plan just shifts later. The real damage is invisible. If the slip happens while the syrup is still on the burner, it gets 10 more minutes of reducing on top of the 20 already built in, and turns into jam. The syrup has no timer, so the pinned timers say nothing about it. The 'about N min left' notes under each step are static and stop matching the live timers once you're behind. The phase headings help a little ('I'm still in Phase 2, the curd should be in the ice bath by now'), but they carry no times, so they don't tell you how late you are. Only the live pinned timers really show where you are, and they cover only timed steps. At the end, being late is harmless or even helpful, because the whipped cream waits less."
+    },
+    "food_risks": [
+     {
+      "dish": "Blueberry Syrup",
+      "risk": "It's left simmering from step 5 until straining at step 13 (about 20-25 min) with no off-heat instruction. It over-reduces, thickens or scorches, and the yield drops below the 3-4 tbsp the cream needs."
+     },
+     {
+      "dish": "Blueberry Whipped Cream",
+      "risk": "It's made about 13-15 min before the curd is ready and not refrigerated, so it softens and weeps, more so if dessert is later. The syrup also gets only 1 hr in the fridge and the timers suggest it's added slightly early. Syrup that's still cool rather than cold deflates the cream (the card warns of this)."
+     },
+     {
+      "dish": "Lemon Curd",
+      "risk": "The ice bath is filled at step 3, about 25 min before the curd goes in, so much of the ice has melted and the 30-min chill is weaker. The 1 hr in the fridge mostly covers for it."
+     },
+     {
+      "dish": "Pavlova (meringue)",
+      "risk": "Only if followed literally: whites whipped before they reach room temperature, and the meringue put in before the oven is at 350\u00b0F. It would be flatter, with a less crisp shell."
+     }
+    ],
+    "headings": "They helped a little and didn't get in the way. On the day before they're good landmarks: 'Pavlova in the oven (1 hr 30 min)' and 'cooling in the oven (2 hr)' tell you at a glance that you're in a long hands-off stretch. On the day, 'Lemon Curd in the ice bath' and 'Lemon Curd in the fridge, then put it together and serve' were useful anchors in a stretch where two recipes are interleaved. Weaknesses: 'Phase 2: Start cooking' over whipping a meringue is a vague label. The times in the headings are timer lengths, not phase lengths: Phase 4 '(1 hr)' lasts only about 16 min, which misleads if you read it as how long you'll be in that phase. No heading marks the one truly risky stretch, curd cooking with the syrup still on the burner. A landmark like 'Both pans on the stove' would have helped there.",
+    "confidence": 3,
+    "top_problems": [
+     "The syrup is never taken off the heat: from step 5 until it's strained at step 13 (about 20+ min later) it simmers untimed and unpinned, so it over-reduces or scorches while you're busy with the curd.",
+     "The fruit topping is never planned or prepared, so step 20 calls for fruit you don't have. No ingredient amounts appear on the screen either, so about 12 card lookups are needed (sugar, eggs, butter, syrup, cream, confectioners' sugar).",
+     "Timing and ordering at the end: the whipped cream is made 13+ min before the curd is ready, with no fridge instruction. The timers disagree (14->15 and 17->18). 'Nothing needs you' appears on hands-on steps. And the day before, no step says to wait for the whites timer before whipping."
+    ],
+    "worked_well": [
+     "Splitting the meal into a make-ahead day and an on-the-day list with separate totals is clear. Steps carrying their own 'done when' cues (stiff glossy peaks, 170F, firm and pale) made each step doable without guessing doneness.",
+     "The interleaving on the day is mostly sensible: the syrup and the zest rest overlap, juice heating overlaps whisking the eggs, and the damp-towel tip makes tempering a one-person job.",
+     "The 'Timers running as you start this' lines and 'Up next' notes after long waits make it easy to see what's in progress. The phase headings give quick landmarks during the long oven and chill stretches."
+    ],
+    "data_issues": [
+     "The Blueberry Syrup card step 2 ends 'until the sugar has dissolved' with no 'remove from heat'. Because the plan puts the curd between syrup steps 2 and 3, the syrup sits on the heat for about 20 min.",
+     "The Pavlova topping 'Fresh berries or fruit (to taste)' never becomes a prep step, so the plan has no fruit prep and no reminder to buy fruit.",
+     "The whipped cream is scheduled to finish about 13-15 min before the curd's fridge timer ends, with no chill step. It would be better made last, or refrigerated.",
+     "The fine-mesh strainer is used for the curd (step 11) and the syrup (step 13) back to back with no wash step. The syrup card's 'Before you start' (strainer over a bowl, clean jar) and the curd card's 'set out thermometer, whisk, strainer, plastic wrap' are dropped from the screen's prep.",
+     "The ice bath is made about 25 min before it's needed, so the ice melts in the meantime.",
+     "The day-before plan has no explicit wait for the 30-min whites timer before whipping. The timer is only implied by 'Nothing needs you'.",
+     "The timer arithmetic is off in two places: step 14 -> 15 (10-min timer, but only 8 min pass) and step 17 -> 18 (the syrup timer disappears with about 2 min left).",
+     "The day-of plan doesn't remind you that the curd's 4 yolks are yesterday's saved yolks in the fridge. The curd also needs 3 whole eggs on top of those.",
+     "The butter is set out to soften at step 1 but is needed only about 25 min later. That's probably not enough to soften it, though harmless since the curd is hot.",
+     "The Pavlova card's 'Total: 4 hr' leaves out the 30-min whites warm-up that the screen adds (4 hr 25 min)."
+    ]
+   }
+  }
+ ],
+ "comparison": {
+  "by_presentation": [
+   {
+    "presentation": "A: every step of every recipe in one order, one step at a time, with done-when cues and the timers already running",
+    "steak_dinner": "Both testers took about 1 hr 55 min to 2 hr against the promised 1 hr 55 min. Lookups were 10 and 15 (46 in the first run) and confidence was 3 and 3 (2 before). Followed literally, the meal goes wrong at the end. The asparagus 'Pull the pan out' is lost on step 28, so the asparagus is still in the oven when it switches to broil. The applesauce stir on step 19 is lost the same way. The thermometer first appears at step 30. Step 32 says to 'serve hot' about 6-8 min before the rest of the meal is ready. The screen stops at the parmesan broil, with no step to take the asparagus out, slice the steak or plate up. 'The half lemon' doesn't exist. The oil smokes while you load the asparagus.",
+    "pavlova": "Day before: about 4 hr 15-30 min against 4 hr 25 min. On the day: about 2 hr 10-15 min against 2 hr 10 min. Lookups were 11 and 9 (38 in the first run) and confidence was 3 and 3. Followed literally, the blueberry syrup is never taken off the heat and simmers through the whole curd cook. The syrup is then strained through the strainer the curd just went through. The fruit is never prepared. The whipped cream sits out for about 13-15 min. On the day before, the oven only goes on after the 30-min wait for the whites.",
+    "strengths": [
+     "All 4 testers praised the 'Timers running as you start this' lists and the 'Nothing needs you for about N min. Up next: X' lines for the waits.",
+     "The done-when cues and 'stay with it' flags show where attention matters (all 4).",
+     "The recipe and card-step tags make each card lookup quick (pavlova A1, steak A1).",
+     "The overall interleaving is sensible: the potatoes go in first, the steak sits out during the bake, the asparagus shares the 200C oven, and the yolks link the two pavlova days."
+    ],
+    "weaknesses": [
+     "Quantities and the cards' 'Before you start' items (thermometer, strainer over a bowl, jar, plastic wrap) aren't on screen. That meant 9-15 lookups per tester.",
+     "An action due when a timer ends sits on the step that starts the timer, so it is lost once you tap Next (steak: stir and asparagus pull).",
+     "The ending is broken. Steak: no serve step and an early 'serve hot'. Pavlova: no fruit, and nothing says to refrigerate the cream.",
+     "The printed 'min left' figures look inconsistent (all 4 testers), and these static lines go stale when you run late.",
+     "There are no landmarks. All 4 A testers asked for one before the busy stretch and one at serving."
+    ],
+    "score": 6
+   },
+   {
+    "presentation": "D: the same step-by-step list, with phase headings (prep, then wherever something goes in the oven, rises or chills) as landmarks",
+    "steak_dinner": "About 1 hr 55 min to 2 hr 05 min, and about 2 hr, against 1 hr 55 min. Lookups were 12 and 11, and confidence was 3 and 3. Both testers hit the same literal failures as A: the lost asparagus pull and applesauce stir, the thermometer at step 30, the early 'serve hot', no serve step, the half lemon and the smoking pan. The headings didn't prevent any of them. Both testers said Phase 5 ('Hasselback Potatoes in the oven (18 min) \u2014 then serve') puts the whole crunch under a potato label. Its '18 min' matches no timer, and its 'then serve' clashes with the broil that follows. Both also said 'Start cooking' covers only slicing.",
+    "pavlova": "Day before: about 4 hr 20-30 min. On the day: about 2 hr 15-20 min, against 4 hr 25 min and 2 hr 10 min. Lookups were 11 and 12, and confidence was 3 and 3. Both testers hit the same failures as A: the syrup left simmering, the shared strainer, no fruit and the cream left out. Both said the headings helped on the day before (oven, cooling). On the day, the risky two-pan stretch sits under one heading, 'Start cooking', with no landmark inside it. 'Phase 4: Blueberry Syrup in the fridge (1 hr)' lasts about 16 min, which misleads.",
+    "strengths": [
+     "Everything A has (the step list is identical apart from the headings).",
+     "Headings at the long hands-off waits were useful anchors: Prep, potatoes in the oven (40 min), pavlova in the oven and cooling, curd in the ice bath (all 4 D testers).",
+     "They didn't get in the way (pavlova D1 and D2)."
+    ],
+    "weaknesses": [
+     "The same literal failures, lookups, totals and confidence as A.",
+     "Headings are cut where waits start, so the busiest stretches (steak sear and finish, syrup plus curd) have no landmark (all 4 D testers).",
+     "The heading durations are timer lengths, not how long each phase lasts: steak Phase 5 '18 min' against a 15-20 min timer, pavlova Phase 4 '1 hr' lasting about 16 min (all 4 D testers).",
+     "'Start cooking' labels phases with no cooking or with only whipping (3 testers). '\u2014 then serve' comes before the asparagus broil (2 testers).",
+     "When running late, the headings carry no times, so they don't show how far behind you are (steak D1 and D2, pavlova D2)."
+    ],
+    "score": 6
+   }
+  ],
+  "headings_verdict": "The headings make no measurable difference, and as they are cut now they don't earn their place. All 8 testers hit the same literal failures in both presentations. Lookups were about the same (A: 10, 15, 11, 9; D: 12, 11, 11, 12), every tester gave confidence 3, and the totals were similar. The 4 D testers said the headings helped 'somewhat', 'a little' or gave a 'mixed' verdict. Prep, plus the long oven and chill headings, were useful anchors, especially on the pavlova's day before. But all 4 D testers said the headings mark wait starts and leave the riskiest stretch unmarked: the steak sear to broil under 'Hasselback Potatoes in the oven (18 min)', and syrup plus curd under 'Start cooking'. All 4 said the heading durations are timer lengths that mislead as phase lengths. 3 said 'Start cooking' is the wrong label, and 2 said '\u2014 then serve' clashes with the broil after it. The 4 A testers, who had no headings, asked for landmarks in exactly those places: before the final stretch ('stay in the kitchen', 'Stove: syrup and curd together'), at a free 40 min ('prepare the fruit'), and at a closing 'Serve / Plate up'. Several also wanted a gather list at prep. So landmarks are wanted, but at hands-on transitions and the serve, not at timer starts and without timer-length durations. Re-cut them that way or leave them out; as they are, they add a little at the waits and some confusion at the crunch.",
+  "literal_failures": [
+   {
+    "step": "Steak 28 then 31-34 (asparagus 'Roast ... Pull the pan out' with an 8-12 min timer)",
+    "problem": "'Pull the pan out' is on the step you leave as soon as the timer starts. The timer rings during step 30 or 31, and step 31 says 'Nothing needs you for about 4 min. Up next: Hasselback Potatoes'. No later step pulls the asparagus, so it stays in through the potato removal and the switch to broil, and overcooks.",
+    "reported_by": 4,
+    "fix": "Split the pull into its own step at the timer's end, or show it when the asparagus timer rings. Don't show 'Nothing needs you' while a timer's follow-up is due."
+   },
+   {
+    "step": "Steak 19 (applesauce 'Microwave 7-8 minutes on high. Stir it all around again.')",
+    "problem": "The stir comes after the timer, but by then the screen is on step 20 or 21, and step 21 says only 'Microwave another 7-8 minutes'. Literally, the stir is skipped and the apples cook unevenly.",
+    "reported_by": 4,
+    "fix": "Split card step 3 into 'Microwave 7-8 min' and 'Stir it all around again', or show the stir when the timer rings."
+   },
+   {
+    "step": "Steak 30 (pull at 130F inside)",
+    "problem": "The thermometer first appears here. The ribeye card's 'Before you start: have an instant-read thermometer ready' never reaches the screen, so you go looking for one mid-baste or guess the doneness.",
+    "reported_by": 4,
+    "fix": "Carry each card's 'Before you start' items into the screen's prep (a gather list at step 1)."
+   },
+   {
+    "step": "Steak 32 (take the potatoes out, chop the parsley, 'serve hot')",
+    "problem": "'Serve hot' comes about 6-8 min before the asparagus is broiled and while the steak rests, so literally the potatoes go out alone. The parsley is chopped at the busiest moment.",
+    "reported_by": 4,
+    "fix": "Drop 'serve' from a recipe's last step inside a lineup and end the meal with one serve step."
+   },
+   {
+    "step": "Steak 34 (last step) / 31 ('Rest ... before slicing and serving')",
+    "problem": "The screen ends at 'broil 2 to 3 minutes'. No step takes the asparagus out from under the broiler, slices the steak, or plates the meal (and brings out the applesauce).",
+    "reported_by": 4,
+    "fix": "Add a closing step: asparagus out, slice the steak, plate everything."
+   },
+   {
+    "step": "Steak 13 (applesauce prep 'Juice the half lemon')",
+    "problem": "Step 11 has just used the whole lemon (half juiced, half in rings), so 'the half lemon' doesn't exist. A second lemon is never mentioned.",
+    "reported_by": 4,
+    "fix": "Reword it to 'Juice half of a second lemon' and total the shared ingredients (1.5 lemons)."
+   },
+   {
+    "step": "Steak 26-29 (heat oil to smoking, pat and season, asparagus in the oven, steak in)",
+    "problem": "The oil reaches smoking point, then sits unattended while you season the steak and load the asparagus tray into the oven. Seasoning 'right before it goes in' is interrupted.",
+    "reported_by": 4,
+    "fix": "Schedule the asparagus into the oven before the pan goes on the heat."
+   },
+   {
+    "step": "Steak 8-9 (garlic paste 'Use immediately, or ... jar it'; potatoes 'Stir the oil, melted butter, garlic paste...')",
+    "problem": "The screen makes about 3 tbsp of paste, then says to use 'garlic paste' with no amount (the card says 1 tsp). Literally, all of it goes in, about 9 times too much garlic and salt. Step 8 offers a choice the plan has already made.",
+    "reported_by": 4,
+    "fix": "Show amounts on the screen and say 'use 1 tsp, jar the rest', or scale the paste to the meal."
+   },
+   {
+    "step": "Pavlova on the day, 5 then 6-13 (syrup 'Keep it at a simmer ... until the sugar has dissolved')",
+    "problem": "No step takes the syrup off the heat, and strain is 8 steps later. Literally, it simmers about 15-25 min through the curd cook and goes jammy or scorches. It has no timer, so the pinned timers don't show it either (D1, D2).",
+    "reported_by": 4,
+    "fix": "Add 'take it off the heat' to the syrup, or strain it straight after step 5 before the curd starts."
+   },
+   {
+    "step": "Pavlova on the day, 13 (strain the syrup through 'the fine-mesh strainer')",
+    "problem": "The same strainer was used for the curd two steps earlier and is coated in it. Nothing says to rinse it, or what to strain into.",
+    "reported_by": 4,
+    "fix": "Add a rinse step or a second strainer, and carry the syrup card's 'strainer over a bowl, clean jar' into prep."
+   },
+   {
+    "step": "Pavlova on the day, 20 ('pile on whipped cream, curd, and fruit')",
+    "problem": "Fruit is mentioned for the first time here. It is never bought, washed or prepared. The step also doesn't say to take the shell out of its container, or how much curd to use (3 testers also ask about the layer order).",
+    "reported_by": 4,
+    "fix": "Add a fruit prep step (and fruit on the shopping list), and say how much curd and cream go on and in what order."
+   },
+   {
+    "step": "Pavlova on the day, 19 then 20 ('Nothing needs you for about 13 min')",
+    "problem": "The finished whipped cream sits at room temperature for 13-15 min with no instruction to refrigerate it, and softens or weeps.",
+    "reported_by": 4,
+    "fix": "Whip the cream last, after the curd's fridge timer, or add 'refrigerate it'."
+   },
+   {
+    "step": "Pavlova day before, 1-4 (30-min whites timer with 'Nothing needs you', then line the sheet, heat the oven, whip)",
+    "problem": "Taken literally, either you wait out the 30 min and only then turn the oven on (it gets about 16 min and may not reach 350F; A1, A2, D1), or you tap through steps 2-3 and whip cold whites, because step 4 never says to wait for the timer (D1, D2).",
+    "reported_by": 4,
+    "fix": "Put the sheet and preheat inside the wait, and make the whipping step follow the whites timer."
+   },
+   {
+    "step": "Pavlova on the day, 1 (prep), 8-9 and 12",
+    "problem": "On-the-day prep covers only zest, juice and butter. The curd card's thermometer, whisk, strainer and plastic wrap aren't set out, so you hunt for them mid-temper or mid-cook.",
+    "reported_by": 4,
+    "fix": "Carry the 'Before you start' items into the prep step."
+   },
+   {
+    "step": "Pavlova on the day, 17 ('Whip the cream ... to soft peaks' with 'Nothing needs you for about 3 min')",
+    "problem": "A hands-on step is marked 'Nothing needs you'. The cream is whipped while the syrup still has about 6 min in the fridge, then parked at soft peaks, and testers couldn't tell when to move on.",
+    "reported_by": 4,
+    "fix": "Start the cream after the syrup timer ends, and don't put 'Nothing needs you' under a hands-on step."
+   },
+   {
+    "step": "Pavlova day before, 9 ('keep the door shut', done when firm and dry to the touch)",
+    "problem": "Touching the shell, or watching for browning to rotate it, means opening or watching the oven, against 'keep the door shut' and 'Nothing needs you for about 1 hr 30 min'.",
+    "reported_by": 4,
+    "fix": "Say to check through the window and to touch only when the timer ends."
+   },
+   {
+    "step": "Pavlova on the day, 7 ('whisk the eggs, yolks and salt')",
+    "problem": "Nothing on the day says the 4 yolks are yesterday's, in the fridge, or that 3 whole eggs are also needed, so you hunt for them while the juice heats.",
+    "reported_by": 3,
+    "fix": "Add 'take out the saved yolks' to the on-the-day prep."
+   }
+  ],
+  "recurring_presentation_problems": [
+   "No quantities on the screen. Every measuring step needs a card lookup: 9-15 per tester, 8 of 8 testers. Literally, this makes 'garlic paste' mean the whole batch.",
+   "The cards' 'Before you start' items never reach the screen: the ribeye thermometer, the curd's thermometer, strainer and plastic wrap, the syrup's strainer over a bowl and jar. 8 of 8 testers.",
+   "Actions due when a timer ends sit on the step that starts that timer and vanish when you tap Next (applesauce stir, asparagus pull). 4 of 4 steak testers.",
+   "'Nothing needs you' appears while something is due or under a hands-on step: steak 31 with the asparagus about to ring; pavlova step 17 (whipping), day-before step 1 (steps 2-3 are hands-on) and step 9 (rotate if browning). 8 testers.",
+   "The printed 'Timers running ... about N min left' figures look internally inconsistent: steak steps 20-22, pavlova 14 to 15, and pavlova 17 to 18 (D1, D2). 8 of 8 testers. Checked in tools/lineup-test/views.mjs: `about()` rounds anything 20 min or longer to the nearest 5 min and shows smaller values exactly. Recomputing from planner.mjs, the potato and steak timers end at a constant 2-min gap, and the syrup timer ends just as pavlova step 18 starts. So this is display rounding, not a planning error.",
+   "When running late, the static 'timers running' and 'Nothing needs you for N min' lines go stale. Nothing says how far behind you are or what to do next. The pinned live timers help (several testers said so). 8 of 8 in the ten-minutes-late answers.",
+   "It's unclear which end of a timer range (15-20, 8-12, 3-5, 5-10) the timer uses. 4 of 4 steak testers.",
+   "Something on the heat with no timer (the blueberry syrup) doesn't show in the running timers. 2 testers (pavlova D1, D2).",
+   "Phase headings (D only): durations are timer lengths, not phase lengths (steak Phase 5 '18 min' against 15-20, pavlova Phase 4 '1 hr' lasting about 16 min), 4 testers. 'Start cooking' labels a stretch with no cooking, 3 testers. The busiest stretch has no landmark, 4 testers. '\u2014 then serve' comes before the broil, 2 testers."
+  ],
+  "data_and_plan_problems": [
+   {
+    "problem": "Steak: the asparagus card's step 4 bundles 'Roast ... Pull the pan out', and the applesauce card's step 3 bundles 'Microwave ... Stir it all around again', so the after-timer action has no step of its own. With the plan's order, the asparagus finishes about 7 min before the broil and sits in or out of the oven.",
+    "reported_by": 4,
+    "fix": "Split those card steps so the pull and the stir are separate steps the planner can place at the timer's end."
+   },
+   {
+    "problem": "Steak: the plan has no closing serve step. The hasselback's last card step says 'serve hot' about 6-8 min before the asparagus broil, and the steak rest runs past its 5-10 min (about 12 min by the plan's times; A1, A2 and D2 report 11-15). D1 reports the rest stayed within 5-10.",
+    "reported_by": 4,
+    "fix": "Add a lineup-level 'slice the steak, plate everything' step, and drop 'serve' from a dish's last step inside a lineup."
+   },
+   {
+    "problem": "Steak: the order heats the steak pan (26) and seasons the steak (27) before the asparagus goes in the oven (28), so the oil smokes unattended.",
+    "reported_by": 4,
+    "fix": "Have the planner put the asparagus in before the pan goes on, or not start a watched burner step right before an oven load."
+   },
+   {
+    "problem": "The meal needs 1.5 lemons, but the applesauce prep says 'Juice the half lemon' after the asparagus prep has used a whole one.",
+    "reported_by": 4,
+    "fix": "Reword it to 'Juice half of a second lemon' and add a combined shopping list (already left for later)."
+   },
+   {
+    "problem": "Garlic Paste makes about 3 tbsp from 8 cloves (10-17 min of prep), but the potatoes use 1 tsp. Nothing scales it or says to jar the rest.",
+    "reported_by": 4,
+    "fix": "Scale the paste to the meal, or say 'use 1 tsp, jar the rest' (already left for later)."
+   },
+   {
+    "problem": "Servings don't match: ribeye serves 1, potatoes 4, asparagus 8, applesauce about 3 cups.",
+    "reported_by": 4,
+    "fix": "Scale to one serving count, or flag the mismatch (already left for later)."
+   },
+   {
+    "problem": "The asparagus card text says 'for 8 to 10 minutes' and then 'thick spears nearer 12 minutes', while the timer says 8 to 12.",
+    "reported_by": 4,
+    "fix": "Change the text to 8 to 12 to match the timer."
+   },
+   {
+    "problem": "The applesauce card's notes say to 'Uncover away from your face', but no step says to cover the dish.",
+    "reported_by": 4,
+    "fix": "Add 'cover' to card step 2 or 3, or drop 'uncover'."
+   },
+   {
+    "problem": "The parsley is chopped at step 32, the busiest moment. It was moved there to stop it wilting after the first run.",
+    "reported_by": 4,
+    "fix": "Chop it during an earlier 'nothing needs you' gap near the end (for example, the potato baste wait)."
+   },
+   {
+    "problem": "The garlic paste's salt isn't subtracted from the potato seasoning (that's only a card note).",
+    "reported_by": 3,
+    "fix": "Carry the 'reduce salt' note into the potato step when the paste is used."
+   },
+   {
+    "problem": "The ribeye's butter and herbs (and the herbs' prep) have no prep step. Ribeye prep only peels garlic.",
+    "reported_by": 3,
+    "fix": "Add the baste ingredients to the ribeye prep."
+   },
+   {
+    "problem": "The hasselback card's 'Prep: 15 min' is optimistic for scrubbing and slicing 8 potatoes (testers took 12-20 min to slice). The hands-on prep ran about 44-52 min.",
+    "reported_by": 3,
+    "fix": "Correct the hasselback prep time and give the garlic paste an active time."
+   },
+   {
+    "problem": "Asparagus prep (step 11) juices half the lemon, and card step 3 (step 24) says 'Squeeze the juice of half the lemon' again.",
+    "reported_by": 2,
+    "fix": "Word one of them as 'pour the lemon juice over'."
+   },
+   {
+    "problem": "Steak: nothing says to have a second oven rack free for the asparagus tray beside the potatoes.",
+    "reported_by": 2,
+    "fix": "Add the rack position or a second rack to the prep or the step."
+   },
+   {
+    "problem": "Steak thickness isn't given anywhere, but the sear time (3-4 or 5 min) depends on it.",
+    "reported_by": 2,
+    "fix": "Give the steak's thickness in the ingredients."
+   },
+   {
+    "problem": "The potato butter mixture is made at step 9, about 70 min before the baste, and sets. The screen's step 25 already says to warm it.",
+    "reported_by": 2,
+    "fix": "Mostly fixed. Optionally mix just before brushing."
+   },
+   {
+    "problem": "Pavlova: Blueberry Syrup card step 2 has no 'remove from heat' and no duration, and the plan puts the whole curd cook between syrup steps 2 and 3.",
+    "reported_by": 4,
+    "fix": "Add 'take off the heat' to the card, or have the planner keep syrup steps 2-3 together (strain before the curd juice goes on)."
+   },
+   {
+    "problem": "Pavlova: one fine-mesh strainer is used for the curd (step 11) and the syrup (step 13) about 2-4 min apart, with no wash.",
+    "reported_by": 4,
+    "fix": "Model shared equipment: a rinse step or two strainers (already left for later)."
+   },
+   {
+    "problem": "Pavlova: the topping fruit has no prep step and no amount ('to taste'), and the syrup's berries are discarded.",
+    "reported_by": 4,
+    "fix": "Give the fruit an amount and a prep step, and put it on the shopping list."
+   },
+   {
+    "problem": "Pavlova: the whipped cream is scheduled to finish about 15 min before the curd is cold, with no chill step.",
+    "reported_by": 4,
+    "fix": "Schedule the cream after the curd's fridge timer (the last thing before assembly)."
+   },
+   {
+    "problem": "Pavlova day before: the preheat (card step 1) is scheduled after the 30-min whites wait (step 3 at 35 min, meringue in at 51 min), not during it.",
+    "reported_by": 4,
+    "fix": "Start the preheat inside the wait so the oven is at 350F when the meringue is ready."
+   },
+   {
+    "problem": "The Pavlova card still says 'Total: 4 hr' while the screen says about 4 hr 25 min, because the card leaves out the 30-min whites warm-up.",
+    "reported_by": 4,
+    "fix": "Update the card's total time to include the warm-up."
+   },
+   {
+    "problem": "Pavlova: the curd and the amount of cream on top aren't given (the curd makes 2 cups, the syrup about 1.5 cups for 3-4 tbsp used), and the layer order isn't stated (3 testers).",
+    "reported_by": 4,
+    "fix": "Say how much curd and cream go on and in what order, and note the leftovers."
+   },
+   {
+    "problem": "Pavlova: the ice bath is filled at step 3, about 26 min before the curd goes in, so some of the ice melts.",
+    "reported_by": 3,
+    "fix": "Fill the ice bath during the curd cook, or just before straining."
+   },
+   {
+    "problem": "Pavlova on the day: nothing reminds you that the curd's 4 yolks are yesterday's saved yolks, or that 3 whole eggs are also needed.",
+    "reported_by": 3,
+    "fix": "Add 'take out the saved yolks' to the on-the-day prep."
+   },
+   {
+    "problem": "Pavlova: the syrup gets only about 10 min of cooling plus 1 hr in the jar, and testers doubted it is fully 'cold' for the cream (the card warns that warm syrup deflates cream). Note: by the plan's times, the syrup does finish its 1-hr fridge timer before it is added at step 18.",
+    "reported_by": 3,
+    "fix": "Make the syrup earlier (or the day before) if 1 hr isn't reliably cold."
+   },
+   {
+    "problem": "The Pavlova card folds the cream of tartar in at the end, after the sugar, which is unusual.",
+    "reported_by": 2,
+    "fix": "Check against the source. Usually it is beaten into the whites early."
+   },
+   {
+    "problem": "The Lemon Curd card note 'Pavlova, once built: spend the 4 leftover whites on it' is backwards for this meal: the pavlova uses the whites and leaves the yolks.",
+    "reported_by": 2,
+    "fix": "Reword the note (the curd uses leftover yolks)."
+   },
+   {
+    "problem": "Pavlova: the curd butter is set out only about 25-30 min before use.",
+    "reported_by": 2,
+    "fix": "Set it out earlier, or drop 'to soften' since it goes into hot curd."
+   }
+  ],
+  "fixed_since_first_run": [
+   "Phases as sequential gates (B, C), which ran the steak sit-out after the bake (about 2 hr 37 min) and the two pavlova fridge hours back to back. No tester reports this: headings are landmarks now, and all totals were within about 10 min of the screen.",
+   "A step answering a timer that sits in a later phase. Not reported in this form, though see the after-timer actions under 'still there'.",
+   "Step text dropping the cards' done-when cues. All testers now praise the done-when cues and 'stay with it' flags, and lookups fell from 28-46 to 9-15.",
+   "No view of running timers at all. Testers now use the 'timers running' lines and pinned timers and say they help (the stale and late parts remain).",
+   "Phase lists without an order (B) leaving the cook to sequence each phase.",
+   "Steak: the oven switching to broil with the potatoes still in, and no potato-removal step. Step 32 now takes them out, and no tester reports a clash.",
+   "Steak: asparagus oiled and salted in prep and weeping for an hour. It is now step 23, just before roasting.",
+   "Steak: the asparagus left roasting about 17-26 min. It is now pulled on its own timer, though the pull is lost on screen (see 'still there').",
+   "The pavlova egg-white warm-up having no duration. The screen now counts 30 min, and its 4 hr 25 min total matched the testers.",
+   "Pavlova: no step to refrigerate the yolks overnight, or to box the shell. Both are on screen now, and no tester reports them.",
+   "Blueberry Syrup 'let it cool' having no time. It now has 10 min.",
+   "Pavlova: the syrup strain wedged between heating the lemon juice and tempering, with the juice over-reducing. The curd juice is now tempered straight away (though the syrup is now left on the heat instead).",
+   "The hasselback 'hold back half' missing at the brush step, and no re-warm note. Both are on screen now.",
+   "Applesauce 'Mash ... and eat'. No tester reports it.",
+   "Parsley chopped in prep and wilting by serving. It is now chopped at the end (which brings a new complaint, see data problems).",
+   "No damp-towel tip for tempering. It is in step 8, and testers credit it.",
+   "The ribeye skillet not listed (the cards now print 'Heavy skillet')."
+  ],
+  "still_there_from_first_run": [
+   "No sign of how late you are and no re-planning when behind. All 8 testers again said this in their ten-minutes-late answers; the static lines go stale. (Clock times were left out by decision.)",
+   "'Before you start' equipment missing from the screen: the thermometer (the ribeye card has it now, but the screen doesn't carry it), strainer, jar and plastic wrap. All 8 testers. In the first run this was 2 testers.",
+   "'Nothing needs you' shown while something is due or during hands-on work. Was 2 testers, now 8.",
+   "Phase heading times misleading and 'Start cooking' containing no cooking. Was 2 testers, now 4 of the D testers.",
+   "Steak: asparagus text '8 to 10' against 'thick nearer 12'. The timer is now 8-12, but the text wasn't changed (4 testers).",
+   "Steak: no slice-the-steak or serve step, and potatoes 'served hot' before the asparagus broil. Was 1 tester for slicing; now 4 of 4.",
+   "Steak: the asparagus pull. It is no longer delayed by the plan, but it is lost on screen because it sits on the roast step (4 of 4).",
+   "Steak: 1.5 lemons and 'the half lemon' (4 of 4), garlic paste overproduction (4), mismatched servings (4), paste salt not subtracted (3). Each was left for later or not fixed.",
+   "Steak: the thermometer and baste ingredients not in prep (now 4 and 3).",
+   "Steak: hasselback prep time optimistic (3).",
+   "Steak: applesauce stir buried in a timed step, and the lid implied but never mentioned. Was 1 tester; now 4 of 4 for each.",
+   "Steak: no time for the flip-and-baste step (still 1 tester).",
+   "Pavlova: no fruit for the topping and no amounts for curd and cream (4 of 4).",
+   "Pavlova: one strainer for the curd and the syrup with no rinse (4 of 4).",
+   "Pavlova: whipped cream made before the curd is cold and left out unchilled. Was 1 tester; now 4 of 4.",
+   "Pavlova: preheat only after the whites wait. Was 1 tester; now 4.",
+   "Pavlova: no on-the-day reminder to take out the saved yolks (3).",
+   "Pavlova: butter softened too late (2).",
+   "Pavlova: ice bath made about 25 min early. Was 1 tester; now 3.",
+   "Pavlova: cream of tartar folded in at the end. Was 1 tester; now 2.",
+   "Pavlova: curd and syrup could be made the day before (still 1 tester, A1).",
+   "Pavlova: adding the sugar with a hand mixer needs three hands (still 1 tester, A1).",
+   "Pavlova: layer order at assembly unstated. Was 1 tester; now 3.",
+   "Pavlova: the card's 'Total: 4 hr' doesn't count the whites warm-up (the screen does now; 4 testers note the mismatch)."
+  ],
+  "one_tester_only": [
+   "Steak D2: step 20's 'Nothing needs you for about 6 min' sits on a step whose timer only starts when you tap Next. If you stay, the steak timer doesn't run. If you move on, you land on 'Microwave another...' while the first round is still going.",
+   "Steak D1: the steak's 30-min sit-out really becomes about 37 min (35 by the plan's times), and the timer rings with nothing to do.",
+   "Steak A2: leftover garlic paste is left on the counter, and the card says never to leave oil-covered garlic at room temperature.",
+   "Steak A2: the ribeye flip-and-baste step has no time estimate.",
+   "Steak A1: step 10 'Peel the garlic cloves, if using' reads as if step 1 already did them.",
+   "Steak A1: 'Use immediately, or jar it' for the paste is unclear about which applies. (Steps 8-9 overall were reported by all 4 steak testers, as a literal failure.)",
+   "Pavlova A2: step 16 'Then refrigerate it' follows two syrup steps, so 'it' is ambiguous. Only the tag says curd.",
+   "Pavlova D1: step 16's 'Nothing needs you for about 40 min' has no timer ending at 40 min, so nothing says when to start the cream.",
+   "Pavlova A1: the curd (keeps 5 days) and the syrup could be made the day before.",
+   "Pavlova A1: adding the sugar with a hand mixer while beating needs three hands.",
+   "Pavlova D1: the card's 'cold cream' reminder is missing from the screen.",
+   "Pavlova D2: the screen's 'they keep 2 days' for the yolks isn't on the printed card. (It comes from the recipe's prep-only step, which the cards don't print.)",
+   "Pavlova D1: the pavlova card lists the lemon curd as 'optional', but the screen builds the day around it.",
+   "Dropped against the files, steak A1: 'the plan's timer bookkeeping is internally inconsistent, which suggests the step-duration estimates are off.' Recomputed from assets/planner.mjs, the potato and steak timers end 2 min apart throughout. The jumps come from the test view's about() rounding values of 20 min or more to the nearest 5. The inconsistency is real on screen (a presentation problem) but not in the plan.",
+   "Dropped against the files, pavlova D1 and D2: the cream gets syrup before its 1-hr fridge timer ends, or the syrup timer vanishes with about 2 min left. By the plan's times, the syrup timer ends at 110.5 min, exactly when step 18 starts. Step 17's 'about 20 min' for the curd is a rounded 22. The doubt that 1 hr makes the syrup fully cold is kept as a data problem.",
+   "Dropped against the files, D1 and D2: step 21 says 8 min while the potato timer drops only 6. The plan has steps 21 and 22 exactly 8 min apart (67 to 75), and the '20' at step 21 is a rounded 22.",
+   "Partly contradicted, D1: 'warming the set basting butter' was easy to miss. The warm-it instruction is on screen at step 25 (D2's related claim about mixing it 70 min early is accurate)."
+  ],
+  "recommendation": "Keep step by step with done-when cues and running timers (A) as the core. Don't add the phase headings as they are now: D did no better than A on any measure. If landmarks are kept, cut them at the hands-on transitions and the serve, not at timer starts. In both meals, both groups asked for one before the final stretch (steak sear to broil; syrup plus curd on two burners), one at a free wait ('prepare the fruit') and a closing 'Serve / Plate up'. Drop the timer-length durations and rename 'Start cooking'.\n\nBefore the next run, fix these in order:\n1. Show quantities, and a gather list built from the cards' 'Before you start' items, on the screen (8 of 8 testers; 9-15 lookups each).\n2. Split after-timer actions into their own steps, or show them when the timer rings: the asparagus pull and the applesauce stir (4 of 4 steak). Add 'take the syrup off the heat' or keep syrup steps 2-3 together (4 of 4 pavlova).\n3. End each meal with a serve step, and drop 'serve hot' from mid-meal steps.\n4. Fix the plan order: asparagus in before the steak pan heats; whipped cream after the curd is cold; preheat during the whites wait.\n5. Remove 'Nothing needs you' from hands-on or due moments, and round the 'min left' figures consistently (the contradictions all 8 testers saw are display rounding).\n6. Fix the remaining data: asparagus text 8 to 12, 'Juice half of a second lemon', a cover step for the applesauce, fruit with an amount, a strainer rinse, and the yolks reminder on the day.\n\nThen re-run with testers who follow the screen literally.",
+  "reasoning": "A and D show the identical step list; D only adds headings (confirmed by diffing the screen files). The 8 reports show no difference between them. Lookups were A 10/15/11/9 and D 12/11/11/12, every tester gave confidence 3, all totals were within about 10 min of the screen, and every major literal failure was hit by all 4 testers on each meal in both presentations. So the scores are equal (6 each). That is up from the first run's best of 5: lookups fell from 28-46 to 9-15, steak confidence rose from 2 to 3, the totals now match the screen, and every tester praised the cues and running-timer lines.\n\nThe heading verdict rests on the D testers' own words ('somewhat', 'a little', 'mixed'), on their consistent complaints about where the headings are cut and their durations, and on the A testers asking for landmarks at different places (busy stretches, serve).\n\nData claims were checked against views2. The cards confirm: the asparagus 8-10 against 12 against the 8-12 timer; the applesauce 'uncover' with no cover step; the ribeye 'Before you start' thermometer; 'Juice half the lemon' followed by 'Juice the half lemon'; the paste at 3 tbsp against 1 tsp; the Pavlova 'Total: 4 hr'; the curd note about 'leftover whites'; the syrup having no off-heat step; fruit 'to taste'.\n\nTo check the timer claims, I re-ran assets/planner.mjs with the views.mjs setup. Step times confirm the preheat at 35 min and the meringue in at 51 min, the ice bath about 26 min early, the potato butter mixed 69 min before the baste, and the cream finishing about 15 min before assembly. They also show that the 'min left' contradictions all 8 testers reported come from views.mjs about() rounding values of 20 min or more to the nearest 5. The plan itself is consistent: the potato and steak timers end 2 min apart, and the syrup's hour ends at step 18. So I listed that as a presentation problem and dropped the claims that it shows bad plan estimates, or that the syrup is added before its timer ends.\n\nComparing with results.md: the gate-style phases, the missing done-when cues, the oven clash, the early asparagus seasoning, the whites duration, yolk and shell storage, the syrup cooling time, the juice over-reduction and the damp towel are no longer reported. Several of the first run's one-tester claims are now reported by 3-4 testers (applesauce stir and lid, steak slicing, cream left out, late preheat, ice bath). Two fixes moved a problem rather than removing it: the parsley now lands at the busiest moment, and the curd fix leaves the syrup on the heat.\n\nLimits: two testers per cell, all dry runs."
+ }
+}
