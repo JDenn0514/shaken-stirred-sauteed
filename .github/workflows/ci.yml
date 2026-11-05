@@ -67,9 +67,39 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Chrome is already installed on GitHub's runners; WebKit isn't.
+      # Chrome is already installed on GitHub's runners; WebKit isn't. WebKit
+      # needs about 185 system packages from Ubuntu's mirror, and now and then
+      # that download crawls on one machine for 10 minutes or more while it
+      # takes 30 seconds on the others. So the packages are downloaded first, in
+      # tries of TRY_TIME each, and then installed from what was downloaded.
+      # Stopping a download is harmless, and the packages that finished are
+      # kept, so a new try (on a new connection) only fetches the rest; the one
+      # package that was cut off starts again.
       - name: Install WebKit
-        run: npx playwright install --with-deps webkit
+        env:
+          TRY_TIME: 2m
+          TRIES: 4
+        run: |
+          # apt gives up on a download that has stalled after 30 seconds.
+          echo 'Acquire::http::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/99-ci-timeout > /dev/null
+          # Download only, with a time limit. timeout runs as root so it can stop
+          # the apt it starts.
+          echo 'APT::Get::Download-Only "true";' | sudo tee /etc/apt/apt.conf.d/99-ci-download-only > /dev/null
+          for try in $(seq "$TRIES"); do
+            if sudo env "PATH=$PATH" timeout --kill-after=15s "$TRY_TIME" npx playwright install-deps webkit; then
+              break
+            elif [ "$try" = "$TRIES" ]; then
+              echo "::error::Couldn't download WebKit's system packages in $TRIES tries of $TRY_TIME"
+              exit 1
+            fi
+            echo "::warning::Downloading WebKit's system packages didn't finish within $TRY_TIME (try $try of $TRIES); trying again"
+            # A stopped apt can take a moment to exit; until it does, it holds
+            # apt's lock and the next try would fail at once.
+            for second in $(seq 30); do pgrep -x apt-get > /dev/null || break; sleep 1; done
+          done
+          sudo rm /etc/apt/apt.conf.d/99-ci-download-only
+          # Installs the packages from what was downloaded, and WebKit itself.
+          npx playwright install --with-deps webkit
       - name: Browser tests
         run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
       - uses: actions/upload-artifact@v4
