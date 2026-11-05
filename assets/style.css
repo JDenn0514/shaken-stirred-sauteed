@@ -1099,7 +1099,7 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 }
 
 /* ===== Print: a clean specimen sheet on white ===== */
-/* ===== The site bar: Home · Recipes · Menu =====
+/* ===== The site bar: Recipes · Menu (the site's title goes home) =====
    Under the header, the same at every width. It scrolls away with the page
    (only the header stays), and it's hidden in cook mode and in print. */
 .site-nav { display: flex; justify-content: center; gap: clamp(18px, 7vw, 48px); padding: 8px max(16px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left)); border-bottom: 1px solid var(--border); }

@@ -182,14 +182,15 @@ It's its own page, `menu.html` (round 5).
 
 Jacob asked for a top bar with Home, Recipes, Menu and maybe Settings, and to see what's on the menu while choosing recipes. Round 6 mocked three bars and two phone layouts (https://claude.ai/artifact/MmSTkRs3yqb7RveR3tWtcN). A review from three angles (cooking on a phone, consistency with the site, accessibility and build) picked these, and Claude built them for Jacob to check:
 
-- **A row of links under the header: Home · Recipes · Menu,** the same at every width, on the welcome, recipes, recipe and menu pages. Menu carries a lime count of the dishes on it (read as "Menu 3 dishes"). The current page is marked (`aria-current="page"`; on a recipe page, Recipes is styled as current).
+- **A row of links under the header: Recipes · Menu,** the same at every width, on the welcome, recipes, recipe and menu pages. Menu carries a lime count of the dishes on it (read as "Menu 3 dishes"). The current page is marked (`aria-current="page"`; on a recipe page, Recipes is styled as current).
   - It scrolls away with the page, so only the header stays pinned and a recipe keeps its room while cooking. It's hidden in cook mode and in print.
   - The header itself is unchanged.
   - A bottom tab bar lost: it collides with Safari's toolbar, the bottom sheets and cook mode's buttons. So did a ☰ button, which crowds the header next to the theme toggle and hides the count.
+- **No Home link** (Jacob, 2026-11-05): the site's title already goes home.
 - **No Settings link yet:** there's no settings page. "Prep everything first" stays on the menu card and the theme toggle in the header. Add the link when the settings page in `docs/ideas.md` exists.
-- **The bar replaces the "Menu · 7 →" links** beside the recipe page's back link and above the recipes page's search. This partly reverses round 2's "the way to the lineup moves out of the header" (Jacob's call to confirm). The welcome page keeps its "Let's build your menu →" / "Your menu · 7 →" link.
+- **The bar replaces the "Menu · 7 →" links** beside the recipe page's back link and above the recipes page's search. This partly reverses round 2's "the way to the lineup moves out of the header"; Jacob agreed (2026-11-05): the back link goes back to the recipes, and the Menu link goes to the menu. The welcome page keeps its "Let's build your menu →" / "Your menu · 7 →" link.
 - **Your menu while choosing recipes** (the recipes page, and the menu page's search):
-  - On a wide screen (960px and up) it's a "Your menu" panel beside the recipes, with the lime tape. It lists dish names, linked to their recipes, with their times, then "+N more" after five, and "Your menu →". With an empty menu it says how to add to it.
+  - On a wide screen (960px and up) it's a "Your menu" panel beside the recipes, with the lime tape. It lists dish names, linked to their recipes, with their times, then "+N more" after five, and "Your menu →". With an empty menu it stays, saying how to add to it (Jacob agreed).
   - On a phone, a "Your menu ▾" button above the search opens the same list. It starts closed, and it's hidden while the menu is empty, since the bar's Menu link is there.
   - It's for reading: there's no ✕ (small targets for wet fingers). Removing a dish stays on the recipe page and the menu card.
   - The menu page's search shows it only on a wide screen. On a phone, "← Back to your menu · 7" and the "✓ Added" rows already show what's on it.

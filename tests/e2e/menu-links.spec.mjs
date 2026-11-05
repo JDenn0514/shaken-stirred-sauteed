@@ -1,5 +1,5 @@
 // Getting around, and getting a recipe onto your menu, from every page: the
-// site's Home · Recipes · Menu bar (Menu with its count), the recipe page's
+// site's Recipes · Menu bar (Menu with its count), the recipe page's
 // "+ Add to menu", the tape on the recipes page's cards, your menu in view
 // while you choose recipes, and the welcome page's link.
 import { test, expect, onMenu } from "./fixtures.mjs";
@@ -9,13 +9,16 @@ const nav = (page) => page.getByRole("navigation", { name: "Site" });
 const menuTab = (page) => nav(page).getByRole("link", { name: /^Menu/ });
 
 test.describe("the site bar", () => {
-  for (const [url, current] of [["index.html", "Home"], ["recipes.html", "Recipes"], ["menu.html", "Menu"]]) {
-    test(`is on ${url}, with ${current} as the current page`, async ({ page }) => {
+  for (const [url, current] of [["index.html", null], ["recipes.html", "Recipes"], ["menu.html", "Menu"]]) {
+    test(`is on ${url}${current ? `, with ${current} as the current page` : ""}`, async ({ page }) => {
       await page.goto(url);
-      await expect(nav(page).getByRole("link", { name: "Home" })).toHaveAttribute("href", "./");
+      // No Home link: the site's title goes home.
+      await expect(nav(page).getByRole("link")).toHaveCount(2);
+      await expect(page.getByRole("banner").getByRole("link", { name: /Shaken, Stirred/ })).toHaveAttribute("href", "./");
       await expect(nav(page).getByRole("link", { name: "Recipes" })).toHaveAttribute("href", "recipes.html");
       await expect(menuTab(page)).toHaveAttribute("href", "menu.html");
-      await expect(nav(page).getByRole("link", { name: new RegExp(`^${current}`) })).toHaveAttribute("aria-current", "page");
+      if (current) await expect(nav(page).getByRole("link", { name: new RegExp(`^${current}`) })).toHaveAttribute("aria-current", "page");
+      else await expect(nav(page).locator("[aria-current]")).toHaveCount(0);
     });
   }
 
