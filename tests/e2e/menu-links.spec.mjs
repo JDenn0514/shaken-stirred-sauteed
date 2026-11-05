@@ -1,5 +1,5 @@
 // Getting around, and getting a recipe onto your menu, from every page: the
-// site's Recipes · Menu bar (Menu with its count), the recipe page's
+// site's Recipes · Menu · Add recipe bar (Menu with its count), the recipe page's
 // "+ Add to menu", the tape on the recipes page's cards, your menu in view
 // while you choose recipes, and the welcome page's link.
 import { test, expect, onMenu } from "./fixtures.mjs";
@@ -9,14 +9,15 @@ const nav = (page) => page.getByRole("navigation", { name: "Site" });
 const menuTab = (page) => nav(page).getByRole("link", { name: /^Menu/ });
 
 test.describe("the site bar", () => {
-  for (const [url, current] of [["index.html", null], ["recipes.html", "Recipes"], ["menu.html", "Menu"]]) {
+  for (const [url, current] of [["index.html", null], ["recipes.html", "Recipes"], ["menu.html", "Menu"], ["intake.html", "Add recipe"]]) {
     test(`is on ${url}${current ? `, with ${current} as the current page` : ""}`, async ({ page }) => {
       await page.goto(url);
       // No Home link: the site's title goes home.
-      await expect(nav(page).getByRole("link")).toHaveCount(2);
+      await expect(nav(page).getByRole("link")).toHaveCount(3);
       await expect(page.getByRole("banner").getByRole("link", { name: /Shaken, Stirred/ })).toHaveAttribute("href", "./");
       await expect(nav(page).getByRole("link", { name: "Recipes" })).toHaveAttribute("href", "recipes.html");
       await expect(menuTab(page)).toHaveAttribute("href", "menu.html");
+      await expect(nav(page).getByRole("link", { name: "Add recipe" })).toHaveAttribute("href", "intake.html");
       if (current) await expect(nav(page).getByRole("link", { name: new RegExp(`^${current}`) })).toHaveAttribute("aria-current", "page");
       else await expect(nav(page).locator("[aria-current]")).toHaveCount(0);
     });
@@ -146,6 +147,13 @@ test("the menu page's search shows your menu beside the results on a wide screen
 });
 
 test.describe("the welcome page", () => {
+  test("links to adding a recipe", async ({ page }) => {
+    await page.goto("index.html");
+    await page.getByRole("link", { name: "Add a recipe →" }).click();
+    await expect(page).toHaveURL(/intake\.html$/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add a recipe");
+  });
+
   test("invites you to build a menu while it's empty", async ({ page }) => {
     await page.goto("index.html");
     await expect(page.getByRole("link", { name: "Let's build your menu →" })).toHaveAttribute("href", "menu.html");
