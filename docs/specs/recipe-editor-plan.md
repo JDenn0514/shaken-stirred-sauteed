@@ -4,7 +4,7 @@
 
 The work is split into **slices**. Each slice is one branch and one pull request. Each leaves the live site working and `npm test` passing, and each starts with failing tests (`mattpocock-skills:tdd`, per `.claude/rules/testing.md`). **The lineup comes first.** The lineup (meal planner) is being built on the `lineup-recipe-data` branch. It rewrites `scripts/build-index.mjs`, adds planning fields and links between recipes to every recipe file, and changes the recipe and recipes pages. Slices 1 to 4 touch the same files, so they start only once the lineup's data and checker are merged into `main`. Slice 1 then starts from that version.
 
-(2026-11-05: the lineup's data, planner and intake tools are now merged into this plan's branch from `restructure-experiment`.)
+(2026-11-05: the lineup's data, planner and intake tools are now merged into this plan's branch from `restructure-experiment`. The intake's review screen is built as `intake.html`, ahead of slices 2 and 3: it asks and confirms what the lineup needs (`docs/specs/intake-lineup-needs.md`), edits the draft in a preview drawn in the recipe page's style, and ends in "Copy recipe" until saving exists. See `tools/intake/README.md`. When slices 2 and 3 come, its preview moves onto the shared drawing code and it becomes the editor's import screen.)
 
 **The move to Cloudflare and sign-in don't wait.** Slices 0, M and 5 don't touch the site's recipe code, so they can go first. Since 2026-11-05 the whole site moves to Cloudflare on its own domain (design spec, "Moving to Cloudflare"), so sign-in is an ordinary same-site cookie.
 

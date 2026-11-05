@@ -23,6 +23,10 @@ No frameworks and no build step: it's plain HTML, CSS, and JavaScript, served by
 
 ## Adding a recipe
 
+The quickest way is the intake, `intake.html` on the site: paste the recipe's text (from a photo, copy it with Live Text), answer its questions, check the preview, and copy the recipe file it gives you into `recipes/`. Then carry on from step 3. See `tools/intake/README.md`.
+
+By hand:
+
 1. Copy `recipes/_template.json` to `recipes/<recipe-name>.json`. Use lowercase letters, numbers, and dashes only, e.g. `brown-butter-cookies.json`.
 2. Fill it in. `category` must be `baking`, `cooking`, or `cocktails`. Times are in minutes.
 3. Rebuild the index (needs [Node.js](https://nodejs.org)):

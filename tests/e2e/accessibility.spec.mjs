@@ -3,6 +3,7 @@
 // missing labels; it can't judge everything, so it's a floor, not a guarantee.
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect, onMenu } from "./fixtures.mjs";
+import { ROLLS, CHICKEN, readRecipe } from "./intake-samples.mjs";
 
 const PAGES = [
   ["welcome page", "index.html", (page) => expect(page.locator('[data-count="all"]')).toHaveText("all 6")],
@@ -125,6 +126,19 @@ const PAGES = [
     await page.getByRole("button", { name: "Your menu" }).click();
     await expect(page.getByRole("link", { name: "Your menu →" })).toBeVisible();
   }, ["pork-carnitas", "lemon-bars"]],
+  ["recipe intake, before reading", "intake.html", (page) => expect(page.getByRole("button", { name: "Read the recipe" })).toBeVisible()],
+  ["recipe intake with questions, guesses and checks", "intake.html", (page) => readRecipe(page, CHICKEN, "Cooking")],
+  ["recipe intake with a split step, editing an ingredient", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("region", { name: "Preview" }).getByRole("button", { name: /bread flour/ }).click();
+    await expect(page.getByLabel("Amount")).toBeVisible();
+  }],
+  ["recipe intake, finished and copied", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("button", { name: "Use this time" }).click();
+    await page.getByRole("button", { name: "Copy recipe" }).click();
+    await expect(page.getByLabel("Recipe file")).toBeVisible();
+  }],
 ];
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }
