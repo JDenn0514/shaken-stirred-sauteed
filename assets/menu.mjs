@@ -197,7 +197,8 @@ async function renderCard(menu) {
   drawCard(Menu.load());
   if (focused) body.querySelector(focused)?.focus();
 }
-const focusKey = (el) => (el.id ? `#${CSS.escape(el.id)}` : el.dataset.nested ? `[data-nested="${CSS.escape(el.dataset.nested)}"][data-dish="${CSS.escape(el.dataset.dish)}"][value="${CSS.escape(el.value)}"]`
+const focusKey = (el) => (el.closest(".menu-pop") ? `.menu-pop > :nth-child(${[...el.parentNode.children].indexOf(el) + 1})`
+  : el.id ? `#${CSS.escape(el.id)}` : el.dataset.nested ? `[data-nested="${CSS.escape(el.dataset.nested)}"][data-dish="${CSS.escape(el.dataset.dish)}"][value="${CSS.escape(el.value)}"]`
   : el.dataset.pop ? `[data-pop="${CSS.escape(el.dataset.pop)}"]` : null);
 
 function drawCard(menu) {

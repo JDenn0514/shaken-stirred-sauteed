@@ -10,7 +10,7 @@
 //     log: ["intro" | "done" | "plate"] (what Back undoes), waitTimer }
 // Times in done and current are minutes from `started`, as the planner takes them.
 import { planLineup } from "./planner.mjs";
-import { cookSteps, withoutServing, busyStretch, behind, dayLength } from "./menu-plan.mjs";
+import { cookSteps, withoutServing, busyStretch, behind, dayLength, brief } from "./menu-plan.mjs";
 
 const { esc, toGroups } = window.SSS;
 const Menu = window.SSSMenu;
@@ -159,7 +159,7 @@ export function openCook({ planMenu, onClose }) {
     const total = Math.max(1, minutes) * 60_000, id = `${Date.now()}-${s.slug}-${s.step}`;
     C.saveTimers([...C.loadTimers(), {
       id, slug: s.slug, title: title(s.slug), step: s.step, cue: stepObj(s).cue || "", ends: Date.now() + total, left: total, total,
-      menu: true, ...(after && { next: displayText(after), nextKey: key(after) }),
+      menu: true, ...(after && { next: brief(displayText(after)), nextKey: key(after) }),
     }]);
     return id;
   }
@@ -241,7 +241,7 @@ export function openCook({ planMenu, onClose }) {
         <ul class="menu-plate">${s.dishes.map((slug) => `<li class="${fam(slug)}">${esc(title(slug))}</li>`).join("")}</ul>`;
       after = steps[i + 1];
     } else if (v === "wait") {
-      body = waitHTML() + busyHTML(i);
+      body = busyHTML(i) + waitHTML();
       after = s;
     } else {
       chipSlug = s.slug;
@@ -338,7 +338,7 @@ export function openCook({ planMenu, onClose }) {
         const ink = recipes[t.slug] ? `fam-${esc(recipes[t.slug].category)}` : "";
         const what = st === "ringing"
           ? `<b>Time's up.</b> ${t.next ? `<b>Next:</b> ${esc(t.next)}` : esc(t.cue)}`
-          : t.next ? `then ${esc(t.next)}` : st === "running" && t.total >= 3_600_000 ? `ready around ${C.timeOfDay(t.ends)}` : "";
+          : t.next ? `then ${esc(t.next.replace(/^then,?\s+/i, ""))}` : st === "running" && t.total >= 3_600_000 ? `ready around ${C.timeOfDay(t.ends)}` : "";
         const actions = st === "ringing"
           ? `<button class="btn" type="button" data-timer="${esc(t.id)}" data-how="more">+2 min</button><button class="btn" type="button" data-timer="${esc(t.id)}" data-how="stop">Stop</button>`
           : `<button class="btn" type="button" data-timer="${esc(t.id)}" data-how="${st === "paused" ? "resume" : "pause"}">${st === "paused" ? "Resume" : "Pause"}</button>`

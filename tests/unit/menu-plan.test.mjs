@@ -2,7 +2,7 @@
 // plan (assets/menu-plan.mjs). The screen itself has browser tests.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { withoutServing, cookSteps, busyStretch, behind } from "../../assets/menu-plan.mjs";
+import { withoutServing, cookSteps, busyStretch, behind, brief } from "../../assets/menu-plan.mjs";
 
 test("a dish's last step loses its closing 'serve', so no dish goes out alone", () => {
   assert.equal(withoutServing("Drain and toss with butter, then serve."), "Drain and toss with butter.");
@@ -67,4 +67,11 @@ test("how far behind: the meal's end now, against when it was first planned to e
   assert.equal(behind({ courses: { Main: 95 } }, 88), 7);
   assert.equal(behind({ courses: { Main: 80, Dessert: 125 } }, 128), 0);
   assert.equal(behind({ minutes: 60 }, 50), 10);
+});
+
+test("a timer's strip names what comes next briefly: its first sentence, cut short if long", () => {
+  assert.equal(brief("Take it out, rest it, carve."), "Take it out, rest it, carve.");
+  assert.equal(brief("Uncover it. Then mash to the texture you want."), "Uncover it.");
+  assert.equal(brief("Set the egg bowl on a damp towel so it stays put while you temper the hot juice into the eggs"),
+    "Set the egg bowl on a damp towel so it stays put while you…");
 });

@@ -45,3 +45,12 @@ export const dayLength = (plan) => (plan.courses ? Math.max(...Object.values(pla
 export function behind(plan, firstMinutes) {
   return Math.max(0, Math.round(dayLength(plan) - firstMinutes));
 }
+
+// What comes next, briefly, for a timer's strip: the step's first sentence,
+// cut at a word if it's long. Up next shows it whole.
+export function brief(text, max = 60) {
+  const first = String(text).split(/(?<=[.!?])\s+/)[0];
+  if (first.length <= max) return first;
+  const cut = first.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" ") > 0 ? cut.lastIndexOf(" ") : max).replace(/[,;:]$/, "")}…`;
+}

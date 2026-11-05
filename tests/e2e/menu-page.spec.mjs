@@ -70,6 +70,8 @@ test.describe("with dishes", () => {
     await expect(chicken.getByRole("list").getByRole("listitem").filter({ hasText: "Herb Butter" })).toBeVisible();
     await expect(chicken.getByRole("radio", { name: "Make it" })).toBeChecked();
     await expect(page.getByRole("link", { name: "← Recipes" })).toBeVisible();
+    // The search is behind "+ Add a dish", not on the card.
+    await expect(page.getByRole("searchbox")).toBeHidden();
   });
 
   test("Already made is remembered", async ({ page }) => {

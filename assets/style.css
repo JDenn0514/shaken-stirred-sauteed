@@ -1125,6 +1125,9 @@ body.cooking > .site-header, body.cooking > main { display: none; }
    with a dotted leader to its time, nested recipes indented under their dish. */
 .menu-page { display: flex; flex-direction: column; gap: 14px; padding-top: 16px; padding-bottom: 48px; max-width: 680px; }
 .menu-page .back { margin: 0; }
+.menu-page .search[hidden] { display: none; }
+#menu-body { display: flex; flex-direction: column; gap: 16px; }
+#menu-body > p { margin: 0; }
 .menu-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .eyebrow { margin: 0; font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .menu-title { font-family: var(--display); font-size: clamp(2rem, 8vw, 2.8rem); line-height: 1.05; margin: 6px 0 10px; letter-spacing: -.02em; text-wrap: balance; }
@@ -1214,7 +1217,8 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 .menu-waitbody { align-items: center; text-align: center; justify-content: center; }
 .menu-wait-text { font-size: 1.3rem; }
 .menu-waitbody > .muted { margin: 0; }
-.menu-ring { position: relative; width: min(220px, 60vw); aspect-ratio: 1; max-width: 100%; }
+.menu-ring { position: relative; width: min(200px, 50vw, 28vh); aspect-ratio: 1; max-width: 100%; }
+.menu-waitbody .menu-land { align-self: stretch; text-align: left; }
 .menu-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .menu-ring circle { fill: none; stroke-width: 8; }
 .menu-ring-track { stroke: var(--border); }

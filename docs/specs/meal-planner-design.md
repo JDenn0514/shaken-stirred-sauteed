@@ -364,6 +364,21 @@ Jacob checks it at four points, each before the next stage starts:
 3. **The built feature, before merging.** Claude clicks through it on the branch and shares screenshots at phone and desktop width, in light and dark mode. Jacob can also run it himself (`python3 -m http.server 8000` in the repo, as in `.claude/launch.json`). What he finds gets fixed before merging.
 4. **A real lineup in the kitchen, after merging.** Cooking a real dinner on the phone is the one test nothing else replaces: real timing, messy hands. What felt wrong becomes fixes, and better time estimates.
 
+## State of the build (2026-11-05, branch `lineup-pages`)
+
+Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up and plating up.
+
+How it's kept fast: while cooking, the make-ahead choice is settled and the planner skips weighing it (`planLineup`'s `options.madeAhead`). With Chrome slowed to a phone's speed (6x), Next step takes about 0.2 to 0.5 seconds for the steak dinner with the pavlova, curd and blueberry cream. The menu page plans in a Web Worker and draws the card at once (about 0.6 seconds at 6x). The estimate follows a few seconds later on a slow phone, and the page stays usable meanwhile.
+
+Not built yet:
+
+- The prep-first or as-written toggle for a single recipe (recipe page and its cook mode), and its accessibility states.
+- Swiping between steps in menu cook mode (Back and Next step work; single-recipe cook mode swipes).
+- A choice between recipes on one ingredient (`recipe` as a list): such a link is ignored for now. No recipe uses one yet.
+- The part made ahead keeps its first order rather than re-planning as you go: it has no serve time to keep.
+- Starting the made-ahead part while the day's plan is under way (or the other way round) starts that part afresh: only one is cooked at a time.
+- No browser test yet for the "ready too early" warning or for "+2 min" re-planning; both are built.
+
 ## Left to the builder
 
 - The exact JSON shape of the new fields, within the requirements above.
