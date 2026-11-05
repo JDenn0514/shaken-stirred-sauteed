@@ -282,19 +282,24 @@ export function openCook({ planMenu, onClose }) {
 
   // The wait screen: "Wait about 12 minutes before the next step", a ring
   // that empties once its timer starts, and an alarm that rings until Stop.
+  // Without its timer, the minutes still count down, and it says when it's
+  // time (with no alarm: you didn't set one).
+  const waitLeft = () => (plan.upNow ? Math.max(0, plan.upNow.at - now()) : 0);
+  const waitMins = () => Math.max(1, Math.round(waitLeft()));
+  const waitDue = () => !cooking().waitTimer && waitLeft() < 0.5;
   function waitHTML() {
-    const c = cooking(), w = c.waitTimer, mins = Math.max(1, Math.round(plan.wait));
+    const c = cooking(), w = c.waitTimer, mins = waitMins();
     const going = [...new Set(C.loadTimers().filter((t) => t.ends == null || t.ends > Date.now()).map((t) => t.title))];
-    const up = w && w.ends != null && w.ends <= Date.now();
-    const text = up ? (w.stopped ? "Time's up. Go on to the next step when you're ready." : "Time's up.")
+    const up = waitDue() || (w && w.ends != null && w.ends <= Date.now());
+    const text = up ? (!w || w.stopped ? "Time's up. Go on to the next step when you're ready." : "Time's up.")
       : `Wait about ${mins} minute${mins === 1 ? "" : "s"} before the next step.`;
-    return `<div class="menu-ring${up && !w.stopped ? " ringing" : ""}${up ? " up" : ""}${w && !up ? " running" : ""}" role="timer" aria-label="Wait">
+    return `<div class="menu-ring${up && w && !w.stopped ? " ringing" : ""}${up ? " up" : ""}${w && !up ? " running" : ""}" role="timer" aria-label="Wait">
         <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="menu-ring-track" cx="60" cy="60" r="54"/><circle class="menu-ring-left" cx="60" cy="60" r="54" stroke-dasharray="${RING.toFixed(1)}" stroke-dashoffset="0"/></svg>
-        <span><b class="menu-ring-time">${w ? "" : mins}</b><small>${up ? "time's up" : w ? "left" : "min"}</small></span>
+        <span><b class="menu-ring-time">${w || up ? "" : mins}</b><small>${up ? "time's up" : w ? "left" : "min"}</small></span>
       </div>
       <h2 class="cook-do menu-wait-text">${esc(text)}</h2>
       ${up ? "" : `<p class="muted">${going.length ? `${esc(list(going))} ${going.length === 1 ? "is" : "are"} going. ` : ""}Nothing needs you yet.</p>`}
-      <div class="menu-wait-actions">${up && !w.stopped ? `<button class="btn menu-stop" type="button" data-wait="stop">Stop</button>`
+      <div class="menu-wait-actions">${up && w && !w.stopped ? `<button class="btn menu-stop" type="button" data-wait="stop">Stop</button>`
         : up ? "" : w ? `<button class="btn" type="button" data-wait="${w.ends == null ? "resume" : "pause"}">${w.ends == null ? "Resume" : "Pause"}</button>`
         : `<button class="btn cook-timer-start" type="button" data-wait="start">Start ${mins} min timer</button>`}</div>`;
   }
@@ -302,7 +307,7 @@ export function openCook({ planMenu, onClose }) {
     C.unlockAudio();
     change((c) => {
       const t0 = Date.now(), w = c.waitTimer;
-      if (how === "start") { const total = Math.max(1, Math.round(plan.wait)) * 60_000; c.waitTimer = { ends: t0 + total, left: total, total }; }
+      if (how === "start") { const total = waitMins() * 60_000; c.waitTimer = { ends: t0 + total, left: total, total }; }
       else if (how === "pause") c.waitTimer = { ...w, left: w.ends - t0, ends: null };
       else if (how === "resume") c.waitTimer = { ...w, ends: t0 + w.left };
       else if (how === "stop") c.waitTimer = { ...w, stopped: true };
@@ -367,6 +372,23 @@ export function openCook({ planMenu, onClose }) {
       if (waitRinging && !waitRang) { waitRang = true; const a = el.querySelector(".cook-alert"); if (a) a.textContent = "Time's up."; }
     }
     if (!waitRinging) waitRang = false;
+    // Without its timer, the wait's minutes count down, and it says when it's time.
+    if (!w && ring) {
+      if (waitDue()) {
+        if (ring.classList.contains("up")) return ringing.length > 0;
+        paint();
+        const a = el.querySelector(".cook-alert");
+        if (a) a.textContent = "Time's up. Go on to the next step when you're ready.";
+        return ringing.length > 0;
+      }
+      const mins = String(waitMins()), time = ring.querySelector(".menu-ring-time");
+      if (time && time.textContent !== mins) {
+        time.textContent = mins;
+        const say = el.querySelector(".menu-wait-text"), start = el.querySelector('[data-wait="start"]');
+        if (say) say.textContent = `Wait about ${mins} minute${mins === "1" ? "" : "s"} before the next step.`;
+        if (start) start.textContent = `Start ${mins} min timer`;
+      }
+    }
     return ringing.length > 0 || waitRinging;
   }
   const nextShown = () => { const v = view(), i = curIndex(); return v === "wait" ? steps[i] : steps[i + 1]; };

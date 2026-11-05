@@ -383,7 +383,7 @@ Jacob checks it at four points, each before the next stage starts:
 
 ## State of the build (2026-11-05, branch `lineup-pages`)
 
-Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up, plating up, and swiping between steps (the same handling as single-recipe cook mode: touch or pen only, left for Next step, right for Back).
+Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up, plating up, a wait screen that counts down by itself (and says when it's time, with no alarm, if you didn't start its timer), and swiping between steps (the same handling as single-recipe cook mode: touch or pen only, left for Next step, right for Back).
 
 Prep first or as written, for a single recipe: the recipe page has a "Prep first" switch under its Steps heading, and its cook mode follows the same saved choice (`sss:prep-first`, shared with the menu). The order comes from `SSS.stepOrder` in `assets/common.js`. Progress and timers keep each step's place in the file. Cook mode labels the stages ("Prep · Step 2 of 10", "Cooking · Step 3 of 10"), and a timer is named by its step's number in the order shown. The accessibility scan covers the recipe page both ways and cook mode in the prep stage.
 
@@ -395,7 +395,6 @@ Not built yet:
 
 - A choice between recipes on one ingredient (`recipe` as a list): such a link is ignored for now. No recipe uses one yet.
 - Starting the made-ahead part while the day's plan is under way (or the other way round) starts that part afresh: only one is cooked at a time.
-- Known bug: a wait screen's minutes don't count down unless you press its Start timer. Waiting for the roast with only the roast's own timer running, it still says "Wait about 45 minutes" when that timer rings at 40 (Up next does say "due now").
 
 ## Left to the builder
 

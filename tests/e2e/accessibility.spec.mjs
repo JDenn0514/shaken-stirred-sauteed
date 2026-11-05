@@ -103,6 +103,11 @@ const PAGES = [
     await page.clock.fastForward("15:01");
     await expect(cookButton(page, "Stop")).toBeVisible();
   }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode, the wait is up without its timer", "menu.html", async (page) => {
+    await startMenu(page, 6);
+    await page.clock.fastForward("15:01");
+    await expect(page.getByRole("region", { name: "Cook mode" })).toContainText("Time's up. Go on to the next step when you're ready.");
+  }, ["roast-chicken", "green-beans"]],
   ["menu cook mode with another timer ringing", "menu.html", async (page) => {
     await startMenu(page, 8);
     await page.clock.fastForward("40:01");

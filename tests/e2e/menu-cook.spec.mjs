@@ -100,6 +100,21 @@ test("a wait: Start timer, a ring that empties, and an alarm that only Stop sile
   await expect(instruction(page)).toHaveText("Roast until golden.");
 });
 
+test("a wait counts down by itself, even without its timer, and says when it's time", async ({ page }) => {
+  await toOvenWait(page);
+  await page.clock.fastForward("05:00");
+  await expect(cook(page)).toContainText("Wait about 10 minutes before the next step.");
+  await expect(cook(page).getByRole("timer", { name: "Wait" })).toContainText("10");
+  await expect(button(page, "Start 10 min timer")).toBeVisible();
+  await page.clock.fastForward("10:01");
+  await expect(cook(page)).toContainText("Time's up. Go on to the next step when you're ready.");
+  await expect(cook(page).getByRole("timer", { name: "Wait" })).toHaveText("time's up");
+  // No alarm to stop: you didn't set one.
+  await expect(button(page, "Stop")).toHaveCount(0);
+  await next(page);
+  await expect(instruction(page)).toHaveText("Roast until golden.");
+});
+
 test("Next step moves on from a wait early", async ({ page }) => {
   await toOvenWait(page);
   await next(page);
@@ -120,11 +135,12 @@ test("a step's own wait: its timer starts on Next step, at the short end, and sa
 test("a timer ringing never moves you: it says what to do next, and Stop silences it", async ({ page }) => {
   await toOvenWait(page);
   await next(page, 2);
-  const screen = await cook(page).getByRole("heading", { level: 2 }).textContent();
+  await expect(cook(page).getByRole("heading", { level: 2 })).toHaveText("Wait about 45 minutes before the next step.");
   await page.clock.fastForward("40:01");
   const strip = cook(page).getByRole("timer", { name: /Roast Chicken/ });
   await expect(strip).toContainText("Time's up. Next: Take it out, rest it");
-  await expect(cook(page).getByRole("heading", { level: 2 })).toHaveText(screen);
+  // Still on the same wait (planned for the middle of 40 to 50 minutes), counted down.
+  await expect(cook(page).getByRole("heading", { level: 2 })).toHaveText("Wait about 5 minutes before the next step.");
   await strip.getByRole("button", { name: "Stop" }).click();
   await expect(cook(page).getByRole("timer", { name: /Roast Chicken/ })).toHaveCount(0);
 });
