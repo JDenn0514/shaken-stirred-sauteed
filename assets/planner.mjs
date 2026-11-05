@@ -528,15 +528,19 @@ function forThePage(plan, dishes, recipes, lineup) {
   return { ...plan, steps, serving };
 }
 
-export function planLineup(lineup, recipes, progress = {}) {
+// `options.madeAhead`, once the make-ahead choice is settled (while cooking),
+// lists the dishes whose first part is made ahead, and the plan skips comparing
+// each dish both ways, which is most of its work.
+export function planLineup(lineup, recipes, progress = {}, options = {}) {
   const keepsWhole = (slug) => !stepsOf(recipes[slug]).some((s) => s.holds);
   const dayParts = (slugs) => Object.fromEntries(slugs.map((slug) => [slug, keepsWhole(slug) ? "skip" : "after"]));
   const dayLength = (p) => Math.max(...Object.values(p.courses));
   const everything = chains(lineup, recipes);
   const unknown = unknownsOf([...new Set(everything.map((d) => d.slug))], recipes);
-  const allToday = search(everything, progress);
-  const makeAhead = [];
-  for (const { slug } of lineup.dishes) {
+  const settled = Array.isArray(options.madeAhead);
+  const allToday = settled && options.madeAhead.length ? null : search(everything, progress);
+  const makeAhead = settled ? options.madeAhead.map((slug) => ({ slug, ahead: true })) : [];
+  for (const { slug } of settled ? [] : lineup.dishes) {
     // A dish that keeps entirely can be made ahead only if something's left for
     // the day.
     if (keepsWhole(slug) && (sits(recipes[slug]) !== Infinity || lineup.dishes.length === 1)) continue;

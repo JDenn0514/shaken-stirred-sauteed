@@ -332,6 +332,18 @@ describe("a dish that keeps part-way", () => {
       assert.deepEqual(texts(plan), ["Mix and bake"]);
     });
 
+    test("once the choice is settled (while cooking), the plan is the same without asking again", () => {
+      const lineup = { dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] };
+      const asked = planLineup(lineup, recipes);
+      const settled = planLineup(lineup, recipes, {}, { madeAhead: ["pavlova"] });
+      assert.deepEqual(settled.steps, asked.steps);
+      assert.deepEqual(settled.aheadOfTime, asked.aheadOfTime);
+      assert.deepEqual(settled.makeAhead, [{ slug: "pavlova", ahead: true }]);
+      const today = planLineup(lineup, recipes, {}, { madeAhead: [] });
+      assert.equal(today.aheadOfTime, null);
+      assert.deepEqual(today.steps, planLineup({ ...lineup, ahead: { pavlova: false } }, recipes).steps);
+    });
+
     test("isn't asked about when it wouldn't save much", () => {
       assert.deepEqual(planLineup(dinner, DINNER).makeAhead, []);
     });
