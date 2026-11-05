@@ -161,13 +161,14 @@ python3 -m http.server 8000
 The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only: the site itself still has no dependencies.
 
 ```sh
-npm install   # once
+npm install                      # once
+npx playwright install webkit    # once, and again when Playwright updates
 npm test
 ```
 
 - `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, and the tests in `tests/unit/`. After `npm install` it also runs before every `git push`, and stops the push if something fails.
 - `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index. It also checks the link checker, the lineup planner (`assets/planner.mjs`) and what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`).
-- `tests/e2e/` opens the site in Chrome. It uses a small set of test recipes, not the real ones, and covers:
+- `tests/e2e/` opens the site in Chrome and again in WebKit, the engine behind Safari and every browser on an iPhone. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
   - cook mode: moving through the steps, each step's ingredients, timers (on a clock the test controls), and a walk through every real recipe

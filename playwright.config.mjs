@@ -1,5 +1,7 @@
-// Browser tests (tests/e2e). Runs the installed Google Chrome, which keeps
-// itself up to date, rather than a Chromium build bundled with Playwright.
+// Browser tests (tests/e2e). Every test runs twice: in the installed Google
+// Chrome, which keeps itself up to date, rather than a Chromium build bundled
+// with Playwright; and in Playwright's WebKit, the engine behind Safari and
+// every browser on an iPhone (install it once with `npx playwright install webkit`).
 import { defineConfig } from "@playwright/test";
 
 const PORT = 8123;
@@ -14,9 +16,12 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
   use: {
     baseURL: `http://localhost:${PORT}/`,
-    channel: "chrome",
     trace: "retain-on-failure",
   },
+  projects: [
+    { name: "chrome", use: { browserName: "chromium", channel: "chrome" } },
+    { name: "webkit", use: { browserName: "webkit" } },
+  ],
   webServer: {
     command: `node tests/helpers/serve.mjs ${PORT}`,
     url: `http://localhost:${PORT}/`,

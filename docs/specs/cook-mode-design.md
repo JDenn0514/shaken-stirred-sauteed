@@ -71,6 +71,8 @@ The look follows the site's Field Guide style (`assets/style.css`): its fonts an
 - A timer counts toward a fixed finish time that is saved, so it stays correct if the page reloads or you leave cook mode and come back.
 - **Timers are shared across recipes, not kept per recipe** (Claude's call). Several recipes are parts of one meal: chimichurri with carne asada, the sauces with the shawarma, the acini di pepe with the wedding soup. So a timer started in one recipe's cook mode still shows, and still rings, in another's. Each strip names its recipe as well as its step, and links back to it.
 - **The limit, stated honestly:** it can only ring while cook mode is open on screen. Keep screen on helps with that. For long waits, such as an overnight marinade, the strip shows the time it will be ready ("ready around 9:40 pm") rather than suggesting it will wake you. Jacob agreed this is good enough.
+- **A second limit:** browsers only let a page make sound after a tap since it loaded. Any tap in cook mode turns the sound on, so after a reload a timer only beeps once you've tapped something. It buzzes regardless, on phones that can (not iPhones, which don't let web pages vibrate).
+- **On an iPhone it beeps through the silent switch** (Jacob's call). That also pauses any music or podcast playing, so it's only switched on while a timer is ringing. Needs Safari 17 or later; older ones stay muted by the switch.
 
 ## Recipe data changes
 
