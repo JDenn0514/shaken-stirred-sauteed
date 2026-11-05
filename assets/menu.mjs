@@ -150,23 +150,58 @@ function setSearch(next, push = false) {
 let planned = null;     // { plan, other, recipes, error } for the menu as it was last drawn
 let openPop = null;     // the dish or make-ahead menu that's open: its button's data key
 
+// Planning runs in a worker where the browser has them, so the card is
+// drawn, and usable, while it plans.
+let worker = null, asked = 0;
+const waiting = new Map();
+function planAsync(...args) {
+  if (!worker && typeof Worker === "function") {
+    try {
+      worker = new Worker(new URL("./plan-worker.mjs", import.meta.url), { type: "module" });
+      worker.addEventListener("message", (e) => { const w = waiting.get(e.data.id); waiting.delete(e.data.id); if (w) w(e.data); });
+    } catch { worker = false; }
+  }
+  if (!worker) {
+    try { return Promise.resolve(planLineup(...args)); } catch (e) { return Promise.reject(e); }
+  }
+  const id = ++asked;
+  return new Promise((resolve, reject) => {
+    waiting.set(id, (r) => (r.error != null ? reject(new Error(r.error)) : resolve(r.plan)));
+    worker.postMessage({ id, args });
+  });
+}
+
+let drawing = 0;
 async function renderCard(menu) {
+  const n = ++drawing;
   searchBox.hidden = true;
   top.innerHTML = `<div class="menu-toprow"><a class="back" href="recipes.html">← Recipes</a></div>`;
   const { recipes, lineup } = await planMenu(menu);
+  if (n !== drawing) return;
+  // Drawn at once from what's known; the plan fills in the times.
+  planned = { plan: null, other: null, recipes, lineup, error: null, pending: true };
+  drawCard(menu);
   let plan = null, other = null, error = null;
   try {
-    plan = planLineup(lineup, recipes);
-    other = planLineup({ ...lineup, prepFirst: !lineup.prepFirst }, recipes);
+    plan = await planAsync(lineup, recipes);
+    // The other way round, for "Fastest would be…", with the same make-ahead
+    // choices (so it needn't weigh them again).
+    other = await planAsync({ ...lineup, prepFirst: !lineup.prepFirst }, recipes, {}, { madeAhead: plan.makeAhead.filter((q) => q.ahead).map((q) => q.slug) });
   } catch (e) {
     error = e;
   }
+  if (n !== drawing) return;
   planned = { plan, other, recipes, lineup, error };
-  drawCard(menu);
+  // Keep focus where it was (a choice just made), across the redraw.
+  const focused = document.activeElement && body.contains(document.activeElement) ? focusKey(document.activeElement) : null;
+  drawCard(Menu.load());
+  if (focused) body.querySelector(focused)?.focus();
 }
+const focusKey = (el) => (el.id ? `#${CSS.escape(el.id)}` : el.dataset.nested ? `[data-nested="${CSS.escape(el.dataset.nested)}"][data-dish="${CSS.escape(el.dataset.dish)}"][value="${CSS.escape(el.value)}"]`
+  : el.dataset.pop ? `[data-pop="${CSS.escape(el.dataset.pop)}"]` : null);
 
 function drawCard(menu) {
-  const { plan, other, recipes, lineup, error } = planned;
+  const { plan, other, recipes, lineup, error, pending } = planned;
   const title = (slug) => recipes[slug]?.title || bySlug(slug)?.title || slug;
   const fam = (slug) => `fam-${esc(recipes[slug]?.category || bySlug(slug)?.category || "cooking")}`;
   const time = (slug) => { const m = bySlug(slug)?.totalMinutes ?? totalMinutes(recipes[slug]?.time); return m ? fmtMinutes(m) : ""; };
@@ -223,7 +258,8 @@ function drawCard(menu) {
       <h2 id="ahead-h">Ahead of time</h2>
       ${aheadDone ? `<p class="menu-done">✓ ${esc(aheadSlugs.map(title).join(" and "))}: made ahead.</p>`
         : `<p>The part of ${esc(aheadSlugs.map(title).join(" and "))} that keeps: ${about(plan.aheadOfTime.minutes)}. Make it the day before, or earlier today.</p>
-           <button class="btn menu-ahead-start" type="button" data-start="ahead">Start ${esc(aheadSlugs.map(title).join(" and "))} · ${about(plan.aheadOfTime.minutes)}</button>`}
+           <button class="btn menu-ahead-start" type="button" data-start="ahead">${menu.cooking?.part === "ahead" ? "Back to cooking"
+             : `Start ${esc(aheadSlugs.map(title).join(" and "))} · ${about(plan.aheadOfTime.minutes)}`}</button>`}
     </section>` : "";
 
   // What the recipes don't say: asked here, saved to the recipe on this device.
@@ -246,7 +282,7 @@ function drawCard(menu) {
     </section>` : "";
 
   const prep = lineup.prepFirst;
-  const cooking = menu.cooking && menu.cooking.part !== "ahead";
+  const cooking = menu.cooking && menu.cooking.part === "day";
   body.innerHTML = `${aheadBox}
     <section class="menu-card" aria-labelledby="menu-h">
       <h1 class="menu-head" id="menu-h">Your menu</h1>
@@ -256,13 +292,14 @@ function drawCard(menu) {
       ${late}
       <div class="menu-foot">
         <label class="menu-switch"><input type="checkbox" role="switch" id="prep-first"${prep ? " checked" : ""}> Prep everything first</label>
-        ${other ? `<span class="muted">${prep ? "Fastest" : "Prep first"} would be ${about(dayLength(other))}</span>` : ""}
+        ${other ? `<span class="muted">${prep ? "Fastest" : "Prep first"} would be ${about(dayLength(other))}</span>` : pending ? `<span class="muted">Working out the times…</span>` : ""}
       </div>
     </section>
     ${asks}
     ${error ? `<div class="menu-error" role="alert"><h2>These can't be planned together</h2>
         <p>No order gets every dish made: one needs another that needs it back, or nothing can go on. Try removing a dish, or switching off Prep everything first.</p></div>`
-      : plan ? `<button class="btn cook-start menu-start" type="button" data-start="day">${cooking ? "Back to cooking" : `Start cooking · ${about(dayLength(plan))}`}</button>` : ""}`;
+      : plan ? `<button class="btn cook-start menu-start" type="button" data-start="day">${cooking ? "Back to cooking" : `Start cooking · ${about(dayLength(plan))}`}</button>`
+      : pending ? `<button class="btn cook-start menu-start" type="button" disabled>Planning…</button>` : ""}`;
 }
 // Minutes in "25 minutes", "1 1/2 hr".
 function minutesIn(text) {
@@ -358,7 +395,10 @@ let cook = null;
 function startCooking(part) {
   const m = Menu.load();
   if (!m.cooking || m.cooking.part !== part) {
-    m.cooking = { part, started: Date.now(), done: [] };
+    // The make-ahead choice is settled once cooking starts, so re-planning
+    // needn't weigh it again (it's most of the planner's work).
+    const madeAhead = (planned?.plan?.makeAhead || []).filter((q) => q.ahead).map((q) => q.slug);
+    m.cooking = { part, started: Date.now(), done: [], plated: [], log: [], madeAhead };
     Menu.save(m);
   }
   history.pushState({ cook: true }, "", "#cook");

@@ -12,6 +12,7 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 - Tap ingredients to check them off and tap steps to mark them done. Your progress is saved on your phone.
 - "Keep screen on" button so the phone doesn't lock mid-recipe
 - Cook mode ("Start baking", "Start cooking", "Start mixing"): the steps one screen at a time, with each step's ingredients and amounts to tick off, a peek at what's up next, and timers for waits. Timers keep running as you move on, even into another recipe, and ring while cook mode is open on screen. It shares its progress with the recipe page.
+- Your menu (`menu.html`): cook several recipes together, such as a whole dinner, or one dessert made from a few recipes. Add a recipe with "+ Add to menu" on its page, or search on the menu page. The menu card shows each course, the recipes a dish needs (Make it or Already made), and anything worth making ahead. "Start cooking" walks through every dish's steps in one order, planned so hot dishes are ready together. It re-plans each time you move on. Waits get a screen of their own, a ringing timer says what to do next, and the menu ends with one "Plate up" step. Steps done here count as done on each recipe's own page.
 - Add it to your phone's home screen and it opens like an app. Recipes you've already opened also work offline.
 - Clean print layout
 - Each section has its own colour (baking persimmon, cooking holly green, cocktails cobalt), and every recipe has its own drawing: its glass for cocktails, its dish for food
@@ -164,11 +165,12 @@ npm test
 ```
 
 - `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, and the tests in `tests/unit/`. After `npm install` it also runs before every `git push`, and stops the push if something fails.
-- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index. It also checks the link checker.
+- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`): what it rejects, what it warns about, and what it writes into the index. It also checks the link checker, the lineup planner (`assets/planner.mjs`) and what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`).
 - `tests/e2e/` opens the site in Chrome. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
   - cook mode: moving through the steps, each step's ingredients, timers (on a clock the test controls), and a walk through every real recipe
+  - your menu: adding dishes, the menu card and its choices, the questions it asks, the links from other pages, and cooking a menu (waits, timers and what follows them, plating up, the part made ahead)
   - light and dark mode
   - an automated accessibility scan of every page in both modes
 

@@ -1194,6 +1194,45 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 .menu-ask .btn { justify-self: start; min-height: 38px; }
 .menu-start { width: 100%; justify-content: center; margin: 0; min-height: 52px; font-size: 1.05rem; }
 
+/* Cooking your menu: today's cook screen, plus a chip naming each step's
+   dish, the wait screen's ring, and the plate-up step. */
+.menu-chip { display: inline-block; margin-right: 8px; padding: 3px 7px; border-radius: 3px; background: var(--section-fill); color: var(--on-section-fill); font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; }
+.menu-cook .cook-label { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; }
+.menu-gather { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.menu-gather h3 { margin: 0 0 4px; font-size: 1.1rem; color: var(--section); }
+.menu-plate { list-style: none; margin: 0; padding: 0; }
+.menu-plate li { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 1.2rem; font-family: var(--display); font-weight: 600; color: var(--section); }
+.menu-behind { margin: 0; font-size: .92rem; color: var(--muted); }
+.menu-behind b { color: var(--text); }
+.menu-land { margin: 0; padding: 10px 12px; border: 1.5px solid var(--section); border-radius: var(--radius-ctl); background: var(--section-wash); display: grid; gap: 2px; font-size: .95rem; }
+.menu-land b { font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--section); }
+.menu-range { display: block; font-weight: 400; font-size: .92rem; margin-top: 2px; }
+.menu-due { display: inline-block; padding: 1px 6px; border-radius: 3px; background: var(--lime); color: var(--on-lime); font: 500 .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.menu-notes { border-bottom: 1px solid var(--border); padding: 10px 0; }
+.menu-notes summary { cursor: pointer; font-weight: 600; font-size: 1.1rem; }
+.menu-notes .cook-list { margin-top: 8px; }
+.menu-waitbody { align-items: center; text-align: center; justify-content: center; }
+.menu-wait-text { font-size: 1.3rem; }
+.menu-waitbody > .muted { margin: 0; }
+.menu-ring { position: relative; width: min(220px, 60vw); aspect-ratio: 1; max-width: 100%; }
+.menu-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.menu-ring circle { fill: none; stroke-width: 8; }
+.menu-ring-track { stroke: var(--border); }
+.menu-ring-left { stroke: var(--section); stroke-linecap: round; }
+.menu-ring.up .menu-ring-track { stroke: var(--section); }
+.menu-ring.up .menu-ring-left { display: none; }
+.menu-ring > span { position: absolute; inset: 0; display: grid; place-content: center; }
+.menu-ring b { font: 500 3rem/1 var(--mono); color: var(--section); font-variant-numeric: tabular-nums; }
+.menu-ring small { font-family: var(--mono); color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .menu-ring.running .menu-ring-left { transition: stroke-dashoffset 1s linear; }
+  .menu-ring.ringing { animation: menu-pulse 1s ease-in-out infinite; }
+}
+@keyframes menu-pulse { 50% { transform: scale(1.05); } }
+.menu-wait-actions { display: flex; gap: 10px; justify-content: center; }
+.menu-wait-actions .btn { min-height: 46px; padding: 0 20px; font-weight: 600; }
+.menu-stop { min-height: 56px !important; min-width: 200px; font-size: 1.15rem; background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
+
 @media print {
   :root {
     --bg: #fff; --surface: #fff; --surface-2: #f2f2f2; --text: #000; --muted: #333;

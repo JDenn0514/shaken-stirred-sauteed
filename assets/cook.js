@@ -329,5 +329,27 @@ window.SSSCook = (() => {
     };
   }
 
-  return { open, startLabel, linkIngredients, tickIngredient };
+  // A recipe's saved progress ("sss:progress:<slug>"), kept only while the
+  // recipe's ingredients and steps are the same shape as when it was saved
+  // (progress is saved by position). Used by the recipe page and the menu.
+  function progressFor(r, slug) {
+    const KEY = `sss:progress:${slug}`;
+    const shape = JSON.stringify([
+      toGroups(r.ingredients).flatMap((g) => g.items.map((i) => (typeof i === "string" ? i : i.item))),
+      toGroups(r.steps).reduce((n, g) => n + g.items.length, 0),
+    ]);
+    let fp = 0;
+    for (const ch of shape) fp = (fp * 31 + ch.charCodeAt(0)) | 0;
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
+    const progress = Object.assign({ ing: [], steps: [] }, saved.fp == null || saved.fp === fp ? saved : {}, { fp });
+    const save = (p = progress) => { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch {} };
+    return { progress, save };
+  }
+
+  return {
+    open, startLabel, linkIngredients, tickIngredient, progressFor,
+    // For the menu's cook mode (menu-cook.mjs), which shares the timers and the look.
+    ingredientRow, isTicked, tickUse, waitMinutes, fmtLength, loadTimers, saveTimers, msLeft, clock, timeOfDay, beep, unlockAudio,
+  };
 })();

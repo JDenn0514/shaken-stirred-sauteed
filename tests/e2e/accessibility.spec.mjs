@@ -67,10 +67,55 @@ const PAGES = [
   }, ["lemon-bars"]],
   ["index page with a recipe on your menu", "recipes.html", (page) => expect(page.getByText("On your menu")).toBeVisible(), ["lemon-bars"]],
   ["welcome page with a menu", "index.html", (page) => expect(page.getByRole("link", { name: "Your menu · 1 →" })).toBeVisible(), ["lemon-bars"]],
+  ["menu cook mode, gathering", "menu.html", async (page) => {
+    await startMenu(page);
+    await expect(cook(page).getByRole("heading", { name: "Before you start" })).toBeVisible();
+  }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode on a step", "menu.html", async (page) => {
+    await startMenu(page, 1);
+    await expect(cook(page).getByTestId("instruction")).toHaveText("Chop the parsley.");
+  }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode on a wait", "menu.html", async (page) => {
+    await startMenu(page, 6);
+    await expect(cookButton(page, "Start 15 min timer")).toBeVisible();
+  }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode on a wait, timer running", "menu.html", async (page) => {
+    await startMenu(page, 6);
+    await cookButton(page, "Start 15 min timer").click();
+    await expect(cookButton(page, "Pause")).toBeVisible();
+  }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode, the wait is up", "menu.html", async (page) => {
+    await startMenu(page, 6);
+    await cookButton(page, "Start 15 min timer").click();
+    await page.clock.fastForward("15:01");
+    await expect(cookButton(page, "Stop")).toBeVisible();
+  }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode with another timer ringing", "menu.html", async (page) => {
+    await startMenu(page, 8);
+    await page.clock.fastForward("40:01");
+    await expect(cook(page).getByRole("timer", { name: "Roast Chicken" })).toContainText("Time's up.");
+  }, ["roast-chicken", "green-beans"]],
+  ["menu cook mode, plating up and all done", "menu.html", async (page) => {
+    await startMenu(page, 14);
+    await expect(cook(page).getByRole("heading", { name: "Plate up the main" })).toBeVisible();
+    await cookButton(page, "Finish").click();
+    await expect(cook(page).getByRole("heading", { name: "All done" })).toBeVisible();
+  }, ["roast-chicken", "green-beans"]],
 ];
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }
 function cookButton(page, name) { return cook(page).getByRole("button", { name, exact: true }); }
+// Starts cooking the menu (on a clock the test controls) and presses Next step
+// that many times.
+async function startMenu(page, nexts = 0) {
+  await page.clock.install();
+  await page.getByRole("button", { name: /^Start cooking/ }).click();
+  for (let i = 0; i < nexts; i++) {
+    const before = await cook(page).textContent();
+    await cookButton(page, "Next step").click();
+    await expect(cook(page)).not.toHaveText(before);
+  }
+}
 // Lemon Bars step 2, with its 15-minute timer started (on a clock the test controls).
 async function toCrustBake(page) {
   await page.clock.install();
