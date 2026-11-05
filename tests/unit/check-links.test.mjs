@@ -28,6 +28,11 @@ describe("pages", () => {
     "guide/index.html": "",
   }, []));
 
+  test("ignores <base>, which sets where links start rather than pointing at a file", () => brokenLinks({
+    "moved/index.html": '<base href="/old-site/"><script src="moved.js"></script>',
+    "moved/moved.js": "",
+  }, []));
+
   test("ignores a tag shown as text, like a code example", () => brokenLinks({
     "index.html": '<pre><code>&lt;a class="card" href="recipe.html?r=…"&gt;</code></pre>',
   }, []));
