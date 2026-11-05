@@ -18,6 +18,8 @@
   "overrides": [
     { "files": ["sw.js"], "env": { "serviceworker": true } },
     { "files": ["assets/recipe-icons.js", "moved/moved.js"], "globals": { "module": "readonly" } },
+    // Works in Node (module, require) and in a page, like recipe-icons.js.
+    { "files": ["assets/recipe-checks.js"], "globals": { "module": "readonly", "require": "readonly" } },
     // These post to and from a Web Worker, whose postMessage takes no target
     // origin (its second argument is a transfer list); the rule is for windows.
     { "files": ["assets/menu.mjs", "assets/plan-worker.mjs"], "rules": { "unicorn/require-post-message-target-origin": "off" } },
