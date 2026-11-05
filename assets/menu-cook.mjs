@@ -40,29 +40,20 @@ export function openCook({ planMenu, onClose }) {
 
   // ===== Planning =====
   const settled = (c) => (Array.isArray(c.madeAhead) ? { madeAhead: c.madeAhead } : {});
-  let aheadPlan;
+  // The day, or the part made ahead on its own: both are re-planned from what
+  // you've done and when.
   function replan() {
     const c = cooking(), t = now();
     try {
-      if (c.part === "ahead") {
-        // The part made ahead keeps its first order: there's no serve time to keep.
-        aheadPlan ??= planLineup(lineup, recipes, {}, settled(c)).aheadOfTime;
-        const ahead = aheadPlan;
-        if (!ahead) throw new Error("Nothing is set to be made ahead any more.");
-        const done = new Set(c.done.map(key));
-        plan = { ...ahead, steps: ahead.steps.map((s) => ({ ...s, done: done.has(key(s)) })) };
-        plan.upNow = plan.steps.find((s) => !s.done && !s.skipped) || null;
-        plan.wait = plan.upNow ? Math.max(0, plan.upNow.at - t) : 0;
-      } else {
-        for (let i = 0; i < 6; i++) {
-          plan = planLineup(lineup, recipes, { now: t, done: c.done, ...(c.current && { current: c.current }) }, settled(c));
-          // An oven already hot skips its heating step: count it as passed, so
-          // the dish's later steps can be replayed after it.
-          const upTo = plan.upNow ? plan.steps.indexOf(plan.upNow) : plan.steps.length;
-          const passed = plan.steps.filter((s, k) => k < upTo && s.skipped && !s.done);
-          if (!passed.length) break;
-          change((cc) => { cc.done.push(...passed.map((s) => ({ slug: s.slug, step: s.step, at: t }))); });
-        }
+      const options = { ...settled(c), ...(c.part === "ahead" && { part: "ahead" }) };
+      for (let i = 0; i < 6; i++) {
+        plan = planLineup(lineup, recipes, { now: t, done: c.done, ...(c.current && { current: c.current }) }, options);
+        // An oven already hot skips its heating step: count it as passed, so
+        // the dish's later steps can be replayed after it.
+        const upTo = plan.upNow ? plan.steps.indexOf(plan.upNow) : plan.steps.length;
+        const passed = plan.steps.filter((s, k) => k < upTo && s.skipped && !s.done);
+        if (!passed.length) break;
+        change((cc) => { cc.done.push(...passed.map((s) => ({ slug: s.slug, step: s.step, at: t }))); });
       }
       if (cooking().first == null) change((cc) => { cc.first = dayLength(plan); });
       steps = cookSteps(plan, parentOf);

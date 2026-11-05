@@ -154,6 +154,22 @@ test("ends with one plate-up step, then the done screen with each dish's notes",
   await expect(page.getByRole("button", { name: /^Start cooking · about/ })).toBeVisible();
 });
 
+test("the part made ahead is re-planned as you go: a cake that goes in late comes out late", async ({ page }) => {
+  await onMenu(page, ["roast-chicken", "slow-cake"]);
+  await page.clock.install();
+  await page.goto("menu.html");
+  await page.getByRole("button", { name: /^Start Slow Cake/ }).click();
+  await next(page, 2);
+  await expect(cook(page)).toContainText("Wait about 15 minutes before the next step.");
+  // The oven's hot, but the cake goes in 45 minutes late: still two hours of
+  // baking from then.
+  await page.clock.fastForward("01:00:00");
+  await next(page);
+  await expect(instruction(page)).toHaveText("Bake low and slow.");
+  await next(page);
+  await expect(cook(page)).toContainText("Wait about 120 minutes before the next step.");
+});
+
 test("cooks the part made ahead on its own, and the menu then says it's made", async ({ page }) => {
   await onMenu(page, ["roast-chicken", "slow-cake"]);
   await page.clock.install();

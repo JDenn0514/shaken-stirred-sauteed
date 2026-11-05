@@ -344,6 +344,28 @@ describe("a dish that keeps part-way", () => {
       assert.deepEqual(today.steps, planLineup({ ...lineup, ahead: { pavlova: false } }, recipes).steps);
     });
 
+    test("cooking the part made ahead, it's re-planned from what's done and when, like the day", () => {
+      const lineup = { dishes: [{ slug: "potatoes" }, { slug: "pavlova" }] };
+      const options = { madeAhead: ["pavlova"], part: "ahead" };
+      const first = planLineup(lineup, recipes, {}, options);
+      assert.deepEqual(first.steps.map((s) => s.text), meringue);
+      assert.deepEqual(first.steps, planLineup(lineup, recipes).aheadOfTime.steps);
+      assert.equal(first.upNow.text, "Heat the oven to 200F");
+      // The oven on at 1 minute, but shaping the meringue ran long, to 40.
+      const done = [{ slug: "pavlova", step: 0, at: 1 }, { slug: "pavlova", step: 1, at: 40 }];
+      const late = planLineup(lineup, recipes, { now: 40, done }, options);
+      assert.ok(late.steps[1].done);
+      assert.equal(late.upNow.text, "Bake the meringue");
+      assert.equal(late.upNow.at, 40);
+      assert.equal(late.wait, 0);
+      assert.ok(late.minutes > first.minutes + 20, `still done after ${late.minutes} min (first ${first.minutes})`);
+      // In the oven at 40.5, and given 5 more minutes when its timer rang.
+      const longer = planLineup(lineup, recipes, { now: 130.5, done: [...done, { slug: "pavlova", step: 2, at: 40.5, waitUntil: 135.5 }] }, options);
+      assert.equal(longer.upNow.text, "Cool it in the oven with the door shut");
+      assert.equal(longer.upNow.at, 135.5);
+      assert.equal(longer.wait, 5);
+    });
+
     test("isn't asked about when it wouldn't save much", () => {
       assert.deepEqual(planLineup(dinner, DINNER).makeAhead, []);
     });
