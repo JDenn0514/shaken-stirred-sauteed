@@ -1168,6 +1168,7 @@ body.cooking > .site-nav { display: none; }
 .grid > li { position: relative; }
 .menu-tape { position: absolute; z-index: 1; top: -6px; right: 14px; transform: rotate(3deg); background: var(--lime); color: var(--on-lime); font: 500 .68rem/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; padding: 6px 9px; pointer-events: none; }
 .welcome .menu-link { margin: 14px auto 0; }
+.welcome .add-link { margin-top: 10px; }
 
 /* ===== Your menu (menu.html) =====
    The recipes you're cooking together. Empty, it invites a search; with
