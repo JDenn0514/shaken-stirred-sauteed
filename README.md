@@ -23,6 +23,10 @@ No frameworks and no build step: it's plain HTML, CSS, and JavaScript, served by
 
 ## Adding a recipe
 
+The quickest way is the intake, `intake.html` on the site: paste the recipe's text (from a photo, copy it with Live Text), answer its questions, check the preview, and copy the recipe file it gives you into `recipes/`. Then carry on from step 3. See `tools/intake/README.md`.
+
+By hand:
+
 1. Copy `recipes/_template.json` to `recipes/<recipe-name>.json`. Use lowercase letters, numbers, and dashes only, e.g. `brown-butter-cookies.json`.
 2. Fill it in. `category` must be `baking`, `cooking`, or `cocktails`. Times are in minutes.
 3. Rebuild the index (needs [Node.js](https://nodejs.org)):
@@ -153,7 +157,7 @@ Two alternative styles are kept in case you change your mind: `style-guides/fiel
 
 The site is on Cloudflare's free plan, at shaken-stirred-sauteed.com. Cloudflare publishes `main` a minute or two after every push.
 
-- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/index.js`), for the recipe editor's sign-in and saving, still to come.
+- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/index.js`), for the recipe editor's sign-in and saving (`docs/specs/recipe-editor-design.md`).
 - `.assetsignore` lists what isn't published: tests, notes, settings, `source-pdfs/` and the like. Anything new that isn't part of the site goes there.
 - The old address, jdenn0514.github.io/shaken-stirred-sauteed/, shows a "moved" page (`moved/`) that sends visitors to the same page here. It's published by the "Old address: moved page" GitHub workflow, run by hand.
 

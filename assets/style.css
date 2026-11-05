@@ -1322,3 +1322,45 @@ body.cooking > .site-nav { display: none; }
   .step-cue, .step-wait { color: #000; }
   a { color: #000; text-decoration: none; }
 }
+
+/* ---- Recipe intake (intake.html): paste a recipe, answer, check, copy ---- */
+.intake h1 { margin-top: 18px; }
+.intake-read { display: grid; gap: 14px; margin-top: 12px; }
+.intake-read > .btn { justify-self: start; }
+.intake-field { display: grid; gap: 5px; font-weight: 600; font-size: .95rem; }
+.intake-field.inline { display: inline-grid; margin: 6px 10px 6px 0; }
+.intake-field input, .intake-field textarea, .intake-field select, .intake-guess select {
+  font: inherit; font-weight: 400; color: var(--text); background: var(--surface);
+  border: 1px solid var(--rule-strong); border-radius: var(--radius-ctl); padding: 8px 10px; min-height: 40px; max-width: 100%;
+}
+.intake-field textarea { width: 100%; line-height: 1.45; }
+.intake-field input:focus-visible, .intake-field textarea:focus-visible, .intake-field select:focus-visible, .intake-guess select:focus-visible,
+.intake-part:focus-visible, .intake input[type="radio"]:focus-visible, .intake input[type="checkbox"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.intake-choice, .intake-ask { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 0; display: grid; gap: 6px; }
+.intake-choice legend, .intake-ask legend { font-weight: 600; padding: 0 4px; }
+.intake-ask { margin-top: 12px; background: var(--surface); }
+.intake-ask.answered { border-color: var(--section, var(--rule-strong)); }
+.intake-ask .btn { justify-self: start; display: inline-flex; margin-right: 8px; }
+.intake-option { display: flex; gap: 8px; align-items: baseline; }
+.intake-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.intake-primary:disabled { opacity: .5; cursor: not-allowed; }
+.intake-problem { color: var(--baking); font-weight: 600; margin: 4px 0; }
+.intake-done { color: var(--cooking); font-weight: 600; margin: 2px 0 0; }
+.intake-preview { border-top: 0; }
+.intake-title { margin-top: 10px; font-size: 2rem; }
+.intake-part {
+  font: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 2px 0; cursor: pointer;
+  text-decoration: underline dotted var(--muted); text-underline-offset: 4px;
+}
+.intake-ingredients { list-style: none; margin: 0 0 10px; padding: 0; }
+.intake-ingredients > li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.intake-steps > li { cursor: default; }
+.intake-guess { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 0; font-size: .92rem; color: var(--muted); }
+.intake-guess .btn { min-height: 34px; padding: 0 12px; font-size: .86rem; }
+.intake-flag { margin: 6px 0 0; font-size: .92rem; color: var(--baking); }
+.intake-edit { display: grid; gap: 10px; padding: 10px 0; }
+.intake-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.intake-holds { margin-top: 18px; }
+.intake-holds select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+.intake-field { min-width: 0; }
+.intake-finish code, .intake-checks code { font-family: var(--mono); font-size: .9em; overflow-wrap: anywhere; }
