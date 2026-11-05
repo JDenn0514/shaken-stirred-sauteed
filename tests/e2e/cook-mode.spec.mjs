@@ -367,6 +367,9 @@ test.describe("timers", () => {
     await toBake(page);
     await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
     await page.reload();
+    // The page loads the recipe after it loads, and the clock stands still, so
+    // wait until the timer is back on screen before letting time pass.
+    await expect(timer(page, "Step 2")).toContainText("15:00");
     await page.clock.runFor(15 * 60_000 + 3000);
     await expect(timer(page, "Step 2")).toContainText("Pale gold at the edges");
     expect((await alarm(page)).buzzes).toBeGreaterThan(0);
