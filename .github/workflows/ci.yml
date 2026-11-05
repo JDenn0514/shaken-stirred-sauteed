@@ -50,6 +50,10 @@ jobs:
   browser:
     name: Browser tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
+    # A group takes 2 to 4 minutes. Without a limit, a stuck install (apt
+    # hanging on a slow mirror) waits out GitHub's 6-hour default; this way it
+    # fails fast and can be re-run.
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
