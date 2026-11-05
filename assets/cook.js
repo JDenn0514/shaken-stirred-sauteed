@@ -292,16 +292,7 @@ window.SSSCook = (() => {
       save(progress); onChange();
     });
 
-    // Swipe left for the next step, right to go back (touch and pen only, so
-    // selecting text with a mouse never moves you).
-    let down = null;
-    el.addEventListener("pointerdown", (e) => { down = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY }; });
-    el.addEventListener("pointerup", (e) => {
-      if (!down) return;
-      const dx = e.clientX - down.x, dy = e.clientY - down.y;
-      down = null;
-      if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) dx < 0 ? goNext() : goBack();
-    });
+    onSwipe(el, goNext, goBack);
 
     // Keep the screen awake while cook mode is open (where supported).
     let lock = null, closed = false;
@@ -347,8 +338,21 @@ window.SSSCook = (() => {
     return { progress, save };
   }
 
+  // Swipe left for the next step, right to go back (touch and pen only, so
+  // selecting text with a mouse never moves you). Both cook modes use it.
+  function onSwipe(el, left, right) {
+    let down = null;
+    el.addEventListener("pointerdown", (e) => { down = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY }; });
+    el.addEventListener("pointerup", (e) => {
+      if (!down) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      down = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) (dx < 0 ? left : right)();
+    });
+  }
+
   return {
-    open, startLabel, linkIngredients, tickIngredient, progressFor,
+    open, startLabel, linkIngredients, tickIngredient, progressFor, onSwipe,
     // For the menu's cook mode (menu-cook.mjs), which shares the timers and the look.
     ingredientRow, isTicked, tickUse, waitMinutes, fmtLength, loadTimers, saveTimers, msLeft, clock, timeOfDay, beep, unlockAudio,
   };

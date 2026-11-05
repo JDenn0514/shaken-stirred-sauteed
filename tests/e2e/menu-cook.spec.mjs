@@ -55,6 +55,24 @@ test("Next step marks the step done on the recipe's own page too, and Back undoe
   expect((await progressOf(page, "herb-butter")).steps).toEqual([]);
 });
 
+test("swiping moves forward and back, with touch but not a mouse", async ({ page }) => {
+  await start(page);
+  await next(page);
+  const swipe = async (dx, pointerType = "touch") => {
+    const box = await cook(page).boundingBox();
+    const y = box.y + box.height / 2, x = box.x + box.width / 2;
+    await cook(page).dispatchEvent("pointerdown", { pointerType, isPrimary: true, clientX: x, clientY: y });
+    await cook(page).dispatchEvent("pointerup", { pointerType, isPrimary: true, clientX: x + dx, clientY: y + 5 });
+  };
+  await swipe(-120);
+  await expect(instruction(page)).toHaveText("Mash the parsley into the butter.");
+  await swipe(120);
+  await expect(instruction(page)).toHaveText("Chop the parsley.");
+  // Dragging a mouse (selecting text) never moves you.
+  await swipe(-120, "mouse");
+  await expect(instruction(page)).toHaveText("Chop the parsley.");
+});
+
 test("✕ goes back to the menu, which offers to carry on; reloading keeps you cooking", async ({ page }) => {
   await start(page);
   await next(page, 2);

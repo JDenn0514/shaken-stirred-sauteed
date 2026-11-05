@@ -394,6 +394,7 @@ export function openCook({ planMenu, onClose }) {
     else if (b.hasAttribute("data-own-timer")) { startTimer(steps[curIndex()]); paint(); }
     else if (b.dataset.timer) { C.unlockAudio(); changeTimer(b.dataset.timer, b.dataset.how); }
   });
+  C.onSwipe(el, () => ready && goNext(), () => ready && goBack());
   el.addEventListener("change", (e) => {
     if (!e.target.matches("[data-use]")) return;
     const s = steps[curIndex()], r = recipes[s.slug];

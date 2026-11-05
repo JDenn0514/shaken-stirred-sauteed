@@ -383,14 +383,13 @@ Jacob checks it at four points, each before the next stage starts:
 
 ## State of the build (2026-11-05, branch `lineup-pages`)
 
-Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up and plating up.
+Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up, plating up, and swiping between steps (the same handling as single-recipe cook mode: touch or pen only, left for Next step, right for Back).
 
 How it's kept fast: while cooking, the make-ahead choice is settled and the planner skips weighing it (`planLineup`'s `options.madeAhead`). With Chrome slowed to a phone's speed (6x), Next step takes about 0.2 to 0.5 seconds for the steak dinner with the pavlova, curd and blueberry cream. The menu page plans in a Web Worker and draws the card at once (about 0.6 seconds at 6x). The estimate follows a few seconds later on a slow phone, and the page stays usable meanwhile.
 
 Not built yet:
 
 - The prep-first or as-written toggle for a single recipe (recipe page and its cook mode), and its accessibility states.
-- Swiping between steps in menu cook mode (Back and Next step work; single-recipe cook mode swipes).
 - A choice between recipes on one ingredient (`recipe` as a list): such a link is ignored for now. No recipe uses one yet.
 - The part made ahead keeps its first order rather than re-planning as you go: it has no serve time to keep.
 - Starting the made-ahead part while the day's plan is under way (or the other way round) starts that part afresh: only one is cooked at a time.
