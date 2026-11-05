@@ -157,7 +157,16 @@ Two alternative styles are kept in case you change your mind: `style-guides/fiel
 
 The site is on Cloudflare's free plan, at shaken-stirred-sauteed.com. Cloudflare publishes `main` a minute or two after every push.
 
-- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/index.js`), for the recipe editor's sign-in and saving (`docs/specs/recipe-editor-design.md`).
+- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/src/`), for the recipe editor's sign-in and saving (`docs/specs/recipe-editor-design.md`).
+- The Worker is its own small program in `worker/`, with its own `package.json` (Better Auth for signing in). It's an npm workspace, so `npm install` at the top installs it too, and Cloudflare installs and bundles it when it deploys.
+- **Signing in** is with GitHub, through a GitHub App installed only on this repo: the "Sign in" link in every page's footer. Anyone can sign in, but only an account that can push to this repo can edit the site. Its users, sessions and GitHub tokens (encrypted) are in a D1 database, `shaken-stirred-sauteed-auth`. Its secrets (`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `BETTER_AUTH_SECRET`) are set in Cloudflare's dashboard, never in the repo. It only works on shaken-stirred-sauteed.com: branch previews can't sign in, since GitHub only sends you back to the real address.
+- **The database's tables** are made by the files in `worker/migrations/`. A new one is applied once, from a computer signed in to Cloudflare (`npx wrangler login`), before the change that needs it is merged:
+
+  ```sh
+  npx wrangler d1 migrations apply shaken-stirred-sauteed-auth --remote
+  ```
+
+  When Better Auth is updated or its settings change, `node worker/scripts/auth-schema.mjs` prints the SQL for the next migration (the Worker's tests fail until it's added).
 - `.assetsignore` lists what isn't published: tests, notes, settings, `source-pdfs/` and the like. Anything new that isn't part of the site goes there.
 - The old address, jdenn0514.github.io/shaken-stirred-sauteed/, shows a "moved" page (`moved/`) that sends visitors to the same page here. It's published by the "Old address: moved page" GitHub workflow, run by hand.
 
@@ -170,7 +179,7 @@ python3 -m http.server 8000
 
 ## Tests
 
-The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only: the site itself still has no dependencies.
+The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only: the site itself still has no dependencies. (The Worker in `worker/` has its own, installed by the same `npm install`.)
 
 ```sh
 npm install                      # once
@@ -178,8 +187,9 @@ npx playwright install webkit    # once, and again when Playwright updates
 npm test
 ```
 
-- `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, and the tests in `tests/unit/`. After `npm install` it also runs before every `git push`, and stops the push if something fails.
+- `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, the tests in `tests/unit/` and the Worker's tests. After `npm install` it also runs before every `git push`, and stops the push if something fails.
 - `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`, whose checks live in `assets/recipe-checks.js` so the editor can share them): what it rejects, what it warns about, and what it writes into the index, and that patching one recipe's entry into the index gives the same index as a full rebuild. It also checks the link checker, the lineup planner (`assets/planner.mjs`) and what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`).
+- `worker/test/` tests the Worker (`npm run test:worker`) with Vitest in Cloudflare's real Workers runtime, with a local D1 database and a fake GitHub: signing in and out, the cookies it sets, where sign-in may send you back to, who's signed in and whether they can edit, renewing GitHub's 8-hour token, and that the migrations make every table Better Auth needs.
 - `tests/e2e/` opens the site in Chrome and again in WebKit, the engine behind Safari and every browser on an iPhone. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
@@ -187,6 +197,7 @@ npm test
   - prep first or as written: the order of a recipe's steps on its page and in cook mode, and that progress follows the step either way
   - your menu: adding dishes, the menu card and its choices, the questions it asks, the links from other pages, and cooking a menu (waits, timers and what follows them, plating up, the part made ahead)
   - light and dark mode
+  - signing in and out from the footer, with the Worker faked
   - an automated accessibility scan of every page in both modes
 
 GitHub Actions runs all of them on every pull request and every push to main (`.github/workflows/ci.yml`). The quick checks and the browser tests run side by side, and the browser tests are split across several machines, so a run takes about as long as one slice of the browser tests. Dependabot opens a pull request when the test tools or the GitHub Actions have a new version.

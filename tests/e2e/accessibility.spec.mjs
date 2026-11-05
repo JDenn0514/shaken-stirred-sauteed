@@ -139,7 +139,25 @@ const PAGES = [
     await page.getByRole("button", { name: "Copy recipe" }).click();
     await expect(page.getByLabel("Recipe file")).toBeVisible();
   }],
+  ["recipe page signed in, with Sign out in the footer", "recipe.html?r=pork-carnitas",
+    (page) => expect(page.getByRole("contentinfo").getByRole("button", { name: "Sign out" })).toBeVisible(), null, signedIn()],
+  ["recipe intake signed in to an account that can't edit the site", "intake.html",
+    (page) => expect(page.getByRole("contentinfo")).toContainText("This account can't edit this site."), null,
+    signedIn((page) => page.route("**/api/me", (route) => route.fulfill({ json: { name: "A Friend", canEdit: false } })))],
+  ["index page after a sign-out that failed", "recipes.html", async (page) => {
+    await page.getByRole("contentinfo").getByRole("button", { name: "Sign out" }).click();
+    await expect(page.getByRole("contentinfo").getByRole("status")).not.toBeEmpty();
+  }, null, signedIn((page) => page.route("**/api/signout", (route) => route.abort("internetdisconnected")))],
 ];
+
+// Signed in: the hint cookie the Worker sets (/api/ is faked by the fixture),
+// then anything else the page needs faked.
+function signedIn(more = () => {}) {
+  return async (page) => {
+    await page.context().addCookies([{ name: "signed-in", value: "1", url: test.info().project.use.baseURL }]);
+    await more(page);
+  };
+}
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }
 function cookButton(page, name) { return cook(page).getByRole("button", { name, exact: true }); }
@@ -171,9 +189,10 @@ for (const scheme of ["light", "dark"]) {
   test.describe(`${scheme} mode`, () => {
     test.use({ colorScheme: scheme });
 
-    for (const [name, url, ready, menu] of PAGES) {
+    for (const [name, url, ready, menu, before] of PAGES) {
       test(`${name} has no detectable accessibility problems`, async ({ page }) => {
         if (menu) await onMenu(page, menu);
+        if (before) await before(page);
         await page.goto(url);
         await ready(page);
         const { violations } = await new AxeBuilder({ page })

@@ -2,6 +2,8 @@
 // - the page only ever talks to the local test server; requests anywhere else are blocked
 // - the site loads a small, fixed set of test recipes instead of the real ones, so tests
 //   don't break when recipes are added. The index is built by the real build script.
+// - /api/ (the Worker: sign-in) is faked: signed out, unless a test answers
+//   it with its own page.route (see tests/e2e/sign-in.spec.mjs)
 // - the page makes no sound
 import { test as base, expect } from "@playwright/test";
 import { buildIndex, recipe } from "../helpers/build-index.mjs";
@@ -219,6 +221,7 @@ export const test = base.extend({
     await page.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.origin !== origin) return route.abort("blockedbyclient");
+      if (url.pathname.startsWith("/api/")) return route.fulfill({ status: 401, json: { error: "Sign in first." } });
       if (testRecipes) {
         if (url.pathname.endsWith("/recipes/index.json")) return route.fulfill({ json: INDEX });
         const slug = /\/recipes\/([a-z0-9-]+)\.json$/.exec(url.pathname)?.[1];

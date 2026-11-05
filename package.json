@@ -1,7 +1,7 @@
 {
   "name": "shaken-stirred-sauteed",
   "private": true,
-  "description": "Dev-only: the site itself has no build step and no dependencies. This file just holds the test tools.",
+  "description": "Dev-only for the site, which has no build step and no dependencies: this file holds the test tools. The Worker (worker/) is an npm workspace with its own package.json.",
   "scripts": {
     "test": "npm run check && npm run test:e2e",
     "test:unit": "node --test \"tests/unit/*.test.mjs\"",
@@ -9,12 +9,17 @@
     "lint": "oxlint",
     "check:links": "node scripts/check-links.mjs",
     "check:recipes": "node scripts/build-index.mjs && git diff --exit-code --stat recipes/index.json",
-    "check": "npm run lint && npm run check:links && npm run check:recipes && npm run test:unit",
-    "prepare": "git config core.hooksPath .githooks"
+    "check": "npm run lint && npm run check:links && npm run check:recipes && npm run test:unit && npm run test:worker",
+    "prepare": "git config core.hooksPath .githooks",
+    "test:worker": "npm test --workspace worker"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
-    "oxlint": "^1.90.0"
-  }
+    "oxlint": "^1.90.0",
+    "wrangler": "4.157.0"
+  },
+  "workspaces": [
+    "worker"
+  ]
 }
