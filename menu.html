@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Your menu · Shaken, Stirred &amp; Sautéed</title>
+  <meta name="theme-color" content="#f3f4f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 40 48" width="27" height="32" aria-hidden="true" focusable="false"><rect class="lg-sheet" x="2.5" y="2.5" width="35" height="43" rx="3" fill="#FDFDFC" stroke="#111715" stroke-width="2.2"/><path class="lg-stem" d="M18.4 41C19.8 32 20.8 22 21 13.6" fill="none" stroke="#111715" stroke-width="2" stroke-linecap="round"/><path class="lg-b" d="M19.6 31C19.55 26.47 14.99 24.29 10.51 25.75C11.48 30.36 15.65 33.22 19.6 31ZM19.6 31C23.63 33.08 27.69 30.08 28.5 25.44C23.97 24.13 19.49 26.47 19.6 31Z" fill="#bf440f"/><path class="lg-c" d="M20.4 22.5C21.07 18.76 17.7 16.36 13.81 16.97C13.88 20.91 16.83 23.81 20.4 22.5ZM20.4 22.5C24.01 23.69 26.86 20.68 26.79 16.75C22.89 16.26 19.6 18.78 20.4 22.5Z" fill="#00512f"/><path class="lg-k" d="M20.9 13.4C23.11 12.01 22.69 9.35 20.51 7.81C18.56 9.63 18.52 12.33 20.9 13.4Z" fill="#0056bd"/><rect class="lg-tape" x="11.5" y="33.6" width="15" height="5.2" transform="rotate(-9 19 36.2)" fill="#CADD4C"/></svg>
+      <span class="brand-name">Shaken, Stirred <span class="amp">&amp;</span> Sautéed</span>
+    </a>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light and dark mode"></button>
+  </header>
+  <nav class="site-nav" aria-label="Site">
+    <a href="recipes.html">Recipes</a>
+    <a href="menu.html" aria-current="page" id="nav-menu">Menu<span class="nav-count"></span><span class="visually-hidden nav-count-name"></span></a>
+  </nav>
+
+  <main class="container menu-page" id="menu">
+    <div id="menu-top"></div>
+    <label class="search" id="menu-search" hidden>
+      <span class="visually-hidden">Search recipes</span>
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="search" type="search" placeholder="Search recipes to add…" autocomplete="off">
+    </label>
+    <div id="menu-body"><p class="loading">Loading…</p></div>
+    <div class="menu-peek-host" id="menu-peek-host" hidden></div>
+  </main>
+
+  <script src="assets/common.js"></script>
+  <script src="assets/recipe-icons.js"></script>
+  <script src="assets/cook.js"></script>
+  <script src="assets/menu-store.js"></script>
+  <script src="assets/menu-peek.js"></script>
+  <script type="module" src="assets/menu.mjs"></script>
+</body>
+</html>

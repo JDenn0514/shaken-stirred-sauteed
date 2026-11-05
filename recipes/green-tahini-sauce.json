@@ -21,6 +21,7 @@
       "5 min"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 5
   },
@@ -47,7 +48,8 @@
     },
     {
       "qty": "2 to 3 slices",
-      "item": "jalapeño (optional)"
+      "item": "jalapeño (optional)",
+      "optional": true
     },
     {
       "qty": "1/2 to 1 tsp",
@@ -72,13 +74,15 @@
           "item": "salt, starting with 1/2 tsp",
           "amount": "1/2 tsp"
         }
-      ]
+      ],
+      "hands": "2 min"
     },
     {
       "do": "It will look far too thin. Add the tahini and blend until creamy and it thickens, leaving flecks of herb.",
       "uses": [
         "tahini, stirred"
-      ]
+      ],
+      "hands": "1 min"
     },
     {
       "do": "Taste and adjust salt, lemon and chile. Loosen with a little more water if you want a pourable sauce.",
@@ -87,7 +91,8 @@
           "item": "salt, starting with 1/2 tsp",
           "amount": "up to 1/2 tsp more, to taste"
         }
-      ]
+      ],
+      "hands": "1 min"
     }
   ],
   "notes": [

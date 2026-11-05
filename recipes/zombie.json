@@ -62,7 +62,8 @@
     },
     {
       "qty": "1 tsp",
-      "item": "Grenadine"
+      "item": "Grenadine",
+      "recipe": "grenadine"
     },
     {
       "qty": "1 dash",
@@ -70,6 +71,15 @@
     }
   ],
   "steps": [
+    {
+      "do": "Squeeze the lime juice.",
+      "hands": "1 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Lime juice"
+      ]
+    },
     {
       "do": "Blend everything with about 1 cup of ice for about 5 seconds, just long enough to chill and froth.",
       "wait": "About 5 sec",
@@ -84,16 +94,21 @@
         "Falernum syrup",
         "Grenadine",
         "Angostura bitters"
-      ]
+      ],
+      "hands": "30 sec",
+      "watch": true
     },
     {
-      "do": "No blender? Shake everything hard in a tin with ice instead."
+      "do": "No blender? Shake everything hard in a tin with ice instead.",
+      "hands": "30 sec"
     },
     {
-      "do": "Dump it all into the glass, ice included. No straining."
+      "do": "Dump it all into the glass, ice included. No straining.",
+      "hands": "30 sec"
     },
     {
-      "do": "Top up with more ice if the glass isn’t full, then add the mint sprig."
+      "do": "Top up with more ice if the glass isn’t full, then add the mint sprig.",
+      "hands": "30 sec"
     }
   ],
   "notes": [
@@ -117,5 +132,7 @@
   },
   "time": {
     "total": 5
-  }
+  },
+  "serve": "soon",
+  "sits": "5 min"
 }

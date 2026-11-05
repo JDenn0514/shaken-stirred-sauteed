@@ -159,7 +159,9 @@
       r.yield ? `🍽 ${esc(r.yield)}` : "",
     ].filter(Boolean).map((m) => `<span>${m}</span>`).join("");
     const icon = r.icon ? ` data-icon="${esc(r.icon)}"` : "";
-    return `<li><a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}"${icon}>
+    // A recipe on your menu gets lime tape reading "On your menu".
+    const onMenu = window.SSSMenu && window.SSSMenu.has(r.slug) ? `<span class="menu-tape">On your menu</span>` : "";
+    return `<li>${onMenu}<a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}"${icon}>
       ${r.image ? `<img class="card-img" src="${esc(r.image)}" alt="" loading="lazy">` : ""}
       <div class="card-body">
         ${r.icon ? `<span class="card-icon" aria-hidden="true"></span>` : ""}
@@ -240,6 +242,8 @@
       }
       prune();
       render();
+      // Your menu, beside the recipes (or behind a button on a phone).
+      if (window.SSSMenuPeek) window.SSSMenuPeek.render($("menu-peek-host"), recipes);
     })
     .catch((err) => {
       els.empty.hidden = false;

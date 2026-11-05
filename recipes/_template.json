@@ -6,14 +6,23 @@
   "added": "2026-10-31",
   "yield": "4 servings",
   "time": { "prep": 15, "cook": 30 },
+  "serve": "hot",
+  "sits": "10 min",
   "image": "",
   "ingredients": [
     "1 tbsp olive oil",
-    { "group": "For the sauce", "items": ["2 cloves garlic, minced", "1 can (28 oz) crushed tomatoes"] }
+    { "group": "For the sauce", "items": [
+      { "qty": "1 tsp", "item": "garlic paste", "recipe": "garlic-paste" },
+      { "qty": "1 small", "item": "onion", "note": "diced" },
+      "1 can (28 oz) crushed tomatoes",
+      { "qty": "2 tbsp", "item": "chimichurri", "note": "optional", "recipe": "chimichurri-sauce", "optional": true }
+    ] }
   ],
   "steps": [
-    { "do": "Warm the oil and cook the garlic.", "wait": "1 min", "cue": "Fragrant, not brown", "uses": ["1 tbsp olive oil", "2 cloves garlic, minced"] },
-    { "do": "Add the tomatoes and simmer.", "wait": "20 min", "uses": ["1 can (28 oz) crushed tomatoes"] }
+    { "do": "Dice the onion.", "hands": "3 min", "prep": true, "prepOnly": true, "uses": ["onion"] },
+    { "do": "Warm the oil in a saucepan and cook the onion and garlic paste.", "hands": "1 min", "wait": "5 min", "watch": true, "burner": true, "cue": "Soft, not brown", "uses": ["1 tbsp olive oil", "onion", "garlic paste"] },
+    { "do": "Add the tomatoes and simmer.", "hands": "1 min", "wait": "20 min", "burner": true, "uses": ["1 can (28 oz) crushed tomatoes"] },
+    { "do": "Spoon over the chimichurri, if using.", "hands": "30 sec", "uses": ["chimichurri"] }
   ],
   "notes": ["Optional tips, substitutions, or what you'd change next time."],
   "source": { "name": "Where it came from", "url": "" }

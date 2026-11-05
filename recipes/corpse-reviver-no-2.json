@@ -54,29 +54,44 @@
   ],
   "steps": [
     {
+      "do": "Chill the coupe, and load the atomiser with absinthe. Squeeze the lemon juice.",
+      "hands": "2 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Lemon juice",
+        "Absinthe"
+      ]
+    },
+    {
       "do": "Add everything except the absinthe to the shaker tin.",
       "uses": [
         "Gin",
         "Cocchi Americano or Lillet Blanc",
         "Curaçao or other orange liqueur",
         "Lemon juice"
-      ]
+      ],
+      "hands": "1 min"
     },
     {
       "do": "Fill with ice and shake hard.",
-      "cue": "Tin frosted over"
+      "cue": "Tin frosted over",
+      "hands": "30 sec"
     },
     {
       "do": "Mist the chilled coupe with absinthe, so it scents the drink without taking over.",
       "uses": [
         "Absinthe"
-      ]
+      ],
+      "hands": "30 sec"
     },
     {
-      "do": "Double strain into the glass through the Hawthorne and a fine strainer."
+      "do": "Double strain into the glass through the Hawthorne and a fine strainer.",
+      "hands": "30 sec"
     },
     {
-      "do": "Fold the twist over the surface to spray its oils, then drop it in."
+      "do": "Fold the twist over the surface to spray its oils, then drop it in.",
+      "hands": "30 sec"
     }
   ],
   "notes": [
@@ -99,5 +114,7 @@
   },
   "time": {
     "total": 5
-  }
+  },
+  "serve": "soon",
+  "sits": "5 min"
 }

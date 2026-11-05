@@ -2,7 +2,7 @@
 // page's URL ends in #cook while it's open) and shares the recipe's saved
 // progress with it, so ticks and finished steps show in both views.
 window.SSSCook = (() => {
-  const { esc, toGroups } = window.SSS;
+  const { esc, toGroups, stepOrder } = window.SSS;
 
   const START = { baking: "Start baking", cooking: "Start cooking", cocktails: "Start mixing" };
   const startLabel = (r) => START[r.category] || "Start cooking";
@@ -131,7 +131,12 @@ window.SSSCook = (() => {
   // repaints the recipe page.
   function open(opts) {
     const { recipe: r, slug, progress, save, onChange, onClose } = opts;
-    const steps = toGroups(r.steps).flatMap((g) => g.items.map((s) => ({ group: g.group, ...(typeof s === "string" ? { do: s } : s) })));
+    // steps are in file order (progress and timers use that place); order is
+    // the order they're shown in, prep first or as written (SSS.stepOrder),
+    // with each one's group: [{ i, group }].
+    const steps = toGroups(r.steps).flatMap((g) => g.items.map((s) => (typeof s === "string" ? { do: s } : s)));
+    const order = stepOrder(r, window.SSSMenu ? window.SSSMenu.prepFirst() : true).steps;
+    const shownAt = (i) => order.findIndex((x) => x.i === i);
     const before = r.beforeYouStart || [];
     const notes = toGroups(r.notes);
     const ings = toGroups(r.ingredients).flatMap((g) => g.items);
@@ -144,7 +149,8 @@ window.SSSCook = (() => {
     document.body.classList.add("cooking");
 
     const isDone = (i) => progress.steps.includes(i);
-    const current = () => steps.findIndex((_, i) => !isDone(i));
+    // Where you are: the first step not done, in the order shown (its place in the file).
+    const current = () => order.find((x) => !isDone(x.i))?.i ?? -1;
     const view = () => {
       if (current() < 0) return "done";
       return before.length && !progress.started && !progress.steps.length ? "intro" : "step";
@@ -160,7 +166,7 @@ window.SSSCook = (() => {
     }
     function goBack() {
       const v = view();
-      const prev = v === "done" ? steps.length - 1 : current() - 1;
+      const prev = v === "done" ? order[order.length - 1]?.i ?? -1 : order[shownAt(current()) - 1]?.i ?? -1;
       if (v === "intro") return;
       if (prev >= 0) progress.steps = progress.steps.filter((i) => i !== prev);
       else if (before.length) progress.started = false;
@@ -174,10 +180,10 @@ window.SSSCook = (() => {
       </button>` : "";
 
     function paint() {
-      const v = view(), i = current(), s = steps[i];
+      const v = view(), i = current(), s = steps[i], at = shownAt(i), group = order[at]?.group;
       const label = v === "intro" ? "Before you start" : v === "done" ? "All done"
-        : `${s.group ? `${s.group} · ` : ""}Step ${i + 1} of ${steps.length}`;
-      const bar = steps.map((_, k) => `<i class="${isDone(k) ? "done" : k === i ? "now" : ""}"></i>`).join("");
+        : `${group ? `${group} · ` : ""}Step ${at + 1} of ${order.length}`;
+      const bar = order.map(({ i: k }) => `<i class="${isDone(k) ? "done" : k === i ? "now" : ""}"></i>`).join("");
 
       let body;
       if (v === "intro") {
@@ -195,8 +201,8 @@ window.SSSCook = (() => {
           ${s.wait ? `<p class="cook-wait" data-testid="wait"><span>⏱ ${esc(s.wait)}</span>${timerButton(i, s)}</p>` : ""}
           ${s.cue ? `<p class="cook-cue" data-testid="cue">✓ ${esc(s.cue)}</p>` : ""}`;
       }
-      const after = v === "intro" ? steps[0] : v === "step" ? steps[i + 1] : null;
-      const canBack = v === "done" || (v === "step" && (i > 0 || before.length > 0));
+      const after = v === "intro" ? steps[order[0]?.i] : v === "step" ? steps[order[at + 1]?.i] : null;
+      const canBack = v === "done" || (v === "step" && (at > 0 || before.length > 0));
 
       el.innerHTML = `
         <div class="cook-top">
@@ -209,7 +215,7 @@ window.SSSCook = (() => {
         ${upNextHTML(after)}
         <div class="cook-nav">
           <button class="btn cook-back" type="button" ${canBack ? "" : "disabled"}>Back</button>
-          ${v === "done" ? "" : `<button class="btn cook-go" type="button">${v === "step" && i === steps.length - 1 ? "Finish" : "Next step"}</button>`}
+          ${v === "done" ? "" : `<button class="btn cook-go" type="button">${v === "step" && at === order.length - 1 ? "Finish" : "Next step"}</button>`}
         </div>
         <p class="visually-hidden" aria-live="polite">${esc(label)}${v === "step" ? `: ${esc(s.do)}` : ""}</p>
         <p class="visually-hidden cook-alert" aria-live="assertive"></p>`;
@@ -242,6 +248,8 @@ window.SSSCook = (() => {
       paint();
     }
 
+    // A timer on this recipe is named by its step's number in the order shown.
+    const shownNumber = (i) => (shownAt(i) >= 0 ? shownAt(i) : i) + 1;
     // The strip is redrawn only when a timer starts, stops, pauses or rings;
     // otherwise just its time changes, so buttons keep their focus.
     let shown = null, rang = new Set();
@@ -255,7 +263,7 @@ window.SSSCook = (() => {
         shown = key;
         box.innerHTML = timers.map((t) => {
           const here = t.slug === slug, st = state(t);
-          const name = here ? `Step ${t.step + 1}` : `${t.title}, step ${t.step + 1}`;
+          const name = here ? `Step ${shownNumber(t.step)}` : `${t.title}, step ${t.step + 1}`;
           const where = here ? esc(name) : `<a href="recipe.html?r=${encodeURIComponent(t.slug)}#cook">${esc(t.title)}</a> · step ${t.step + 1}`;
           const actions = st === "ringing"
             ? `<button class="btn" type="button" data-timer="${esc(t.id)}" data-how="more">+2 min</button><button class="btn" type="button" data-timer="${esc(t.id)}" data-how="stop">Stop</button>`
@@ -277,7 +285,7 @@ window.SSSCook = (() => {
       for (const t of ringing) if (!rang.has(t.id)) {
         rang.add(t.id);
         const alert = el.querySelector(".cook-alert");
-        if (alert) alert.textContent = `Time's up: ${t.slug === slug ? "" : `${t.title}, `}step ${t.step + 1}. ${t.cue}`;
+        if (alert) alert.textContent = `Time's up: ${t.slug === slug ? "" : `${t.title}, `}step ${t.slug === slug ? shownNumber(t.step) : t.step + 1}. ${t.cue}`;
       }
       rang = new Set([...rang].filter((id) => ringing.some((t) => t.id === id)));
       return ringing.length > 0;
@@ -307,16 +315,7 @@ window.SSSCook = (() => {
       save(progress); onChange();
     });
 
-    // Swipe left for the next step, right to go back (touch and pen only, so
-    // selecting text with a mouse never moves you).
-    let down = null;
-    el.addEventListener("pointerdown", (e) => { down = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY }; });
-    el.addEventListener("pointerup", (e) => {
-      if (!down) return;
-      const dx = e.clientX - down.x, dy = e.clientY - down.y;
-      down = null;
-      if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) dx < 0 ? goNext() : goBack();
-    });
+    onSwipe(el, goNext, goBack);
 
     // Keep the screen awake while cook mode is open (where supported).
     let lock = null, closed = false;
@@ -345,5 +344,40 @@ window.SSSCook = (() => {
     };
   }
 
-  return { open, startLabel, linkIngredients, tickIngredient };
+  // A recipe's saved progress ("sss:progress:<slug>"), kept only while the
+  // recipe's ingredients and steps are the same shape as when it was saved
+  // (progress is saved by position). Used by the recipe page and the menu.
+  function progressFor(r, slug) {
+    const KEY = `sss:progress:${slug}`;
+    const shape = JSON.stringify([
+      toGroups(r.ingredients).flatMap((g) => g.items.map((i) => (typeof i === "string" ? i : i.item))),
+      toGroups(r.steps).reduce((n, g) => n + g.items.length, 0),
+    ]);
+    let fp = 0;
+    for (const ch of shape) fp = (fp * 31 + ch.charCodeAt(0)) | 0;
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
+    const progress = Object.assign({ ing: [], steps: [] }, saved.fp == null || saved.fp === fp ? saved : {}, { fp });
+    const save = (p = progress) => { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch {} };
+    return { progress, save };
+  }
+
+  // Swipe left for the next step, right to go back (touch and pen only, so
+  // selecting text with a mouse never moves you). Both cook modes use it.
+  function onSwipe(el, left, right) {
+    let down = null;
+    el.addEventListener("pointerdown", (e) => { down = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY }; });
+    el.addEventListener("pointerup", (e) => {
+      if (!down) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      down = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) (dx < 0 ? left : right)();
+    });
+  }
+
+  return {
+    open, startLabel, linkIngredients, tickIngredient, progressFor, onSwipe,
+    // For the menu's cook mode (menu-cook.mjs), which shares the timers and the look.
+    ingredientRow, isTicked, tickUse, waitMinutes, fmtLength, loadTimers, saveTimers, msLeft, clock, timeOfDay, beep, unlockAudio,
+  };
 })();

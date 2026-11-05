@@ -25,6 +25,7 @@
       "8 1/2 hours"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 510
   },
@@ -62,27 +63,33 @@
         "cinnamon sticks (or 1 tbsp ground cinnamon)",
         "ground cloves (or 2 tsp whole cloves)",
         "granulated sugar (75 g), or to taste"
-      ]
+      ],
+      "hands": "10 min"
     },
     {
       "do": "Pour in water until the fruit is just covered. Any more dilutes the flavor.",
       "uses": [
         "water, just enough to cover"
-      ]
+      ],
+      "hands": "1 min"
     },
     {
       "do": "Cover and cook on low for 6 to 7 hours (the better option) or on high for 4 hours, until the fruit is very soft.",
-      "wait": "6 to 7 hr on low, or 4 hr on high"
+      "wait": "6 to 7 hr on low, or 4 hr on high",
+      "hands": "30 sec"
     },
     {
-      "do": "Fish out the cinnamon sticks, mash the fruit thoroughly with a potato masher or sturdy spoon, then return the sticks and cover."
+      "do": "Fish out the cinnamon sticks, mash the fruit thoroughly with a potato masher or sturdy spoon, then return the sticks and cover.",
+      "hands": "5 min"
     },
     {
       "do": "Cook 1 hour more on either setting.",
-      "wait": "1 hr"
+      "wait": "1 hr",
+      "hands": "30 sec"
     },
     {
-      "do": "Strain slowly through a fine-mesh sieve into a pot or heatproof pitcher, then strain a second time to catch the remaining solids. Serve warm."
+      "do": "Strain slowly through a fine-mesh sieve into a pot or heatproof pitcher, then strain a second time to catch the remaining solids. Serve warm.",
+      "hands": "5 min"
     }
   ],
   "notes": [

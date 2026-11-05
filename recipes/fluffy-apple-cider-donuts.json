@@ -18,7 +18,7 @@
   "heatLabel": "Oven",
   "beforeYouStart": [
     "Butter and eggs at room temperature. You need 2 sticks of butter in all: 10 Tbsp soft for the batter, 6 Tbsp melted for the coating.",
-    "Preheat to 350F and lightly grease both donut pans with nonstick spray.",
+    "Lightly grease both donut pans with nonstick spray.",
     "Stand mixer with the paddle attachment."
   ],
   "ingredients": [
@@ -75,7 +75,9 @@
         {
           "qty": "1/2 cup",
           "item": "Apple cider",
-          "note": "120 ml"
+          "note": "120 ml",
+          "recipe": "homemade-apple-cider",
+          "alreadyMade": true
         }
       ]
     },
@@ -105,6 +107,25 @@
       "group": "Batter",
       "items": [
         {
+          "do": "Heat the oven to 350°F (175°C).",
+          "hands": "30 sec",
+          "preheat": "350F"
+        },
+        {
+          "do": "Set the 10 Tbsp butter and the eggs out to come to room temperature, grate the nutmeg, and lightly grease both donut pans.",
+          "hands": "3 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [
+            {
+              "group": "Batter",
+              "item": "Unsalted butter"
+            },
+            "Eggs",
+            "Nutmeg"
+          ]
+        },
+        {
           "do": "Whisk the flour, baking powder, salt, 1 tsp cinnamon and the nutmeg in a medium bowl.",
           "uses": [
             "All-purpose flour",
@@ -115,7 +136,9 @@
               "group": "Batter"
             },
             "Nutmeg"
-          ]
+          ],
+          "hands": "2 min",
+          "prep": true
         },
         {
           "do": "In the mixer, beat the 10 Tbsp butter with the brown sugar and the 1/4 cup granulated sugar on medium for 3 to 4 minutes. The air beaten in here is what makes these lighter than a one-bowl donut.",
@@ -131,23 +154,28 @@
               "item": "Granulated sugar",
               "group": "Batter"
             }
-          ]
+          ],
+          "hands": "30 sec"
         },
         {
           "do": "Beat in the eggs one at a time, letting each mix in fully and scraping the bowl as needed. Beat in the vanilla.",
           "uses": [
             "Eggs",
             "Vanilla extract"
-          ]
+          ],
+          "hands": "3 min"
         },
         {
           "do": "On low, mix in the flour mixture until incorporated. With the mixer still running, pour in the cider in a slow, steady stream. Scrape the bowl well so the batter is even throughout.",
           "uses": [
             "Apple cider"
-          ]
+          ],
+          "hands": "2 min"
         },
         {
-          "do": "Spoon the batter into the pans, or pipe it from a zip-top bag with a 1/2-inch corner snipped off, filling each cavity about 2/3 full."
+          "do": "Spoon the batter into the pans, or pipe it from a zip-top bag with a 1/2-inch corner snipped off, filling each cavity about 2/3 full.",
+          "hands": "4 min",
+          "oven": false
         }
       ]
     },
@@ -157,7 +185,9 @@
         {
           "do": "Bake, rotating the pans halfway through.",
           "wait": "12 to 15 min",
-          "cue": "Evenly golden brown; a toothpick in the thickest part comes out clean"
+          "cue": "Evenly golden brown; a toothpick in the thickest part comes out clean",
+          "hands": "1 min",
+          "oven": "350F"
         },
         {
           "do": "While they bake, whisk the 1/2 cup sugar and 1 tsp cinnamon in a small bowl, and melt the 6 Tbsp butter in another.",
@@ -174,7 +204,9 @@
               "item": "Unsalted butter",
               "group": "Topping"
             }
-          ]
+          ],
+          "hands": "2 min",
+          "prep": true
         }
       ]
     },
@@ -183,10 +215,13 @@
       "items": [
         {
           "do": "Cool in the pans, then turn the donuts out.",
-          "wait": "5 min"
+          "wait": "5 min",
+          "hands": "30 sec",
+          "oven": false
         },
         {
-          "do": "While they're still warm, brush each donut with melted butter and dredge it in the cinnamon sugar."
+          "do": "While they're still warm, brush each donut with melted butter and dredge it in the cinnamon sugar.",
+          "hands": "6 min"
         }
       ]
     }
@@ -211,5 +246,6 @@
   },
   "time": {
     "total": 45
-  }
+  },
+  "serve": "keeps"
 }

@@ -27,6 +27,8 @@
       "5 min"
     ]
   ],
+  "serve": "hot",
+  "sits": "10 min",
   "ingredients": [
     {
       "qty": "1 1/2 lb",
@@ -74,6 +76,19 @@
   ],
   "steps": [
     {
+      "do": "Chop the cilantro, mince the garlic, and seed and dice the jalapeño. Squeeze the orange and lime juice.",
+      "hands": "8 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "chopped fresh cilantro leaves",
+        "garlic, minced",
+        "jalapeño, seeded and diced",
+        "fresh orange juice",
+        "fresh lime juice"
+      ]
+    },
+    {
       "do": "Whisk the cilantro, olive oil, soy sauce, orange juice, lime juice, garlic, jalapeño, cumin and 1 tsp pepper in a medium bowl. Take out 1/2 cup and refrigerate it as the finishing sauce. It has to come out now, before anything touches raw meat.",
       "uses": [
         "chopped fresh cilantro leaves",
@@ -88,17 +103,22 @@
           "item": "freshly ground black pepper, plus more for seasoning",
           "amount": "1 tsp"
         }
-      ]
+      ],
+      "hands": "3 min",
+      "prep": true
     },
     {
       "do": "Put the steak and the rest of the marinade in a gallon zip bag or bowl. Chill 4 to 8 hours, ideally the full 8 hours overnight, turning now and then. Stop at 8 hours: the citrus acid keeps breaking down the muscle and the texture turns mushy rather than tender.",
       "wait": "4 to 8 hr",
       "uses": [
         "flank steak (or skirt or flap)"
-      ]
+      ],
+      "hands": "2 min"
     },
     {
-      "do": "Heat the grill to high, about 450F (230C), and scrape the grates clean so the steak doesn't stick and tear off its crust. Indoors, get a cast iron grill pan or skillet very hot; nonstick can't hold enough heat to sear."
+      "do": "Heat the grill to high, about 450F (230C), and scrape the grates clean so the steak doesn't stick and tear off its crust. Indoors, get a cast iron grill pan or skillet very hot; nonstick can't hold enough heat to sear.",
+      "hands": "3 min",
+      "grill": true
     },
     {
       "do": "Drain the steak and discard the used marinade. Pat both sides completely dry, since any film left on the surface steams instead of charring. Season with salt and pepper.",
@@ -108,21 +128,36 @@
           "item": "freshly ground black pepper, plus more for seasoning",
           "amount": "to taste"
         }
-      ]
+      ],
+      "hands": "3 min",
+      "prep": "just before"
     },
     {
-      "do": "Grill 3 to 6 minutes per side, flipping once, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated.",
-      "wait": "3 to 6 min per side"
+      "do": "Grill the first side 3 to 6 minutes, without moving it, until it's charred underneath.",
+      "wait": "3 to 6 min",
+      "hands": "30 sec",
+      "watch": true,
+      "grill": true
+    },
+    {
+      "do": "Flip it once and grill 3 to 6 minutes more, to 125 to 130F (52 to 54C) inside for medium-rare. This cut wants hot and fast; past medium, 140F (60C), it goes dry however long it marinated.",
+      "wait": "3 to 6 min",
+      "hands": "1 min",
+      "watch": true,
+      "grill": true
     },
     {
       "do": "Rest at least 5 minutes so the juices settle back into the meat instead of running onto the board.",
-      "wait": "At least 5 min"
+      "wait": "At least 5 min",
+      "hands": "30 sec"
     },
     {
-      "do": "Slice thin against the grain, across the direction of the fibers. Shortening the fibers is what makes it tender rather than chewy. For tacos, cut the slices crosswise into small cubes."
+      "do": "Slice thin against the grain, across the direction of the fibers. Shortening the fibers is what makes it tender rather than chewy. For tacos, cut the slices crosswise into small cubes.",
+      "hands": "3 min"
     },
     {
-      "do": "Serve warm with the reserved sauce spooned over, alongside tortillas, rice, beans and guacamole."
+      "do": "Serve warm with the reserved sauce spooned over, alongside tortillas, rice, beans and guacamole.",
+      "hands": "2 min"
     }
   ],
   "notes": [
