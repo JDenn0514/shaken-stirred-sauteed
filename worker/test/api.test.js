@@ -218,6 +218,19 @@ describe("POST /api/signout", () => {
   });
 });
 
+describe("when the database fails", () => {
+  it("says sign-in isn't working, and works again once the database does", async () => {
+    await env.DB.exec(`alter table "verification" rename to "verification_away"`);
+    const res = await browser().fetch("/api/signin?return=/");
+    expect(res.status).toBe(500);
+    expect(res.headers.get("Cache-Control")).toBe("no-store");
+    expect((await res.json()).error).toMatch(/isn't working/);
+
+    await env.DB.exec(`alter table "verification_away" rename to "verification"`);
+    expect((await browser().fetch("/api/signin?return=/")).status).toBe(302);
+  });
+});
+
 describe("the site's own files", () => {
   it("still serves a folder's index.html", async () => {
     const res = await browser().fetch("/");

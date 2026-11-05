@@ -7,7 +7,7 @@
 //   GET  /api/me                    who's signed in, and whether they can edit
 //   POST /api/signout               sign out
 // Everything else under /api/ needs you to be signed in: 401 if you aren't.
-import { getAuth } from "./auth.js";
+import { forgetAuth, getAuth } from "./auth.js";
 
 // The readable cookie that tells the site's pages someone is signed in, so
 // they can show "Sign out" without asking the server. Nothing secret: the real
@@ -20,7 +20,14 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname.startsWith("/api/")) {
-      const res = await api(request, env, url);
+      let res;
+      try {
+        res = await api(request, env, url);
+      } catch (error) {
+        console.error(error);
+        forgetAuth();
+        res = Response.json({ error: "Sign-in isn't working right now. Try again in a minute." }, { status: 500 });
+      }
       res.headers.set("Cache-Control", "no-store");
       return res;
     }

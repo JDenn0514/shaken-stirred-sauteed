@@ -36,6 +36,10 @@ export function authOptions(env, database = env.DB) {
   };
 }
 
-// One Better Auth per Worker instance: its settings don't change between requests.
+// One Better Auth per Worker instance: its settings don't change between
+// requests. forgetAuth() drops it after an error, so a failed start (the
+// database out of reach, or its tables not made yet) is retried on the next
+// request rather than kept until Cloudflare restarts the Worker.
 let auth;
 export const getAuth = (env) => (auth ??= betterAuth(authOptions(env)));
+export const forgetAuth = () => { auth = undefined; };
