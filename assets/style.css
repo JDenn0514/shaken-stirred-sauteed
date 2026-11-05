@@ -1365,3 +1365,57 @@ body.cooking > .site-nav { display: none; }
 .intake-holds select { width: 100%; min-width: 0; text-overflow: ellipsis; }
 .intake-field { min-width: 0; }
 .intake-finish code, .intake-checks code { font-family: var(--mono); font-size: .9em; overflow-wrap: anywhere; }
+
+/* ---- Recipe editor (edit.html): the recipe as it will look, edited in place ---- */
+.edit { max-width: 760px; padding-top: 18px; padding-bottom: 48px; }
+.edit-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.edit-kicker { margin: 0; font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); flex: 1 1 auto; }
+.edit-kicker code { text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
+.edit-status { flex: 1 1 100%; margin: 0; font-size: .92rem; color: var(--muted); }
+.edit-status:empty { display: none; }
+.edit-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.edit-primary:disabled { opacity: .5; cursor: not-allowed; }
+.edit-note, .edit-problems, .edit-todo { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.edit-note h2, .edit-problems h2, .edit-todo h2 { font-size: 1.15rem; margin: 0 0 6px; }
+.edit-problems { border-color: var(--baking); }
+.edit-problems ul, .edit-todo ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.edit-todo li .edit-row { margin-top: 6px; }
+.edit-card { margin-top: 20px; }
+.edit-card .grid { margin: 0; }
+.edit-preview { margin-top: 20px; padding-top: 0; }
+.edit-part {
+  font: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 2px 0; margin: 0; cursor: pointer;
+  text-decoration: underline dotted var(--muted); text-underline-offset: 4px; letter-spacing: inherit; line-height: inherit;
+}
+.edit-preview h1 .edit-part, .edit-preview h3 .edit-part { text-decoration-thickness: 2px; }
+.edit-part:focus-visible, .edit input:focus-visible, .edit textarea:focus-visible, .edit select:focus-visible, .edit summary:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
+.edit-preview ol.steps > li { cursor: default; }
+.edit-preview ul.ingredients > li { padding: 6px 0; }
+.edit-add-line { margin: 10px 0 0; }
+.edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--baking); }
+.edit-form { display: grid; gap: 10px; padding: 10px 12px; margin: 6px 0; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.edit-fields { display: flex; flex-wrap: wrap; gap: 10px; }
+.edit-fields > .edit-field { flex: 1 1 140px; }
+.edit-field { display: grid; gap: 5px; font-weight: 600; font-size: .95rem; min-width: 0; }
+.edit-field.inline { display: inline-grid; margin: 4px 0 4px 26px; }
+.edit-field input, .edit-field textarea, .edit-field select {
+  font: inherit; font-weight: 400; color: var(--text); background: var(--surface);
+  border: 1px solid var(--rule-strong); border-radius: var(--radius-ctl); padding: 8px 10px; min-height: 40px; max-width: 100%; width: 100%;
+}
+.edit-field textarea { line-height: 1.45; }
+.edit-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.edit-adds { margin-top: 12px; }
+.edit-adds .edit-form { flex: 1 1 100%; }
+.edit-check { display: flex; gap: 8px; align-items: baseline; font-size: .95rem; }
+.edit-details { margin-top: 28px; border-top: var(--rule) solid var(--section); padding-top: 10px; }
+.edit-details > summary { cursor: pointer; font-family: var(--display, inherit); font-size: 1.5rem; font-weight: 600; padding: 6px 0; }
+.edit-details-body { display: grid; gap: 16px; margin-top: 8px; }
+.edit-set { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 0; display: grid; gap: 12px; min-width: 0; }
+.edit-set > legend { font-weight: 700; padding: 0 4px; }
+.edit-tags, .edit-ing, .edit-step { border: 0; border-top: 1px solid var(--border); padding: 10px 0 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+.edit-tags > legend, .edit-ing > legend, .edit-step > legend { font-weight: 600; padding: 0; float: left; width: 100%; margin-bottom: 4px; }
+.edit-subhead { margin: 4px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.edit-chips { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.edit-uses { display: grid; gap: 4px; }

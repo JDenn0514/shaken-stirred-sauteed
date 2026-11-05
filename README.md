@@ -179,13 +179,14 @@ npm test
 ```
 
 - `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, and the tests in `tests/unit/`. After `npm install` it also runs before every `git push`, and stops the push if something fails.
-- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`, whose checks live in `assets/recipe-checks.js` so the editor can share them): what it rejects, what it warns about, and what it writes into the index, and that patching one recipe's entry into the index gives the same index as a full rebuild. It also checks the link checker, the lineup planner (`assets/planner.mjs`) and what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`).
+- `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`, whose checks live in `assets/recipe-checks.js` so the editor can share them): what it rejects, what it warns about, and what it writes into the index, and that patching one recipe's entry into the index gives the same index as a full rebuild. It also checks the link checker, the lineup planner (`assets/planner.mjs`) what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`), and the editor's changes to a recipe (`assets/edit-model.mjs`).
 - `tests/e2e/` opens the site in Chrome and again in WebKit, the engine behind Safari and every browser on an iPhone. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
   - cook mode: moving through the steps, each step's ingredients, timers (on a clock the test controls), and a walk through every real recipe
   - prep first or as written: the order of a recipe's steps on its page and in cook mode, and that progress follows the step either way
   - your menu: adding dishes, the menu card and its choices, the questions it asks, the links from other pages, and cooking a menu (waits, timers and what follows them, plating up, the part made ahead)
+  - the recipe editor (`edit.html`, not linked from the site yet): the preview of the card and page, editing in place by keyboard, Details and the lineup fields, the checker's problems and to-dos, the unsaved draft, that fields the editor has no control for come out unchanged, and that it asks you to sign in
   - light and dark mode
   - an automated accessibility scan of every page in both modes
 

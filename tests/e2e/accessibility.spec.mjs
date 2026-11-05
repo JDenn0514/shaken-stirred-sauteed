@@ -2,7 +2,7 @@
 // against WCAG 2.1 A and AA. It catches things like low colour contrast and
 // missing labels; it can't judge everything, so it's a floor, not a guarantee.
 import AxeBuilder from "@axe-core/playwright";
-import { test, expect, onMenu } from "./fixtures.mjs";
+import { test, expect, onMenu, signIn, EDITOR_INDEX } from "./fixtures.mjs";
 import { ROLLS, CHICKEN, readRecipe } from "./intake-samples.mjs";
 
 const PAGES = [
@@ -139,7 +139,40 @@ const PAGES = [
     await page.getByRole("button", { name: "Copy recipe" }).click();
     await expect(page.getByLabel("Recipe file")).toBeVisible();
   }],
+  ["editor, signed out", "edit.html?r=pork-carnitas", (page) => expect(page.getByRole("heading", { name: "Sign in to edit" })).toBeVisible()],
+  ["editor with a recipe", "edit.html?r=pork-carnitas", (page) => expect(editorPreview(page).getByRole("heading", { level: 1 })).toBeVisible(), editor],
+  ["editor with a step open for editing", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Braise until tender." }).click();
+    await expect(page.getByRole("button", { name: "Split here" })).toBeVisible();
+  }, editor],
+  ["editor showing check errors", "edit.html?r=lemon-bars", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
+    await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
+    await page.getByRole("button", { name: "Done" }).click();
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
+  }, editor],
+  ["editor with Details open, lineup fields included", "edit.html?r=garlic-bread", async (page) => {
+    await page.getByText("Details", { exact: true }).click();
+    await page.getByRole("group", { name: /^Step 2:/ }).getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
+    await expect(page.getByLabel("Oven temperature")).toBeVisible();
+  }, editor],
+  ["editor with its to-do list", "edit.html?r=garlic-bread", (page) => expect(page.getByRole("region", { name: "To do" })).toBeVisible(), editor],
+  ["editor in prep-first order", "edit.html?r=veg-stir-fry", (page) => expect(editorPreview(page).getByRole("switch", { name: "Prep first" })).toBeChecked(), editor],
+  ["editor offering an unsaved draft back", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Pork Carnitas" }).click();
+    await page.getByLabel("Title").fill("Carnitas, Edited");
+    await page.getByRole("button", { name: "Done" }).click();
+    await page.reload();
+    await expect(page.getByRole("button", { name: "Bring back my changes" })).toBeVisible();
+  }, editor],
 ];
+
+// The editor, signed in (faked), with the editor's test recipes in the index.
+async function editor(page, baseURL) {
+  await signIn(page, baseURL);
+  await page.route("**/recipes/index.json", (route) => route.fulfill({ json: EDITOR_INDEX }));
+}
+function editorPreview(page) { return page.getByRole("region", { name: "Recipe preview" }); }
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }
 function cookButton(page, name) { return cook(page).getByRole("button", { name, exact: true }); }
@@ -171,9 +204,12 @@ for (const scheme of ["light", "dark"]) {
   test.describe(`${scheme} mode`, () => {
     test.use({ colorScheme: scheme });
 
-    for (const [name, url, ready, menu] of PAGES) {
-      test(`${name} has no detectable accessibility problems`, async ({ page }) => {
-        if (menu) await onMenu(page, menu);
+    // The fourth entry, when there is one, sets things up before the page
+    // loads: a list of recipes to put on the menu, or a function.
+    for (const [name, url, ready, before] of PAGES) {
+      test(`${name} has no detectable accessibility problems`, async ({ page, baseURL }) => {
+        if (typeof before === "function") await before(page, baseURL);
+        else if (before) await onMenu(page, before);
         await page.goto(url);
         await ready(page);
         const { violations } = await new AxeBuilder({ page })
