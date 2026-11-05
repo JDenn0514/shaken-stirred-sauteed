@@ -755,6 +755,10 @@ body.sheet-open { overflow: hidden; }
 }
 .section > h2 + h3 { margin-top: 14px; }
 .section.before .notes { margin-top: 12px; }
+/* Prep first or as written, under the Steps rule (only on recipes where the
+   two orders differ). */
+.menu-switch.prep-switch { display: flex; justify-content: flex-end; margin: 10px 0 -4px; font-size: .92rem; }
+.prep-switch + h3 { margin-top: 10px; }
 
 /* Ingredients: a lettered specimen list, ticked off as they go in. */
 .section:has(> .ingredients) { counter-reset: ing; }
@@ -1292,7 +1296,7 @@ body.cooking > .site-nav { display: none; }
     --baking-paper: #fff; --cooking-paper: #fff; --cocktails-paper: #fff;
   }
   @page { margin: 14mm 14mm 16mm; }
-  .site-header, .site-nav, .back, .menu-link, .menu-peek, .start-row .menu-anchor, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
+  .site-header, .site-nav, .back, .menu-link, .menu-peek, .start-row .menu-anchor, .prep-switch, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.45; }
   .container { padding: 0; max-width: none; }
   .recipe { padding: 0; margin: 0; max-width: none; display: block; border: 0; background: #fff; }

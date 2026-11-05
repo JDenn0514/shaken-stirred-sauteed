@@ -1,5 +1,5 @@
 (() => {
-  const { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups } = window.SSS;
+  const { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder } = window.SSS;
   const root = document.getElementById("recipe");
   const slug = new URLSearchParams(location.search).get("r") || "";
 
@@ -35,6 +35,26 @@
   const stepHTML = (s) => typeof s === "string" ? esc(s) : esc(s.do)
     + (s.wait ? `<span class="step-wait">⏱ ${esc(s.wait)}</span>` : "")
     + (s.cue ? `<span class="step-cue">✓ ${esc(s.cue)}</span>` : "");
+
+  // The steps in the order shown (prep first or as written: SSS.stepOrder),
+  // a list per group. Each step keeps its place in the file (data-step), which
+  // progress is saved by; the numbers count in the order shown.
+  // One saved choice covers this and the menu's "Prep everything first".
+  const prepFirst = () => (window.SSSMenu ? window.SSSMenu.prepFirst() : true);
+  function stepsHTML(r) {
+    const all = toGroups(r.steps).flatMap((g) => g.items);
+    const runs = [];
+    stepOrder(r, prepFirst()).steps.forEach(({ i, group }, n) => {
+      const last = runs[runs.length - 1];
+      if (last && last.group === group) last.items.push(i);
+      else runs.push({ group, start: n, items: [i] });
+    });
+    return runs.map((g) => `
+      ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
+      <ol class="steps" data-start="${g.start}">${g.items.map((i) => `
+        <li data-step="${i}" tabindex="0">${stepHTML(all[i])}</li>`).join("")}
+      </ol>`).join("");
+  }
 
   // The recipe's filter tags as links that open its section with that filter on.
   const tagGroupsHTML = (r, vocab) => {
@@ -84,17 +104,12 @@
       ["Origin", r.origin],
     ].filter(([, v]) => v != null && v !== false && v !== "");
 
-    let ingIdx = 0, stepIdx = 0;
+    let ingIdx = 0;
     const ingHTML = toGroups(r.ingredients).map((g) => `
       ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
       <ul class="ingredients">${g.items.map((it) => `
         <li><label><input type="checkbox" data-ing="${ingIdx++}"><span>${ingredientHTML(it)}</span></label></li>`).join("")}
       </ul>`).join("");
-    const stepsHTML = toGroups(r.steps).map((g) => `
-      ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
-      <ol class="steps" data-start="${stepIdx}">${g.items.map((s) => `
-        <li data-step="${stepIdx++}" tabindex="0">${stepHTML(s)}</li>`).join("")}
-      </ol>`).join("");
     const notesHTML = toGroups(r.notes).map((g) => `
       ${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
       <ul class="notes">${g.items.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>`).join("");
@@ -128,7 +143,10 @@
       ${r.beforeYouStart && r.beforeYouStart.length ? `<section class="section before"><h2>Before you start</h2>
         <ul class="notes">${r.beforeYouStart.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></section>` : ""}
       <section class="section"><h2>${r.category === "cocktails" ? "Spec" : "Ingredients"}</h2>${ingHTML}</section>
-      <section class="section"><h2>${r.category === "cocktails" ? "Method" : "Steps"}</h2>${stepsHTML}</section>
+      <section class="section" id="steps"><h2>${r.category === "cocktails" ? "Method" : "Steps"}</h2>
+        ${stepOrder(r, true).differs ? `<label class="menu-switch prep-switch"><input type="checkbox" role="switch" id="prep-first"${prepFirst() ? " checked" : ""}> Prep first</label>` : ""}
+        ${stepsHTML(r)}
+      </section>
       ${notesHTML ? `<section class="section"><h2>Notes</h2>${notesHTML}</section>` : ""}
       ${tagGroupsHTML(r, vocab)}
       ${r.source && (r.source.name || r.source.url) ? `<p class="source">Source: ${safeURL(r.source.url)
@@ -141,9 +159,11 @@
   function wire(r) {
     // Numbering continues across step groups (set here, not inline, so the
     // page's Content-Security-Policy can forbid inline styles).
-    root.querySelectorAll("ol.steps[data-start]").forEach((ol) => {
+    const list = document.getElementById("steps");
+    const number = () => list.querySelectorAll("ol.steps[data-start]").forEach((ol) => {
       ol.style.counterReset = `step ${ol.dataset.start}`;
     });
+    number();
     document.getElementById("print").addEventListener("click", () => window.print());
 
     // Progress is saved by position, so it's only kept while the recipe's
@@ -152,9 +172,10 @@
     const progress = window.SSSCook ? window.SSSCook.progressFor(r, slug).progress : Object.assign({ ing: [], steps: [] }, load());
     const links = window.SSSCook ? window.SSSCook.linkIngredients(r) : null;
     const boxes = [...root.querySelectorAll("[data-ing]")];
-    const steps = [...root.querySelectorAll("[data-step]")];
 
+    // Where you are is the first step not done, in the order shown.
     const paint = () => {
+      const steps = [...list.querySelectorAll("[data-step]")];
       boxes.forEach((b) => { b.checked = progress.ing.includes(+b.dataset.ing); });
       const firstOpen = steps.find((s) => !progress.steps.includes(+s.dataset.step));
       steps.forEach((s) => {
@@ -167,15 +188,23 @@
     const toggle = (arr, i) => { const k = arr.indexOf(i); k >= 0 ? arr.splice(k, 1) : arr.push(i); };
 
     root.addEventListener("change", (e) => {
+      if (e.target.id === "prep-first") {
+        window.SSSMenu?.setPrepFirst(e.target.checked);
+        list.querySelectorAll(":scope > h3, :scope > ol.steps").forEach((n) => n.remove());
+        list.insertAdjacentHTML("beforeend", stepsHTML(r));
+        number();
+        return paint();
+      }
       if (!e.target.matches("[data-ing]")) return;
       if (window.SSSCook) window.SSSCook.tickIngredient(progress, links, +e.target.dataset.ing, e.target.checked);
       else toggle(progress.ing, +e.target.dataset.ing);
       save(progress); paint();
     });
-    steps.forEach((s) => {
-      const flip = () => { toggle(progress.steps, +s.dataset.step); save(progress); paint(); };
-      s.addEventListener("click", flip);
-      s.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+    const flip = (s) => { toggle(progress.steps, +s.dataset.step); save(progress); paint(); };
+    list.addEventListener("click", (e) => { const s = e.target.closest("[data-step]"); if (s) flip(s); });
+    list.addEventListener("keydown", (e) => {
+      const s = e.target.closest("[data-step]");
+      if (s && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); flip(s); }
     });
     document.getElementById("reset").addEventListener("click", () => {
       progress.ing = []; progress.steps = []; progress.uses = []; progress.started = false; save(progress); paint();

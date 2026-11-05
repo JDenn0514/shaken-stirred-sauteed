@@ -17,6 +17,19 @@ const PAGES = [
     await page.locator("ol.steps li").first().click();
     await expect(page.locator(`ol.steps li[aria-current="step"]`)).toHaveCount(1);
   }],
+  ["recipe page in prep-first order, part-way through the prep", "recipe.html?r=veg-stir-fry", async (page) => {
+    await expect(page.getByRole("switch", { name: "Prep first" })).toBeChecked();
+    await page.locator("ol.steps li").first().click();
+    await expect(page.locator(`ol.steps li[aria-current="step"]`)).toHaveCount(1);
+  }],
+  ["recipe page as written, with its Prep first switch off", "recipe.html?r=veg-stir-fry", async (page) => {
+    await page.getByRole("switch", { name: "Prep first" }).click();
+    await expect(page.getByRole("switch", { name: "Prep first" })).not.toBeChecked();
+  }],
+  ["cook mode in the prep stage", "recipe.html?r=veg-stir-fry", async (page) => {
+    await page.getByRole("button", { name: "Start cooking" }).click();
+    await expect(cook(page).getByTestId("step-label")).toHaveText("Prep · Step 1 of 6");
+  }],
   ["cocktail recipe", "recipe.html?r=daiquiri", (page) => expect(page.getByRole("heading", { level: 1 })).toBeVisible()],
   ["cook mode, before you start", "recipe.html?r=lemon-bars", async (page) => {
     await page.getByRole("button", { name: "Start baking" }).click();

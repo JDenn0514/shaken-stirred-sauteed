@@ -141,6 +141,23 @@ Object.assign(PAGE_ONLY, {
       { do: "Drain and toss with butter, then serve.", hands: "2 min" },
     ],
   }),
+  // Prep first or as written: an added prep step (prepOnly), prep written
+  // mid-recipe, and prep that's left where it is ("just before").
+  "veg-stir-fry": recipe({
+    title: "Veg Stir-Fry", serve: "hot", sits: "5 min",
+    ingredients: [
+      { qty: "2", item: "Peppers", note: "sliced" }, { qty: "2 cloves", item: "Garlic", note: "minced" },
+      { grams: 200, item: "Tofu" }, { qty: "2 tbsp", item: "Soy sauce" },
+    ],
+    steps: [
+      { do: "Slice the peppers and mince the garlic.", prep: true, prepOnly: true, uses: ["Peppers", "Garlic"] },
+      { do: "Heat the wok until it smokes.", burner: true },
+      { do: "Stir the soy sauce into a splash of water.", prep: true, uses: ["Soy sauce"] },
+      { do: "Pat the tofu dry.", prep: "just before", uses: ["Tofu"] },
+      { do: "Stir-fry everything.", burner: true, wait: "3 min", uses: ["Peppers", "Garlic", "Tofu"] },
+      { do: "Pour in the sauce, toss and serve.", uses: ["Soy sauce"] },
+    ],
+  }),
   // A dessert that keeps once baked and cooled, so it's worth making ahead.
   "slow-cake": recipe({
     title: "Slow Cake", category: "baking",

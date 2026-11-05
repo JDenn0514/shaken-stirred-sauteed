@@ -57,5 +57,29 @@ window.SSS = (() => {
     return groups;
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups };
+  // The order a recipe's steps are shown in, on its page and in cook mode
+  // (docs/specs/meal-planner-design.md, "Prep first or as written"):
+  // - prep first: the prep that can be done ahead (`prep: true`, and the added
+  //   `prepOnly` steps) as a "Prep" stage, then the rest as written, under the
+  //   recipe's own group names or "Cooking" ("Baking", "Mixing"). Prep marked
+  //   "just before" stays where it's written.
+  // - as written: the recipe's own steps, without the added `prepOnly` ones.
+  // Returns { steps: [{ i, group }], differs }: i is the step's place in the
+  // file, which is what progress is saved by, and `differs` is false when both
+  // orders are the same, so a recipe page needs no switch. Then it's as written.
+  const STAGE = { baking: "Baking", cocktails: "Mixing" };
+  function stepOrder(r, prepFirst) {
+    const all = toGroups(r.steps).flatMap((g) => g.items.map((s) => ({ group: g.group, s: typeof s === "string" ? {} : s })))
+      .map((x, i) => ({ ...x, i }));
+    const written = all.filter((x) => !x.s.prepOnly);
+    const early = (x) => x.s.prep === true || x.s.prepOnly;
+    const first = [...all.filter(early), ...all.filter((x) => !early(x))];
+    const differs = first.map((x) => x.i).join() !== written.map((x) => x.i).join();
+    const steps = prepFirst && differs
+      ? first.map((x) => ({ i: x.i, group: early(x) ? "Prep" : x.group || STAGE[r.category] || "Cooking" }))
+      : written.map((x) => ({ i: x.i, group: x.group }));
+    return { steps, differs };
+  }
+
+  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder };
 })();

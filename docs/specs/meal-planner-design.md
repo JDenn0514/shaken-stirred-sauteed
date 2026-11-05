@@ -385,13 +385,14 @@ Jacob checks it at four points, each before the next stage starts:
 
 Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up, plating up, and swiping between steps (the same handling as single-recipe cook mode: touch or pen only, left for Next step, right for Back).
 
+Prep first or as written, for a single recipe: the recipe page has a "Prep first" switch under its Steps heading, and its cook mode follows the same saved choice (`sss:prep-first`, shared with the menu). The order comes from `SSS.stepOrder` in `assets/common.js`. Progress and timers keep each step's place in the file. Cook mode labels the stages ("Prep · Step 2 of 10", "Cooking · Step 3 of 10"), and a timer is named by its step's number in the order shown. The accessibility scan covers the recipe page both ways and cook mode in the prep stage.
+
 The part made ahead is re-planned as you go, the way the day is (`planLineup`'s `options.part: "ahead"` plans only that part, from what's done and when): a cake that goes in late comes out late, and a timer given more time moves the next step. It has no serve time to keep, so it ends when it's done.
 
 How it's kept fast: while cooking, the make-ahead choice is settled and the planner skips weighing it (`planLineup`'s `options.madeAhead`). With Chrome slowed to a phone's speed (6x), Next step takes about 0.2 to 0.5 seconds for the steak dinner with the pavlova, curd and blueberry cream. The menu page plans in a Web Worker and draws the card at once (about 0.6 seconds at 6x). The estimate follows a few seconds later on a slow phone, and the page stays usable meanwhile.
 
 Not built yet:
 
-- The prep-first or as-written toggle for a single recipe (recipe page and its cook mode), and its accessibility states.
 - A choice between recipes on one ingredient (`recipe` as a list): such a link is ignored for now. No recipe uses one yet.
 - Starting the made-ahead part while the day's plan is under way (or the other way round) starts that part afresh: only one is cooked at a time.
 - No browser test yet for the "ready too early" warning or for "+2 min" re-planning; both are built.
@@ -427,6 +428,9 @@ Not built yet:
 - One saved prep preference covers both the lineup and how single recipes are ordered.
 - A recipe with no prep marks shows no order toggle.
 - Added prep steps show only in prep-first order. As written, prep stays in the ingredient lines, as today.
+- The order switch shows only when the two orders differ, not just when a recipe has prep marks: a recipe whose only prep is already its first step looks the same both ways.
+- In prep-first order, the steps after the prep get a heading too: the recipe's own group names, or "Cooking" ("Baking" for baking, "Mixing" for cocktails), so you can see where the prep ends. As written shows no stage headings, as before.
+- Only the recipe page has the switch. Cook mode follows the saved choice.
 
 ## Later
 
