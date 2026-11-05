@@ -21,6 +21,8 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 
 No frameworks and no build step: it's plain HTML, CSS, and JavaScript served by GitHub Pages.
 
+Cloudflare Workers also serves the same files, with a preview of each branch. `wrangler.jsonc` sets that up, and `.assetsignore` lists the files that aren't part of the site, such as the tests and tools. On Cloudflare, `recipe.html` redirects to `/recipe`, which is the same page.
+
 ## Adding a recipe
 
 1. Copy `recipes/_template.json` to `recipes/<recipe-name>.json`. Use lowercase letters, numbers, and dashes only, e.g. `brown-butter-cookies.json`.

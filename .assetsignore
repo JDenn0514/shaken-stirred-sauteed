@@ -1,0 +1,20 @@
+# Files Cloudflare doesn't upload (same format as .gitignore). The site is
+# served from the repo root, so this leaves out what only the tools use.
+.git
+.github
+.githooks
+.claude
+.gitignore
+.assetsignore
+.oxlintrc.json
+.nojekyll
+node_modules
+tests
+test-results
+playwright-report
+scripts
+package.json
+package-lock.json
+playwright.config.mjs
+wrangler.jsonc
+.wrangler

@@ -1,0 +1,16 @@
+// Cloudflare Workers: serves the site's files as they are, the same as GitHub
+// Pages, with no build step and no Worker script. Cloudflare's Git integration
+// deploys main with `wrangler deploy` and every other branch with
+// `wrangler preview`. Files that aren't part of the site are listed in
+// .assetsignore.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "shaken-stirred-sauteed",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "."
+  },
+  // `wrangler preview` needs this block. It's empty because previews use the
+  // same settings as the live site.
+  "previews": {}
+}
