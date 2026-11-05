@@ -1,20 +1,38 @@
-# Files Cloudflare doesn't upload (same format as .gitignore). The site is
-# served from the repo root, so this leaves out what only the tools use.
+# Files Cloudflare must NOT publish as part of the site (see wrangler.jsonc).
+# Same pattern rules as .gitignore. Everything else in the repo is served.
+
+# Tools and settings for development
 .git
 .github
 .githooks
 .claude
 .gitignore
-.assetsignore
-.oxlintrc.json
 .nojekyll
+.oxlintrc.json
+.wrangler
+.dev.vars*
 node_modules
-tests
-test-results
-playwright-report
-scripts
 package.json
 package-lock.json
 playwright.config.mjs
+test-results
+playwright-report
+tests
+scripts
 wrangler.jsonc
-.wrangler
+worker
+
+# Notes and the old address's "moved" page (served by GitHub Pages instead)
+docs
+moved
+README.md
+LICENSE
+tools/**/README.md
+tools/lineup-test
+tools/intake/ocr
+tools/intake/compare.mjs
+tools/restructure/score.mjs
+
+# The recipe cards the recipes were typed from: from published books and
+# sites, so they aren't put on the web
+source-pdfs

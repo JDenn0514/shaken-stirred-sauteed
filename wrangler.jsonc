@@ -1,16 +1,25 @@
-// Cloudflare Workers: serves the site's files as they are, the same as GitHub
-// Pages, with no build step and no Worker script. Cloudflare's Git integration
-// deploys main with `wrangler deploy` and every other branch with
-// `wrangler preview`. Files that aren't part of the site are listed in
-// .assetsignore.
+// Cloudflare: one Worker serves the site at shaken-stirred-sauteed.com.
+// The site's own files are served as they are ("static assets": free, and not
+// counted against the daily request limit). Only /api/ runs the Worker's code
+// (worker/index.js), which will hold the editor's sign-in and saving.
+// Cloudflare deploys this on every push to main (Workers Builds), and runs
+// `wrangler preview` on every other branch. Files that aren't part of the site
+// are kept out by .assetsignore.
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "shaken-stirred-sauteed",
+  "main": "worker/index.js",
   "compatibility_date": "2026-11-01",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    // Keep page addresses exactly as they were on GitHub Pages (recipe.html?r=…),
+    // not redirected to /recipe. A folder address ("/") falls through to the
+    // Worker, which serves its index.html.
+    "html_handling": "none",
+    "not_found_handling": "none"
   },
-  // `wrangler preview` needs this block. It's empty because previews use the
-  // same settings as the live site.
+  // `wrangler preview` (each branch's preview) needs this block. It's empty
+  // because previews use the same settings as the live site.
   "previews": {}
 }
