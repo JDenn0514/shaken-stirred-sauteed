@@ -23,10 +23,15 @@
     </a>
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light and dark mode"></button>
   </header>
+  <nav class="site-nav" aria-label="Site">
+    <a href="./">Home</a>
+    <a href="recipes.html" aria-current="page">Recipes</a>
+    <a href="menu.html" id="nav-menu">Menu<span class="nav-count"></span><span class="visually-hidden nav-count-name"></span></a>
+  </nav>
 
-  <main class="container">
+  <main class="container has-peek">
+    <div class="menu-peek-host" id="menu-peek-host"></div>
     <div class="controls">
-      <div class="recipes-menu-row"><a class="menu-link" id="menu-link" href="menu.html">Menu →</a></div>
       <label class="search">
         <span class="visually-hidden">Search recipes</span>
         <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -67,6 +72,7 @@
 
   <script src="assets/common.js"></script>
   <script src="assets/menu-store.js"></script>
+  <script src="assets/menu-peek.js"></script>
   <script src="assets/home.js"></script>
 </body>
 </html>

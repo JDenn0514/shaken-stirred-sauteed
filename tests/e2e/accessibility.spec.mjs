@@ -101,6 +101,12 @@ const PAGES = [
     await cookButton(page, "Finish").click();
     await expect(cook(page).getByRole("heading", { name: "All done" })).toBeVisible();
   }, ["roast-chicken", "green-beans"]],
+  ["index page with your menu beside it", "recipes.html?cat=cooking", (page) => expect(page.getByRole("region", { name: "Your menu" }).getByRole("link", { name: "Pork Carnitas" })).toBeVisible(), ["pork-carnitas", "lemon-bars"]],
+  ["index page on a phone with your menu open", "recipes.html", async (page) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole("button", { name: "Your menu" }).click();
+    await expect(page.getByRole("link", { name: "Your menu →" })).toBeVisible();
+  }, ["pork-carnitas", "lemon-bars"]],
 ];
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }

@@ -9,9 +9,6 @@
     backdrop: $("backdrop"),
   };
 
-  const menuLink = $("menu-link");
-  if (menuLink && window.SSSMenu) menuLink.textContent = window.SSSMenu.linkText();
-
   let recipes = [];
   let dims = [];         // vocabulary dimensions, in display order
   let openDim = null;    // dimension whose option panel is open
@@ -245,6 +242,8 @@
       }
       prune();
       render();
+      // Your menu, beside the recipes (or behind a button on a phone).
+      if (window.SSSMenuPeek) window.SSSMenuPeek.render($("menu-peek-host"), recipes);
     })
     .catch((err) => {
       els.empty.hidden = false;

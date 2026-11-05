@@ -106,7 +106,6 @@
     root.innerHTML = `
       <div class="recipe-toprow">
         <a class="back" href="recipes.html?cat=${encodeURIComponent(r.category)}">← ${esc(cat.label)}</a>
-        ${window.SSSMenu ? `<a class="menu-link" href="menu.html">${esc(window.SSSMenu.linkText())}</a>` : ""}
       </div>
       ${r.image ? `<img class="recipe-hero" src="${esc(r.image)}" alt="">` : ""}
       ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
@@ -241,7 +240,6 @@
              <button type="button" role="menuitem" class="menu-danger" data-remove>Remove from menu</button>
              <a role="menuitem" href="menu.html">Go to your menu</a></span>` : ""}`
         : `<button class="btn menu-on" type="button">+ Add to menu</button>`;
-      root.querySelector(".menu-link").textContent = Menu.linkText();
       if (focus === "button") box.querySelector(".menu-on").focus();
       if (focus === "first") box.querySelector("[role=menuitem]")?.focus();
     };

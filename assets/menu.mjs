@@ -88,9 +88,14 @@ const params = () => new URLSearchParams(location.search);
 const searching = () => params().has("q");
 let state = { q: "", cat: "all" };
 
+const peek = $("menu-peek-host"), page = $("menu");
 function render() {
   if (location.hash === "#cook") return;
   const menu = Menu.load();
+  // While searching, your menu sits beside the results on a wide screen.
+  peek.hidden = !searching();
+  page.classList.toggle("has-peek", searching());
+  if (searching() && window.SSSMenuPeek) window.SSSMenuPeek.render(peek, index);
   if (searching()) {
     const p = params();
     state = { q: p.get("q") || "", cat: p.get("cat") || "all" };

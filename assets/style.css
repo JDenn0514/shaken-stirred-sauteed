@@ -1099,6 +1099,21 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 }
 
 /* ===== Print: a clean specimen sheet on white ===== */
+/* ===== The site bar: Home · Recipes · Menu =====
+   Under the header, the same at every width. It scrolls away with the page
+   (only the header stays), and it's hidden in cook mode and in print. */
+.site-nav { display: flex; justify-content: center; gap: clamp(18px, 7vw, 48px); padding: 8px max(16px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left)); border-bottom: 1px solid var(--border); }
+.site-nav a {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 4px;
+  color: var(--muted); text-decoration: none; border-bottom: 3px solid transparent;
+  font-family: var(--mono); font-size: .85rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+}
+.site-nav a:hover { color: var(--text); }
+.site-nav a[aria-current="page"], .site-nav a.nav-active { color: var(--text); font-weight: 700; border-bottom-color: var(--text); }
+.nav-count:empty { display: none; }
+.nav-count { min-width: 20px; padding: 2px 6px; border-radius: 10px; background: var(--lime); color: var(--on-lime); font-size: .72rem; letter-spacing: 0; text-align: center; }
+body.cooking > .site-nav { display: none; }
+
 /* The back link and the way to your menu share one row; "+ Add to menu" sits
    beside Start. */
 .recipe-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -1113,7 +1128,38 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 .menu-on { min-height: 46px; padding: 0 18px; font-weight: 600; border-color: var(--section); color: var(--section); }
 .menu-on[aria-haspopup] { background: var(--section-wash); }
 .start-row .menu-pop { min-width: 220px; }
-.recipes-menu-row { display: flex; justify-content: flex-end; }
+/* Your menu while choosing recipes: a panel beside them on a wide screen, a
+   "Your menu ▾" button over them on a phone (hidden while the menu is empty). */
+.menu-peek { position: relative; }
+.menu-peek-head { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.menu-peek-toggle {
+  display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 44px; padding: 0 14px; margin-bottom: 10px;
+  border: 1.5px solid var(--text); border-radius: var(--radius-ctl); background: var(--surface); color: var(--text); cursor: pointer;
+  font: 500 .8rem var(--mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.menu-peek.empty .menu-peek-toggle { display: none; }
+.menu-peek-body { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px; border: 1.5px solid var(--text); border-radius: var(--radius); background: var(--surface); }
+.menu-peek-body[hidden] { display: none; }
+.menu-peek-body p { margin: 0; font-size: .9rem; }
+.menu-peek-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.menu-peek-list li { display: grid; grid-template-columns: auto minmax(12px, 1fr) auto; align-items: baseline; gap: 6px; }
+.menu-peek-list a { font-family: var(--display); font-weight: 600; color: var(--section); text-decoration: none; }
+.menu-peek-list a:hover { text-decoration: underline; }
+.menu-peek-go { font-weight: 600; color: var(--text); }
+@media (min-width: 960px) {
+  .container.has-peek { display: grid; grid-template-columns: minmax(0, 1fr) 280px; column-gap: 28px; row-gap: 14px; align-items: start; }
+  .has-peek > * { grid-column: 1; }
+  .has-peek > .menu-peek-host { grid-column: 2; grid-row: 1 / span 20; position: sticky; top: 76px; }
+  .menu-page.has-peek { max-width: 1040px; }
+  .menu-page.has-peek > #menu-body { min-width: 0; }
+  .menu-peek { padding-top: 14px; }
+  .menu-peek::before { content: ""; position: absolute; top: 5px; left: 20px; z-index: 1; width: 56px; height: 15px; background: var(--lime); transform: rotate(-3deg); }
+  .menu-peek-head { position: static; width: auto; height: auto; clip: auto; overflow: visible; margin: 0 0 -1px; padding: 14px 14px 0; border: 1.5px solid var(--text); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; background: var(--surface);
+    font: 500 .72rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .menu-peek-toggle { display: none; }
+  .menu-peek-body, .menu-peek-body[hidden] { display: grid; border-top: 0; border-radius: 0 0 var(--radius) var(--radius); }
+}
+@media (max-width: 959px) { .menu-page .menu-peek-host { display: none; } }
 /* A card on your menu gets a strip of lime tape across its corner. */
 .grid > li { position: relative; }
 .menu-tape { position: absolute; z-index: 1; top: -6px; right: 14px; transform: rotate(3deg); background: var(--lime); color: var(--on-lime); font: 500 .68rem/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; padding: 6px 9px; pointer-events: none; }
@@ -1246,7 +1292,7 @@ body.cooking > .site-header, body.cooking > main { display: none; }
     --baking-paper: #fff; --cooking-paper: #fff; --cocktails-paper: #fff;
   }
   @page { margin: 14mm 14mm 16mm; }
-  .site-header, .back, .menu-link, .start-row .menu-anchor, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
+  .site-header, .site-nav, .back, .menu-link, .menu-peek, .start-row .menu-anchor, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.45; }
   .container { padding: 0; max-width: none; }
   .recipe { padding: 0; margin: 0; max-width: none; display: block; border: 0; background: #fff; }

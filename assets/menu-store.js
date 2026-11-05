@@ -39,8 +39,23 @@ window.SSSMenu = (() => {
   const answers = (slug) => read(`sss:answers:${slug}`, {});
   const setAnswers = (slug, a) => write(`sss:answers:${slug}`, a);
 
-  // "Menu · 3 →", or "Menu →" when it's empty.
+  // "Your menu · 3 →" for the welcome page's link.
   const linkText = (prefix = "Menu") => { const n = count(); return `${prefix}${n ? ` · ${n}` : ""} →`; };
 
-  return { load, save, has, count, add, remove, prepFirst, setPrepFirst, answers, setAnswers, linkText };
+  // The site bar's Menu link shows how many dishes are on the menu: a lime
+  // count, read out as "Menu 3 dishes" (its name holds what you see, so
+  // voice control finds it too).
+  function paintNav() {
+    const link = document.getElementById("nav-menu");
+    if (!link) return;
+    const n = count();
+    link.querySelector(".nav-count").textContent = n ? String(n) : "";
+    link.querySelector(".nav-count-name").textContent = n ? ` dish${n === 1 ? "" : "es"}` : "";
+  }
+  paintNav();
+  // Another tab may change the menu.
+  window.addEventListener("storage", (e) => { if (e.key === KEY) paintNav(); });
+
+  return { load, save: (m) => { save(m); paintNav(); }, has, count, add: (s) => { add(s); paintNav(); }, remove: (s) => { remove(s); paintNav(); },
+    prepFirst, setPrepFirst, answers, setAnswers, linkText, paintNav };
 })();
