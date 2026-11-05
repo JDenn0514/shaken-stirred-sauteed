@@ -428,9 +428,10 @@ Not built yet:
 - One saved prep preference covers both the lineup and how single recipes are ordered.
 - A recipe with no prep marks shows no order toggle.
 - Added prep steps show only in prep-first order. As written, prep stays in the ingredient lines, as today.
-- The order switch shows only when the two orders differ, not just when a recipe has prep marks: a recipe whose only prep is already its first step looks the same both ways.
-- In prep-first order, the steps after the prep get a heading too: the recipe's own group names, or "Cooking" ("Baking" for baking, "Mixing" for cocktails), so you can see where the prep ends. As written shows no stage headings, as before.
-- Only the recipe page has the switch. Cook mode follows the saved choice.
+- The order switch shows only when the two orders differ, not just when a recipe has prep marks: a recipe whose only prep is already its first step looks the same both ways. (Jacob agreed, 2026-11-05.)
+- In prep-first order, the steps after the prep get a heading too: the recipe's own group names, or "Cooking" ("Baking" for baking, "Mixing" for cocktails), so you can see where the prep ends. As written shows no stage headings, as before. (Jacob agreed.)
+- Only the recipe page has the switch. Cook mode follows the saved choice. (Jacob agreed.)
+- The planner does a step as late as it can go, so in the pavlova's made-ahead part the sugar step comes after the egg whites' 30-minute wait, not during it. (Jacob agreed.)
 
 ## Later
 
