@@ -14,7 +14,7 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 - Import from a **recipe website URL**, a **photo of a cookbook page**, a **screenshot** (of a PDF or anything else) and a **PDF file**.
 - You review and fix the recipe **on a preview of how it will look on the site**, not on a form.
 - **Save publishes it.** No JSON, no terminal, no second step on GitHub.
-- **No money.** Everything runs on free tiers with no card on file, and a free limit being reached stops a feature for the day rather than billing anyone.
+- **No money, apart from the domain.** Everything runs on free tiers, and a free limit being reached stops a feature for the day rather than billing anyone. The one cost is the site's own domain, about $5 to $15 a year (Jacob's decision, 2026-11-05).
 - **Nobody else connects to anything.** Visitors, and later friends and family, use the editor without accounts or keys of their own for any AI or service.
 - Built so the multi-user version (friends and family adding their own recipes) can reuse it, with only the saving part swapped out.
 
@@ -24,7 +24,7 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 - **Recipes stay as JSON files in the repo.** The database only holds sign-in data for now.
 - **AI is optional, never required.** Import works fully without it, using structured website data, PDF text, OCR and rules. The optional AI step (below) only improves a draft.
 - **No step images** (pictures showing how to do something). That's the next project, built on this editor (see "Later").
-- **No change of hosting.** The site stays on GitHub Pages; sign-in works across sites without a shared domain (see "Signing in").
+- **No server-built pages.** The site moves to Cloudflare (see "Moving to Cloudflare") but stays plain files: the same HTML, CSS, JavaScript and recipe JSON, served as they are. Only the editor's parts run code on the server.
 - **No drafts.** Save publishes. A recipe you want to finish later is either saved as it is and edited again, or not saved.
 - **The editor doesn't work offline.** It needs a connection to save, sign in and fetch web pages. The rest of the site keeps working offline as today.
 - No screenshot tests, offline tests or print layout tests (matching `.claude/rules/testing.md`).
@@ -38,24 +38,37 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 - **A wrong amount slips in unnoticed.** OCR misreads and AI "corrections" both change amounts. Anything the importer guessed or the AI changed must be easy to check against the original before saving.
 - **A delete by accident.** One tap must never delete a recipe.
 - **An original becomes public.** Photos of cookbook pages are someone else's work. The photo, screenshot or PDF a recipe is imported from is never committed or stored anywhere (see "Originals").
-- **A surprise bill.** No service is set up in a way that can charge money.
+- **A surprise bill.** No service is set up in a way that can charge money. The domain's yearly renewal is the one known charge.
 - **Visitors see editing controls that don't work for them.** Signed out, the site looks exactly as it does today.
 
 ## The pieces
 
-Everything server-side runs on **Cloudflare's free plan**, in one Cloudflare account:
+The whole site, and everything server-side, runs on **Cloudflare's free plan**, in one Cloudflare account, on the site's own domain:
 
-- **A Worker**: one small server program that handles sign-in, fetching recipe web pages, and the optional AI step. Signed-out requests get nothing but the sign-in itself.
-- **D1** (Cloudflare's SQLite database): holds only what sign-in needs (users, sessions, linked GitHub accounts, one-time sign-in codes). Recipe tables wait for the multi-user project.
+- **A Worker** serves the site's files (Cloudflare's "static assets": free and unlimited) and, under `/api/`, the editor's server side: sign-in, fetching recipe web pages, saving to GitHub, and the optional AI step. Signed-out requests to `/api/` get nothing but the sign-in itself. Only `/api/` requests run the Worker's code and count against the free plan's 100,000 requests a day.
+- **D1** (Cloudflare's SQLite database): holds only what sign-in needs (users, sessions, linked GitHub accounts). Recipe tables wait for the multi-user project.
 - **Workers AI** (optional): the vision model for the "Tidy up with AI" step.
 
 No file storage (R2 or KV) is needed, since originals aren't kept. That also avoids R2, which Cloudflare adds through a checkout and bills past its free amount. On the free plan, Workers, D1 and Workers AI return errors at their limits rather than charging. Current allowances and sources are in `docs/specs/recipe-editor-checks.md`.
 
 Cloudflare was picked over Supabase because Supabase pauses free projects after about a week of no activity, which an editor used now and then would keep hitting. It was picked over Firebase because Firebase's file storage and functions need the pay-as-you-go plan, with a card and no hard spending cap. The cost of Cloudflare is that sign-in and access rules are built by us, not ready-made.
 
-The site itself still talks to GitHub's API directly or through the Worker (builder's call, see "Saving"), and to the Worker for everything else.
+The site talks only to its own address. The Worker talks to GitHub's API, so the GitHub token never reaches the browser.
 
-Jacob creates the Cloudflare account, the GitHub App, and any keys, and puts the keys where the Worker reads them. Claude doesn't handle keys.
+Jacob creates the Cloudflare account, the GitHub App, and any keys, buys the domain, and puts the keys where the Worker reads them. Claude doesn't handle keys.
+
+## Moving to Cloudflare
+
+Decided 2026-11-05 (Jacob). Serving the site and the Worker from one address makes sign-in an ordinary same-site cookie, with no cross-site handoff (see "Signing in"). The research behind it is option (c) in `docs/specs/recipe-editor-checks.md`.
+
+- **One Worker serves both** the site's files and `/api/`. A Pages site with a separate Worker would still be two sites to Safari, so that's ruled out.
+- **The site's own domain** (Jacob is buying one), pointed at the Worker. The `workers.dev` address can stay as a backup.
+- **Deploys on every push to `main`**, by Cloudflare's Workers Builds connected to the repo, so no key leaves Cloudflare. A save from the editor is live a minute or two later, as with GitHub Pages today.
+- **Only the site's files are published.** An `.assetsignore` keeps out tests, `node_modules`, the Worker's own source and anything else not meant to be served.
+- **The old address** (`jdenn0514.github.io/shaken-stirred-sauteed/`) gets a small "This site has moved" page on every path, sending visitors to the same page on the new domain. GitHub Pages can't send real redirects, so it's a page, and GitHub Pages serves only that page from then on.
+- **Saved things don't move with it.** Progress, timers, the lineup and the theme are kept by the browser per address, so they start empty on the new domain, and the home-screen app is added again. Accepted.
+- The README's "Live site" link, and anything else naming the old address, changes to the new domain.
+- If Cloudflare ever stops suiting, the same files still work on GitHub Pages; only the editor would stop.
 
 ## Signing in
 
@@ -74,25 +87,16 @@ Checked in `docs/specs/recipe-editor-checks.md` (question 1):
 - The Worker runs with Cloudflare's `nodejs_compat` flag and uses Better Auth's built-in D1 support.
 - A refresh token works once. If GitHub refuses a token or a refresh, the editor says "sign in again" rather than failing the save silently.
 
-### Sign-in across sites: bearer token with a one-time code
+### Sign-in: an ordinary cookie
 
-The site (`jdenn0514.github.io`) and the Worker (`*.workers.dev`) are different sites, and Safari blocks cookies between them, so the sign-in cookie can't be used from the site. Decided: Better Auth's **bearer** and **one-time-token** plugins, with no hosting change and no domain to buy (checks file, question 2):
+The site and the Worker share one address, so Better Auth's normal session cookie works, Safari included. No bearer token, one-time code or cross-site headers are needed (this replaces the cross-site plan of 2026-11-03).
 
-1. The sign-in link is a **full-page visit to the Worker** (not a background request), so Better Auth's sign-in check cookie works. The Worker sends Jacob to GitHub.
-2. GitHub sends him back to the Worker, which creates the session and redirects to the site with a **single-use code that lasts 3 minutes** in the `#` part of the URL (never sent to a server).
-3. The page removes the code from the address bar, swaps it with the Worker for a session token, keeps the token in the browser, and sends it as `Authorization: Bearer` with every request.
-4. The Worker answers the site's origin with CORS headers (allowing `Authorization`, exposing `set-auth-token`), and `trustedOrigins` names the site.
-5. Signing out deletes the token in the browser and ends the session in D1.
+1. "Sign in" is a link to `/api/auth/…`, which sends Jacob to GitHub and back, then to the page he started from.
+2. The session is an **HttpOnly, Secure, SameSite=Lax cookie**: page scripts can't read it, which is safer than a token kept in the browser.
+3. To show "Edit" and "Add recipe" without asking the server on every page, the Worker also sets a small readable `signed-in` hint cookie. It holds no secret; the editor checks the real session with `/api/me` before doing anything, and a stale hint just leads to "Sign in again".
+4. Signing out ends the session in D1 and clears both cookies.
 
-The stored token can be read by any script on the site, which the strict CSP and having no third-party scripts keep safe. That's another reason the editor's looser CSP stays as narrow as "Constraints" says.
-
-To try first, once Jacob has created the accounts (each is a small test, listed at the end of the checks file):
-
-- That the one-time code comes back on GitHub's return as the code suggests. If not, the callback goes to a Worker route that makes the code itself; it's just as small.
-- Signing in on an iPhone in Safari, normal and Private tab, then saving an edit and reloading.
-- That Better Auth stays within the free plan's 10 ms of CPU per request.
-
-If the handoff fails on a real iPhone, the fallback is serving the site and the Worker from one Cloudflare address. That's free, but it changes the site's URL and visitors lose saved progress.
+Still to try once the accounts exist: signing in on an iPhone in Safari (normal and Private tab), then saving an edit and reloading, and that Better Auth stays within the free plan's 10 ms of CPU per request.
 
 ## Importing
 
@@ -168,7 +172,7 @@ The lineup (meal planner, `docs/specs/meal-planner-design.md`, being built on th
 - The editor rebuilds `recipes/index.json` the same way the build script does, then commits **the recipe file and the index in one commit** to `main` through GitHub's API, with the signed-in user's GitHub token. Whether the browser makes that call itself or the Worker makes it on the browser's behalf is the builder's call; the Worker keeping the token is safer.
 - The commit message names the recipe ("Add Brown Butter Cookies", "Edit Carne Asada").
 - The commit is made against the version the editor started from. If `main` has moved and the change touches the same recipe, the save stops with a message instead of overwriting. If only other recipes changed, the editor rebuilds the index from the new version and commits (the builder's call how far to take this).
-- After saving, the editor shows that it's published and links to the recipe page. GitHub Pages updates in a minute or two.
+- After saving, the editor shows that it's published and links to the recipe page. Cloudflare deploys the commit in a minute or two.
 - Commits from the editor don't run the pre-push hook. CI still runs on every push to `main`, so anything the editor's checks miss shows up there, and the fix is another edit.
 
 ## Deleting
@@ -187,10 +191,11 @@ The lineup (meal planner, `docs/specs/meal-planner-design.md`, being built on th
 
 The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Sign-in doesn't depend on the lineup, so it can go first. The editor's code waits until the lineup's recipe data and checker are merged into `main`, since both change `scripts/build-index.mjs`, every recipe file and the recipe pages.
 
-1. Set up Cloudflare: the Worker and D1 with Better Auth's tables. Jacob creates the account, GitHub App and keys.
-2. Sign-in end to end, tried on an iPhone first (see "Sign-in across sites"), since the rest depends on it.
-3. The editor, in the order the planning settles on.
-4. The optional AI step last, after a trial on real pages.
+1. Set up Cloudflare: the account, the domain, D1, the GitHub App and keys (Jacob), and automatic deploys from the repo.
+2. Move the site to Cloudflare (see "Moving to Cloudflare"), with the old address pointing to the new one.
+3. Sign-in end to end, tried on an iPhone (see "Signing in").
+4. The editor, in the order the planning settles on.
+5. The optional AI step last, after a trial on real pages.
 
 ## Accessibility
 
@@ -199,10 +204,10 @@ The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Sign-in
 
 ## Constraints
 
-- Plain HTML, CSS and JavaScript on the site, no frameworks and no build step (README). The Worker is its own small program in its own folder, deployed with Cloudflare's `wrangler` tool. It may use npm packages (Better Auth), since it's not part of the site.
+- Plain HTML, CSS and JavaScript on the site, no frameworks and no build step (README). The Worker is its own small program in its own folder, built and deployed by Cloudflare from the repo. It may use npm packages (Better Auth), since it's not part of the site.
 - **The site needs new runtime dependencies**, which the README currently rules out: Tesseract.js (and its English language data) and a PDF reader such as pdf.js. They're committed into the repo as files (no CDN, no build step) and load only on the editor pages. The README's "the site itself still has no dependencies" line changes to say so.
-- The pages' Content-Security-Policy loosens **only on the editor pages**, as far as needed: `connect-src` for the Worker (and `api.github.com` if the browser commits itself), `worker-src` and `'wasm-unsafe-eval'` for Tesseract. The signed-in "Edit" button on recipe pages needs no CSP change, since the page knows you're signed in from the token kept in the browser (see the plan). Every other page keeps today's policy. Styles are still set through the DOM, not inline.
-- The service worker is network-first and caches same-origin files, so the editor's large files get cached after first use. That's fine. Requests to the Worker and GitHub aren't cached, as today.
+- The Content-Security-Policy needs nothing new to reach the Worker, since `connect-src 'self'` already covers `/api/`. It loosens **only on the editor pages**, and only for what reading files needs (`worker-src` and `'wasm-unsafe-eval'` for Tesseract, if it's used). Every other page keeps today's policy. Styles are still set through the DOM, not inline. Cloudflare could send the policy as a real header later; not part of this project.
+- The service worker is network-first and caches same-origin files, so the editor's large files get cached after first use. That's fine. It must **never cache `/api/`** (sign-in, saving), which is now same-origin; that rule is added with the move.
 - Tests come first (`mattpocock-skills:tdd`, per `.claude/rules/testing.md`). Browser tests use the fixture recipes and the fixture's request blocking, so GitHub, the Worker and Workers AI are faked in tests, never called. Text-to-recipe rules get unit tests on sample text, including real OCR mistakes. The Worker gets its own tests. The shared checks keep their tests through `tests/helpers/build-index.mjs`. `npm test` passes before it's called done.
 - Work happens on its own branch, so the live site is untouched until it's merged.
 
@@ -210,12 +215,10 @@ The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Sign-in
 
 - **Step images** are the next project: a photo on a step, shown on the recipe page and in cook mode, uploaded from the editor. They're public, so they'd live in the repo next to the recipe, shrunk in the browser before committing so the repo doesn't swell, and they'd work offline like the rest of the site.
 - **Multi-user**: the editor is its first feature. Only saving changes, from "commit to the repo" to "save to my account" in D1. Its open questions were parked on 2026-11-01 (shared library or per-account copies, login methods, scope, audience). With friends using the AI step, they'd share the free daily allowance.
-- **Hosting**: a custom domain works with GitHub Pages as it is. Moving the site to Cloudflare Pages would keep saving through the repo and put everything in one account.
 
 ## Left to the builder
 
 - Whether the editor is its own page or pages (e.g. `edit.html`) or a mode of `recipe.html`, as long as visitors never load its code or its looser CSP.
-- Whether the browser or the Worker makes the GitHub commit.
 - The PDF reader, and how Tesseract's files are vendored and loaded.
 - The exact heading words and amount patterns the text rules recognise, and the order they're tried in.
 - How a save handles `main` having moved for other recipes.
@@ -238,3 +241,6 @@ The detailed order is in [recipe-editor-plan.md](recipe-editor-plan.md). Sign-in
 - The importer leaves lineup data blank rather than guessing it, and the checker's warnings become the editor's to-do list.
 - A recipe another recipe links to can't be deleted until the links are removed.
 - Linked recipes are picked from a list, never typed.
+- One Worker serves the site and `/api/`, deployed by Cloudflare on every push to `main`.
+- A readable "signed-in" hint cookie shows Edit and "Add recipe" without a server request on every page.
+- The old GitHub Pages address becomes a "moved" page rather than a second copy of the site.
