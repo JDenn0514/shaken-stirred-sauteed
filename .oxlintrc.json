@@ -17,7 +17,7 @@
   "ignorePatterns": ["style-guides/**"],
   "overrides": [
     { "files": ["sw.js"], "env": { "serviceworker": true } },
-    { "files": ["assets/recipe-icons.js"], "globals": { "module": "readonly" } },
+    { "files": ["assets/recipe-icons.js", "moved/moved.js"], "globals": { "module": "readonly" } },
     { "files": ["scripts/**", "tests/**", "tools/**", "*.config.mjs"], "env": { "node": true } }
   ]
 }

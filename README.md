@@ -2,7 +2,7 @@
 
 My collection of baking, cooking, and cocktail recipes, as a phone-friendly website.
 
-**Live site:** https://jdenn0514.github.io/shaken-stirred-sauteed/
+**Live site:** https://shaken-stirred-sauteed.com/
 
 ## Features
 
@@ -17,7 +17,7 @@ My collection of baking, cooking, and cocktail recipes, as a phone-friendly webs
 - Each section has its own colour (baking persimmon, cooking holly green, cocktails cobalt), and every recipe has its own drawing: its glass for cocktails, its dish for food
 - A designed dark mode for cooking at night
 
-No frameworks and no build step: it's plain HTML, CSS, and JavaScript served by GitHub Pages.
+No frameworks and no build step: it's plain HTML, CSS, and JavaScript, served by Cloudflare (see "Hosting").
 
 ## Adding a recipe
 
@@ -139,13 +139,21 @@ The build fails if a recipe uses a value that isn't in the vocabulary, or a filt
 
 ### Source PDFs
 
-`source-pdfs/` holds the original phone-sized recipe cards each recipe was converted from.
+`source-pdfs/` holds the original phone-sized recipe cards each recipe was converted from. They stay in the repo but aren't published on the site.
 
 ## Look and feel
 
 The site uses the **Field Guide** style (Vivid botanical colours, warm night): `assets/style.css`, with fonts in `assets/fonts/`, recipe drawings in `assets/icons/` and botanical plates in `assets/*.svg`. The full style guide is at `style-guides/field-guide-vivid-warm/` (open its `index.html`).
 
 Two alternative styles are kept in case you change your mind: `style-guides/field-guide-spice/` (Spice cabinet colours) and `style-guides/order-up-hybrid/` (Order Up). Each has its own style guide and a `preview/` that runs the real site in that style. See `style-guides/README.md` for how to switch.
+
+## Hosting
+
+The site is on Cloudflare's free plan, at shaken-stirred-sauteed.com. Cloudflare publishes `main` a minute or two after every push.
+
+- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/index.js`), for the recipe editor's sign-in and saving (`docs/specs/recipe-editor-design.md`).
+- `.assetsignore` lists what isn't published: tests, notes, settings, `source-pdfs/` and the like. Anything new that isn't part of the site goes there.
+- The old address, jdenn0514.github.io/shaken-stirred-sauteed/, shows a "moved" page (`moved/`) that sends visitors to the same page here. It's published by the "Old address: moved page" GitHub workflow, run by hand.
 
 ## Running locally
 
