@@ -158,6 +158,18 @@ Object.assign(PAGE_ONLY, {
       { do: "Pour in the sauce, toss and serve.", uses: ["Soy sauce"] },
     ],
   }),
+  // Two hot dishes that each end with 15 minutes at the stove and can wait
+  // only 2: one cook can't get both there on time, so one comes out early.
+  "fried-rice": recipe({
+    title: "Fried Rice", serve: "hot", sits: "2 min",
+    ingredients: [{ qty: "3 cups", item: "Rice" }],
+    steps: [{ do: "Fry the rice.", burner: true, hands: "15 min", uses: ["Rice"] }],
+  }),
+  "crispy-fish": recipe({
+    title: "Crispy Fish", serve: "hot", sits: "2 min",
+    ingredients: [{ qty: "2", item: "Fish fillets" }],
+    steps: [{ do: "Fry the fish.", burner: true, hands: "15 min", uses: ["Fish fillets"] }],
+  }),
   // A dessert that keeps once baked and cooled, so it's worth making ahead.
   "slow-cake": recipe({
     title: "Slow Cake", category: "baking",

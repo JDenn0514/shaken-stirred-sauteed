@@ -150,6 +150,21 @@ test("asks what the recipes don't say, and saves the answers to the recipe", asy
     .toEqual({ waits: { 1: "25 min" }, serve: "soon" });
 });
 
+test("warns when a dish will be ready too early, and no order gets it closer", async ({ page }) => {
+  await onMenu(page, ["fried-rice", "crispy-fish"]);
+  await page.goto("menu.html");
+  const warning = card(page).getByRole("note").filter({ hasText: "before serving" });
+  await expect(warning).toHaveCount(1);
+  await expect(warning).toContainText(/(Fried Rice|Crispy Fish) will be ready about 1\d min before serving, longer than it can wait \(2 min\)\. No order gets it closer\./);
+});
+
+test("doesn't warn when every dish is ready in time", async ({ page }) => {
+  await onMenu(page, ["fried-rice", "slow-cake"]);
+  await page.goto("menu.html");
+  await expect(page.getByRole("button", { name: /^Start cooking · about/ })).toBeVisible();
+  await expect(card(page).getByRole("note").filter({ hasText: "before serving" })).toHaveCount(0);
+});
+
 test("says so when no order works", async ({ page }) => {
   await onMenu(page, ["loop-a"]);
   await page.goto("menu.html");

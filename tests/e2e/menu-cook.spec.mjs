@@ -129,6 +129,21 @@ test("a timer ringing never moves you: it says what to do next, and Stop silence
   await expect(cook(page).getByRole("timer", { name: /Roast Chicken/ })).toHaveCount(0);
 });
 
+test("+2 min on a timer re-plans: its dish's next step follows the real timer", async ({ page }) => {
+  await toOvenWait(page);
+  await next(page, 2);
+  await expect(cook(page).getByRole("button", { name: /^Up next/ })).toContainText("Roast Chicken: Take it out, rest it");
+  // The roast's timer rings at 40 minutes, the short end of 40 to 50, while
+  // the plan still counts on 45.
+  await page.clock.fastForward("40:01");
+  const strip = cook(page).getByRole("timer", { name: /Roast Chicken/ });
+  await strip.getByRole("button", { name: "+2 min" }).click();
+  // Now it's out in 2 minutes: too short for a wait screen, so the step is up,
+  // with the timer counting down above it.
+  await expect(instruction(page)).toHaveText("Take it out, rest it, carve.");
+  await expect(cook(page).getByRole("timer", { name: /Roast Chicken/ })).toContainText(/1:5\d|2:00/);
+});
+
 test("says how far behind you are when it's 5 minutes or more", async ({ page }) => {
   await start(page);
   await next(page);

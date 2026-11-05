@@ -395,7 +395,7 @@ Not built yet:
 
 - A choice between recipes on one ingredient (`recipe` as a list): such a link is ignored for now. No recipe uses one yet.
 - Starting the made-ahead part while the day's plan is under way (or the other way round) starts that part afresh: only one is cooked at a time.
-- No browser test yet for the "ready too early" warning or for "+2 min" re-planning; both are built.
+- Known bug: a wait screen's minutes don't count down unless you press its Start timer. Waiting for the roast with only the roast's own timer running, it still says "Wait about 45 minutes" when that timer rings at 40 (Up next does say "due now").
 
 ## Left to the builder
 
