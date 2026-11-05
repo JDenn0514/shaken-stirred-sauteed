@@ -12,7 +12,8 @@ This is the "Later: cooking a whole meal" project from `docs/specs/cook-mode-des
 
 ## Names
 
-- **On the site the feature is called the lineup:** the recipes you're making together, in order. It isn't called a meal, because it can as easily be one dessert made from three recipes, or a round of drinks (Jacob's decision). This spec still says "meal" for what you're making.
+- **On the site the feature is called your menu** (Jacob's decision, 2026-11-04, replacing "lineup" everywhere on the site): the recipes you're making together. It isn't called a meal, because it can as easily be one dessert made from three recipes, or a round of drinks. The page is `menu.html`, and the wording is "Your menu", "Menu · 7 →", "+ Add to menu", "✓ On your menu ▾" and the "On your menu" tape.
+  - **Inside the code it's still the lineup:** `planLineup`, the `sss:lineup` key and this spec's own words for it. Those aren't seen, and renaming them would only churn merged code. This spec says "lineup" for the feature and "meal" for what you're making; where it quotes words shown on the site, they're the menu wording above.
 - **A nested recipe** is a required ingredient that has its own recipe card, such as the garlic paste in hasselback potatoes or the blueberry syrup in blueberry whipped cream. It's part of its dish.
 - **A connected recipe** is an optional ingredient that has its own recipe card, such as the lemon curd on a pavlova. It's a dish of its own that goes with another (Jacob's distinction).
 
@@ -151,43 +152,67 @@ One kind of link does all of this: **an ingredient can point to the recipe that 
 The layout was chosen from four rounds of mockups (branch `prototype/meal-planner`, `lineup-prototype-v4.html` is the last). It's the site's Field Guide style throughout.
 
 - **One lineup at a time,** saved on the device. Saved, named lineups are for later.
+It's its own page, `menu.html` (round 5).
+
 - **Empty:**
-  - "Your lineup" as a small heading, then **"Let's make something"** (Jacob's wording);
+  - "Your menu" as a small heading, then **"Let's make something"** (Jacob's wording);
   - a line saying it's for a whole dinner, or one dessert made from a few recipes;
   - a search box, and "Or browse all recipes →";
   - a short numbered how-to: add recipes, make your choices, start cooking.
 - **Searching:**
-  - **"← Back to your lineup · 7"** at the top;
+  - **"← Back to your menu · 7"** at the top;
   - the search box, then the recipes page's section tabs (All, Baking, Cooking, Cocktails) to filter;
   - results as compact rows (the recipe's drawing, title, and one line of description), each with **"+ Add"**, or **"✓ Added"** once it's in. Tapping a row opens the recipe page to read more. Coming back restores your search and results.
-- **With dishes: a menu card.** A bordered card with tape, headed "Your lineup", with "← Recipes" above it:
+- **With dishes: a menu card.** A bordered card with tape, headed "Your menu", with "← Recipes" above it:
   - courses as italic headings ("Main", "Dessert · 45 min later");
-  - each dish as a line, with its title in its section's colour, a dotted leader and its time on the right. Each dish has a way to change its course and to remove it (the builder's call how, within the card);
+  - each dish as a line, with its title in its section's colour, a dotted leader and its time on the right. **Tapping a dish's name opens a small menu:** Open the recipe, Move to Dessert (or Main), Remove from menu (Jacob's pick, round 5);
   - nested recipes indented under their dish, each with **Make it | Already made**;
   - the make-ahead line under a dish that has one;
   - "+ Add a dish", which opens search;
   - **Prep everything first** as a switch, with how long the other way would take ("Fastest would be 1 hr 30 min"). It starts on your saved choice, and changing it here changes the saved choice for next time too. Until a settings page exists (see `docs/ideas.md`), this is where the choice lives;
-  - a warning if a dish can't be on time.
+  - a warning in the card when a dish will sit more than 5 minutes longer than it can (`serving[].sitting[].over`): "The potatoes will be ready about 25 min early. One oven, two temperatures…".
 
   Below the card, a full-width **"Start cooking · about 1 hr 45 min"** starts the whole lineup.
+- **Made ahead** (round 5): when a dish's first part is set to be made ahead, an **"Ahead of time"** box sits above the card, naming the part and its time, with its own start button ("Start the meringue · about 4 hr 23 min"). It's cooked through lineup cook mode like the day's plan. Once done, the box says "✓ The meringue is made". The day's Start cooking works either way, since the cook may have made it some other way.
+- **What the recipes don't say** (`unknown`, round 5): a box above Start cooking, "Two things the recipes don't say", asks for each wait with no time (pre-filled from `suggest`) and each assumed serving time (Hot · Soon · Keeps). Start cooking still works, planned on the guesses. **Answers are saved per recipe on this device** (`sss:answers:<slug>`) and given to the planner as if the recipe said them; the page can't change the recipe files. None of the 40 reviewed recipes has any; recipes from the intake may.
+- **No order works:** if `planLineup` throws, the card stays and Start cooking is replaced by "These can't be planned together", with a line suggesting removing a dish or switching off Prep everything first.
+- **While cooking,** leaving cook mode with ✕ comes back here, and Start cooking reads "Back to cooking".
+
+## Getting around: the site bar (round 6, 2026-11-05)
+
+Jacob asked for a top bar with Home, Recipes, Menu and maybe Settings, and to see what's on the menu while choosing recipes. Round 6 mocked three bars and two phone layouts (https://claude.ai/artifact/MmSTkRs3yqb7RveR3tWtcN). A review from three angles (cooking on a phone, consistency with the site, accessibility and build) picked these, and Claude built them for Jacob to check:
+
+- **A row of links under the header: Recipes · Menu,** the same at every width, on the welcome, recipes, recipe and menu pages. Menu carries a lime count of the dishes on it (read as "Menu 3 dishes"). The current page is marked (`aria-current="page"`; on a recipe page, Recipes is styled as current).
+  - It scrolls away with the page, so only the header stays pinned and a recipe keeps its room while cooking. It's hidden in cook mode and in print.
+  - The header itself is unchanged.
+  - A bottom tab bar lost: it collides with Safari's toolbar, the bottom sheets and cook mode's buttons. So did a ☰ button, which crowds the header next to the theme toggle and hides the count.
+- **No Home link** (Jacob, 2026-11-05): the site's title already goes home.
+- **No Settings link yet:** there's no settings page. "Prep everything first" stays on the menu card and the theme toggle in the header. Add the link when the settings page in `docs/ideas.md` exists.
+- **The bar replaces the "Menu · 7 →" links** beside the recipe page's back link and above the recipes page's search. This partly reverses round 2's "the way to the lineup moves out of the header"; Jacob agreed (2026-11-05): the back link goes back to the recipes, and the Menu link goes to the menu. The welcome page keeps its "Let's build your menu →" / "Your menu · 7 →" link.
+- **Your menu while choosing recipes** (the recipes page, and the menu page's search):
+  - On a wide screen (960px and up) it's a "Your menu" panel beside the recipes, with the lime tape. It lists dish names, linked to their recipes, with their times, then "+N more" after five, and "Your menu →". With an empty menu it stays, saying how to add to it (Jacob agreed).
+  - On a phone, a "Your menu ▾" button above the search opens the same list. It starts closed, and it's hidden while the menu is empty, since the bar's Menu link is there.
+  - It's for reading: there's no ✕ (small targets for wet fingers). Removing a dish stays on the recipe page and the menu card.
+  - The menu page's search shows it only on a wide screen. On a phone, "← Back to your menu · 7" and the "✓ Added" rows already show what's on it.
 
 ## The recipe page and the recipes page
 
 - **There's one recipe page.** The lineup doesn't get its own version of it, so the two can't drift apart.
-- **The header doesn't change.** The way to the lineup moves out of the header, which is cramped on a phone, into the row with the back link (Jacob's idea). **"← Cooking"** (the section) sits on the left, and **"Lineup · 7 →"** on the right.
-  - The top of the page is the same whether or not the recipe is in your lineup (Jacob's decision).
-  - The lineup link shows even when the lineup is empty, reading "Lineup →", so the page always looks the same.
-- **Next to Start cooking:** **"+ Add to lineup"**, in the section's colour. Once the recipe is in, it reads **"✓ In your lineup ▾"**, with nothing added under it. Tapping it opens a small menu: **Remove from lineup** and **Go to your lineup**.
+- **The header doesn't change.** The way to the lineup moves out of the header, which is cramped on a phone, into the row with the back link (Jacob's idea). **"← Cooking"** (the section) sits on the left, and **"Menu · 7 →"** on the right. *Since round 6, the site bar's Menu link does this instead, and the row holds only the back link.*
+  - The top of the page is the same whether or not the recipe is on your menu (Jacob's decision).
+  - The menu link shows even when the menu is empty, reading "Menu →", so the page always looks the same.
+- **Next to Start cooking:** **"+ Add to menu"**, in the section's colour. Once the recipe is in, it reads **"✓ On your menu ▾"**, with nothing added under it. Tapping it opens a small menu: **Remove from menu** and **Go to your menu**.
 - **The Start button always starts only that recipe,** even when the recipe is in your lineup (Jacob agreed). A button should do the same thing every time, and cooking one recipe on its own while a lineup is saved is normal, such as making the chimichurri the night before. It isn't a setting either, because a setting that changes what a button does makes it unpredictable. Each recipe keeps its own progress, so cooking it alone and cooking it in the lineup stay in step.
 - **The recipes page:**
   - cards don't get a "+". Browsing is for reading, and adding happens from the recipe page;
-  - a card for a recipe in your lineup gets a strip of lime tape across its corner reading **"In your lineup"** (Jacob's pick);
-  - the "Lineup · 7 →" link sits above the search box, on the right.
+  - a card for a recipe on your menu gets a strip of lime tape across its corner reading **"On your menu"** (Jacob's pick);
+  - the "Menu · 7 →" link sits above the search box, on the right. *Since round 6: replaced by the site bar, and your menu sits beside the recipes (see "Getting around").*
+- **The welcome page:** under "Browse all recipes →", a second link, "Your menu · 7 →", or "Let's build your menu →" when it's empty (round 5; wording Jacob's, 2026-11-05).
 - If a recipe in the lineup already has progress (steps done on its own page), those steps count as done.
 
 ## Cooking a lineup
 
-Lineup cook mode is today's cook screen, kept focused, with a different source of steps (Jacob's pick). The ✕ leaves it, to the lineup page.
+Lineup cook mode is today's cook screen, kept focused, with a different source of steps (Jacob's pick). The ✕ leaves it, to the menu page. It's `menu.html#cook`, as single-recipe cook mode is `#cook` on the recipe page, so the back gesture and reloading behave the same.
 
 - **The top:** a chip naming the step's recipe in its section colour, and **"Step 9 of 24"** across the whole lineup, with one progress bar for the whole lineup.
 - **The step** shows the instruction, ingredients (from that recipe's `uses`), wait and cue, exactly as single-recipe cook mode does.
@@ -198,6 +223,19 @@ Lineup cook mode is today's cook screen, kept focused, with a different source o
 - **Running timers** stay pinned at the top, using the shared timers that already exist. A strip names its dish and wait ("Potatoes, bake").
 - **No serve time and no clock.** The one time shown is "about 1 hr 45 min" on the lineup page before you start. The existing timer strip's "ready around 9:40 pm", for waits of an hour or more, stays as it is (see Calls).
 - **The done screen** comes when every dish is done. It shows each dish's notes, collapsed under its name.
+
+### Decided in round 5 (2026-11-04)
+
+The mockups are published at https://claude.ai/artifact/3fMsW5kxrpF8DNhfpUH18h (private to Jacob). From the presentation tests and Jacob's picks:
+
+- **Gather list first.** Lineup cook mode opens on a "Before you start" screen listing every dish's `beforeYouStart` items under its name, so the thermometer is out before it's needed.
+- **Quantities on every step,** from `uses`, as single-recipe cook mode shows them. A nested recipe used in its parent shows the parent's amount ("1 tsp Garlic paste"), not the whole batch.
+- **Which end of a range.** A wait with a range says "The timer starts when you press Next step, set to 8 min so you check early."
+- **A running timer names what comes after it:** "Hasselback Potatoes · then pull the tray out and baste". When it rings: "Time's up. Next: Pull the tray out and baste with the reserved garlic butter." (from `followUp`). Up next shows that step, marked "due now".
+- **"Nothing needs you" only when it's true:** the wait screen shows only when `upNow` is more than 2 minutes away and the step's `idle` says nothing needs you.
+- **Running behind** (Jacob's pick): when the re-planned meal ends 5 minutes or more after the first plan's `minutes`, a quiet line under the step count: "About 9 min behind. The rest of the plan has moved to fit." Nothing to press.
+- **Landmarks** (Jacob's pick): a heads-up on the step before a busy stretch, "Busy stretch next: … 11 steps, about 25 min, one straight after another", where the steps after it follow with no idle time between them for 15 minutes or more. And the closing step.
+- **Plating up.** Each course ends with one closing step, "Plate up the main", listing its dishes. Inside a lineup, a dish's last step drops a closing "and serve (hot)" clause, so no dish goes out alone. This is display only: the recipe's own page keeps its words.
 - **Reloading** keeps you in lineup cook mode. The lineup saves when it started and when each step was done, as real times, so re-planning stays right.
 
 ### Waits
@@ -343,12 +381,24 @@ Jacob checks it at four points, each before the next stage starts:
 3. **The built feature, before merging.** Claude clicks through it on the branch and shares screenshots at phone and desktop width, in light and dark mode. Jacob can also run it himself (`python3 -m http.server 8000` in the repo, as in `.claude/launch.json`). What he finds gets fixed before merging.
 4. **A real lineup in the kitchen, after merging.** Cooking a real dinner on the phone is the one test nothing else replaces: real timing, messy hands. What felt wrong becomes fixes, and better time estimates.
 
+## State of the build (2026-11-05, branch `lineup-pages`)
+
+Built: the menu page (empty, searching, the menu card with its choices, the questions, the make-ahead box, the warnings), "+ Add to menu" and the links on the recipe, recipes and welcome pages, and menu cook mode with the gather list, waits, timers and their follow-ups, running behind, the busy-stretch heads-up, plating up, a wait screen that counts down by itself (and says when it's time, with no alarm, if you didn't start its timer), and swiping between steps (the same handling as single-recipe cook mode: touch or pen only, left for Next step, right for Back).
+
+Prep first or as written, for a single recipe: the recipe page has a "Prep first" switch under its Steps heading, and its cook mode follows the same saved choice (`sss:prep-first`, shared with the menu). The order comes from `SSS.stepOrder` in `assets/common.js`. Progress and timers keep each step's place in the file. Cook mode labels the stages ("Prep · Step 2 of 10", "Cooking · Step 3 of 10"), and a timer is named by its step's number in the order shown. The accessibility scan covers the recipe page both ways and cook mode in the prep stage.
+
+The part made ahead is re-planned as you go, the way the day is (`planLineup`'s `options.part: "ahead"` plans only that part, from what's done and when): a cake that goes in late comes out late, and a timer given more time moves the next step. It has no serve time to keep, so it ends when it's done.
+
+How it's kept fast: while cooking, the make-ahead choice is settled and the planner skips weighing it (`planLineup`'s `options.madeAhead`). With Chrome slowed to a phone's speed (6x), Next step takes about 0.2 to 0.5 seconds for the steak dinner with the pavlova, curd and blueberry cream. The menu page plans in a Web Worker and draws the card at once (about 0.6 seconds at 6x). The estimate follows a few seconds later on a slow phone, and the page stays usable meanwhile.
+
+Not built yet:
+
+- A choice between recipes on one ingredient (`recipe` as a list): such a link is ignored for now. No recipe uses one yet.
+- Starting the made-ahead part while the day's plan is under way (or the other way round) starts that part afresh: only one is cooked at a time.
+
 ## Left to the builder
 
 - The exact JSON shape of the new fields, within the requirements above.
-- Whether the lineup page is its own page (`lineup.html`) or a view of an existing one, and how lineup cook mode is reached and left. The phone's back gesture must return to the lineup page, as it returns to the recipe page today.
-- How a dish's course is changed and the dish removed on the menu card.
-- Where the lineup link goes on the home page, following the recipes page.
 - How the planner is made fast enough on a phone if trying serve times one minute at a time is slow. In `assets/planner.mjs`, the steak dinner with a pavlova, curd and blueberry cream plans in about half a second on a laptop, most of it spent on the make-ahead comparison. A phone could take a second or two, which matters because it re-plans on every Next step.
 
 ## Calls Claude made (for Jacob to check)
@@ -361,6 +411,10 @@ Jacob checks it at four points, each before the next stage starts:
 - No "this took longer" button. Real elapsed time does that job.
 - Tapping "In your lineup" opens a small menu (Remove from lineup, Go to your lineup) rather than removing straight away with an Undo. The mockups showed both; say if you'd rather have Undo.
 - The lineup link on the recipe page shows even when the lineup is empty.
+- The way to your menu on the welcome page sits under "Browse all recipes →".
+- Answers to what a recipe doesn't say are saved per recipe on this device, not in the recipe file.
+- A busy stretch is 15 minutes or more of steps with no idle time between them.
+- A dish's last step drops a closing "and serve" clause inside a lineup (display only).
 - Nested recipes default to Make it.
 - A connected recipe used by two dishes is made once.
 - The planner adds a heating step when a dish needs the oven and its recipe doesn't heat it, and skips it when the oven is already at that setting.
@@ -373,6 +427,10 @@ Jacob checks it at four points, each before the next stage starts:
 - One saved prep preference covers both the lineup and how single recipes are ordered.
 - A recipe with no prep marks shows no order toggle.
 - Added prep steps show only in prep-first order. As written, prep stays in the ingredient lines, as today.
+- The order switch shows only when the two orders differ, not just when a recipe has prep marks: a recipe whose only prep is already its first step looks the same both ways. (Jacob agreed, 2026-11-05.)
+- In prep-first order, the steps after the prep get a heading too: the recipe's own group names, or "Cooking" ("Baking" for baking, "Mixing" for cocktails), so you can see where the prep ends. As written shows no stage headings, as before. (Jacob agreed.)
+- Only the recipe page has the switch. Cook mode follows the saved choice. (Jacob agreed.)
+- The planner does a step as late as it can go, so in the pavlova's made-ahead part the sugar step comes after the egg whites' 30-minute wait, not during it. (Jacob agreed.)
 
 ## Later
 

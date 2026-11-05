@@ -23,6 +23,10 @@
     </a>
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light and dark mode"></button>
   </header>
+  <nav class="site-nav" aria-label="Site">
+    <a href="recipes.html">Recipes</a>
+    <a href="menu.html" id="nav-menu">Menu<span class="nav-count"></span><span class="visually-hidden nav-count-name"></span></a>
+  </nav>
 
   <main class="container welcome">
     <section class="hero" aria-labelledby="hero-title">
@@ -57,9 +61,11 @@
       <span>Browse <span data-count="all">all</span> recipes</span>
       <span class="arrow" aria-hidden="true">→</span>
     </a>
+    <a class="menu-link" id="menu-link" href="menu.html">Let's build your menu →</a>
   </main>
 
   <script src="assets/common.js"></script>
+  <script src="assets/menu-store.js"></script>
   <script src="assets/welcome.js"></script>
 </body>
 </html>

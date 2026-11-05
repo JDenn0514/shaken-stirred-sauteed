@@ -528,15 +528,22 @@ function forThePage(plan, dishes, recipes, lineup) {
   return { ...plan, steps, serving };
 }
 
-export function planLineup(lineup, recipes, progress = {}) {
+// `options.madeAhead`, once the make-ahead choice is settled (while cooking),
+// lists the dishes whose first part is made ahead, and the plan skips comparing
+// each dish both ways, which is most of its work. With `options.part` "ahead"
+// as well, the plan is of the part made ahead only, re-planned from `progress`
+// as the day's is (it has no serve time to keep, so it ends when it's done).
+export function planLineup(lineup, recipes, progress = {}, options = {}) {
   const keepsWhole = (slug) => !stepsOf(recipes[slug]).some((s) => s.holds);
   const dayParts = (slugs) => Object.fromEntries(slugs.map((slug) => [slug, keepsWhole(slug) ? "skip" : "after"]));
   const dayLength = (p) => Math.max(...Object.values(p.courses));
   const everything = chains(lineup, recipes);
   const unknown = unknownsOf([...new Set(everything.map((d) => d.slug))], recipes);
-  const allToday = search(everything, progress);
-  const makeAhead = [];
-  for (const { slug } of lineup.dishes) {
+  const settled = Array.isArray(options.madeAhead);
+  const aheadOnly = settled && options.part === "ahead";
+  const allToday = settled && options.madeAhead.length ? null : aheadOnly ? null : search(everything, progress);
+  const makeAhead = settled ? options.madeAhead.map((slug) => ({ slug, ahead: true })) : [];
+  for (const { slug } of settled ? [] : lineup.dishes) {
     // A dish that keeps entirely can be made ahead only if something's left for
     // the day.
     if (keepsWhole(slug) && (sits(recipes[slug]) !== Infinity || lineup.dishes.length === 1)) continue;
@@ -552,8 +559,10 @@ export function planLineup(lineup, recipes, progress = {}) {
     const upNow = plan.steps.find((x) => !x.done && !x.skipped) ?? null;
     return { ...plan, upNow, wait: upNow ? Math.max(0, upNow.at - (progress.now || 0)) : 0, unknown };
   };
+  if (aheadOnly && !ahead.length) throw new Error("Nothing is set to be made ahead.");
   if (!ahead.length) return withNow({ ...allToday, makeAhead, aheadOfTime: null });
   const before = search(chains({ dishes: lineup.dishes.filter((d) => ahead.includes(d.slug)) }, recipes,
-    Object.fromEntries(ahead.map((slug) => [slug, keepsWhole(slug) ? null : "before"]))));
+    Object.fromEntries(ahead.map((slug) => [slug, keepsWhole(slug) ? null : "before"]))), aheadOnly ? progress : {});
+  if (aheadOnly) return withNow({ steps: before.steps, minutes: before.minutes, makeAhead, aheadOfTime: null });
   return withNow({ ...search(chains(lineup, recipes, dayParts(ahead)), progress), makeAhead, aheadOfTime: { steps: before.steps, minutes: before.minutes } });
 }
