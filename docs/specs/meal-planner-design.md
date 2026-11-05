@@ -190,7 +190,7 @@ It's its own page, `menu.html` (round 5).
   - cards don't get a "+". Browsing is for reading, and adding happens from the recipe page;
   - a card for a recipe on your menu gets a strip of lime tape across its corner reading **"On your menu"** (Jacob's pick);
   - the "Menu · 7 →" link sits above the search box, on the right.
-- **The welcome page:** under "Browse all recipes →", a second link, "Your menu · 7 →", or "Plan a menu →" when it's empty (round 5, Claude's call).
+- **The welcome page:** under "Browse all recipes →", a second link, "Your menu · 7 →", or "Let's build your menu →" when it's empty (round 5; wording Jacob's, 2026-11-05).
 - If a recipe in the lineup already has progress (steps done on its own page), those steps count as done.
 
 ## Cooking a lineup

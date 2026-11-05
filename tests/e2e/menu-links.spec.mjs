@@ -69,9 +69,9 @@ test.describe("the recipes page", () => {
 });
 
 test.describe("the welcome page", () => {
-  test("offers to plan a menu while it's empty", async ({ page }) => {
+  test("invites you to build a menu while it's empty", async ({ page }) => {
     await page.goto("index.html");
-    await expect(page.getByRole("link", { name: "Plan a menu →" })).toHaveAttribute("href", "menu.html");
+    await expect(page.getByRole("link", { name: "Let's build your menu →" })).toHaveAttribute("href", "menu.html");
   });
 
   test("links to your menu, with its count", async ({ page }) => {
