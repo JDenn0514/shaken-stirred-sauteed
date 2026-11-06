@@ -202,7 +202,7 @@ npm test
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
   - cook mode: moving through the steps, each step's ingredients, timers (on a clock the test controls), and a walk through every real recipe
-  - prep first or as written: the order of a recipe's steps on its page and in cook mode, and that progress follows the step either way
+  - prep first or as written: the order of a recipe's steps on its page and in cook mode, that progress follows the step either way, and that the switch works from the keyboard
   - your menu: adding dishes, the menu card and its choices, the questions it asks, the links from other pages, and cooking a menu (waits, timers and what follows them, plating up, the part made ahead)
   - light and dark mode
   - signing in and out from the footer, with the Worker faked
