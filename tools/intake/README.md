@@ -73,10 +73,12 @@ section, and "Read the recipe". The screen follows
   storage, total time, cover, planning notes), beside what they're about
   where there is one.
 - **Filled in quietly**: hands-on times and equipment, as the reader gives them.
-- **Finish**: "Copy recipe" gives the recipe file (`recipeToSave`: the
-  review's marks taken off, dated today) and its file name. Add it to
-  `recipes/`, run `node scripts/build-index.mjs` and commit. Once the editor
-  can sign in and save (`docs/specs/recipe-editor-plan.md`), this becomes Save.
+- **Finish**: signed in to an account that can edit the site, "Save" publishes
+  the recipe (`recipeToSave`: the review's marks taken off, dated today)
+  through the Worker, under a file name made from its title; a name that's
+  taken is refused. "Copy instead", or "Copy recipe" for anyone else, gives the
+  recipe file and its file name: add it to `recipes/`, run
+  `node scripts/build-index.mjs` and commit.
 
 Not yet: reading a web page's link (needs the Worker to fetch it), keeping an
 unsaved review across a reload, reordering steps, and the prep-first preview.

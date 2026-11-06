@@ -30,6 +30,10 @@
       cookLabel: window.SSSCook ? window.SSSCook.startLabel(r) : "",
       menu: !!window.SSSMenu,
     });
+    // Signed in (the readable hint cookie), the recipe can be opened in the editor.
+    if (window.SSS.signedIn) {
+      root.querySelector(".recipe-toprow")?.insertAdjacentHTML("beforeend", `<a class="recipe-edit" data-signed-in href="edit.html?r=${encodeURIComponent(slug)}">Edit</a>`);
+    }
     wire(r);
   }
 

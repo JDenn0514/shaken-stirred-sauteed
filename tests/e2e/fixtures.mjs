@@ -2,9 +2,11 @@
 // - the page only ever talks to the local test server; requests anywhere else are blocked
 // - the site loads a small, fixed set of test recipes instead of the real ones, so tests
 //   don't break when recipes are added. The index is built by the real build script.
-// - /api/ (the Worker: sign-in) is faked: signed out, unless a test answers
-//   it with its own page.route (see tests/e2e/sign-in.spec.mjs)
+// - /api/ (the Worker: sign-in and saving) is faked: signed out, unless a test
+//   answers it with its own page.route (see tests/e2e/sign-in.spec.mjs), or
+//   signs in with signIn() below
 // - the page makes no sound
+import { createHash } from "node:crypto";
 import { test as base, expect } from "@playwright/test";
 import { buildIndex, recipe } from "../helpers/build-index.mjs";
 
@@ -244,14 +246,25 @@ const editorBuilt = buildIndex({ ...RECIPES, ...EDITOR_RECIPES });
 if (!editorBuilt.ok) throw new Error(`Editor test recipes don't pass the recipe checker:\n${editorBuilt.output}`);
 export const EDITOR_INDEX = editorBuilt.index;
 
-// Signed in, as far as the editor can tell: the readable "signed-in" hint
-// cookie, and /api/me answering (the Worker isn't built yet, so it's faked).
+const FILES = { ...RECIPES, ...PAGE_ONLY };
+
+// A test recipe's file version, as GET /api/recipe/:slug gives it (the Worker
+// gives git's blob SHA; any 40 hex characters will do here).
+export const versionOf = (slug) => createHash("sha1").update(`test ${slug}`).digest("hex");
+
+// Signed in, as far as the site can tell: the readable "signed-in" hint
+// cookie, /api/me answering, and the Worker's GET /api/recipe/:slug giving the
+// test recipes, as main has them. Saving and deleting are left to each test.
 export async function signIn(page, baseURL) {
   await page.context().addCookies([{ name: "signed-in", value: "1", url: baseURL }]);
   await page.route("**/api/me", (route) => route.fulfill({ json: { name: "Tester", canEdit: true } }));
+  await page.route("**/api/recipe/*", (route) => {
+    const slug = new URL(route.request().url()).pathname.split("/").pop();
+    return FILES[slug]
+      ? route.fulfill({ json: { slug, recipe: FILES[slug], sha: versionOf(slug) } })
+      : route.fulfill({ status: 404, json: { error: "There's no recipe with that name." } });
+  });
 }
-
-const FILES = { ...RECIPES, ...PAGE_ONLY };
 
 // Puts dishes on the menu before the page loads: onMenu(page, ["roast-chicken"])
 // or with each dish's choices, onMenu(page, [{ slug: "slow-cake", course: "Main" }]).

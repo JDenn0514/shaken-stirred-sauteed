@@ -1140,6 +1140,8 @@ body.cooking > .site-footer { display: none; }
    beside Start. */
 .recipe-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .recipe-toprow .back { margin: 0; }
+.recipe-edit { font-family: var(--mono); font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+@media print { .recipe-edit { display: none; } }
 .menu-link {
   display: inline-flex; align-items: center; min-height: 32px; padding: 5px 10px 4px;
   font-family: var(--mono); font-size: .78rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
@@ -1413,6 +1415,22 @@ body.cooking > .site-footer { display: none; }
 .edit-preview ul.ingredients > li { padding: 6px 0; }
 .edit-add-line { margin: 10px 0 0; }
 .edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--baking); }
+/* Saving and deleting: why a save didn't happen, Delete, and its confirmation. */
+.edit-save-error { flex: 1 1 100%; font-size: .95rem; color: var(--baking); font-weight: 600; }
+.edit-save-error:empty { display: none; }
+.edit-save-error p { margin: 0 0 4px; }
+.edit-save-error ul { margin: 4px 0; padding-left: 1.2em; font-weight: 400; color: var(--text); }
+.edit-save-error a, .edit-status a { color: inherit; font-weight: 600; }
+.edit-delete { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
+.edit-delete .muted { margin: 8px 0 0; }
+.edit-danger { color: var(--baking); border-color: var(--baking); }
+.edit-danger:disabled { opacity: .55; cursor: not-allowed; }
+.edit-dialog { max-width: min(460px, calc(100vw - 32px)); padding: 18px 20px; color: var(--text); background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--radius); }
+.edit-dialog::backdrop { background: var(--scrim); }
+.edit-dialog h2 { font-size: 1.3rem; margin: 0 0 8px; }
+.edit-dialog-body { display: grid; gap: 12px; }
+.edit-dialog-body p { margin: 0; }
+.edit-dialog input:focus-visible, .edit-dialog button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-form { display: grid; gap: 10px; padding: 10px 12px; margin: 6px 0; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
 .edit-fields { display: flex; flex-wrap: wrap; gap: 10px; }
 .edit-fields > .edit-field { flex: 1 1 140px; }

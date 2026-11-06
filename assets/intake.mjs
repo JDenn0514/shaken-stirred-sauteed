@@ -1,8 +1,9 @@
 // The recipe intake's review screen (intake.html). Pasted text is read into a
 // draft (tools/intake/intake.mjs); the review (tools/intake/review.mjs) says
 // what to ask, confirm and check. This file only draws it and passes on what
-// the person does. Saving comes with the editor's sign-in; until then the
-// finished recipe is copied, to add to recipes/ by hand.
+// the person does. Signed in to an account that can edit the site, the finished
+// recipe is saved straight to the site (see "Saving" below); otherwise, or
+// instead, it's copied, to add to recipes/ by hand.
 import { draftFromText } from "../tools/intake/intake.mjs";
 import {
   startReview, reviewOf, answerWait, answerServe, joinBack, splitBack, setPlanning, setHolds, setLink,
@@ -10,7 +11,7 @@ import {
   recipeToSave, slugOf, isTime,
 } from "../tools/intake/review.mjs";
 
-const { esc, toGroups, CATEGORIES } = window.SSS;
+const { esc, toGroups, CATEGORIES, me } = window.SSS;
 const $ = (id) => document.getElementById(id);
 const out = $("review");
 
@@ -18,6 +19,10 @@ let state = null;      // the review (tools/intake/review.mjs)
 let editing = null;    // the part of the preview open for editing: "title", or a step or ingredient id
 let copied = null;     // the recipe file, once "Copy recipe" has been pressed
 let titles = {};       // recipe slugs -> titles, to link ingredients to the recipes that make them
+let account = null;    // who's signed in ({ name, canEdit }), from the footer's /api/me
+let saving = null;     // the last Save: { busy }, { published: { slug, title } }, or { error, problems, signIn }
+
+me.then((m) => { account = m; draw(); });
 
 fetch("recipes/index.json", { cache: "no-cache" })
   .then((r) => (r.ok ? r.json() : []))
@@ -209,7 +214,8 @@ function draw() {
     <section class="section intake-finish" aria-labelledby="finish-h">
       <h2 id="finish-h">Finish</h2>
       ${review.ready ? "" : `<p class="intake-problem">Still needed: ${esc(review.missing.join(", "))}</p>`}
-      <button class="btn intake-primary" type="button" data-act="copy"${review.ready ? "" : " disabled"}>Copy recipe</button>
+      ${account?.canEdit ? saveHTML(review) : `<button class="btn intake-primary" type="button" data-act="copy"${review.ready ? "" : " disabled"}>Copy recipe</button>
+        ${account?.canEdit === false ? `<p class="muted">This account can't edit this site, so it can't save here. Copy the recipe to add it by hand.</p>` : ""}`}
       ${copied ? `<p>Save it as <code>recipes/${esc(copied.slug)}.json</code>, then run <code>node scripts/build-index.mjs</code> and commit. <span role="status">${esc(copied.status)}</span></p>
         <label class="intake-field">Recipe file <textarea readonly rows="12">${esc(copied.json)}</textarea></label>` : ""}
       ${!copied && slug ? `<p class="muted">It'll be saved as <code>recipes/${esc(slug)}.json</code>.</p>` : ""}
@@ -221,6 +227,7 @@ function draw() {
 function update(next) {
   state = next;
   copied = null;
+  saving = null;
   draw();
 }
 
@@ -250,6 +257,7 @@ out.addEventListener("click", async (e) => {
     update(next);
     out.querySelector(".intake-edit textarea")?.focus();
   } else if (act === "copy") await copy();
+  else if (act === "save") await save();
 });
 
 out.addEventListener("submit", (e) => {
@@ -302,4 +310,56 @@ async function copy() {
   }
   copied = { json, slug: slugOf(recipe.title), status };
   draw();
+}
+
+// --- Saving ------------------------------------------------------------------
+// Signed in to an account that can edit the site, Save publishes the new
+// recipe through the Worker (POST /api/save, docs/specs/recipe-editor-plan.md,
+// slice 6). Its file name comes from the title, and a name that's taken is
+// refused. Copying stays, as "Copy instead".
+
+function saveHTML(review) {
+  const done = saving?.published;
+  return `${done ? "" : `<div class="intake-row">
+      <button class="btn intake-primary" type="button" data-act="save"${review.ready && !saving?.busy ? "" : " disabled"}>Save</button>
+      <button class="btn" type="button" data-act="copy"${review.ready ? "" : " disabled"}>Copy instead</button>
+    </div>`}
+    <p class="intake-status" role="status">${saving?.busy ? "Saving…"
+      : done ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(done.slug)}">See ${esc(done.title)} on the site</a>` : ""}</p>
+    ${done ? `<p><a href="edit.html?r=${encodeURIComponent(done.slug)}">Keep editing it in the editor</a></p>` : ""}
+    ${saving?.error ? `<div class="intake-problem" role="alert"><p>${esc(saving.error)}</p>
+      ${saving.problems?.length ? `<ul>${saving.problems.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
+      ${saving.signIn ? `<p><a href="/api/signin?return=${encodeURIComponent(location.pathname)}">Sign in again</a></p>` : ""}</div>` : ""}`;
+}
+
+async function save() {
+  const recipe = recipeToSave(state, { today: new Date().toLocaleDateString("en-CA") });
+  const slug = slugOf(recipe.title);
+  if (!slug) {
+    saving = { error: "Give the recipe a title first: its file name is made from it." };
+    return draw();
+  }
+  saving = { busy: true };
+  draw();
+  let res;
+  try {
+    res = await fetch("/api/save", {
+      method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ slug, recipe }),
+    });
+  } catch {
+    saving = { error: "Couldn't reach the site. Check your connection and try again, or copy the recipe instead." };
+    return finished();
+  }
+  const answer = await res.json().catch(() => ({}));
+  if (res.ok) saving = { published: { slug, title: recipe.title } };
+  else if (res.status === 401) saving = { error: "Your sign-in has run out. Copy the recipe first: signing in again leaves this page.", signIn: true };
+  else saving = { error: answer.error || `Something went wrong (${res.status}). Try again, or copy the recipe instead.`, problems: answer.problems };
+  finished();
+}
+
+// After a save: focus on the link to the published recipe, or back on Save
+// (a problem is an alert, so it's read out).
+function finished() {
+  draw();
+  out.querySelector(".intake-finish [role=status] a, .intake-finish [data-act=save]")?.focus();
 }
