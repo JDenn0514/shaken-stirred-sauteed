@@ -3,6 +3,8 @@
 import { env } from "cloudflare:test";
 import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
+import { forgetAuth } from "../src/auth.js";
+import worker from "../src/index.js";
 
 const SITE = "https://shaken-stirred-sauteed.com";
 
@@ -98,6 +100,23 @@ describe("GET /api/signin", () => {
       expect(res.status).toBe(400);
       expect(res.headers.get("Location")).toBeNull();
       expect(await res.text()).toMatch(/isn't a page on this site/);
+    });
+  }
+
+  // Settings typed or pasted into Cloudflare's dashboard can pick up spaces or
+  // invisible characters, like the zero-width space that ended up on the live
+  // client ID. GitHub must get the clean ID.
+  for (const [what, id] of [["a zero-width space after it", "test-client-id\u200B"],
+    ["spaces around it", "  test-client-id \n"], ["other invisible characters", "\uFEFFtest-\u200Cclient\u200D-id\u2060"]]) {
+    it(`sends GitHub the clean client ID when the setting has ${what}`, async () => {
+      forgetAuth();
+      try {
+        const res = await worker.fetch(new Request(`${SITE}/api/signin?return=/`), { ...env, GITHUB_CLIENT_ID: id });
+        expect(res.status).toBe(302);
+        expect(new URL(res.headers.get("Location")).searchParams.get("client_id")).toBe("test-client-id");
+      } finally {
+        forgetAuth();
+      }
     });
   }
 
