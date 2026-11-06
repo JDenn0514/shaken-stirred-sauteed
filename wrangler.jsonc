@@ -39,5 +39,9 @@
   },
   // `wrangler preview` (each branch's preview) needs this block. It's empty
   // because previews use the same settings as the live site.
-  "previews": {}
+  "previews": {},
+  // Keeps the Worker's logs and each request's CPU time in the dashboard, so
+  // errors can be read after the fact and CPU time checked against the free
+  // plan's 10 ms.
+  "observability": { "enabled": true }
 }

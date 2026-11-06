@@ -166,6 +166,14 @@ The site is on Cloudflare's free plan, at shaken-stirred-sauteed.com. Cloudflare
   npx wrangler d1 migrations apply shaken-stirred-sauteed-auth --remote
   ```
 
+  It asks "continue?" first; answer yes, or nothing is applied. Then check that it says "No migrations to apply!":
+
+  ```sh
+  npx wrangler d1 migrations list shaken-stirred-sauteed-auth --remote
+  ```
+
+  If a migration is missing, every `/api/` request fails with "Sign-in isn't working right now", and the Worker's logs say "Database schema mismatch".
+
   When Better Auth is updated or its settings change, `node worker/scripts/auth-schema.mjs` prints the SQL for the next migration (the Worker's tests fail until it's added).
 - `.assetsignore` lists what isn't published: tests, notes, settings, `source-pdfs/` and the like. Anything new that isn't part of the site goes there.
 - The old address, jdenn0514.github.io/shaken-stirred-sauteed/, shows a "moved" page (`moved/`) that sends visitors to the same page here. It's published by the "Old address: moved page" GitHub workflow, run by hand.
