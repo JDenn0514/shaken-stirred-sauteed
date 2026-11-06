@@ -47,9 +47,16 @@ window.SSS = (() => {
   // so pages know without asking the server. The real session is an HttpOnly
   // cookie only the Worker sees; a footer with data-who (the Add recipe page)
   // asks the Worker who's signed in, which also catches a hint that's out of date.
+  //
+  // Links only for someone signed in ("Add recipe", data-signed-in) are hidden
+  // in the page, so visitors never see them, and shown or hidden here with the
+  // footer. The hint holds no secret; the editor checks the real sign-in itself.
+  const hinted = () => /(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie);
+  const signedIn = hinted();
+  const ownerLinks = (on) => document.querySelectorAll("[data-signed-in]").forEach((a) => { a.hidden = !on; });
+  ownerLinks(signedIn);
   const footer = document.querySelector(".site-footer");
   if (footer) {
-    const hinted = () => /(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie);
     const el = (tag, props = {}, text = "") => Object.assign(document.createElement(tag), props, { textContent: text });
     const signInLink = (text = "Sign in") => el("a", {
       href: `/api/signin?return=${encodeURIComponent(location.pathname + location.search)}`,
@@ -57,11 +64,13 @@ window.SSS = (() => {
     const status = el("p", { className: "footer-status", role: "status" });
 
     const showSignedOut = (text) => {
+      ownerLinks(false);
       const link = signInLink(text);
       footer.replaceChildren(link, status);
       return link;
     };
     const showSignedIn = (who = "") => {
+      ownerLinks(true);
       const out = el("button", { type: "button", className: "link-button" }, "Sign out");
       out.addEventListener("click", async () => {
         status.textContent = "";
@@ -78,7 +87,7 @@ window.SSS = (() => {
       footer.replaceChildren(...(who ? [el("span", {}, who)] : []), out, status);
     };
 
-    if (!hinted()) showSignedOut();
+    if (!signedIn) showSignedOut();
     else {
       showSignedIn();
       if ("who" in footer.dataset) {
@@ -134,5 +143,5 @@ window.SSS = (() => {
     return { steps, differs };
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder };
+  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder, signedIn };
 })();

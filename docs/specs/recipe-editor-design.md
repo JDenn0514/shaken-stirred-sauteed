@@ -39,7 +39,7 @@ The same editor replaces hand-editing JSON for good: it also starts a recipe fro
 - **A delete by accident.** One tap must never delete a recipe.
 - **An original becomes public.** Photos of cookbook pages are someone else's work. The photo, screenshot or PDF a recipe is imported from is never committed or stored anywhere (see "Originals").
 - **A surprise bill.** No service is set up in a way that can charge money. The domain's yearly renewal is the one known charge.
-- **Visitors see editing controls that don't work for them.** Signed out, the site has no Edit buttons and nothing that saves. ("Add recipe" is the exception, Jacob's call on 2026-11-05: it's in the site bar and on the welcome page for everyone, since the intake works without signing in and only gives a recipe file to copy. Once saving exists, saving asks you to sign in.)
+- **Visitors see editing controls that don't work for them.** Signed out, the site has no Edit buttons, no "Add recipe" and nothing that saves. (Jacob's call on 2026-11-06, replacing the 2026-11-05 one that kept "Add recipe" for everyone: it shows only with the `signed-in` hint cookie. The intake still works at its address, `intake.html`, for anyone who has it.)
 
 ## The pieces
 
@@ -74,7 +74,7 @@ Decided 2026-11-05 (Jacob). Serving the site and the Worker from one address mak
 
 - **Sign in with GitHub**, run by **Better Auth inside the Worker**, with its tables in D1. When friends and family come, Better Auth adds Google or email sign-in for them, and Jacob's account carries over.
 - The GitHub side is a **GitHub App installed only on this repo**, not an older OAuth app, which could only ask for access to all of Jacob's public repos. That also settles "only Jacob" without extra code: anyone can sign in, but only Jacob has permission to commit to the repo, so GitHub refuses anyone else's save. The editor should still show a clear message rather than a failed save if someone else signs in.
-- The sign-in link sits somewhere quiet (the footer, for instance). Once signed in, the site shows an **"Edit"** button on each recipe page; signed out, it doesn't. **"Add recipe"** is always there (site bar and welcome page), leading to the intake (`intake.html`).
+- The sign-in link sits somewhere quiet (the footer, for instance). Once signed in, the site shows an **"Edit"** button on each recipe page; signed out, it doesn't. **"Add recipe"** (site bar and welcome page, leading to the intake, `intake.html`) also shows only when signed in.
 
 ### Better Auth and the GitHub token
 

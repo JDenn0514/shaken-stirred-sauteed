@@ -198,6 +198,59 @@ Object.assign(PAGE_ONLY, {
   "loop-a": recipe({ title: "Loop A", ingredients: [{ qty: "1", item: "Loop B", recipe: "loop-b" }], steps: [{ do: "Use loop B.", uses: ["Loop B"] }] }),
   "loop-b": recipe({ title: "Loop B", ingredients: [{ qty: "1", item: "Loop A", recipe: "loop-a" }], steps: [{ do: "Use loop A.", uses: ["Loop A"] }] }),
 });
+// Recipes for the editor (edit.html). Page-only, so they change no counts; the
+// editor tests see them in EDITOR_INDEX (below), which the linked-recipe
+// picker and the link checks read.
+export const EDITOR_RECIPES = {
+  // Fields the editor has no control for (abv, nutrition, origin, an unknown
+  // field), and lineup data, which must come out of an edit unchanged.
+  "old-fashioned": {
+    title: "Old Fashioned", category: "cocktails", wobble: { kept: ["as", "is"] },
+    abv: "32%", standardDrinks: 1.6, nutrition: "Mostly sugar", origin: "Louisville, 1880s", glass: "Rocks",
+    serve: "soon", sits: "5 min",
+    ingredients: [
+      { qty: "2 oz", ml: 60, item: "Bourbon" },
+      { qty: "1 tsp", item: "Demerara syrup" },
+      { qty: "2 dashes", item: "Bitters", optional: true },
+    ],
+    steps: [
+      { do: "Stir the bourbon, syrup and bitters with ice.", hands: "1 min", wait: "30 sec", watch: true, uses: ["Bourbon", "Demerara syrup", "Bitters"] },
+      { do: "Strain over a large cube.", hands: "30 sec" },
+    ],
+    tags: { spirit: ["whiskey"], ingredients: ["orange"] },
+    time: { total: 5 },
+  },
+  // Two linked recipes: the bread uses the butter. The bread's bake mentions
+  // the oven without saying it uses it, so the checker warns.
+  "garlic-bread": recipe({
+    title: "Garlic Bread", serve: "hot", sits: "5 min",
+    ingredients: [{ qty: "1", item: "Baguette" }, { qty: "4 tbsp", item: "Garlic butter", recipe: "garlic-butter" }],
+    steps: [
+      { do: "Split the baguette and spread on the garlic butter.", hands: "3 min", uses: ["Baguette", "Garlic butter"] },
+      { do: "Bake in the oven until crisp.", hands: "1 min", wait: "10 min" },
+      { do: "Slice and serve.", hands: "2 min" },
+    ],
+    tags: { course: ["side"], ingredients: ["garlic"] },
+  }),
+  "garlic-butter": recipe({
+    title: "Garlic Butter", kind: "component", serve: "keeps",
+    ingredients: [{ grams: 115, qty: "8 tbsp", item: "Butter", note: "soft" }, { qty: "4 cloves", item: "Garlic", note: "grated" }],
+    steps: [{ do: "Mash the garlic into the butter.", hands: "3 min", uses: ["Butter", "Garlic"] }],
+    tags: { course: ["sauce"], ingredients: ["garlic"] },
+  }),
+};
+Object.assign(PAGE_ONLY, EDITOR_RECIPES);
+const editorBuilt = buildIndex({ ...RECIPES, ...EDITOR_RECIPES });
+if (!editorBuilt.ok) throw new Error(`Editor test recipes don't pass the recipe checker:\n${editorBuilt.output}`);
+export const EDITOR_INDEX = editorBuilt.index;
+
+// Signed in, as far as the editor can tell: the readable "signed-in" hint
+// cookie, and /api/me answering (the Worker isn't built yet, so it's faked).
+export async function signIn(page, baseURL) {
+  await page.context().addCookies([{ name: "signed-in", value: "1", url: baseURL }]);
+  await page.route("**/api/me", (route) => route.fulfill({ json: { name: "Tester", canEdit: true } }));
+}
+
 const FILES = { ...RECIPES, ...PAGE_ONLY };
 
 // Puts dishes on the menu before the page loads: onMenu(page, ["roast-chicken"])
