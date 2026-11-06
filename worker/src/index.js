@@ -6,12 +6,14 @@
 //   GET  /api/auth/callback/github  where GitHub sends you back (Better Auth)
 //   GET  /api/me                    who's signed in, and whether they can edit
 //   POST /api/signout               sign out
+//   POST /api/fetch                 a recipe website's page, for the intake (slice 7, fetch-page.js)
 // and saving (slice 6, src/recipes.js):
 //   GET  /api/recipe/<slug>         a recipe on main, with its file's version
 //   POST /api/save                  { slug, recipe, baseSha }: commit it to main
 //   POST /api/delete                { slug, baseSha }: take it off main
 // Everything else under /api/ needs you to be signed in: 401 if you aren't.
 import { forgetAuth, getAuth } from "./auth.js";
+import { fetchPage } from "./fetch-page.js";
 import { Refusal, SIGN_IN_AGAIN, github } from "./github.js";
 import { deleteRecipe, isSlug, loadRecipe, saveRecipe } from "./recipes.js";
 
@@ -61,6 +63,8 @@ async function api(request, env, url) {
   if (!session) return signedOut("Sign in first.");
 
   if (route === "GET /api/me") return me(auth, request, env, session);
+
+  if (url.pathname === "/api/fetch") return route === "POST /api/fetch" ? fetchPage(request, env) : notAllowed("POST");
 
   const recipe = /^\/api\/recipe\/([^/]+)$/.exec(url.pathname);
   const saving = url.pathname === "/api/save" || url.pathname === "/api/delete";

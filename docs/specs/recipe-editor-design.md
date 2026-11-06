@@ -111,6 +111,8 @@ The import screen takes a URL, an image (photo or screenshot, from the camera or
 
 ### Photos and screenshots
 
+(2026-11-06, Jacob's decision, after trying the engines on his cookbook photos: photos and screenshots stay Live Text copy and paste, and a scanned PDF is pointed there too. The Tesseract plan below isn't being built. See `tools/intake/README.md`, "Reading photos", and the plan's slice 7.)
+
 - **Tesseract.js** reads the text on the device: no server, no cost and no key. It's a download of several megabytes, so it loads **only on the import screen**, never on the rest of the site.
 - Expected weak spots, which the review step is there for: fractions (½ read as "1/2" or "%"), °F, small print, two-column pages, sidebars and headnotes, and pages photographed at an angle or in poor light. Handwriting is mostly out of reach.
 

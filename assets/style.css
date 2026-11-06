@@ -1384,6 +1384,15 @@ body.cooking > .site-footer { display: none; }
 .intake-holds { margin-top: 18px; }
 .intake-holds select { width: 100%; min-width: 0; text-overflow: ellipsis; }
 .intake-field { min-width: 0; }
+/* A recipe website's address and "Choose a PDF" (assets/intake-import.mjs) */
+.intake-from { display: grid; gap: 8px; }
+.intake-from .btn { justify-self: start; }
+.intake-from .intake-hint { margin: 0; font-size: .9rem; }
+.intake-file { position: relative; cursor: pointer; }
+.intake-file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.intake-file:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+#import-status:empty { display: none; }
+.intake-preview .source { margin-top: 6px; }
 .intake-finish code, .intake-checks code { font-family: var(--mono); font-size: .9em; overflow-wrap: anywhere; }
 
 /* ---- Recipe editor (edit.html): the recipe as it will look, edited in place ---- */

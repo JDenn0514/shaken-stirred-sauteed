@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- A made-up recipe website's page, as /api/fetch returns it: the recipe is in
+     its schema.org data (JSON-LD), as on most recipe sites. Used by
+     tests/e2e/intake-import.spec.mjs. -->
+<html lang="en">
+<head>
+  <title>Honey Oat Bars - Example Kitchen</title>
+  <meta property="og:site_name" content="Example Kitchen">
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@graph": [
+    {"@type": "WebSite", "name": "Example Kitchen"},
+    {"@type": "Recipe", "name": "Honey Oat Bars", "author": {"@type": "Person", "name": "Sam Example"},
+     "recipeYield": "12 bars", "prepTime": "PT10M", "cookTime": "PT25M", "totalTime": "PT35M",
+     "recipeIngredient": ["2 cups rolled oats", "1/2 cup honey", "1/2 cup butter, melted", "1/4 teaspoon salt"],
+     "recipeInstructions": [
+       {"@type": "HowToStep", "text": "Heat the oven to 350&deg;F and line an 8-inch pan."},
+       {"@type": "HowToStep", "text": "Stir the oats, honey, butter and salt together and press into the pan."},
+       {"@type": "HowToStep", "text": "Bake until golden at the edges, 25 minutes."}
+     ]}
+  ]}
+  </script>
+</head>
+<body>
+  <nav><a href="https://kitchen.example/">Home</a></nav>
+  <article><h1>Honey Oat Bars</h1><p>A long story about oats.</p></article>
+</body>
+</html>

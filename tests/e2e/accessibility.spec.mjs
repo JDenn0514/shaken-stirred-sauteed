@@ -1,6 +1,7 @@
 // Automated accessibility scan (axe) of each page, in light and dark mode,
 // against WCAG 2.1 A and AA. It catches things like low colour contrast and
 // missing labels; it can't judge everything, so it's a floor, not a guarantee.
+import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect, onMenu, signIn, EDITOR_INDEX } from "./fixtures.mjs";
 import { ROLLS, CHICKEN, readRecipe } from "./intake-samples.mjs";
@@ -138,6 +139,28 @@ const PAGES = [
     await page.getByRole("button", { name: "Use this time" }).click();
     await page.getByRole("button", { name: "Copy recipe" }).click();
     await expect(page.getByLabel("Recipe file")).toBeVisible();
+  }],
+  // From a recipe website or a PDF (tests/e2e/intake-import.spec.mjs)
+  ["recipe intake with a website's recipe and its source", "intake.html", async (page) => {
+    await page.getByRole("radio", { name: "Baking" }).check();
+    await page.getByLabel("Recipe's web address").fill("https://kitchen.example/honey-oat-bars");
+    await page.getByRole("button", { name: "Get the recipe" }).click();
+    await expect(page.getByRole("region", { name: "Preview" }).getByRole("link", { name: "Sam Example, Example Kitchen" })).toBeVisible();
+  }, null, signedIn((page) => page.route("**/api/fetch", (route) => route.fulfill({
+    json: { html: readFileSync(new URL("../samples/recipe-page.html", import.meta.url), "utf8"), url: "https://kitchen.example/honey-oat-bars" },
+  })))],
+  ["recipe intake when a site refuses", "intake.html", async (page) => {
+    await page.getByRole("radio", { name: "Cooking" }).check();
+    await page.getByLabel("Recipe's web address").fill("https://refuses.example/recipe");
+    await page.getByRole("button", { name: "Get the recipe" }).click();
+    await expect(page.getByRole("alert")).toContainText("won't share");
+  }, null, signedIn((page) => page.route("**/api/fetch", (route) => route.fulfill({
+    status: 502, json: { error: "refuses.example won't share its pages with other sites. Open the recipe on that site, copy its text, and paste it below.", refused: true },
+  })))],
+  ["recipe intake with a PDF that has no text", "intake.html", async (page) => {
+    await page.getByRole("radio", { name: "Baking" }).check();
+    await page.getByLabel("Choose a PDF").setInputFiles(new URL("../samples/scanned.pdf", import.meta.url).pathname);
+    await expect(page.getByRole("alert")).toContainText("no text");
   }],
   ["recipe page signed in, with Edit and Sign out in the footer", "recipe.html?r=pork-carnitas", async (page) => {
     await expect(page.getByRole("contentinfo").getByRole("button", { name: "Sign out" })).toBeVisible();

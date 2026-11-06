@@ -196,6 +196,17 @@ test.describe("the intake's Save", () => {
     expect(JSON.stringify(sent[0].body.recipe)).not.toContain("reviewId");
   });
 
+  test("reading another recipe after a save starts its Finish afresh", async ({ page, baseURL }) => {
+    await signIn(page, baseURL);
+    await fakeWorker(page, "save", { json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } });
+    await ready(page);
+    await finish(page).getByRole("button", { name: "Save" }).click();
+    await expect(finish(page).getByRole("status")).toContainText("Published");
+    await page.getByRole("button", { name: "Read the recipe" }).click();
+    await expect(finish(page).getByRole("status")).toBeEmpty();
+    await expect(finish(page).getByRole("button", { name: "Save" })).toBeVisible();
+  });
+
   test("signed in, the recipe can still be copied instead", async ({ page, baseURL }) => {
     await signIn(page, baseURL);
     await ready(page);
