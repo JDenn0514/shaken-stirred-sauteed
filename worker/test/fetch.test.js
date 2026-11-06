@@ -138,15 +138,17 @@ describe("POST /api/fetch", () => {
     expect(Date.now() - started).toBeLessThan(1500);
   });
 
-  it("says plainly when a site refuses, and to copy the text instead", async () => {
-    const send = await signedIn();
-    const res = await getPage(send, "https://recipes.example/refused");
-    expect(res.status).toBe(502);
-    const { error, refused } = await res.json();
-    expect(refused).toBe(true);
-    expect(error).toMatch(/won't share/);
-    expect(error).toMatch(/copy/i);
-  });
+  for (const [what, path] of [["refuses (403)", "/refused"], ["asks for payment it doesn't need (402)", "/payment-required"]]) {
+    it(`says plainly when a site ${what}, and to copy the text instead`, async () => {
+      const send = await signedIn();
+      const res = await getPage(send, `https://recipes.example${path}`);
+      expect(res.status).toBe(502);
+      const { error, refused } = await res.json();
+      expect(refused).toBe(true);
+      expect(error).toMatch(/won't share/);
+      expect(error).toMatch(/copy/i);
+    });
+  }
 
   it("says when the page doesn't exist", async () => {
     const send = await signedIn();

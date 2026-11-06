@@ -77,7 +77,8 @@ async function read(res, url) {
   if (!res.ok) {
     await res.body?.cancel();
     if (res.status === 404 || res.status === 410) throw new Problem(502, "That site says the page doesn't exist. Check the address.");
-    if ([401, 403, 406, 429, 451, 503].includes(res.status)) {
+    // 402 too: Serious Eats sends it to automated requests, with no paywall.
+    if ([401, 402, 403, 406, 429, 451, 503].includes(res.status)) {
       throw new Problem(502, `${url.hostname} won't share its pages with other sites. ${COPY_INSTEAD}`, { refused: true });
     }
     throw new Problem(502, `That site answered with an error (${res.status}). Try again later, or: ${lower(COPY_INSTEAD)}`);
