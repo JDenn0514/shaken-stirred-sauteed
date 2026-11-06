@@ -1,0 +1,42 @@
+{
+  "category": "cooking",
+  "title": "Cinnamon Sugar Test Toast",
+  "ingredients": [
+    {
+      "qty": "1 slice",
+      "item": "bread"
+    },
+    {
+      "item": "Sugar"
+    },
+    {
+      "item": "Cinnamon"
+    },
+    {
+      "qty": "1-2 tbsp",
+      "item": "Butter"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Toast the bread.",
+      "hands": "30 sec"
+    },
+    {
+      "do": "Scrape butter across bread",
+      "hands": "30 sec"
+    },
+    {
+      "do": "Add a thin layer of sugar across the bread",
+      "hands": "1.5 min"
+    },
+    {
+      "do": "Add a little bit of cinnamon evenly on the bread",
+      "hands": "30 sec"
+    }
+  ],
+  "yield": "Serves 1",
+  "serve": "soon",
+  "sits": "15-30 min",
+  "added": "2026-11-06"
+}
