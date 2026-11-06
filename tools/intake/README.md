@@ -75,13 +75,23 @@ another page") and "Read the recipe". The website and the PDF are
     and how long it can sit. Nothing is chosen for you; the reader's guess is
     shown as a hint. Baking, cocktails and components show their serving to
     confirm instead.
-- **The preview**: the recipe as read, in the site's style. Tap the title, an
-  ingredient or a step to fix it; add or remove ingredients and steps. The
-  guesses to confirm sit on their step or ingredient: split steps ("Join
-  back"), joined alternatives ("Split back out"), "Needs you there", prep
-  (ahead, just before, not prep), "Done while an earlier step waits", linked
-  recipes ("Usually already made or bought", "Unlink"), and below the steps,
-  where the dish keeps as long as you like (`holds`).
+- **The preview**: the recipe as read, drawn by the recipe page's own code
+  (`assets/recipe-view.js`), as the editor's preview is. Tap the title, the
+  description, the yield, an ingredient or a step to fix it; add, remove and
+  move ingredients and steps (Move up and Move down in the open form, which
+  keep what's typed and stay open, as the editor's do; moving is
+  `moveStep`/`moveIngredient`, the editor's `assets/edit-model.mjs` moves
+  under the review's ids). The "Prep first" switch shows the steps in
+  prep-first order, with added prep steps in place, or as written. The guesses
+  to confirm sit on their step or ingredient: split steps ("Join back"),
+  joined alternatives ("Split back out"), "Needs you there", prep (ahead, just
+  before, not prep), "Done while an earlier step waits", linked recipes
+  ("Usually already made or bought", "Unlink"), and below the steps, where the
+  dish keeps as long as you like (`holds`).
+- **The original**, beside the preview (on a phone, under "Show the
+  original"): the pasted text, the text read from the PDF (with its name), or
+  the web page's address to open. It's only shown, never put in the recipe or
+  sent anywhere.
 - **Things to check**: the other flags (every amount, no amount, unreadable,
   storage, total time, cover, planning notes), beside what they're about
   where there is one.
@@ -92,11 +102,20 @@ another page") and "Read the recipe". The website and the PDF are
   taken is refused. "Copy instead", or "Copy recipe" for anyone else, gives the
   recipe file and its file name: add it to `recipes/`, run
   `node scripts/build-index.mjs` and commit.
+- **An unfinished review is kept** in this browser (`sss:intake`, through
+  `toKeep` and `fromKept`): the review with its answers so far, and the text
+  it was read from (pasted text or a PDF's text, never the PDF itself; for a
+  web page, its address). Coming back after a reload or an accidental back
+  offers it: "Carry on with Milk Rolls?", with "Carry on" or "Start over".
+  Reading another recipe replaces it, and Save clears it; copying doesn't,
+  since the recipe isn't on the site yet.
 
-Not yet: showing the original page or PDF beside the preview, keeping an
-unsaved review across a reload, reordering steps, and the prep-first preview.
-The preview is drawn here in the recipe page's style, not by the recipe page's
-own code; sharing that code is slice 2 of the editor plan.
+Not yet: the editor's "Split here" and "Join with the next step" for any step
+(the intake only joins back what the reader split), groups added or renamed,
+a step's cue, and the "Couldn't place" list. The intake and the editor now draw
+the same preview; whether the intake should hand its draft to the editor once
+the questions are answered, rather than keep its own editing, is a question for
+Jacob (see the pull request).
 
 ### For the lineup session
 

@@ -194,6 +194,21 @@ test.describe("the intake's Save", () => {
     expect(sent[0].body.baseSha).toBeUndefined();
     expect(sent[0].body.recipe.title).toBe("Milk Rolls");
     expect(JSON.stringify(sent[0].body.recipe)).not.toContain("reviewId");
+    expect(JSON.stringify(sent[0].body)).not.toContain("METHOD");
+  });
+
+  test("once saved, the review isn't offered back", async ({ page, baseURL }) => {
+    await signIn(page, baseURL);
+    await fakeWorker(page, "save", { json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } });
+    await ready(page);
+    await page.reload();
+    await expect(page.getByRole("region", { name: "Carry on with Milk Rolls?" })).toBeVisible();
+    await page.getByRole("button", { name: "Carry on" }).click();
+    await finish(page).getByRole("button", { name: "Save" }).click();
+    await expect(finish(page).getByRole("link", { name: "See Milk Rolls on the site" })).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole("button", { name: "Read the recipe" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Carry on with Milk Rolls?" })).toHaveCount(0);
   });
 
   test("reading another recipe after a save starts its Finish afresh", async ({ page, baseURL }) => {

@@ -38,6 +38,13 @@ test.describe("a recipe website", () => {
     await expect(source).toHaveAttribute("href", "https://kitchen.example/honey-oat-bars");
   });
 
+  test("the web page's address sits beside the preview, to open and check against", async ({ page }) => {
+    await siteServes(page, "recipe-page.html", "https://kitchen.example/honey-oat-bars");
+    await getPage(page, "https://kitchen.example/honey-oat-bars");
+    const original = page.getByRole("region", { name: "The original" });
+    await expect(original.getByRole("link", { name: "https://kitchen.example/honey-oat-bars" })).toHaveAttribute("href", "https://kitchen.example/honey-oat-bars");
+  });
+
   test("a recipe card's ingredient groups and notes are kept, and shown in the preview", async ({ page }) => {
     await siteServes(page, "recipe-card-page.html", "https://noodles.example/sesame");
     await getPage(page, "https://noodles.example/sesame", "Cooking");
@@ -108,6 +115,9 @@ test.describe("a PDF", () => {
       await expect(preview(page).getByRole("button", { name: item })).toBeVisible();
     }
     await expect(preview(page).locator("ol.steps > li").filter({ hasText: "bake until pale golden" })).toBeVisible();
+    const original = page.getByRole("region", { name: "The original" });
+    await expect(original).toContainText("recipe.pdf");
+    await expect(original).toContainText("2 cups all-purpose flour");
   });
 
   test("a scanned PDF, with no text, says so and suggests Live Text", async ({ page }) => {
