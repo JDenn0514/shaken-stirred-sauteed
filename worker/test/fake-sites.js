@@ -41,6 +41,9 @@ export async function fakeSites(request) {
       await new Promise((r) => setTimeout(r, 2000));
       return page(LEMON_BARS);
     case "/refused": return new Response("Access denied", { status: 403 });
+    // Serious Eats answered an automated request with 402 ("payment required"),
+    // though it has no paywall.
+    case "/payment-required": return new Response("Payment required", { status: 402 });
     case "/missing": return new Response("Not found", { status: 404 });
     case "/photo.jpg": return new Response("not really a jpeg", { headers: { "Content-Type": "image/jpeg" } });
     default: return new Response("Not found", { status: 404 });
