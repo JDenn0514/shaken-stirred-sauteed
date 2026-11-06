@@ -2,6 +2,11 @@
 // "Signing in"). Its tables are in the D1 database (worker/migrations).
 import { betterAuth } from "better-auth";
 
+// A secret as typed or pasted into Cloudflare's dashboard, without the spaces
+// or invisible characters that can come with it: zero-width space, zero-width
+// non-joiner and joiner, word joiner, and byte-order mark.
+const clean = (value) => value?.replace(/[\u200B-\u200D\u2060\uFEFF]/g, "").trim();
+
 // Better Auth's settings. Also used by worker/scripts/auth-schema.mjs, which
 // writes the SQL for the tables these settings need.
 export function authOptions(env, database = env.DB) {
@@ -12,12 +17,12 @@ export function authOptions(env, database = env.DB) {
     // previews can't sign in.
     baseURL: env.SITE_URL,
     basePath: "/api/auth",
-    secret: env.BETTER_AUTH_SECRET,
+    secret: clean(env.BETTER_AUTH_SECRET),
     database,
     socialProviders: {
       github: {
-        clientId: env.GITHUB_CLIENT_ID,
-        clientSecret: env.GITHUB_CLIENT_SECRET,
+        clientId: clean(env.GITHUB_CLIENT_ID),
+        clientSecret: clean(env.GITHUB_CLIENT_SECRET),
         // A GitHub App ignores scopes: its permissions are set on the app.
         disableDefaultScope: true,
       },
