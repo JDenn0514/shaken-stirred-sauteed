@@ -40,9 +40,23 @@ test.describe("the recipe page", () => {
     await page.goto("recipe.html?r=veg-stir-fry");
     await toggle(page).click();
     await expect(toggle(page)).not.toBeChecked();
-    await expect(toggle(page)).toBeFocused();
     await expect(steps(page)).toHaveText(starting(AS_WRITTEN));
     await expect(page.getByRole("heading", { name: "Prep", level: 3 })).toHaveCount(0);
+  });
+
+  // Checked with the keyboard, not a click: Safari on a Mac doesn't focus a
+  // checkbox you click, so after a click there's no focus to keep.
+  test("works from the keyboard, and the switch keeps focus as the steps change", async ({ page }) => {
+    await page.goto("recipe.html?r=veg-stir-fry");
+    await toggle(page).focus();
+    await page.keyboard.press("Space");
+    await expect(toggle(page)).not.toBeChecked();
+    await expect(steps(page)).toHaveText(starting(AS_WRITTEN));
+    await expect(toggle(page)).toBeFocused();
+    await page.keyboard.press("Space");
+    await expect(toggle(page)).toBeChecked();
+    await expect(steps(page)).toHaveText(starting(PREP_FIRST));
+    await expect(toggle(page)).toBeFocused();
   });
 
   test("the choice is remembered, and is the same one as the menu's Prep everything first", async ({ page }) => {
