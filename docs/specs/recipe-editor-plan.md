@@ -251,6 +251,7 @@ Tests first:
 - **PDF**: pdf.js 6.4.299, the modern build, in `assets/vendor/pdfjs/` with its Apache 2.0 licence. `.assetsignore`'s `LICENSE` line now only means the site's own, so pdf.js's is served with it. It's loaded only when a PDF is chosen (a dynamic `import()`), runs in its own Web Worker, and needs **no CSP change**: `script-src 'self'` and `worker-src 'self'` already cover it, and text reading uses no WebAssembly. `isEvalSupported: false` keeps it from trying `eval`.
 - **Tests**: Worker tests in `worker/test/fetch.test.js`, with fake outside sites in `worker/test/fake-sites.js` (the fake GitHub is untouched). Browser tests in `tests/e2e/intake-import.spec.mjs`, with saved pages and two small PDFs in `tests/samples/` (made by `make-pdfs.mjs`). `PAGES`: a website's recipe with its source, a site refusing, and a PDF with no text.
 - Not done here: the original beside the preview, and the "Couldn't place" list (the intake's "Things to check" covers part of it).
+- Later (branch `intake-gaps`): the original sits beside the intake's preview (one tap away on a phone), held in the page and in the kept review as text (a PDF's text, or a web page's address), never in the recipe. The intake's preview is now drawn by `recipe-view.js`, with Move up and down and the "Prep first" switch, and an unfinished review is kept in the browser (`sss:intake`) and offered back. See `tools/intake/README.md`.
 
 ## Slice 8: "Tidy up with AI" (optional)
 

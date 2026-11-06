@@ -1368,14 +1368,40 @@ body.cooking > .site-footer { display: none; }
 .intake-problem { color: var(--baking); font-weight: 600; margin: 4px 0; }
 .intake-done { color: var(--cooking); font-weight: 600; margin: 2px 0 0; }
 .intake-preview { border-top: 0; }
-.intake-title { margin-top: 10px; font-size: 2rem; }
+/* The preview is the recipe page (assets/recipe-view.js), as in the editor. */
+.intake-page { padding-top: 0; }
+.intake-page ol.steps > li { cursor: default; }
+.intake-page ul.ingredients > li { padding: 6px 0; }
+.intake-page .section > .btn { margin-top: 10px; }
 .intake-part {
-  font: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 2px 0; cursor: pointer;
-  text-decoration: underline dotted var(--muted); text-underline-offset: 4px;
+  font: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 2px 0; margin: 0; cursor: pointer;
+  text-decoration: underline dotted var(--muted); text-underline-offset: 4px; letter-spacing: inherit; line-height: inherit;
 }
-.intake-ingredients { list-style: none; margin: 0 0 10px; padding: 0; }
-.intake-ingredients > li { padding: 8px 0; border-bottom: 1px solid var(--border); }
-.intake-steps > li { cursor: default; }
+.intake-page h1 .intake-part { text-decoration-thickness: 2px; }
+.intake-edit select { max-width: 100%; }
+/* An unfinished review from before, offered back. */
+.intake-kept { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.intake-kept h2 { font-size: 1.15rem; margin: 0 0 6px; }
+.intake-kept p { margin: 0 0 10px; }
+/* The original beside the preview; on a phone, one tap away. */
+.intake-review { display: grid; grid-template-columns: minmax(0, 1fr); }
+.intake-original { margin-top: 18px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); display: grid; gap: 8px; min-width: 0; }
+.intake-original h2 { font-size: 1.15rem; margin: 0; }
+.intake-original h3 { font-size: 1rem; margin: 8px 0 4px; }
+.intake-original-toggle { justify-self: start; }
+.intake-original-body p { margin: 0 0 8px; overflow-wrap: anywhere; }
+.intake-original-body:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.intake-original-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); font-size: .84rem; line-height: 1.5; }
+@media (max-width: 959px) {
+  .intake-original:not(.open) .intake-original-body { display: none; }
+}
+@media (min-width: 960px) {
+  .intake-review.has-original { grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); column-gap: 28px; }
+  .intake-review.has-original > .intake-main { grid-column: 1; grid-row: 1; }
+  .intake-review.has-original > .intake-original { grid-column: 2; grid-row: 1; align-self: start; position: sticky; top: 84px; }
+  .intake-original-toggle { display: none; }
+  .intake-original-body { max-height: calc(100vh - 170px); overflow: auto; }
+}
 .intake-guess { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 0; font-size: .92rem; color: var(--muted); }
 .intake-guess .btn { min-height: 34px; padding: 0 12px; font-size: .86rem; }
 .intake-flag { margin: 6px 0 0; font-size: .92rem; color: var(--baking); }

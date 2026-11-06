@@ -6,7 +6,8 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { draftFromText } from "../../tools/intake/intake.mjs";
 import { startReview, reviewOf, answerWait, answerServe, joinBack, splitBack, setPlanning, setHolds, setLink, updateIngredient,
-  updateStep, setField, addIngredient, removeIngredient, addStep, removeStep, recipeToSave, slugOf } from "../../tools/intake/review.mjs";
+  updateStep, setField, addIngredient, removeIngredient, addStep, removeStep, moveStep, moveIngredient, recipeToSave, slugOf,
+  toKeep, fromKept } from "../../tools/intake/review.mjs";
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 
@@ -286,6 +287,77 @@ describe("editing the draft", () => {
     state = setField(setField(state, "title", "  Steak for Two "), "yield", "Serves 2");
     assert.equal(state.recipe.title, "Steak for Two");
     assert.equal(state.recipe.yield, "Serves 2");
+  });
+});
+
+describe("moving steps and ingredients", () => {
+  // Grouped, as a cookbook page often is.
+  const grouped = () => ({
+    title: "Layered", category: "baking",
+    ingredients: [{ group: "Dough", items: [{ item: "flour" }, { item: "butter" }] }, { group: "Filling", items: [{ item: "jam" }] }],
+    steps: [{ do: "Mix." }, { do: "Roll out." }, { do: "Bake until golden.", wait: "20 min" }],
+  });
+
+  test("a step moves up or down one place, keeping what it is", () => {
+    let state = startReview(grouped(), []);
+    state = moveStep(state, "s2", -1);
+    assert.deepEqual(flat(state.recipe.steps).map((s) => s.do), ["Roll out.", "Mix.", "Bake until golden."]);
+    assert.equal(flat(state.recipe.steps)[0].reviewId, "s2");
+    state = moveStep(state, "s2", 1);
+    state = moveStep(state, "s2", 1);
+    assert.deepEqual(flat(state.recipe.steps).map((s) => s.do), ["Mix.", "Bake until golden.", "Roll out."]);
+  });
+
+  test("the first can't go up, nor the last down", () => {
+    const state = startReview(grouped(), []);
+    assert.deepEqual(moveStep(state, "s1", -1).recipe, state.recipe);
+    assert.deepEqual(moveStep(state, "s3", 1).recipe, state.recipe);
+  });
+
+  test("an ingredient moves within its group, and out of it into the next, as the editor moves them", () => {
+    let state = startReview(grouped(), []);
+    state = moveIngredient(state, "i2", -1);
+    assert.deepEqual(state.recipe.ingredients[0].items.map((i) => i.item), ["butter", "flour"]);
+    state = moveIngredient(state, "i1", 1);
+    assert.deepEqual(state.recipe.ingredients.map((e) => e.items ? e.items.map((i) => i.item) : e.item), [["butter"], "flour", ["jam"]]);
+  });
+
+  test("questions and answers stay with a moved step", () => {
+    let state = startReview(bread(), []);
+    const bake = reviewOf(state).asks.find((a) => a.text === "Bake until deep golden.");
+    state = answerWait(state, bake.id, "35 min");
+    state = moveStep(state, bake.step, -1);
+    const after = reviewOf(state).asks.find((a) => a.id === bake.id);
+    assert.equal(after.answered, true);
+    assert.equal(after.value, "35 min");
+    assert.equal(flat(state.recipe.steps)[1].do, "Bake until deep golden.");
+  });
+});
+
+describe("keeping an unfinished review", () => {
+  test("what's kept brings back the review as it was, answers and all, with the text it was read from", () => {
+    let state = startReview(bread(), []);
+    state = answerWait(state, reviewOf(state).asks[0].id, "1 hr");
+    state = updateIngredient(state, "i1", { qty: "450 g" });
+    const original = { kind: "text", pages: ["Plain Loaf\n500 g flour"] };
+    const kept = JSON.parse(JSON.stringify(toKeep(state, { original, at: "2026-11-06T10:00:00.000Z" })));
+    const back = fromKept(kept);
+    assert.deepEqual(back.state, JSON.parse(JSON.stringify(state)));
+    assert.deepEqual(reviewOf(back.state), reviewOf(state));
+    assert.deepEqual(back.original, original);
+    assert.equal(back.at, "2026-11-06T10:00:00.000Z");
+    assert.equal(back.title, "Plain Loaf");
+  });
+
+  test("a web page keeps only its address, never the page", () => {
+    const kept = toKeep(startReview(bread(), []), { original: { kind: "page", url: "https://kitchen.example/loaf", html: "<html>…</html>" } });
+    assert.deepEqual(kept.original, { kind: "page", url: "https://kitchen.example/loaf" });
+  });
+
+  test("anything else isn't a review, and nothing is offered", () => {
+    for (const junk of [null, "nonsense", {}, { v: 1 }, { v: 1, state: { recipe: "x" } }, { v: 99, state: startReview(bread(), []) }]) {
+      assert.equal(fromKept(junk), null, JSON.stringify(junk));
+    }
   });
 });
 

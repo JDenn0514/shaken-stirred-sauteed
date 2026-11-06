@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect, onMenu, signIn, EDITOR_INDEX } from "./fixtures.mjs";
-import { ROLLS, CHICKEN, readRecipe } from "./intake-samples.mjs";
+import { ROLLS, CHICKEN, NOODLES, readRecipe } from "./intake-samples.mjs";
 
 const PAGES = [
   ["welcome page", "index.html", (page) => expect(page.locator('[data-count="all"]')).toHaveText("all 6")],
@@ -139,6 +139,32 @@ const PAGES = [
     await page.getByRole("button", { name: "Use this time" }).click();
     await page.getByRole("button", { name: "Copy recipe" }).click();
     await expect(page.getByLabel("Recipe file")).toBeVisible();
+  }],
+  ["recipe intake offering an unfinished review back", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.reload();
+    await expect(page.getByRole("button", { name: "Carry on" })).toBeVisible();
+  }],
+  ["recipe intake with a step open, to move", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("region", { name: "Preview" }).getByRole("button", { name: /^Add the flour/ }).click();
+    await page.getByRole("button", { name: "Move up" }).click();
+    await expect(page.getByRole("button", { name: "Move down" })).toBeVisible();
+  }],
+  ["recipe intake in prep-first order", "intake.html", async (page) => {
+    await readRecipe(page, NOODLES, "Cooking");
+    await expect(page.getByRole("switch", { name: "Prep first" })).toBeChecked();
+  }],
+  ["recipe intake as written", "intake.html", async (page) => {
+    await readRecipe(page, NOODLES, "Cooking");
+    await page.getByRole("switch", { name: "Prep first" }).uncheck();
+    await expect(page.getByRole("switch", { name: "Prep first" })).not.toBeChecked();
+  }],
+  ["recipe intake on a phone with the original open", "intake.html", async (page) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("button", { name: "Show the original" }).click();
+    await expect(page.getByRole("button", { name: "Hide the original" })).toBeVisible();
   }],
   // From a recipe website or a PDF (tests/e2e/intake-import.spec.mjs)
   ["recipe intake with a website's recipe and its source", "intake.html", async (page) => {

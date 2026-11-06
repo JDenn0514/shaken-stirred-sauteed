@@ -12,7 +12,9 @@ import { draftFromText } from "../tools/intake/intake.mjs";
 
 const $ = (id) => document.getElementById(id);
 
-// show(draft): starts the review with { recipe, flags }. titles(): the site's
+// show(draft, original): starts the review with { recipe, flags }, and what it
+// was read from, to show beside it: { kind: "page", url } or
+// { kind: "pdf", name, pages } (the text read, never the file). titles(): the site's
 // recipe slugs and titles, to link ingredients to recipes.
 export function startImport({ show, titles }) {
   const form = $("read");
@@ -67,7 +69,7 @@ export function startImport({ show, titles }) {
         return;
       }
       say("");
-      show(draft);
+      show(draft, { kind: "page", url: body.url || address });
     } finally {
       button.disabled = false;
     }
@@ -113,7 +115,7 @@ export function startImport({ show, titles }) {
       return;
     }
     say("");
-    show(draft);
+    show(draft, { kind: "pdf", name: file.name, pages });
   });
 }
 
