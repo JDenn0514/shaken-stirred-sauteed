@@ -6,8 +6,14 @@
 //   GET  /api/auth/callback/github  where GitHub sends you back (Better Auth)
 //   GET  /api/me                    who's signed in, and whether they can edit
 //   POST /api/signout               sign out
+// and saving (slice 6, src/recipes.js):
+//   GET  /api/recipe/<slug>         a recipe on main, with its file's version
+//   POST /api/save                  { slug, recipe, baseSha }: commit it to main
+//   POST /api/delete                { slug, baseSha }: take it off main
 // Everything else under /api/ needs you to be signed in: 401 if you aren't.
 import { forgetAuth, getAuth } from "./auth.js";
+import { Refusal, SIGN_IN_AGAIN, github } from "./github.js";
+import { deleteRecipe, isSlug, loadRecipe, saveRecipe } from "./recipes.js";
 
 // The readable cookie that tells the site's pages someone is signed in, so
 // they can show "Sign out" without asking the server. Nothing secret: the real
@@ -55,7 +61,59 @@ async function api(request, env, url) {
   if (!session) return signedOut("Sign in first.");
 
   if (route === "GET /api/me") return me(auth, request, env, session);
-  return Response.json({ error: "Not found" }, { status: 404 });
+
+  const recipe = /^\/api\/recipe\/([^/]+)$/.exec(url.pathname);
+  const saving = url.pathname === "/api/save" || url.pathname === "/api/delete";
+  if (!recipe && !saving) return Response.json({ error: "Not found" }, { status: 404 });
+  if (recipe && request.method !== "GET") return notAllowed("GET");
+  if (saving && request.method !== "POST") return notAllowed("POST");
+  // Saving only takes requests from the site's own pages.
+  const origin = request.headers.get("Origin");
+  if (saving && origin !== url.origin) return Response.json({ error: "Saving only works from this site." }, { status: 403 });
+
+  try {
+    let body = null;
+    if (saving) {
+      body = await request.json().catch(() => null);
+      const problem = badRequest(url.pathname, body);
+      if (problem) return Response.json({ error: problem }, { status: 400 });
+    }
+    const token = await githubToken(auth, request);
+    if (!token) return signedOut(SIGN_IN_AGAIN);
+    const gh = github(token, env.GITHUB_REPO);
+    if (recipe) return Response.json(await loadRecipe(gh, decodeURIComponent(recipe[1])));
+    if (url.pathname === "/api/save") return Response.json(await saveRecipe(gh, body));
+    return Response.json(await deleteRecipe(gh, body));
+  } catch (error) {
+    if (!(error instanceof Refusal)) throw error;
+    return error.status === 401 ? signedOut(error.message) : Response.json(error.body, { status: error.status });
+  }
+}
+
+// What's wrong with a save or delete's request, if anything.
+function badRequest(path, body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return "Send the recipe as JSON.";
+  if (!isSlug(body.slug)) return "The recipe's file name must be lowercase letters, numbers and dashes.";
+  if (body.baseSha !== undefined && (typeof body.baseSha !== "string" || !/^[0-9a-f]{40}$/.test(body.baseSha))) return "That isn't a version of a recipe.";
+  if (path === "/api/delete") return body.baseSha === undefined ? "Say which version of the recipe to delete." : "";
+  const r = body.recipe;
+  if (!r || typeof r !== "object" || Array.isArray(r)) return "Send the recipe to save.";
+  return "";
+}
+
+// The signed-in person's GitHub token. Better Auth renews GitHub's 8-hour
+// token itself when it has run out; null when it can't (sign in again).
+async function githubToken(auth, request) {
+  try {
+    const accounts = await auth.api.listUserAccounts({ headers: request.headers });
+    const account = accounts.find((a) => a.providerId === "github");
+    if (!account) return null;
+    const { accessToken } = await auth.api.getAccessToken({ body: { accountId: account.id }, headers: request.headers });
+    return accessToken || null;
+  } catch {
+    // A refresh GitHub refused, or no GitHub account.
+    return null;
+  }
 }
 
 // Starts GitHub sign-in. Better Auth sets a short-lived cookie that ties
@@ -94,15 +152,7 @@ function withHint(res) {
 }
 
 async function me(auth, request, env, session) {
-  // Better Auth renews GitHub's 8-hour token itself when it has run out.
-  let token = null;
-  try {
-    const accounts = await auth.api.listUserAccounts({ headers: request.headers });
-    const github = accounts.find((a) => a.providerId === "github");
-    if (github) ({ accessToken: token } = await auth.api.getAccessToken({ body: { accountId: github.id }, headers: request.headers }));
-  } catch {
-    // A refresh GitHub refused, or no GitHub account: sign in again.
-  }
+  const token = await githubToken(auth, request);
   const repo = token && await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -111,7 +161,7 @@ async function me(auth, request, env, session) {
       "User-Agent": "shaken-stirred-sauteed",
     },
   });
-  if (!repo || repo.status === 401) return signedOut("Your GitHub sign-in has expired. Sign in again.");
+  if (!repo || repo.status === 401) return signedOut(SIGN_IN_AGAIN);
   if (!repo.ok && repo.status !== 404 && repo.status !== 403) {
     return Response.json({ error: "Couldn't reach GitHub. Try again in a minute." }, { status: 502 });
   }
