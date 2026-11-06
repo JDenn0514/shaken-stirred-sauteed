@@ -23,7 +23,7 @@ No frameworks and no build step: it's plain HTML, CSS, and JavaScript, served by
 
 ## Adding a recipe
 
-The quickest way is the intake, `intake.html` on the site (its "Add recipe" link shows only when you're signed in, but the page works for anyone at its address): paste the recipe's text (from a photo, copy it with Live Text), answer its questions, check the preview, and copy the recipe file it gives you into `recipes/`. Then carry on from step 3. See `tools/intake/README.md`.
+The quickest way is the intake, `intake.html` on the site (its "Add recipe" link shows only when you're signed in, but the page works for anyone at its address): give it a recipe website's address (signed in), choose a PDF, or paste the recipe's text (from a photo, copy it with Live Text); then answer its questions, check the preview, and copy the recipe file it gives you into `recipes/`. Then carry on from step 3. See `tools/intake/README.md`.
 
 By hand:
 
@@ -157,7 +157,7 @@ Two alternative styles are kept in case you change your mind: `style-guides/fiel
 
 The site is on Cloudflare's free plan, at shaken-stirred-sauteed.com. Cloudflare publishes `main` a minute or two after every push.
 
-- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/src/`), for the recipe editor's sign-in and saving (`docs/specs/recipe-editor-design.md`).
+- `wrangler.jsonc` sets it up: one Worker that serves the site's files as they are, at the same addresses as before (`recipe.html?r=…`). Only `/api/` runs code (`worker/src/`), for the recipe editor's sign-in and saving, and for getting a recipe website's page for the intake (`/api/fetch`, signed in only) (`docs/specs/recipe-editor-design.md`).
 - The Worker is its own small program in `worker/`, with its own `package.json` (Better Auth for signing in). It's an npm workspace, so `npm install` at the top installs it too, and Cloudflare installs and bundles it when it deploys.
 - **Signing in** is with GitHub, through a GitHub App installed only on this repo: the "Sign in" link in every page's footer. Anyone can sign in, but only an account that can push to this repo can edit the site. Its users, sessions and GitHub tokens (encrypted) are in a D1 database, `shaken-stirred-sauteed-auth`. Its secrets (`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `BETTER_AUTH_SECRET`) are set in Cloudflare's dashboard, never in the repo. It only works on shaken-stirred-sauteed.com: branch previews can't sign in, since GitHub only sends you back to the real address.
 - **The database's tables** are made by the files in `worker/migrations/`. A new one is applied once, from a computer signed in to Cloudflare (`npx wrangler login`), before the change that needs it is merged:
@@ -187,7 +187,7 @@ python3 -m http.server 8000
 
 ## Tests
 
-The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only: the site itself still has no dependencies. (The Worker in `worker/` has its own, installed by the same `npm install`.)
+The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only. The site itself has one dependency, committed as files rather than installed: pdf.js (`assets/vendor/pdfjs/`, with its licence), loaded only by the recipe intake when a PDF is chosen. (The Worker in `worker/` has its own, installed by the same `npm install`.)
 
 ```sh
 npm install                      # once
@@ -197,7 +197,7 @@ npm test
 
 - `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, the tests in `tests/unit/` and the Worker's tests. After `npm install` it also runs before every `git push`, and stops the push if something fails.
 - `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`, whose checks live in `assets/recipe-checks.js` so the editor can share them): what it rejects, what it warns about, and what it writes into the index, and that patching one recipe's entry into the index gives the same index as a full rebuild. It also checks the link checker, the lineup planner (`assets/planner.mjs`) what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`), and the editor's changes to a recipe (`assets/edit-model.mjs`).
-- `worker/test/` tests the Worker (`npm run test:worker`) with Vitest in Cloudflare's real Workers runtime, with a local D1 database and a fake GitHub: signing in and out, the cookies it sets, where sign-in may send you back to, who's signed in and whether they can edit, renewing GitHub's 8-hour token, and that the migrations make every table Better Auth needs.
+- `worker/test/` tests the Worker (`npm run test:worker`) with Vitest in Cloudflare's real Workers runtime, with a local D1 database and a fake GitHub: signing in and out, the cookies it sets, where sign-in may send you back to, who's signed in and whether they can edit, renewing GitHub's 8-hour token, that the migrations make every table Better Auth needs, and `/api/fetch` (with fake outside websites): signed in only, https only, never a private or local address (even after a redirect), and its size and time limits.
 - `tests/e2e/` opens the site in Chrome and again in WebKit, the engine behind Safari and every browser on an iPhone. It uses a small set of test recipes, not the real ones, and covers:
   - the index page: search, sections, filters, sorting and links
   - the recipe page: what it shows, checking things off, the current step, and handling bad recipe files. It also opens every real recipe to make sure each one loads without errors
@@ -207,6 +207,7 @@ npm test
   - the recipe editor (`edit.html`, not linked from the site yet): the preview of the card and page, editing in place by keyboard, Details and the lineup fields, the checker's problems and to-dos, the unsaved draft, that fields the editor has no control for come out unchanged, and that it asks you to sign in
   - light and dark mode
   - signing in and out from the footer, with the Worker faked
+  - the recipe intake (`intake.html`): pasted text, a recipe website's address (with `/api/fetch` faked by saved pages in `tests/samples/`) and a PDF (`tests/samples/recipe.pdf`, made by `tests/samples/make-pdfs.mjs`)
   - an automated accessibility scan of every page in both modes
 
 GitHub Actions runs all of them on every pull request and every push to main (`.github/workflows/ci.yml`). The quick checks and the browser tests run side by side, and the browser tests are split across several machines, so a run takes about as long as one slice of the browser tests. Dependabot opens a pull request when the test tools or the GitHub Actions have a new version.

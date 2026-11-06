@@ -1,9 +1,11 @@
-// The recipe intake's review screen (intake.html). Pasted text is read into a
-// draft (tools/intake/intake.mjs); the review (tools/intake/review.mjs) says
+// The recipe intake's review screen (intake.html). Pasted text (or a website
+// or a PDF, through intake-import.mjs) is read into a draft
+// (tools/intake/intake.mjs); the review (tools/intake/review.mjs) says
 // what to ask, confirm and check. This file only draws it and passes on what
 // the person does. Saving comes with the editor's sign-in; until then the
 // finished recipe is copied, to add to recipes/ by hand.
 import { draftFromText } from "../tools/intake/intake.mjs";
+import { startImport } from "./intake-import.mjs";
 import {
   startReview, reviewOf, answerWait, answerServe, joinBack, splitBack, setPlanning, setHolds, setLink,
   updateIngredient, updateStep, setField, addIngredient, removeIngredient, addStep, removeStep,
@@ -48,13 +50,20 @@ $("read").addEventListener("submit", (e) => {
   $("read-problem").hidden = !problem;
   $("read-problem").textContent = problem;
   if (problem) return;
-  const { recipe, flags } = draftFromText(texts, { category, titles: { ...titles } });
+  show(draftFromText(texts, { category, titles: { ...titles } }));
+});
+
+function show({ recipe, flags }) {
   state = startReview(recipe, flags);
   editing = null;
   copied = null;
   draw();
   out.querySelector("h2")?.scrollIntoView({ block: "start" });
-});
+}
+
+// --- From a recipe website or a PDF (assets/intake-import.mjs) ---------------
+
+startImport({ show, titles: () => titles });
 
 // --- Drawing the review -------------------------------------------------------
 
@@ -166,6 +175,9 @@ function previewHTML(review) {
         <div class="intake-row"><button class="btn intake-primary" type="submit">Done</button></div></form>`
       : `<h2 class="intake-title"><button class="intake-part" type="button" data-act="edit" data-id="title" data-key="part-title">${esc(r.title || "Add a title")}</button></h2>
         ${r.yield ? `<p class="lede">${esc(r.yield)}</p>` : ""}`}
+    ${r.source?.name || r.source?.url ? `<p class="source">Source: ${(r.source.url || "").startsWith("https://")
+      ? `<a href="${esc(r.source.url)}" rel="noopener noreferrer" target="_blank">${esc(r.source.name || r.source.url)}</a>`
+      : esc(r.source.name || r.source.url)}</p>` : ""}
     ${serving ? servingHTML(serving.value, null, true, false) : ""}
     <section class="section"><h2>${r.category === "cocktails" ? "Spec" : "Ingredients"}</h2>
       ${review.checks.some((c) => c.kind === "amounts") ? `<p class="intake-flag">Check every amount against the original: fractions are where reading goes wrong.</p>` : ""}

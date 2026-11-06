@@ -6,8 +6,10 @@
 //   GET  /api/auth/callback/github  where GitHub sends you back (Better Auth)
 //   GET  /api/me                    who's signed in, and whether they can edit
 //   POST /api/signout               sign out
+//   POST /api/fetch                 a recipe website's page, for the intake (slice 7, fetch-page.js)
 // Everything else under /api/ needs you to be signed in: 401 if you aren't.
 import { forgetAuth, getAuth } from "./auth.js";
+import { fetchPage } from "./fetch-page.js";
 
 // The readable cookie that tells the site's pages someone is signed in, so
 // they can show "Sign out" without asking the server. Nothing secret: the real
@@ -55,6 +57,7 @@ async function api(request, env, url) {
   if (!session) return signedOut("Sign in first.");
 
   if (route === "GET /api/me") return me(auth, request, env, session);
+  if (url.pathname === "/api/fetch") return route === "POST /api/fetch" ? fetchPage(request, env) : notAllowed("POST");
   return Response.json({ error: "Not found" }, { status: 404 });
 }
 
