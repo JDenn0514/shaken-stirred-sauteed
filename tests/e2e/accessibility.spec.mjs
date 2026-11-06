@@ -162,8 +162,10 @@ const PAGES = [
     await page.getByLabel("Choose a PDF").setInputFiles(new URL("../samples/scanned.pdf", import.meta.url).pathname);
     await expect(page.getByRole("alert")).toContainText("no text");
   }],
-  ["recipe page signed in, with Sign out in the footer", "recipe.html?r=pork-carnitas",
-    (page) => expect(page.getByRole("contentinfo").getByRole("button", { name: "Sign out" })).toBeVisible(), null, signedIn()],
+  ["recipe page signed in, with Edit and Sign out in the footer", "recipe.html?r=pork-carnitas", async (page) => {
+    await expect(page.getByRole("contentinfo").getByRole("button", { name: "Sign out" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Edit", exact: true })).toBeVisible();
+  }, null, signedIn()],
   ["recipe intake signed in to an account that can't edit the site", "intake.html",
     (page) => expect(page.getByRole("contentinfo")).toContainText("This account can't edit this site."), null,
     signedIn((page) => page.route("**/api/me", (route) => route.fulfill({ json: { name: "A Friend", canEdit: false } })))],
@@ -190,6 +192,54 @@ const PAGES = [
   }, null, editor],
   ["editor with its to-do list", "edit.html?r=garlic-bread", (page) => expect(page.getByRole("region", { name: "To do" })).toBeVisible(), null, editor],
   ["editor in prep-first order", "edit.html?r=veg-stir-fry", (page) => expect(editorPreview(page).getByRole("switch", { name: "Prep first" })).toBeChecked(), null, editor],
+  ["editor after publishing", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("link", { name: "See Pork Carnitas on the site" })).toBeVisible();
+  }, null, editorSaving({ json: { slug: "pork-carnitas", title: "Pork Carnitas", sha: "1".repeat(40), commit: "c".repeat(40) } })],
+  ["editor when the recipe changed since it was opened", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("alert")).toBeVisible();
+  }, null, editorSaving({ status: 409, json: { error: "This recipe changed since you opened it. Your changes are kept in this browser: reload to see the new version, then bring your changes back if you still want them." } })],
+  ["editor with problems the Worker found, and sign in again", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("alert")).toBeVisible();
+  }, null, editorSaving({ status: 401, json: { error: "Your GitHub sign-in has expired. Sign in again." } })],
+  ["editor's delete confirmation", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByRole("button", { name: "Delete this recipe" }).click();
+    await page.getByRole("dialog").getByLabel("Recipe name").fill("Pork Carnitas");
+    await expect(page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true })).toBeEnabled();
+  }, null, editor],
+  ["editor's delete confirmation, refused", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByRole("button", { name: "Delete this recipe" }).click();
+    await page.getByRole("dialog").getByLabel("Recipe name").fill("Pork Carnitas");
+    await page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
+    await expect(page.getByRole("dialog").getByRole("alert")).not.toBeEmpty();
+  }, null, editorSaving({ status: 409, json: { error: "This recipe changed since you opened it." } }, "delete")],
+  ["editor after deleting", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByRole("button", { name: "Delete this recipe" }).click();
+    await page.getByRole("dialog").getByLabel("Recipe name").fill("Pork Carnitas");
+    await page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Deleted Pork Carnitas");
+  }, null, editorSaving({ json: { slug: "pork-carnitas", title: "Pork Carnitas", commit: "c".repeat(40) } }, "delete")],
+  ["editor with Delete off for a recipe another uses", "edit.html?r=garlic-butter",
+    (page) => expect(page.getByRole("button", { name: "Delete this recipe" })).toBeDisabled(), null, editor],
+  ["recipe intake signed in, ready to save", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("button", { name: "Use this time" }).click();
+    await expect(page.getByRole("button", { name: "Save", exact: true })).toBeEnabled();
+  }, null, editor],
+  ["recipe intake, published", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("button", { name: "Use this time" }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("link", { name: "See Milk Rolls on the site" })).toBeVisible();
+  }, null, editorSaving({ json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } })],
+  ["recipe intake, a save refused", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("button", { name: "Use this time" }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("alert")).toBeVisible();
+  }, null, editorSaving({ status: 409, json: { error: "There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it." } })],
   ["editor offering an unsaved draft back", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Pork Carnitas" }).click();
     await page.getByLabel("Title").fill("Carnitas, Edited");
@@ -212,6 +262,13 @@ function signedIn(more = () => {}) {
 async function editor(page) {
   await signIn(page, test.info().project.use.baseURL);
   await page.route("**/recipes/index.json", (route) => route.fulfill({ json: EDITOR_INDEX }));
+}
+// The editor, with the Worker's POST /api/save (or /api/delete) answering `reply`.
+function editorSaving(reply, what = "save") {
+  return async (page) => {
+    await editor(page);
+    await page.route(`**/api/${what}`, (route) => route.fulfill(reply));
+  };
 }
 function editorPreview(page) { return page.getByRole("region", { name: "Recipe preview" }); }
 

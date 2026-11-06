@@ -7,20 +7,26 @@
 //
 // Changes to the recipe are made by assets/edit-model.mjs, which keeps every
 // field the editor has no control for. An unsaved draft is kept in the browser
-// (sss:draft:<slug>) and offered back on return. Saving comes in a later step:
-// docs/specs/recipe-editor-plan.md.
+// (sss:draft:<slug>) and offered back on return.
+//
+// The recipe is loaded from main through the Worker (GET /api/recipe/<slug>),
+// with its file's version. Save sends it back with that version (POST
+// /api/save), and the Worker publishes it, or refuses if the file changed since
+// (docs/specs/recipe-editor-plan.md, slice 6). Delete asks you to type the
+// recipe's name, and is off while another recipe links to it.
 import * as M from "./edit-model.mjs";
 
 const { esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
-const { checkRecipe, checkLinks, indexEntry, patchIndex } = window.SSSChecks;
+const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.SSSChecks;
 const ICONS = window.SSSIcons.KEYS;
 
 const root = document.getElementById("editor");
 const slug = new URLSearchParams(location.search).get("r") || "";
 const DRAFT = `sss:draft:${slug}`;
 
-let original = null;   // the recipe as loaded
+let original = null;   // the recipe as it is on the site (loaded, or last saved)
+let version = null;    // its file's version on main (git's blob SHA), sent with Save and Delete
 let recipe = null;     // the recipe being edited
 let vocab = null;      // recipes/vocabulary.json
 let index = [];        // recipes/index.json
@@ -30,7 +36,7 @@ let ovenTemp = null;   // a step whose oven was just set to "At a temperature", 
 let detailsOpen = false;
 let offer = null;      // an unsaved draft from before, offered back
 let focusKey = null;   // what to focus after the next draw
-let status = "";       // a message beside Save
+let status = null;     // how the last save went: { saving }, { published }, or { error, problems, signIn }
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 const ingName = (i) => (typeof i === "string" ? i : i?.item || "");
@@ -57,6 +63,9 @@ async function signedIn() {
     return "stale";
   }
 }
+
+const signInHere = () => `/api/signin?return=${encodeURIComponent(location.pathname + location.search)}`;
+const KEPT = "Your changes are kept in this browser.";
 
 // --- Drafts ----------------------------------------------------------------------------
 
@@ -130,8 +139,11 @@ function draw() {
     </section>` : ""}
     <div class="edit-bar">
       <p class="edit-kicker">Editing <code>recipes/${esc(slug)}.json</code></p>
-      <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length ? ` disabled aria-describedby="save-why"` : ""}>Save</button>
-      <p class="edit-status" id="save-why" role="status">${errors.length ? `Fix ${errors.length === 1 ? "the problem" : `the ${errors.length} problems`} below to save.` : esc(status)}</p>
+      <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length || status?.saving ? ` disabled aria-describedby="save-why"` : ""}>Save</button>
+      <p class="edit-status" id="save-why" role="status">${errors.length ? `Fix ${errors.length === 1 ? "the problem" : `the ${errors.length} problems`} below to save.`
+        : status?.saving ? "Saving…"
+        : status?.published ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(slug)}">See ${esc(status.published)} on the site</a>` : ""}</p>
+      ${status?.error ? `<div class="edit-save-error" role="alert">${failureHTML(status)}</div>` : ""}
     </div>
     ${errors.length ? `<section class="edit-problems" aria-labelledby="problems-h">
       <h2 id="problems-h">Problems to fix</h2>
@@ -151,11 +163,20 @@ function draw() {
     <details class="edit-details"${detailsOpen ? " open" : ""}>
       <summary data-key="details">Details</summary>
       ${detailsHTML()}
-    </details>`;
+    </details>
+    ${deleteHTML()}`;
 
   decorate(root.querySelector(".edit-preview"), errors, showPrepFirst);
   const back = key && root.querySelector(`[data-key="${CSS.escape(key)}"]`);
   if (back) back.focus();
+}
+
+// Why a save or delete didn't happen: the Worker's words, its list of
+// problems, and a way to sign in again when that's what's needed.
+function failureHTML({ error, problems, signIn }) {
+  return `<p>${esc(error)}</p>
+    ${problems?.length ? `<ul>${problems.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
+    ${signIn ? `<p><a href="${esc(signInHere())}">Sign in again</a></p>` : ""}`;
 }
 
 function todoHTML(w) {
@@ -439,12 +460,114 @@ function stepDetails(s, n) {
   </fieldset>`;
 }
 
+// --- Deleting --------------------------------------------------------------------------------
+
+// The recipes that link to this one, from the site's index: while there are
+// any, it can't be deleted.
+const usedBy = () => linkedFrom(index, slug).filter((l) => l.slug !== slug);
+const usesSaid = (users) => users.map((l) => `${l.title} uses this recipe for its "${l.item}"`).join("; ");
+
+function deleteHTML() {
+  const users = usedBy();
+  return `<section class="edit-delete" aria-label="Delete">
+    <button class="btn edit-danger" type="button" data-act="delete" data-key="delete"${users.length ? ` disabled aria-describedby="delete-why"` : ""}>Delete this recipe</button>
+    ${users.length ? `<p class="muted" id="delete-why">${esc(usesSaid(users))}. Take ${users.length === 1 ? "that link" : "those links"} out to delete it.</p>` : ""}
+  </section>`;
+}
+
+// The confirmation: a dialog outside the editor's drawing, so redrawing never closes it.
+const dialog = document.createElement("dialog");
+dialog.className = "edit-dialog";
+dialog.setAttribute("aria-labelledby", "delete-title");
+document.body.append(dialog);
+
+function openDelete() {
+  const name = original.title || slug;
+  dialog.innerHTML = `<div class="edit-dialog-body">
+    <h2 id="delete-title">Delete ${esc(name)}?</h2>
+    <p>This takes it off the site for good. To be sure, type its name: <strong>${esc(name)}</strong></p>
+    <div class="edit-field"><label for="delete-name">Recipe name</label><input id="delete-name" autocomplete="off" spellcheck="false"></div>
+    <div class="edit-save-error" role="alert" id="delete-problem"></div>
+    <div class="edit-row">
+      <button class="btn edit-danger" type="button" data-act="confirm-delete" disabled>Delete</button>
+      <button class="btn" type="button" data-act="cancel-delete">Cancel</button>
+    </div>
+  </div>`;
+  dialog.showModal();
+  dialog.querySelector("#delete-name").focus();
+}
+
+const typedRight = () => dialog.querySelector("#delete-name").value.trim().toLowerCase() === (original.title || slug).trim().toLowerCase();
+dialog.addEventListener("input", () => {
+  dialog.querySelector("[data-act=confirm-delete]").disabled = !typedRight();
+});
+dialog.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && e.target.id === "delete-name" && typedRight()) dialog.querySelector("[data-act=confirm-delete]").click();
+});
+// Closed by Cancel or Escape: back to the Delete button.
+dialog.addEventListener("close", () => {
+  if (root.isConnected) root.querySelector('[data-key="delete"]')?.focus();
+});
+dialog.addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-act]");
+  if (b?.dataset.act === "cancel-delete") return dialog.close();
+  if (b?.dataset.act !== "confirm-delete" || !typedRight()) return;
+  const problem = dialog.querySelector("#delete-problem");
+  b.disabled = true;
+  problem.innerHTML = "";
+  const done = await send("/api/delete", { slug, baseSha: version });
+  if (done.error) {
+    b.disabled = false;
+    problem.innerHTML = failureHTML(done);
+    return;
+  }
+  try { localStorage.removeItem(DRAFT); } catch {}
+  const title = original.title || slug;
+  dialog.remove();
+  gate(`Deleted ${title}`, "The site updates in a minute or two.");
+  root.insertAdjacentHTML("beforeend", `<p><a href="recipes.html">All recipes</a></p>`);
+  const h1 = root.querySelector("h1");
+  h1.tabIndex = -1;
+  h1.focus();
+});
+
+// --- Saving --------------------------------------------------------------------------------
+
+// Sends a save or delete to the Worker. The answer's JSON, or { error, problems, signIn }.
+async function send(path, body) {
+  let res;
+  try {
+    res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify(body) });
+  } catch {
+    return { error: `Couldn't reach the site. Check your connection and try again. ${KEPT}` };
+  }
+  const answer = await res.json().catch(() => ({}));
+  if (res.ok) return answer;
+  if (res.status === 401) return { error: `Your sign-in has run out. ${KEPT}`, signIn: true };
+  return { error: answer.error || `Something went wrong (${res.status}). ${KEPT}`, problems: answer.problems };
+}
+
+async function save() {
+  status = { saving: true };
+  draw();
+  const done = await send("/api/save", { slug, recipe, baseSha: version });
+  if (done.error) status = done;
+  else {
+    original = structuredClone(recipe);
+    version = done.sha;
+    keepDraft();
+    status = { published: recipe.title || slug };
+  }
+  focusKey = "save";
+  draw();
+}
+
 // --- What the person does ----------------------------------------------------------------------
 
 function update(next, after) {
   recipe = next;
   offer = null;
-  status = "";
+  status = null;
   keepDraft();
   if (after) after();
   draw();
@@ -520,10 +643,8 @@ root.addEventListener("click", (e) => {
     focusKey = "part-title";
     return draw();
   }
-  if (a === "save") {
-    status = "Saving to the site isn't switched on yet. Your changes are kept in this browser.";
-    return draw();
-  }
+  if (a === "save") return save();
+  if (a === "delete") return openDelete();
   if (a === "no-equipment") {
     return update(M.setStepField(recipe, Number(b.dataset.step), b.dataset.field, false), () => { focusKey = "save"; });
   }
@@ -639,13 +760,18 @@ root.addEventListener("toggle", (e) => {
   if (who === "stale") return gate("Sign in again", "Your sign-in has run out. Sign in again to edit.");
   if (who === "no-access") return gate("This account can't edit this site", "Only the site's owner can edit its recipes.");
   if (!/^[a-z0-9-]+$/.test(slug)) return gate("Recipe not found", "There's no recipe to edit at this address.");
+  let loaded;
   try {
-    [original, vocab, index] = await Promise.all([
-      getJSON(`recipes/${slug}.json`), getJSON("recipes/vocabulary.json"), getJSON("recipes/index.json").catch(() => []),
-    ]);
+    // The recipe as it is on main now, which the site may not be showing yet.
+    const res = await fetch(`/api/recipe/${slug}`, { cache: "no-store", credentials: "same-origin" });
+    if (res.status === 401) return gate("Sign in again", "Your sign-in has run out. Sign in again to edit.");
+    if (res.status === 404) return gate("Recipe not found", "There's no recipe to edit at this address.");
+    if (!res.ok) throw new Error(res.status);
+    [loaded, vocab, index] = await Promise.all([res.json(), getJSON("recipes/vocabulary.json"), getJSON("recipes/index.json").catch(() => [])]);
   } catch {
-    return gate("Recipe not found", "There's no recipe to edit at this address.");
+    return gate("Couldn't open the recipe", "The site couldn't reach GitHub. Check your connection, then reload to try again.");
   }
+  ({ recipe: original, sha: version } = loaded);
   recipe = structuredClone(original);
   const draft = readDraft();
   if (draft?.recipe && !same(draft.recipe, original)) offer = draft;

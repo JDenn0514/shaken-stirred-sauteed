@@ -53,6 +53,9 @@ window.SSS = (() => {
   // footer. The hint holds no secret; the editor checks the real sign-in itself.
   const hinted = () => /(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie);
   const signedIn = hinted();
+  // Who's signed in ({ name, canEdit }), for a page with data-who on its
+  // footer; null when nobody is, or it couldn't be found out.
+  let me = Promise.resolve(null);
   const ownerLinks = (on) => document.querySelectorAll("[data-signed-in]").forEach((a) => { a.hidden = !on; });
   ownerLinks(signedIn);
   const footer = document.querySelector(".site-footer");
@@ -91,15 +94,17 @@ window.SSS = (() => {
     else {
       showSignedIn();
       if ("who" in footer.dataset) {
-        fetch("/api/me", { cache: "no-store" }).then(async (res) => {
+        me = fetch("/api/me", { cache: "no-store" }).then(async (res) => {
           if (res.status === 401) {
             document.cookie = "signed-in=; Path=/; Max-Age=0";
-            return showSignedOut("Sign in again");
+            showSignedOut("Sign in again");
+            return null;
           }
-          if (!res.ok) return;
+          if (!res.ok) return null;
           const { name, canEdit } = await res.json();
           showSignedIn(`Signed in as ${name}.${canEdit ? "" : " This account can't edit this site."}`);
-        }).catch(() => {});
+          return { name, canEdit };
+        }).catch(() => null);
       }
     }
   }
@@ -143,5 +148,5 @@ window.SSS = (() => {
     return { steps, differs };
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder, signedIn };
+  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder, signedIn, me };
 })();

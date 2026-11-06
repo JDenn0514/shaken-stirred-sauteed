@@ -217,6 +217,17 @@ Tests first:
   - Someone without access sees "can't edit this site" instead of a failed save.
 - `PAGES`: the delete confirmation; a recipe page signed in (with "Edit").
 
+**As built (2026-11-06, branch `saving`):**
+- The Worker's code: `worker/src/recipes.js` (load, save, delete), `worker/src/github.js` (GitHub's contents and Git Data APIs, with the person's own token, so commits show as theirs) and `worker/src/format.js` (the file format). It imports `assets/recipe-checks.js` directly; Wrangler bundles it.
+- A save reads main's commit and tree, the recipe file (with its blob SHA), `index.json` and `vocabulary.json`, then makes a tree, a commit, and moves main without forcing: 8 requests to GitHub, 16 if it has to try twice, plus one if Better Auth renews the token.
+- Answers: 409 for a recipe changed or deleted since it was opened, a new recipe whose file name is taken, a recipe another links to (delete), or main moving twice; 422 with `problems` for the checker's errors; 403 "This account can't edit this site." when GitHub refuses the write; 401 "Sign in again" when the token can't be renewed. A successful save answers with the file's new blob SHA, which the editor sends with its next save.
+- Link problems already on main before a save don't block it (a loop between two other recipes isn't this recipe's to fix); only ones the save adds do.
+- Saving and deleting only take requests whose `Origin` is the site itself.
+- The editor's own checks still read `recipes/index.json` and `vocabulary.json` from the site, which can be a minute behind main; the Worker checks again against main. Delete's "uses this recipe" note comes from the same index.
+- New recipes come in through the intake, whose Save makes the file name from the title (`slugOf`). `edit.html?new=<category>` isn't built yet; editing never renames a file.
+- The recipe page has an "Edit" link for someone signed in (the hint cookie), so the editor can be reached; it isn't printed.
+- The intake learns whether the account can edit from the footer's `/api/me` (`window.SSS.me`), so it doesn't ask twice.
+
 ## Slice 7: import
 
 - **The import screen** (`edit.html?import`): a URL field, "Take or choose a photo", and "Choose a PDF".
