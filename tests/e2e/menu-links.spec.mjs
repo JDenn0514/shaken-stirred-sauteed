@@ -2,15 +2,17 @@
 // site's Recipes · Menu · Add recipe bar (Menu with its count), the recipe page's
 // "+ Add to menu", the tape on the recipes page's cards, your menu in view
 // while you choose recipes, and the welcome page's link.
-import { test, expect, onMenu } from "./fixtures.mjs";
+import { test, expect, onMenu, signIn } from "./fixtures.mjs";
 
 const saved = (page) => page.evaluate(() => JSON.parse(localStorage.getItem("sss:lineup") || "null"));
 const nav = (page) => page.getByRole("navigation", { name: "Site" });
 const menuTab = (page) => nav(page).getByRole("link", { name: /^Menu/ });
 
 test.describe("the site bar", () => {
+  // "Add recipe" is only there when signed in (Jacob, 2026-11-06), so these sign in.
   for (const [url, current] of [["index.html", null], ["recipes.html", "Recipes"], ["menu.html", "Menu"], ["intake.html", "Add recipe"]]) {
-    test(`is on ${url}${current ? `, with ${current} as the current page` : ""}`, async ({ page }) => {
+    test(`is on ${url}${current ? `, with ${current} as the current page` : ""}`, async ({ page, baseURL }) => {
+      await signIn(page, baseURL);
       await page.goto(url);
       // No Home link: the site's title goes home.
       await expect(nav(page).getByRole("link")).toHaveCount(3);
@@ -147,7 +149,8 @@ test("the menu page's search shows your menu beside the results on a wide screen
 });
 
 test.describe("the welcome page", () => {
-  test("links to adding a recipe", async ({ page }) => {
+  test("links to adding a recipe, when signed in", async ({ page, baseURL }) => {
+    await signIn(page, baseURL);
     await page.goto("index.html");
     await page.getByRole("link", { name: "Add a recipe →" }).click();
     await expect(page).toHaveURL(/intake\.html$/);

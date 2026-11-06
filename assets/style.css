@@ -463,6 +463,8 @@ body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: 
   padding-right: env(safe-area-inset-right);
 }
 .sheet[hidden], .backdrop[hidden] { display: none; }
+/* Links only for the signed-in owner (assets/common.js shows them). */
+[data-signed-in][hidden] { display: none !important; }
 .sheet-head {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
   padding: 14px 16px 12px; border-bottom: 1px solid var(--border);

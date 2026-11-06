@@ -37,6 +37,12 @@ window.SSS = (() => {
     return res.json();
   }
 
+  // Links only for the signed-in owner ("Add recipe") are hidden in the page
+  // and shown here when the readable "signed-in" hint cookie is set. The hint
+  // holds no secret; the editor checks the real sign-in before doing anything.
+  const signedIn = document.cookie.split(/;\s*/).some((c) => c.startsWith("signed-in="));
+  if (signedIn) document.querySelectorAll("[data-signed-in][hidden]").forEach((el) => { el.hidden = false; });
+
   // Offline support once the site is installed / visited.
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     navigator.serviceWorker.register("sw.js").catch(() => {});
@@ -81,5 +87,5 @@ window.SSS = (() => {
     return { steps, differs };
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder };
+  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder, signedIn };
 })();

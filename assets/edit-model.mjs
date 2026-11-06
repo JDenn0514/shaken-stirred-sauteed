@@ -65,6 +65,20 @@ export function setField(recipe, key, value) {
   return r;
 }
 
+// time: { prep, cook, chill, rest, total }, each a number of minutes. An
+// empty one is taken out, and with none left, the time field goes too.
+const TIMES = ["prep", "cook", "chill", "rest", "total"];
+export function setTime(recipe, key, value) {
+  if (!TIMES.includes(key)) throw new Error(`the editor doesn't set a time called "${key}"`);
+  const r = structuredClone(recipe);
+  const t = r.time && typeof r.time === "object" ? r.time : {};
+  const v = String(value ?? "").trim();
+  put(t, key, v === "" || Number.isNaN(Number(v)) ? undefined : Number(v));
+  if (Object.keys(t).length) r.time = t;
+  else delete r.time;
+  return r;
+}
+
 // tags: { dimension: [values] }. No values takes the dimension out.
 export function setTags(recipe, dimension, values) {
   const r = structuredClone(recipe);

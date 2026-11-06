@@ -158,6 +158,20 @@ describe("groups", () => {
     assert.equal(M.renameGroup(keeper(), "ingredients", 0, "Sweet").ingredients[1].group, "Sweet"));
 });
 
+describe("times", () => {
+  test("a time is a number of minutes, and an empty one is taken out", () => {
+    let r = M.setTime({ title: "A", time: { prep: 10, cook: 20 } }, "cook", "35");
+    assert.deepEqual(r.time, { prep: 10, cook: 35 });
+    r = M.setTime(r, "total", "45");
+    assert.deepEqual(r.time, { prep: 10, cook: 35, total: 45 });
+    r = M.setTime(M.setTime(M.setTime(r, "prep", ""), "cook", ""), "total", " ");
+    assert.equal(r.time, undefined);
+  });
+  test("a new time goes in a new time field", () =>
+    assert.deepEqual(M.setTime({ title: "A" }, "total", "15"), { title: "A", time: { total: 15 } }));
+  test("only prep, cook, chill, rest and total", () => assert.throws(() => M.setTime({}, "bake", "5")));
+});
+
 describe("tags", () => {
   test("setting a filter's values, and clearing it", () => {
     const r = M.setTags({ title: "A", tags: { ingredients: ["rice"] } }, "cuisine", ["thai"]);

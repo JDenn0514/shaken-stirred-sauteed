@@ -231,6 +231,26 @@ test("a reload brings back the unsaved draft", async ({ page, baseURL }) => {
   await expect(preview(page).getByRole("heading", { level: 1 })).toHaveText("Carnitas, Edited");
 });
 
+test("signed in, Add recipe is in the site bar and on the welcome page", async ({ page, baseURL }) => {
+  await signIn(page, baseURL);
+  await page.goto("index.html");
+  await expect(page.getByRole("navigation", { name: "Site" }).getByRole("link", { name: "Add recipe" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Add a recipe →" })).toBeVisible();
+});
+
+test("a recipe with no total time is a to-do until one is given", async ({ page, baseURL }) => {
+  await openEditor(page, baseURL, "salsa-verde");
+  await expect(page.getByRole("region", { name: "To do" })).toContainText("no total time");
+  const times = (await details(page)).getByRole("group", { name: "Times, in minutes" });
+  await times.getByLabel("Prep").fill("10");
+  await times.getByLabel("Prep").blur();
+  await times.getByLabel("Total").fill("15");
+  await times.getByLabel("Total").blur();
+  await expect(page.getByText("no total time")).toHaveCount(0);
+  expect((await draftOf(page, "salsa-verde")).time).toEqual({ prep: 10, total: 15 });
+  await expect(page.getByRole("region", { name: "Card preview" })).toContainText("15 min");
+});
+
 test.describe("signed out", () => {
   test("edit.html asks you to sign in, and shows no recipe", async ({ page }) => {
     await page.goto("edit.html?r=pork-carnitas");
@@ -244,10 +264,11 @@ test.describe("signed out", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sign in again");
   });
 
-  for (const url of ["index.html", "recipes.html", "recipe.html?r=pork-carnitas", "menu.html"]) {
-    test(`${url} has no Edit and no link to the editor`, async ({ page }) => {
+  for (const url of ["index.html", "recipes.html", "recipe.html?r=pork-carnitas", "menu.html", "intake.html"]) {
+    test(`${url} has no Edit, no Add recipe and no link to the editor`, async ({ page }) => {
       await page.goto(url);
       await expect(page.locator("main")).not.toBeEmpty();
+      await expect(page.getByRole("link", { name: /^Add (a )?recipe/ })).toHaveCount(0);
       await expect(page.getByRole("link", { name: /^Edit\b/ })).toHaveCount(0);
       await expect(page.getByRole("button", { name: /^Edit\b/ })).toHaveCount(0);
       await expect(page.locator('a[href*="edit.html"]')).toHaveCount(0);

@@ -11,7 +11,7 @@
 // docs/specs/recipe-editor-plan.md.
 import * as M from "./edit-model.mjs";
 
-const { esc, getJSON, stepOrder } = window.SSS;
+const { esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
 const { checkRecipe, checkLinks, indexEntry, patchIndex } = window.SSSChecks;
 const ICONS = window.SSSIcons.KEYS;
@@ -46,7 +46,7 @@ function gate(title, text) {
 
 async function signedIn() {
   // The readable hint cookie says a sign-in happened; /api/me says whether it still holds.
-  if (!document.cookie.split(/;\s*/).some((c) => c.startsWith("signed-in="))) return "out";
+  if (!hinted) return "out";
   try {
     const res = await fetch("/api/me", { cache: "no-store", credentials: "same-origin" });
     return res.ok ? "in" : "stale";
@@ -343,6 +343,7 @@ function detailsHTML() {
       ${select("How it's served", "serve", [["", `Not set: ${SERVE[fallback.serve].split(":")[0].toLowerCase()}${fallback.sits ? `, up to ${fallback.sits}` : ""}`], ...Object.entries(SERVE)], r.serve || "", ` data-act="field" data-field="serve" data-key="d-serve"`)}
       ${(r.serve || fallback.serve) !== "keeps" ? `${labelled("Can sit for", `<input value="${esc(r.sits || "")}" placeholder="${esc(fallback.sits)}" data-act="field" data-field="sits" data-key="d-sits">`)}` : ""}
     </fieldset>
+    ${timesHTML()}
     ${tagsHTML()}
     <fieldset class="edit-set"><legend>Ingredients</legend>
       ${flat(r.ingredients).map(ingredientDetails).join("")}
@@ -354,6 +355,19 @@ function detailsHTML() {
       <p class="muted">A prep step is prep hidden in an ingredient line ("minced garlic"). It shows only when steps are in prep-first order.</p>
     </fieldset>
   </div>`;
+}
+
+// The recipe's times in minutes: what the time filter and the card use.
+// A recipe with "times" (as printed) shows those on its page instead.
+const TIMES = [["prep", "Prep"], ["cook", "Cook"], ["chill", "Chill"], ["rest", "Rest"], ["total", "Total"]];
+function timesHTML() {
+  const t = recipe.time || {};
+  return `<fieldset class="edit-set"><legend>Times, in minutes</legend>
+    <div class="edit-fields">
+      ${TIMES.map(([k, label]) => labelled(label, `<input type="number" min="0" inputmode="numeric" value="${esc(t[k] ?? "")}" data-act="time" data-field="${k}" data-key="d-time-${k}">`)).join("")}
+    </div>
+    <p class="muted">Leave Total empty to add up the others.${recipe.times ? " The recipe page shows its times as written; these are for the time filter and the card." : ""}</p>
+  </fieldset>`;
 }
 
 function tagsHTML() {
@@ -571,6 +585,7 @@ root.addEventListener("change", (e) => {
   }
   const n = Number(t.dataset.n);
   if (a === "field") return update(M.setField(recipe, t.dataset.field, t.value));
+  if (a === "time") return update(M.setTime(recipe, t.dataset.field, t.value));
   if (a === "tag") {
     const values = [...root.querySelectorAll(`input[data-act="tag"][data-dim="${CSS.escape(t.dataset.dim)}"]:checked`)].map((x) => x.value);
     return update(M.setTags(recipe, t.dataset.dim, values));

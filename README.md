@@ -23,7 +23,7 @@ No frameworks and no build step: it's plain HTML, CSS, and JavaScript, served by
 
 ## Adding a recipe
 
-The quickest way is the intake, `intake.html` on the site: paste the recipe's text (from a photo, copy it with Live Text), answer its questions, check the preview, and copy the recipe file it gives you into `recipes/`. Then carry on from step 3. See `tools/intake/README.md`.
+The quickest way is the intake, `intake.html` on the site (its "Add recipe" link shows only when you're signed in, but the page works for anyone at its address): paste the recipe's text (from a photo, copy it with Live Text), answer its questions, check the preview, and copy the recipe file it gives you into `recipes/`. Then carry on from step 3. See `tools/intake/README.md`.
 
 By hand:
 
