@@ -346,25 +346,6 @@
     "links": []
   },
   {
-    "slug": "cinnamon-sugar-test-toast",
-    "title": "Cinnamon Sugar Test Toast",
-    "category": "cooking",
-    "kind": "dish",
-    "description": "",
-    "yield": "Serves 1",
-    "image": "",
-    "icon": "soup",
-    "added": "2026-11-06",
-    "facets": {
-      "kind": [
-        "dish"
-      ]
-    },
-    "totalMinutes": null,
-    "search": "cinnamon sugar test toast cooking 1 slice bread sugar cinnamon 1-2 tbsp butter",
-    "links": []
-  },
-  {
     "slug": "congee-with-crispy-chili-pork",
     "title": "Congee with Crispy Chili Pork",
     "category": "cooking",
