@@ -37,15 +37,71 @@ window.SSS = (() => {
     return res.json();
   }
 
-  // Links only for the signed-in owner ("Add recipe") are hidden in the page
-  // and shown here when the readable "signed-in" hint cookie is set. The hint
-  // holds no secret; the editor checks the real sign-in before doing anything.
-  const signedIn = document.cookie.split(/;\s*/).some((c) => c.startsWith("signed-in="));
-  if (signedIn) document.querySelectorAll("[data-signed-in][hidden]").forEach((el) => { el.hidden = false; });
-
   // Offline support once the site is installed / visited.
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+
+  // The footer's "Sign in" / "Sign out" (docs/specs/recipe-editor-design.md,
+  // "Signing in"). The Worker sets a readable `signed-in` cookie on signing in,
+  // so pages know without asking the server. The real session is an HttpOnly
+  // cookie only the Worker sees; a footer with data-who (the Add recipe page)
+  // asks the Worker who's signed in, which also catches a hint that's out of date.
+  //
+  // Links only for someone signed in ("Add recipe", data-signed-in) are hidden
+  // in the page, so visitors never see them, and shown or hidden here with the
+  // footer. The hint holds no secret; the editor checks the real sign-in itself.
+  const hinted = () => /(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie);
+  const signedIn = hinted();
+  const ownerLinks = (on) => document.querySelectorAll("[data-signed-in]").forEach((a) => { a.hidden = !on; });
+  ownerLinks(signedIn);
+  const footer = document.querySelector(".site-footer");
+  if (footer) {
+    const el = (tag, props = {}, text = "") => Object.assign(document.createElement(tag), props, { textContent: text });
+    const signInLink = (text = "Sign in") => el("a", {
+      href: `/api/signin?return=${encodeURIComponent(location.pathname + location.search)}`,
+    }, text);
+    const status = el("p", { className: "footer-status", role: "status" });
+
+    const showSignedOut = (text) => {
+      ownerLinks(false);
+      const link = signInLink(text);
+      footer.replaceChildren(link, status);
+      return link;
+    };
+    const showSignedIn = (who = "") => {
+      ownerLinks(true);
+      const out = el("button", { type: "button", className: "link-button" }, "Sign out");
+      out.addEventListener("click", async () => {
+        status.textContent = "";
+        try {
+          const res = await fetch("/api/signout", { method: "POST" });
+          if (!res.ok) throw new Error(res.status);
+        } catch {
+          status.textContent = "Couldn't sign out. Check your connection and try again.";
+          return;
+        }
+        document.cookie = "signed-in=; Path=/; Max-Age=0";
+        showSignedOut().focus();
+      });
+      footer.replaceChildren(...(who ? [el("span", {}, who)] : []), out, status);
+    };
+
+    if (!signedIn) showSignedOut();
+    else {
+      showSignedIn();
+      if ("who" in footer.dataset) {
+        fetch("/api/me", { cache: "no-store" }).then(async (res) => {
+          if (res.status === 401) {
+            document.cookie = "signed-in=; Path=/; Max-Age=0";
+            return showSignedOut("Sign in again");
+          }
+          if (!res.ok) return;
+          const { name, canEdit } = await res.json();
+          showSignedIn(`Signed in as ${name}.${canEdit ? "" : " This account can't edit this site."}`);
+        }).catch(() => {});
+      }
+    }
   }
 
   // Ingredients, steps and notes may be a flat list of entries, or a list of

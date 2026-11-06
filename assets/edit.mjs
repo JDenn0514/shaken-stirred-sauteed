@@ -49,7 +49,10 @@ async function signedIn() {
   if (!hinted) return "out";
   try {
     const res = await fetch("/api/me", { cache: "no-store", credentials: "same-origin" });
-    return res.ok ? "in" : "stale";
+    if (!res.ok) return "stale";
+    // /api/me: { name, canEdit }, canEdit being push access to the site's repo.
+    const me = await res.json().catch(() => ({}));
+    return me.canEdit === false ? "no-access" : "in";
   } catch {
     return "stale";
   }
@@ -634,6 +637,7 @@ root.addEventListener("toggle", (e) => {
   const who = await signedIn();
   if (who === "out") return gate("Sign in to edit", "Editing recipes is only for the site's owner, signed in.");
   if (who === "stale") return gate("Sign in again", "Your sign-in has run out. Sign in again to edit.");
+  if (who === "no-access") return gate("This account can't edit this site", "Only the site's owner can edit its recipes.");
   if (!/^[a-z0-9-]+$/.test(slug)) return gate("Recipe not found", "There's no recipe to edit at this address.");
   try {
     [original, vocab, index] = await Promise.all([

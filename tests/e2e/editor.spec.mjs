@@ -251,6 +251,24 @@ test("a recipe with no total time is a to-do until one is given", async ({ page,
   await expect(page.getByRole("region", { name: "Card preview" })).toContainText("15 min");
 });
 
+test("an account that can't edit the site is told so, and shown no recipe", async ({ page, baseURL }) => {
+  await signIn(page, baseURL);
+  await page.route("**/api/me", (route) => route.fulfill({ json: { name: "A Friend", canEdit: false } }));
+  await page.goto("edit.html?r=pork-carnitas");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("This account can't edit this site");
+  await expect(page.getByText("Pork Carnitas")).toHaveCount(0);
+});
+
+test("signing out takes Add recipe away", async ({ page, baseURL }) => {
+  await signIn(page, baseURL);
+  await page.route("**/api/signout", (route) => route.fulfill({ json: {} }));
+  await page.goto("recipes.html");
+  const add = page.getByRole("navigation", { name: "Site" }).getByRole("link", { name: "Add recipe" });
+  await expect(add).toBeVisible();
+  await page.getByRole("contentinfo").getByRole("button", { name: "Sign out" }).click();
+  await expect(add).toHaveCount(0);
+});
+
 test.describe("signed out", () => {
   test("edit.html asks you to sign in, and shows no recipe", async ({ page }) => {
     await page.goto("edit.html?r=pork-carnitas");

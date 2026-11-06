@@ -139,37 +139,55 @@ const PAGES = [
     await page.getByRole("button", { name: "Copy recipe" }).click();
     await expect(page.getByLabel("Recipe file")).toBeVisible();
   }],
+  ["recipe page signed in, with Sign out in the footer", "recipe.html?r=pork-carnitas",
+    (page) => expect(page.getByRole("contentinfo").getByRole("button", { name: "Sign out" })).toBeVisible(), null, signedIn()],
+  ["recipe intake signed in to an account that can't edit the site", "intake.html",
+    (page) => expect(page.getByRole("contentinfo")).toContainText("This account can't edit this site."), null,
+    signedIn((page) => page.route("**/api/me", (route) => route.fulfill({ json: { name: "A Friend", canEdit: false } })))],
+  ["index page after a sign-out that failed", "recipes.html", async (page) => {
+    await page.getByRole("contentinfo").getByRole("button", { name: "Sign out" }).click();
+    await expect(page.getByRole("contentinfo").getByRole("status")).not.toBeEmpty();
+  }, null, signedIn((page) => page.route("**/api/signout", (route) => route.abort("internetdisconnected")))],
   ["editor, signed out", "edit.html?r=pork-carnitas", (page) => expect(page.getByRole("heading", { name: "Sign in to edit" })).toBeVisible()],
-  ["editor with a recipe", "edit.html?r=pork-carnitas", (page) => expect(editorPreview(page).getByRole("heading", { level: 1 })).toBeVisible(), editor],
+  ["editor with a recipe", "edit.html?r=pork-carnitas", (page) => expect(editorPreview(page).getByRole("heading", { level: 1 })).toBeVisible(), null, editor],
   ["editor with a step open for editing", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Braise until tender." }).click();
     await expect(page.getByRole("button", { name: "Split here" })).toBeVisible();
-  }, editor],
+  }, null, editor],
   ["editor showing check errors", "edit.html?r=lemon-bars", async (page) => {
     await editorPreview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
     await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
     await page.getByRole("button", { name: "Done" }).click();
     await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
-  }, editor],
+  }, null, editor],
   ["editor with Details open, lineup fields included", "edit.html?r=garlic-bread", async (page) => {
     await page.getByText("Details", { exact: true }).click();
     await page.getByRole("group", { name: /^Step 2:/ }).getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
     await expect(page.getByLabel("Oven temperature")).toBeVisible();
-  }, editor],
-  ["editor with its to-do list", "edit.html?r=garlic-bread", (page) => expect(page.getByRole("region", { name: "To do" })).toBeVisible(), editor],
-  ["editor in prep-first order", "edit.html?r=veg-stir-fry", (page) => expect(editorPreview(page).getByRole("switch", { name: "Prep first" })).toBeChecked(), editor],
+  }, null, editor],
+  ["editor with its to-do list", "edit.html?r=garlic-bread", (page) => expect(page.getByRole("region", { name: "To do" })).toBeVisible(), null, editor],
+  ["editor in prep-first order", "edit.html?r=veg-stir-fry", (page) => expect(editorPreview(page).getByRole("switch", { name: "Prep first" })).toBeChecked(), null, editor],
   ["editor offering an unsaved draft back", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Pork Carnitas" }).click();
     await page.getByLabel("Title").fill("Carnitas, Edited");
     await page.getByRole("button", { name: "Done" }).click();
     await page.reload();
     await expect(page.getByRole("button", { name: "Bring back my changes" })).toBeVisible();
-  }, editor],
+  }, null, editor],
 ];
 
+// Signed in: the hint cookie the Worker sets (/api/ is faked by the fixture),
+// then anything else the page needs faked.
+function signedIn(more = () => {}) {
+  return async (page) => {
+    await page.context().addCookies([{ name: "signed-in", value: "1", url: test.info().project.use.baseURL }]);
+    await more(page);
+  };
+}
+
 // The editor, signed in (faked), with the editor's test recipes in the index.
-async function editor(page, baseURL) {
-  await signIn(page, baseURL);
+async function editor(page) {
+  await signIn(page, test.info().project.use.baseURL);
   await page.route("**/recipes/index.json", (route) => route.fulfill({ json: EDITOR_INDEX }));
 }
 function editorPreview(page) { return page.getByRole("region", { name: "Recipe preview" }); }
@@ -204,12 +222,10 @@ for (const scheme of ["light", "dark"]) {
   test.describe(`${scheme} mode`, () => {
     test.use({ colorScheme: scheme });
 
-    // The fourth entry, when there is one, sets things up before the page
-    // loads: a list of recipes to put on the menu, or a function.
-    for (const [name, url, ready, before] of PAGES) {
-      test(`${name} has no detectable accessibility problems`, async ({ page, baseURL }) => {
-        if (typeof before === "function") await before(page, baseURL);
-        else if (before) await onMenu(page, before);
+    for (const [name, url, ready, menu, before] of PAGES) {
+      test(`${name} has no detectable accessibility problems`, async ({ page }) => {
+        if (menu) await onMenu(page, menu);
+        if (before) await before(page);
         await page.goto(url);
         await ready(page);
         const { violations } = await new AxeBuilder({ page })
