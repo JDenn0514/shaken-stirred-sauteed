@@ -1,7 +1,7 @@
 {
   "name": "shaken-stirred-sauteed-worker",
   "private": true,
-  "description": "The Worker's code (/api/): sign-in now, saving later. Installed with the rest by `npm install` at the repo root (npm workspaces). Deployed by Cloudflare from the repo root (wrangler.jsonc).",
+  "description": "The Worker's code (/api/): signing in, saving and deleting recipes, and fetching recipe web pages for the intake. Installed with the rest by `npm install` at the repo root (npm workspaces). Deployed by Cloudflare from the repo root (wrangler.jsonc).",
   "type": "module",
   "scripts": {
     "test": "vitest run"
