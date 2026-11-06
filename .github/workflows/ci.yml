@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   checks:
-    name: Lint, links and recipes
+    name: Lint, links, recipes and the Worker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +46,9 @@ jobs:
       - name: Recipe checker and link checker tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: npm run test:unit
+      - name: Worker tests (sign-in)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run test:worker
 
   browser:
     name: Browser tests (${{ matrix.shard }})

@@ -23,6 +23,8 @@
     // These post to and from a Web Worker, whose postMessage takes no target
     // origin (its second argument is a transfer list); the rule is for windows.
     { "files": ["assets/menu.mjs", "assets/plan-worker.mjs"], "rules": { "unicorn/require-post-message-target-origin": "off" } },
-    { "files": ["scripts/**", "tests/**", "tools/**", "*.config.mjs"], "env": { "node": true } }
+    { "files": ["scripts/**", "tests/**", "tools/**", "*.config.mjs"], "env": { "node": true } },
+    // The Worker's helper script, test settings and fake GitHub run in Node.
+    { "files": ["worker/scripts/**", "worker/test/**", "worker/*.config.js"], "env": { "node": true } }
   ]
 }

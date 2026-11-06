@@ -42,6 +42,59 @@ window.SSS = (() => {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 
+  // The footer's "Sign in" / "Sign out" (docs/specs/recipe-editor-design.md,
+  // "Signing in"). The Worker sets a readable `signed-in` cookie on signing in,
+  // so pages know without asking the server. The real session is an HttpOnly
+  // cookie only the Worker sees; a footer with data-who (the Add recipe page)
+  // asks the Worker who's signed in, which also catches a hint that's out of date.
+  const footer = document.querySelector(".site-footer");
+  if (footer) {
+    const hinted = () => /(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie);
+    const el = (tag, props = {}, text = "") => Object.assign(document.createElement(tag), props, { textContent: text });
+    const signInLink = (text = "Sign in") => el("a", {
+      href: `/api/signin?return=${encodeURIComponent(location.pathname + location.search)}`,
+    }, text);
+    const status = el("p", { className: "footer-status", role: "status" });
+
+    const showSignedOut = (text) => {
+      const link = signInLink(text);
+      footer.replaceChildren(link, status);
+      return link;
+    };
+    const showSignedIn = (who = "") => {
+      const out = el("button", { type: "button", className: "link-button" }, "Sign out");
+      out.addEventListener("click", async () => {
+        status.textContent = "";
+        try {
+          const res = await fetch("/api/signout", { method: "POST" });
+          if (!res.ok) throw new Error(res.status);
+        } catch {
+          status.textContent = "Couldn't sign out. Check your connection and try again.";
+          return;
+        }
+        document.cookie = "signed-in=; Path=/; Max-Age=0";
+        showSignedOut().focus();
+      });
+      footer.replaceChildren(...(who ? [el("span", {}, who)] : []), out, status);
+    };
+
+    if (!hinted()) showSignedOut();
+    else {
+      showSignedIn();
+      if ("who" in footer.dataset) {
+        fetch("/api/me", { cache: "no-store" }).then(async (res) => {
+          if (res.status === 401) {
+            document.cookie = "signed-in=; Path=/; Max-Age=0";
+            return showSignedOut("Sign in again");
+          }
+          if (!res.ok) return;
+          const { name, canEdit } = await res.json();
+          showSignedIn(`Signed in as ${name}.${canEdit ? "" : " This account can't edit this site."}`);
+        }).catch(() => {});
+      }
+    }
+  }
+
   // Ingredients, steps and notes may be a flat list of entries, or a list of
   // { "group": "For the sauce", "items": [...] } sections (or a mix).
   function toGroups(list = []) {

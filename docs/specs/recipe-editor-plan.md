@@ -164,6 +164,15 @@ Tests first:
 - **Worker** (Vitest): signed-out requests get 401 on everything but sign-in; `/api/signin` refuses a `return` that isn't a page on the site; the session cookie is `HttpOnly` and `Secure`; sign-out clears both cookies.
 - **Browser** (the fixture's test server answers `/api/` with a fake): with the hint cookie, "Add recipe" and "Edit" show; without it, they don't; signing out removes them; a stale hint on `edit.html` shows "Sign in again".
 
+**As built (2026-11-05, branch `sign-in`):**
+- The Worker is an npm workspace (`worker/package.json`), so Workers Builds' `npm clean-install` at the root installs Better Auth and `npx wrangler deploy` bundles it. Wrangler is pinned in the root `package.json`. The Worker's tests use `@cloudflare/vitest-plugin` (the Workers test pool's new name).
+- Better Auth's tables are `worker/migrations/0001_better_auth.sql`, written by `worker/scripts/auth-schema.mjs`. Workers Builds' own token can't change D1 (Cloudflare gives it Workers, KV, R2 and Routes only), so Jacob applies migrations once from his computer, before merging.
+- Better Auth 1.7.18's `getAccessToken` takes the account's ID, not `providerId`, so `/api/me` looks the GitHub account up first.
+- `/api/me` answers `{ name, canEdit }` from GitHub's `permissions.push` on this repo, and 401 "Sign in again" when GitHub turns the token down or won't renew it. It also renews the hint cookie, or clears it with any 401.
+- Signed in, Better Auth's other routes under `/api/auth/` are closed: only GitHub's callback and its error page are open. Sign-out is open signed out too, so a stale hint can always be cleared.
+- Sessions last 30 days from the last visit (Better Auth's default is 7).
+- There's no editor yet, so there's no "Edit" button. The footer shows "Sign in" or "Sign out"; on the Add recipe page it also says who's signed in, and "This account can't edit this site" for anyone without push access.
+
 **Then the trial**, with Jacob, before slice 6 starts:
 - Sign in on his iPhone in Safari, in a normal tab and in a Private tab; reload; come back the next day (after the 8-hour GitHub token has expired).
 - Read the Worker's CPU time per request in the Cloudflare dashboard, against the free plan's 10 ms.
