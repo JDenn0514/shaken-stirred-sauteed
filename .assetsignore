@@ -26,7 +26,9 @@ worker
 docs
 moved
 README.md
-LICENSE
+# The site's own licence. Not every LICENSE: assets/vendor/'s are served with
+# the files they cover.
+/LICENSE
 tools/**/README.md
 tools/lineup-test
 tools/intake/ocr

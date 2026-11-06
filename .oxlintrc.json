@@ -14,7 +14,8 @@
     "unicorn/no-array-sort": "off"
   },
   "env": { "browser": true, "es2024": true },
-  "ignorePatterns": ["style-guides/**"],
+  // assets/vendor: other people's code (pdf.js), committed as they publish it.
+  "ignorePatterns": ["style-guides/**", "assets/vendor/**"],
   "overrides": [
     { "files": ["sw.js"], "env": { "serviceworker": true } },
     { "files": ["assets/recipe-icons.js", "moved/moved.js"], "globals": { "module": "readonly" } },

@@ -29,21 +29,34 @@
   </nav>
 
   <main class="container intake" id="intake">
-    <h1>Add a recipe</h1>
-    <form class="intake-read" id="read">
-      <p class="lede">Paste the recipe's text. From a photo or screenshot on an iPhone: open it, press and hold on the text, tap Select All, then Copy.</p>
-      <div id="pages">
-        <label class="intake-field">Recipe text
-          <textarea id="page-1" rows="10" required></textarea>
-        </label>
-      </div>
-      <button class="btn" type="button" id="add-page">Add another page</button>
+    <h1 id="intake-h">Add a recipe</h1>
+    <form class="intake-read" id="read" aria-labelledby="intake-h">
       <fieldset class="intake-choice">
         <legend>Section</legend>
         <label><input type="radio" name="category" value="baking"> Baking</label>
         <label><input type="radio" name="category" value="cooking"> Cooking</label>
         <label><input type="radio" name="category" value="cocktails"> Cocktails</label>
       </fieldset>
+      <!-- From a recipe website or a PDF: assets/intake-import.mjs -->
+      <div class="intake-from">
+        <label class="intake-field">Recipe's web address
+          <input type="url" id="page-url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://" aria-describedby="page-url-hint">
+        </label>
+        <p class="muted intake-hint" id="page-url-hint">Most recipe sites work. You need to be signed in.</p>
+        <button class="btn" type="button" id="get-page">Get the recipe</button>
+      </div>
+      <div class="intake-from">
+        <label class="btn intake-file">Choose a PDF <input type="file" id="pdf" accept="application/pdf,.pdf"></label>
+      </div>
+      <p class="intake-problem" id="import-problem" role="alert" hidden></p>
+      <p class="muted" id="import-status" role="status"></p>
+      <p class="lede">Or paste the recipe's text. For a photo of a cookbook page or a screenshot, use Live Text: on an iPhone, open it in Photos, press and hold on the text, tap Select All, then Copy, and paste it here, one page at a time.</p>
+      <div id="pages">
+        <label class="intake-field">Recipe text
+          <textarea id="page-1" rows="10" required></textarea>
+        </label>
+      </div>
+      <button class="btn" type="button" id="add-page">Add another page</button>
       <p class="intake-problem" id="read-problem" role="alert" hidden></p>
       <button class="btn intake-primary" type="submit">Read the recipe</button>
     </form>

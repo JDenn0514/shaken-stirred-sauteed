@@ -6,14 +6,24 @@ things to check are shown) is the intake's own work.
 
 ## How a recipe comes in
 
-1. **A web page:** paste the link. Recipe sites describe the recipe for search
-   engines (schema.org `Recipe` data), so the text is exact.
-   `draftFromSchemaOrg(htmlOrData, { category, url, titles })`.
-   Some sites (allrecipes) refuse automated requests; then copy the page text.
-2. **A cookbook page or a screenshot:** copy the text with Apple Live Text
+1. **A web page:** give its address. The Worker gets the page
+   (`POST /api/fetch`, signed in only), then
+   `draftFromPage(html, { url, category, titles })` (`page.mjs`) reads it.
+   Recipe sites describe the recipe for search engines (schema.org `Recipe`
+   data, read by `draftFromSchemaOrg`), so the text is exact. A page without
+   it is read from its visible text (the article, without menus and footers)
+   through `draftFromText`, with a check saying so. `source` is the author and
+   the site's name (`og:site_name`, the data's publisher, or the address),
+   and the page's address. Some sites (allrecipes) refuse automated requests;
+   the intake says so, and to copy the page text instead.
+2. **A PDF:** pdf.js (`assets/vendor/pdfjs/`, loaded only when a PDF is
+   chosen) reads its text, a page at a time, into `draftFromText`. A scanned
+   PDF has no text: the intake says so, and suggests screenshots and Live
+   Text rather than OCR (see "Reading photos" below).
+3. **A cookbook page or a screenshot:** copy the text with Apple Live Text
    (Photos: press and hold on the text, Select All, Copy) and paste it,
    one page at a time. `draftFromText([page1, page2], { category, titles })`.
-3. Either way the draft gets the lineup planning data from
+4. Every way, the draft gets the lineup planning data from
    `tools/restructure/restructure.mjs`, and a list of things to check.
 
 `category` is `"baking"`, `"cooking"` or `"cocktails"`; without it the draft
@@ -45,8 +55,11 @@ Each flag is `{ kind, text, why }`, plus `parts` for `split` and `joined`:
 
 ## The review screen (`intake.html`)
 
-Paste the text (one page at a time, with "Add another page"), choose the
-section, and "Read the recipe". The screen follows
+Choose the section, then give a recipe website's address ("Get the
+recipe"), choose a PDF, or paste the text (one page at a time, with "Add
+another page") and "Read the recipe". The website and the PDF are
+`assets/intake-import.mjs` (tests: `tests/e2e/intake-import.spec.mjs`, and
+`tests/unit/intake-page.test.mjs` for reading a page). The screen follows
 `docs/specs/intake-lineup-needs.md`; its logic is `review.mjs` (tests:
 `tests/unit/intake-review.test.mjs`), drawn by `assets/intake.mjs` (tests:
 `tests/e2e/intake.spec.mjs`).
@@ -78,7 +91,7 @@ section, and "Read the recipe". The screen follows
   `recipes/`, run `node scripts/build-index.mjs` and commit. Once the editor
   can sign in and save (`docs/specs/recipe-editor-plan.md`), this becomes Save.
 
-Not yet: reading a web page's link (needs the Worker to fetch it), keeping an
+Not yet: showing the original page or PDF beside the preview, keeping an
 unsaved review across a reload, reordering steps, and the prep-first preview.
 The preview is drawn here in the recipe page's style, not by the recipe page's
 own code; sharing that code is slice 2 of the editor plan.
