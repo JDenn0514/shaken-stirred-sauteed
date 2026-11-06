@@ -201,6 +201,10 @@ function previewHTML(review) {
           ${steps.map((s, i) => `<option value="${esc(s.reviewId)}"${holds?.value === s.reviewId ? " selected" : ""}>Step ${i + 1}: ${esc((s.do || "").slice(0, 50))}${(s.do || "").length > 50 ? "…" : ""}</option>`).join("")}
         </select></label>
     </section>
+    ${flatten(r.notes).length ? `<section class="section" aria-labelledby="notes-h"><h2 id="notes-h">Notes</h2>
+      ${toGroups(r.notes).map((g) => `${g.group ? `<h3>${esc(g.group)}</h3>` : ""}
+        <ul class="notes">${g.items.map((n) => `<li>${esc(typeof n === "string" ? n : n?.text || "")}</li>`).join("")}</ul>`).join("")}
+    </section>` : ""}
   </section>`;
 }
 

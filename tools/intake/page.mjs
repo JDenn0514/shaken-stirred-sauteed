@@ -5,7 +5,9 @@
 //
 // From the page's schema.org recipe data when it has some (exact), otherwise
 // from its visible text, read like pasted text. Either way `source` is the
-// author and the site's name, and the page's address. Works in a browser and
+// author and the site's name, and the page's address. A WP Recipe Maker card
+// on the page (most recipe blogs have one) gives the ingredients' groups and
+// the recipe's notes, which its data leaves out. Works in a browser and
 // in Node (no DOM needed), so it's tested in tests/unit/intake-page.test.mjs.
 import { draftFromSchemaOrg, draftFromText, findSchemaOrgRecipe } from "./intake.mjs";
 
@@ -13,7 +15,9 @@ export function draftFromPage(html, opts = {}) {
   const data = findSchemaOrgRecipe(html);
   const site = siteName(html, data, opts.url);
   if (data) {
-    const draft = draftFromSchemaOrg(data, opts);
+    const card = recipeCard(html);
+    const draft = draftFromSchemaOrg(data, card?.ingredients.length ? { ...opts, ingredients: grouped(card.ingredients) } : opts);
+    if (card?.notes.length) draft.recipe.notes = card.notes;
     const author = [].concat(data.author || [])[0];
     draft.recipe.source = { name: names(typeof author === "string" ? author : author?.name, site), url: opts.url || data.url || "" };
     return draft;
@@ -22,6 +26,57 @@ export function draftFromPage(html, opts = {}) {
   draft.recipe.source = { name: site, url: opts.url || "" };
   draft.flags.push({ kind: "page-text", text: "", why: "this page has no recipe data, so it was read from the page's text: check everything against the page" });
   return draft;
+}
+
+// WP Recipe Maker's recipe card: its ingredients, each with its group and its
+// amount, unit, name and notes as the card shows them, and its notes (each
+// numbered note with the paragraphs that follow it). null without a card.
+function recipeCard(html) {
+  const start = html.search(/<div\b[^>]*class="[^"]*\bwprm-recipe-ingredients-container\b/i);
+  if (start < 0) return null;
+  const span = (li, kind) => text(new RegExp(`<span\\b[^>]*class="[^"]*\\bwprm-recipe-ingredient-${kind}\\b[^"]*"[^>]*>([\\s\\S]*?)</span>\\s*(?=<span\\b[^>]*wprm-recipe-ingredient|</li>)`, "i").exec(li)?.[1] || "").replace(/\s+/g, " ");
+  const ingredients = [];
+  // Each group starts at a "wprm-recipe-ingredient-group" div; its name, if any, is the group-name div.
+  const stop = html.indexOf("wprm-recipe-instructions-container", start);
+  const area = html.slice(start, stop < 0 ? undefined : stop);
+  for (const part of area.split(/<div\b[^>]*class="(?:[^"]*\s)?wprm-recipe-ingredient-group(?=[\s"])[^"]*"[^>]*>/i).slice(1)) {
+    const group = text(/<div\b[^>]*class="[^"]*\bwprm-recipe-group-name\b[^"]*"[^>]*>([\s\S]*?)<\/div>/i.exec(part)?.[1] || "").replace(/\s+/g, " ");
+    for (const [li] of part.matchAll(/<li\b[^>]*class="(?:[^"]*\s)?wprm-recipe-ingredient(?=[\s"])[^"]*"[^>]*>[\s\S]*?<\/li>/gi)) {
+      const qty = [span(li, "amount"), span(li, "unit")].filter(Boolean).join(" ");
+      const item = span(li, "name");
+      const note = span(li, "notes").replace(/^\((.*)\)$/, "$1").trim();
+      if (item) ingredients.push({ group, qty, item, note });
+    }
+  }
+  const notesAt = html.search(/<div\b[^>]*class="[^"]*\bwprm-recipe-notes-container\b/i);
+  const notes = [];
+  if (notesAt >= 0) {
+    const body = html.slice(notesAt).replace(/^[\s\S]*?<div\b[^>]*wprm-recipe-header[^>]*>[\s\S]*?<\/div>/i, "");
+    // The container ends at the first </div> that isn't closing one opened inside it.
+    let depth = 0, end = body.length;
+    for (const m of body.matchAll(/<(\/?)div\b[^>]*>/gi)) {
+      if (m[1]) { if (depth-- === 0) { end = m.index; break; } } else depth++;
+    }
+    for (const para of text(body.slice(0, end)).split("\n").map((l) => l.replace(/\s+/g, " ").trim()).filter(Boolean)) {
+      if (/^\d+[.)]\s/.test(para) || !notes.length) notes.push(para);
+      else notes[notes.length - 1] += ` ${para}`;
+    }
+  }
+  return { ingredients, notes };
+}
+
+// The card's ingredients, in its groups (a first group with no name stays
+// ungrouped), each split as the card splits it.
+function grouped(card) {
+  const out = [];
+  for (const { group, qty, item, note } of card) {
+    const i = { ...(qty && { qty }), item, ...(note && { note }) };
+    const last = out.at(-1);
+    if (!group) out.push(i);
+    else if (last?.items && last.group === group) last.items.push(i);
+    else out.push({ group, items: [i] });
+  }
+  return out;
 }
 
 const names = (...parts) => [...new Set(parts.map((p) => decode(p || "").trim()).filter(Boolean))].join(", ");
