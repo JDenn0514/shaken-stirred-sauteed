@@ -1,0 +1,160 @@
+{
+  "category": "cooking",
+  "title": "Yakisoba (Japanese Stir Fried Noodles)",
+  "description": "Yakisoba (焼きそば) is the Japanese version of stir-fried noodles. The noodles are cooked with sliced pork and plenty of vegetables (cabbage, bean sprouts, carrots, shiitake mushrooms and green onions), then coated with a special sauce. Instead of pork, chicken or beef would also work well. You can use different vegetables that are suitable for stir-fry too.Please see the video above this recipe card.Don't forget to see the section 'MEAL IDEAS' below the recipe card! It gives you a list of dishes that I have already posted and this recipe that can make up a complete meal. I hope it is of help to you.",
+  "yield": "3",
+  "times": [
+    ["Prep", "5 min"],
+    ["Cook", "15 min"],
+    ["Total", "20 min"]
+  ],
+  "time": {
+    "prep": 5,
+    "cook": 15,
+    "total": 20
+  },
+  "ingredients": [
+    {
+      "qty": "300",
+      "item": "g/10.5oz yellow noodles ((note 1))"
+    },
+    {
+      "qty": "1 tbsp",
+      "item": "sesame oil"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "oil ((vegetable oil or peanut oil))"
+    },
+    {
+      "qty": "200",
+      "item": "g/7oz pork (thinly sliced into bite size pieces (note2))"
+    },
+    {
+      "qty": "60",
+      "item": "g/2oz carrot",
+      "note": "thinly sliced diagonally"
+    },
+    {
+      "qty": "100",
+      "item": "g/3.5oz cabbage (cut into bite size pieces (note 3))"
+    },
+    {
+      "qty": "3",
+      "item": "shiitake mushrooms",
+      "note": "sliced into 2mm / 1/16\" thick"
+    },
+    {
+      "qty": "2",
+      "item": "stalks green onions",
+      "note": "diagonally sliced"
+    },
+    {
+      "qty": "1 cup",
+      "item": "bean sprouts"
+    },
+    {
+      "qty": "40",
+      "item": "ml/1.4oz Bulldog tonkatsu sōsu ((note 5))"
+    },
+    {
+      "qty": "50",
+      "item": "ml/1.7oz Bulldog usutā sōsu ((note 5))"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "soy sauce"
+    },
+    {
+      "qty": "½ tbsp",
+      "item": "tomato sauce ( (or tomato ketchup))"
+    },
+    {
+      "qty": "1 tsp",
+      "item": "sugar"
+    },
+    {
+      "qty": "½ tsp",
+      "item": "dashi seasoning powder diluted in ½ tsp hot water ((note 6))"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "aonori ((dried seaweed flakes",
+      "note": "note 7))"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "benishōga ((red pickled ginger",
+      "note": "note 8))"
+    }
+  ],
+  "steps": [
+    {
+      "do": "Thinly slice and slice the g/7oz pork ). Thinly slice the g/2oz carrot. Slice the shiitake mushrooms. Slice the stalks green onions.",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "g/7oz pork (thinly sliced into bite size pieces (note2))",
+        "g/2oz carrot",
+        "shiitake mushrooms",
+        "stalks green onions"
+      ],
+      "hands": "2 min"
+    },
+    {
+      "do": "Add all the Yakisoba Sauce ingredients into a cup or a bowl and mix well. Set aside until required.",
+      "prep": true,
+      "hands": "1 min"
+    },
+    {
+      "do": "Boil a sufficient amount of water in a saucepan and boil the noodles for 1 minute.",
+      "burner": true,
+      "hands": "30 sec"
+    },
+    {
+      "do": "Drain and sprinkle sesame oil over the noodles and mix until all noodles are coated. This is to prevent the noodles from sticking to each other.",
+      "hands": "45 sec"
+    },
+    {
+      "do": "Heat oil in a wok or a large frying pan over medium high heat. Add the pork and sauté until the pork is almost cooked through (about 2-3 minutes).",
+      "wait": "About 2-3 minutes",
+      "burner": true,
+      "watch": true,
+      "hands": "30 sec"
+    },
+    {
+      "do": "Add the carrots and stir-fry for 30 seconds, then add the cabbage and shiitake mushrooms.",
+      "wait": "30 seconds",
+      "hands": "45 sec"
+    },
+    {
+      "do": "Stir-fry for about 1 minute until the cabbage is nearly cooked, then add the green onions and bean sprouts.",
+      "wait": "About 1 minute",
+      "hands": "45 sec"
+    },
+    {
+      "do": "After stir-frying for 30 seconds, add the noodles. Mix the noodles and vegetables well (note 9).",
+      "wait": "30 seconds",
+      "hands": "1 min"
+    },
+    {
+      "do": "Add the Yakisoba Sauce and mix quickly to ensure that all the noodles are coated with the sauce, and the colour of the noodles is consistent, without any light-coloured patches.",
+      "hands": "45 sec"
+    },
+    {
+      "do": "Transfer the noodles onto serving plates, piling them into a mound.",
+      "hands": "30 sec"
+    },
+    {
+      "do": "Sprinkle aonori over the noodles and add the benishōga on the top or the side of the noodles or serve in a separate bowl/plate for individual to add topping themselves.Serve immediately.",
+      "hands": "45 sec"
+    }
+  ],
+  "source": {
+    "name": "RecipeTin Japan",
+    "url": "https://japan.recipetineats.com/yakisoba-japanese-stir-fried-noodles/"
+  },
+  "serve": "soon",
+  "sits": "15 min",
+  "added": "2026-11-06"
+}
