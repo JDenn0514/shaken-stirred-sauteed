@@ -4,9 +4,18 @@
   "description": "Yakisoba (焼きそば) is the Japanese version of stir-fried noodles. The noodles are cooked with sliced pork and plenty of vegetables (cabbage, bean sprouts, carrots, shiitake mushrooms and green onions), then coated with a special sauce. Instead of pork, chicken or beef would also work well. You can use different vegetables that are suitable for stir-fry too.Please see the video above this recipe card.Don't forget to see the section 'MEAL IDEAS' below the recipe card! It gives you a list of dishes that I have already posted and this recipe that can make up a complete meal. I hope it is of help to you.",
   "yield": "3",
   "times": [
-    ["Prep", "5 min"],
-    ["Cook", "15 min"],
-    ["Total", "20 min"]
+    [
+      "Prep",
+      "5 min"
+    ],
+    [
+      "Cook",
+      "15 min"
+    ],
+    [
+      "Total",
+      "20 min"
+    ]
   ],
   "time": {
     "prep": 5,
@@ -15,8 +24,9 @@
   },
   "ingredients": [
     {
-      "qty": "300",
-      "item": "g/10.5oz yellow noodles ((note 1))"
+      "qty": "300g/10.5oz",
+      "item": "yellow noodles",
+      "note": "note 1"
     },
     {
       "qty": "1 tbsp",
@@ -24,20 +34,23 @@
     },
     {
       "qty": "2 tbsp",
-      "item": "oil ((vegetable oil or peanut oil))"
+      "item": "oil",
+      "note": "vegetable oil or peanut oil"
     },
     {
-      "qty": "200",
-      "item": "g/7oz pork (thinly sliced into bite size pieces (note2))"
+      "qty": "200g/7oz",
+      "item": "pork",
+      "note": "thinly sliced into bite size pieces (note2)"
     },
     {
-      "qty": "60",
-      "item": "g/2oz carrot",
+      "qty": "60g/2oz",
+      "item": "carrot",
       "note": "thinly sliced diagonally"
     },
     {
-      "qty": "100",
-      "item": "g/3.5oz cabbage (cut into bite size pieces (note 3))"
+      "qty": "100g/3.5oz",
+      "item": "cabbage",
+      "note": "cut into bite size pieces (note 3)"
     },
     {
       "qty": "3",
@@ -45,8 +58,8 @@
       "note": "sliced into 2mm / 1/16\" thick"
     },
     {
-      "qty": "2",
-      "item": "stalks green onions",
+      "qty": "2 stalks",
+      "item": "green onions",
       "note": "diagonally sliced"
     },
     {
@@ -54,83 +67,125 @@
       "item": "bean sprouts"
     },
     {
-      "qty": "40",
-      "item": "ml/1.4oz Bulldog tonkatsu sōsu ((note 5))"
+      "group": "Yakisoba Sauce (Note 4)",
+      "items": [
+        {
+          "qty": "40ml/1.4oz",
+          "item": "Bulldog tonkatsu sōsu",
+          "note": "note 5"
+        },
+        {
+          "qty": "50ml/1.7oz",
+          "item": "Bulldog usutā sōsu",
+          "note": "note 5"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "soy sauce"
+        },
+        {
+          "qty": "½ tbsp",
+          "item": "tomato sauce",
+          "note": "or tomato ketchup"
+        },
+        {
+          "qty": "1 tsp",
+          "item": "sugar"
+        },
+        {
+          "qty": "½ tsp",
+          "item": "dashi seasoning powder diluted in ½ tsp hot water",
+          "note": "note 6"
+        }
+      ]
     },
     {
-      "qty": "50",
-      "item": "ml/1.7oz Bulldog usutā sōsu ((note 5))"
-    },
-    {
-      "qty": "1 tsp",
-      "item": "soy sauce"
-    },
-    {
-      "qty": "½ tbsp",
-      "item": "tomato sauce ( (or tomato ketchup))"
-    },
-    {
-      "qty": "1 tsp",
-      "item": "sugar"
-    },
-    {
-      "qty": "½ tsp",
-      "item": "dashi seasoning powder diluted in ½ tsp hot water ((note 6))"
-    },
-    {
-      "qty": "2 tbsp",
-      "item": "aonori ((dried seaweed flakes",
-      "note": "note 7))"
-    },
-    {
-      "qty": "2 tbsp",
-      "item": "benishōga ((red pickled ginger",
-      "note": "note 8))"
+      "group": "Toppings (optional but strongly recommended)",
+      "items": [
+        {
+          "qty": "2 tbsp",
+          "item": "aonori",
+          "note": "dried seaweed flakes, note 7"
+        },
+        {
+          "qty": "2 tbsp",
+          "item": "benishōga",
+          "note": "red pickled ginger, note 8"
+        }
+      ]
     }
   ],
   "steps": [
     {
-      "do": "Thinly slice and slice the g/7oz pork ). Thinly slice the g/2oz carrot. Slice the shiitake mushrooms. Slice the stalks green onions.",
+      "do": "Thinly slice the pork into bite size pieces. Thinly slice the carrot diagonally. Cut the cabbage into bite size pieces. Slice the shiitake mushrooms. Slice the green onions diagonally.",
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "g/7oz pork (thinly sliced into bite size pieces (note2))",
-        "g/2oz carrot",
+        "pork",
+        "carrot",
+        "cabbage",
         "shiitake mushrooms",
-        "stalks green onions"
+        "green onions"
       ],
       "hands": "2 min"
     },
     {
       "do": "Add all the Yakisoba Sauce ingredients into a cup or a bowl and mix well. Set aside until required.",
       "prep": true,
-      "hands": "1 min"
+      "hands": "1 min",
+      "uses": [
+        "Bulldog tonkatsu sōsu",
+        "Bulldog usutā sōsu",
+        "soy sauce",
+        "tomato sauce",
+        "sugar",
+        "dashi seasoning powder diluted in ½ tsp hot water"
+      ]
     },
     {
       "do": "Boil a sufficient amount of water in a saucepan and boil the noodles for 1 minute.",
       "burner": true,
-      "hands": "30 sec"
+      "hands": "30 sec",
+      "uses": [
+        "yellow noodles"
+      ]
     },
     {
       "do": "Drain and sprinkle sesame oil over the noodles and mix until all noodles are coated. This is to prevent the noodles from sticking to each other.",
-      "hands": "45 sec"
+      "hands": "45 sec",
+      "uses": [
+        "sesame oil"
+      ]
     },
     {
       "do": "Heat oil in a wok or a large frying pan over medium high heat. Add the pork and sauté until the pork is almost cooked through (about 2-3 minutes).",
       "wait": "About 2-3 minutes",
       "burner": true,
       "watch": true,
-      "hands": "30 sec"
+      "hands": "30 sec",
+      "uses": [
+        "oil",
+        "pork"
+      ]
     },
     {
       "do": "Add the carrots and stir-fry for 30 seconds, then add the cabbage and shiitake mushrooms.",
       "wait": "30 seconds",
-      "hands": "45 sec"
+      "hands": "45 sec",
+      "uses": [
+        "carrot",
+        "cabbage",
+        "shiitake mushrooms"
+      ]
     },
     {
       "do": "Stir-fry for about 1 minute until the cabbage is nearly cooked, then add the green onions and bean sprouts.",
       "wait": "About 1 minute",
-      "hands": "45 sec"
+      "hands": "45 sec",
+      "uses": [
+        "green onions",
+        "bean sprouts"
+      ]
     },
     {
       "do": "After stir-frying for 30 seconds, add the noodles. Mix the noodles and vegetables well (note 9).",
@@ -146,9 +201,25 @@
       "hands": "30 sec"
     },
     {
-      "do": "Sprinkle aonori over the noodles and add the benishōga on the top or the side of the noodles or serve in a separate bowl/plate for individual to add topping themselves.Serve immediately.",
-      "hands": "45 sec"
+      "do": "Sprinkle aonori over the noodles and add the benishōga on the top or the side of the noodles or serve in a separate bowl/plate for individual to add topping themselves. Serve immediately.",
+      "hands": "45 sec",
+      "uses": [
+        "aonori",
+        "benishōga"
+      ]
     }
+  ],
+  "notes": [
+    "1. Yakisoba noodles are the same as ramen or Chinese yellow noodles. The thickness of Yakisoba noodles is about 2mm/1⁄16\", but you could use thicker noodles. See the photo in my post of the noodles I used. I would not recommend very thin noodles as they will overcook easily and become doughy. I would not use Hokkien noodles either as they are quite oily and too heavy for Yakisoba in my view.",
+    "2. Any cut of pork suitable for stir-fry is fine. I happened to have pork scotch fillet. I sometimes use thinly sliced pork belly. It makes Yakisoba a bit richer, but I like it. You can use chicken or beef, although pork is the most popular meat.",
+    "3. I randomly cut the cabbage into bite size pieces. The size of the pieces is about 5cm x 3cm/2\" x 1¼\". The shape does not have to be rectangular at all.",
+    "4. You can adjust the quantity of each ingredient to your liking. I used the Bulldog branded sauce, but you can use other brands if you like.",
+    "5. You can buy Bulldog sauces at Asian/Japanese grocery stores. See the photos in the post.",
+    "6. The dashi seasoning powder is used to add umami to the sauce. It is an instant dashi powder that you can buy at Japanese/Asian grocery stores or possibly at supermarkets (see Home Style Japanese Dashi Stock for samples). Alternatively, you can add 2 tablespoons of bonito flakes when mixing the sauce with the noodles. If you don’t have either of them, you can omit this.",
+    "7. Aonori is quite different from yakinori (焼き海苔, roasted seaweed sheets used in sushi rolls). It is green and chopped into teeny tiny pieces (see the photo in post). It is used not only as a topping for Yakisoba but also for Okonomiyaki (Japanese Savory Pancake). It is sometimes added to the batter for Tempura. You can buy aonori at Japanese grocery stores. See the post for a sample pack. Although the flavour is quite different, you could substitute aonori with yakinori (roasted seaweed sheet). Julienne a small sheet of yakinori into about 2.5cm/1' long strips.",
+    "8. Benishōga is red pickled ginger. It comes either in sliced or julienned pieces in a packet/bottle (see the photo in post). If you have red pickled ginger slices, you can just julienne them. You can buy benishōga at Japanese/Asian grocery stores and perhaps at some supermarkets. See the post for a sample pack. Do not substitute the pickled ginger used for sushi for the red pickled ginger. The flavour of the pickled ginger for sushi is quite different and does not go well with Yakisoba.",
+    "9. From this step onwards, if the wok or frying pan is not large enough to cook all of the Yakisoba at once, cook in batches in individual serving portions or half the quantity. You will get a much better result than trying to cook a huge amount of noodles in a small wok/frying pan. I actually cooked my Yakisoba in batches. When cooking in batches: Before you add the noodles, take out the stir-fried meat and vegetables, leaving one serving portion in the wok/frying pan. Then add one serving of noodles and continue following the steps using one serving of the sauce. Repeat for the other servings.",
+    "10. Nutrition per serving, assuming 4 serving. serving: 276g calories: 567kcal fat: 20g (31%) saturated fat: 4.1g (21%) trans fat: 0.2g polyunsaturated fat: 7.6g monounsaturated fat: 6.7g cholesterol: 42mg (14%) sodium: 366mg (15%) potassium: 757mg (22%) carbohydrates: 73g (24%) dietary fibre: 5.1g (20%) sugar: 11g protein: 24g vitamin a: 54% vitamin c: 31% calcium: 5.7% iron: 26%"
   ],
   "source": {
     "name": "RecipeTin Japan",

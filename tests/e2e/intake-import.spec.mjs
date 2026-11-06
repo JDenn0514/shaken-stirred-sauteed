@@ -38,6 +38,22 @@ test.describe("a recipe website", () => {
     await expect(source).toHaveAttribute("href", "https://kitchen.example/honey-oat-bars");
   });
 
+  test("a recipe card's ingredient groups and notes are kept, and shown in the preview", async ({ page }) => {
+    await siteServes(page, "recipe-card-page.html", "https://noodles.example/sesame");
+    await getPage(page, "https://noodles.example/sesame", "Cooking");
+    await expect(preview(page).getByRole("heading", { name: "Sesame Sauce (Note 2)" })).toBeVisible();
+    const notes = preview(page).getByRole("region", { name: "Notes" });
+    await expect(notes.getByRole("listitem")).toHaveText([
+      "1. Any thin wheat noodles work. Ramen noodles are fine. Don't use rice noodles.",
+      "2. Adjust the sauce to your liking.",
+    ]);
+    await page.getByRole("region", { name: "Questions" }).getByRole("radio", { name: /^Hot/ }).check();
+    await page.getByRole("button", { name: "Copy instead" }).click();
+    const saved = JSON.parse(await page.getByLabel("Recipe file").inputValue());
+    expect(saved.ingredients.find((e) => e.group === "Sesame Sauce (Note 2)").items.map((i) => i.item)).toEqual(["soy sauce", "sugar"]);
+    expect(saved.notes).toHaveLength(2);
+  });
+
   test("pressing Enter in the address gets the page too", async ({ page }) => {
     await siteServes(page, "recipe-page.html", "https://kitchen.example/honey-oat-bars");
     await page.goto("intake.html");

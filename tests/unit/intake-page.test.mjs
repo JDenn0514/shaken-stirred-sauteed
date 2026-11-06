@@ -63,3 +63,67 @@ describe("a page without recipe data", () => {
     assert.match(text, /^Garlic Bread\nMakes 1 loaf\nIngredients\n1 baguette\n/);
   });
 });
+
+// Most recipe blogs make their recipe card with WP Recipe Maker. Its recipe
+// data lists every ingredient in one flat list and leaves out the notes, but
+// the card on the page has the ingredient groups (a sauce's own list) and the
+// numbered notes the ingredients and steps point to.
+describe("a page with a WP Recipe Maker card", () => {
+  const data = {
+    "@context": "https://schema.org", "@type": "Recipe", name: "Sesame Noodles",
+    recipeIngredient: ["200g/7oz egg noodles ((note 1))", "1 tbsp oil", "2 tbsp soy sauce", "1 tsp sugar"],
+    recipeInstructions: [{ "@type": "HowToStep", text: "Mix the sauce ingredients." }, { "@type": "HowToStep", text: "Boil the noodles for 3 minutes, then toss with the sauce." }],
+  };
+  const li = (amount, unit, name, notes) => `<li class="wprm-recipe-ingredient">
+      ${amount ? `<span class="wprm-recipe-ingredient-amount">${amount}</span>` : ""}
+      ${unit ? `<span class="wprm-recipe-ingredient-unit">${unit}</span>` : ""}
+      <span class="wprm-recipe-ingredient-name">${name}</span>
+      ${notes ? `<span class="wprm-recipe-ingredient-notes">${notes}</span>` : ""}</li>`;
+  const html = `<html><head><script type="application/ld+json">${JSON.stringify(data)}</script></head><body>
+    <div class="wprm-recipe-ingredients-container">
+      <div class="wprm-recipe-header">Ingredients</div>
+      <div class="wprm-recipe-ingredient-group"><ul class="wprm-recipe-ingredients">
+        ${li("200g/7oz", "", "egg noodles", "(note 1)")}${li("1", "tbsp", "oil", "")}
+      </ul></div>
+      <div class="wprm-recipe-ingredient-group">
+        <div class="wprm-recipe-group-name wprm-recipe-ingredient-group-name"><em>Sesame</em> Sauce (Note 2)</div>
+        <ul class="wprm-recipe-ingredients">
+          ${li("2", "tbsp", '<a href="/glossary/#soy">soy sauce</a>', "")}${li("1", "tsp", "sugar", " (or honey)")}
+        </ul></div>
+    </div>
+    <div class="wprm-recipe-notes-container">
+      <div class="wprm-recipe-header">Recipe Notes</div>
+      <p>1. Any thin wheat noodles work. <em>Ramen</em> noodles are fine.</p>
+      <p>Don't use rice noodles.</p>
+      <p>2. Adjust the sauce to your liking.</p>
+    </div></body></html>`;
+  const { recipe } = draftFromPage(html, { url: "https://noodles.example/sesame", category: "cooking" });
+
+  test("keeps the card's ingredient groups, named as on the page", () => {
+    // The card's first group has no name: its ingredients come first, ungrouped.
+    assert.deepEqual(recipe.ingredients.map((e) => (Array.isArray(e.items) ? `group: ${e.group}` : e.item)),
+      ["egg noodles", "oil", "group: Sesame Sauce (Note 2)"]);
+    const sauce = recipe.ingredients.find((e) => e.group === "Sesame Sauce (Note 2)");
+    assert.deepEqual(sauce.items.map((i) => i.item), ["soy sauce", "sugar"]);
+  });
+
+  test("takes each ingredient's amount, name and note from the card, as written", () => {
+    const [noodles, , , sugar] = flat(recipe.ingredients);
+    assert.equal(noodles.qty, "200g/7oz");
+    assert.equal(noodles.item, "egg noodles");
+    assert.equal(noodles.note, "note 1");
+    assert.equal(sugar.qty, "1 tsp");
+    assert.equal(sugar.note, "or honey");
+  });
+
+  test("keeps the card's notes, each numbered note with the paragraphs that follow it", () => {
+    assert.deepEqual(recipe.notes, [
+      "1. Any thin wheat noodles work. Ramen noodles are fine. Don't use rice noodles.",
+      "2. Adjust the sauce to your liking.",
+    ]);
+  });
+
+  test("a page without the card's notes has none", () => {
+    assert.equal(draftFromPage(withData(), { url: "https://www.example.com/lemon-bars", category: "baking" }).recipe.notes, undefined);
+  });
+});

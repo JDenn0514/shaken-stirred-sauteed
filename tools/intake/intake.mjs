@@ -158,7 +158,8 @@ export function draftFromSchemaOrg(input, opts = {}) {
     ...(r.description && { description: plain(r.description) }),
     ...(r.recipeYield && { yield: plain([].concat(r.recipeYield)[0]) }),
     ...(times.length && { times: times.map(([k, v]) => [k, asText(v)]), time: Object.fromEntries(times.map(([k, v]) => [k.toLowerCase(), v])) }),
-    ingredients: [].concat(r.recipeIngredient || []).map((i) => parseIngredient(plain(i))),
+    // A recipe card on the page can give them already split and grouped (tools/intake/page.mjs).
+    ingredients: opts.ingredients || [].concat(r.recipeIngredient || []).map((i) => parseIngredient(plain(i))),
     steps,
     source: { name: plain(author?.name || ""), url: opts.url || r.url || "" },
   };
