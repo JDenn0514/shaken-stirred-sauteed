@@ -12,7 +12,6 @@
 // page can keep the last and redraw from `reviewOf(state)`. Steps and
 // ingredients carry an `reviewId` while under review; `recipeToSave` takes it off.
 import { planLineup } from "../../assets/planner.mjs";
-import { moveStep as moveStepAt, moveIngredient as moveIngredientAt } from "../../assets/edit-model.mjs";
 
 const flatten = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 const stepsOf = (r) => flatten(r.steps);
@@ -317,21 +316,6 @@ export function removeStep(state, id) {
   next.recipe.steps = without(next.recipe.steps || [], id);
   next.waits = next.waits.filter((w) => w !== id && next.sentences?.[w]?.step !== id);
   return withNewAsks(next);
-}
-
-// Moving a step or an ingredient one place up (-1) or down (1), as the editor
-// moves them (assets/edit-model.mjs): into and out of groups too. Everything on
-// it (its questions, answers and guesses) goes with it.
-const placeOf = (list, id) => flatten(list).findIndex((e) => e?.reviewId === id);
-export function moveStep(state, id, dir) {
-  const n = placeOf(state.recipe.steps, id);
-  if (n < 0) return state;
-  return { ...structuredClone(state), recipe: moveStepAt(state.recipe, n, dir) };
-}
-export function moveIngredient(state, id, dir) {
-  const n = placeOf(state.recipe.ingredients, id);
-  if (n < 0) return state;
-  return { ...structuredClone(state), recipe: moveIngredientAt(state.recipe, n, dir) };
 }
 
 // An unfinished review, kept in the browser so a reload or an accidental back

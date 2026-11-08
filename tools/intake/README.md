@@ -62,9 +62,9 @@ another page") and "Read the recipe". The website and the PDF are
 `tests/unit/intake-page.test.mjs` for reading a page). The screen follows
 `docs/specs/intake-lineup-needs.md`; its logic is `review.mjs` (tests:
 `tests/unit/intake-review.test.mjs`), drawn by `assets/intake.mjs` (tests:
-`tests/e2e/intake.spec.mjs`).
+`tests/e2e/intake.spec.mjs`), then finished in the editor.
 
-- **Questions**, which must be answered before the recipe can be copied:
+- **Questions**, which must be answered before going on to the editor (or copying):
   - a time for every step the planner can't time (`planLineup(...).unknown`),
     filled in from its `suggest`, or "It doesn't wait";
   - a bake, rise, chill or cool the intake flagged (`time`) inside a step
@@ -75,47 +75,48 @@ another page") and "Read the recipe". The website and the PDF are
     and how long it can sit. Nothing is chosen for you; the reader's guess is
     shown as a hint. Baking, cocktails and components show their serving to
     confirm instead.
-- **The preview**: the recipe as read, drawn by the recipe page's own code
-  (`assets/recipe-view.js`), as the editor's preview is. Tap the title, the
-  description, the yield, an ingredient or a step to fix it; add, remove and
-  move ingredients and steps (Move up and Move down in the open form, which
-  keep what's typed and stay open, as the editor's do; moving is
-  `moveStep`/`moveIngredient`, the editor's `assets/edit-model.mjs` moves
-  under the review's ids). The "Prep first" switch shows the steps in
-  prep-first order, with added prep steps in place, or as written. The guesses
-  to confirm sit on their step or ingredient: split steps ("Join back"),
-  joined alternatives ("Split back out"), "Needs you there", prep (ahead, just
-  before, not prep), "Done while an earlier step waits", linked recipes
-  ("Usually already made or bought", "Unlink"), and below the steps, where the
-  dish keeps as long as you like (`holds`).
 - **The original**, beside the preview (on a phone, under "Show the
   original"): the pasted text, the text read from the PDF (with its name), or
   the web page's address to open. It's only shown, never put in the recipe or
-  sent anywhere.
-- **Things to check**: the other flags (every amount, no amount, unreadable,
-  storage, total time, cover, planning notes), beside what they're about
-  where there is one.
+  sent anywhere. Drawn by `assets/import-view.mjs`, as the editor draws it.
+- **The preview**: the recipe as read, drawn by the recipe page's own code
+  (`assets/recipe-view.js`), with the "Prep first" switch. It's only to look
+  at here: it's fixed in the editor.
+- **Things to check**: every flag (every amount, no amount, unreadable,
+  storage, total time, cover, planning notes).
 - **Filled in quietly**: hands-on times and equipment, as the reader gives them.
-- **Finish**: signed in to an account that can edit the site, "Save" publishes
-  the recipe (`recipeToSave`: the review's marks taken off, dated today)
-  through the Worker, under a file name made from its title; a name that's
-  taken is refused. "Copy instead", or "Copy recipe" for anyone else, gives the
-  recipe file and its file name: add it to `recipes/`, run
+- **Finish**: signed in to an account that can edit the site, "Continue in
+  the editor" (once the questions are answered) opens it in the editor as a
+  new recipe, `edit.html?new`. "Copy instead", or "Copy recipe" for anyone
+  else, gives the recipe file (`recipeToSave`: the review's marks taken off,
+  dated today) and its file name: add it to `recipes/`, run
   `node scripts/build-index.mjs` and commit.
-- **An unfinished review is kept** in this browser (`sss:intake`, through
-  `toKeep` and `fromKept`): the review with its answers so far, and the text
-  it was read from (pasted text or a PDF's text, never the PDF itself; for a
-  web page, its address). Coming back after a reload or an accidental back
-  offers it: "Carry on with Milk Rolls?", with "Carry on" or "Start over".
-  Reading another recipe replaces it, and Save clears it; copying doesn't,
-  since the recipe isn't on the site yet.
+- **The review is kept** in this browser (`sss:intake`, through `toKeep` and
+  `fromKept`) as it changes: the review with its answers, and the text it was
+  read from (pasted text or a PDF's text, never the PDF itself; for a web
+  page, its address). Coming back after a reload or an accidental back offers
+  it: "Carry on with Milk Rolls?", with "Carry on" or "Start over". Reading
+  another recipe replaces it. Copying doesn't clear it, since the recipe isn't
+  on the site yet.
 
-Not yet: the editor's "Split here" and "Join with the next step" for any step
-(the intake only joins back what the reader split), groups added or renamed,
-a step's cue, and the "Couldn't place" list. The intake and the editor now draw
-the same preview; whether the intake should hand its draft to the editor once
-the questions are answered, rather than keep its own editing, is a question for
-Jacob (see the pull request).
+### In the editor (`edit.html?new`)
+
+The editor (`assets/edit.mjs`) opens the kept review as a new recipe: the
+card, the page and Details as for any recipe, with the original beside the
+preview, and on its steps and ingredients the reader's guesses to confirm
+(split steps, "Join back"; joined alternatives, "Split back out"; "Needs you
+there"; prep: ahead, just before, not prep; "Done while an earlier step
+waits"; linked recipes, "Usually already made or bought", "Unlink") and the
+things to check. The rest of the things to check are listed above the
+preview. Its changes are kept in `sss:intake` too, so the intake and the
+editor always share one draft. Its file name is made from its title
+(`slugOf`), and a name already on the site is a problem to fix. Save publishes
+it as a new file (no `baseSha`), clears the kept review, and from then on it's
+`edit.html?r=<name>`, edited like any other recipe. Tests:
+`tests/e2e/intake-to-editor.spec.mjs`.
+
+Not yet: the "Couldn't place" list. Questions a change in the editor raises
+(a new bake with no time) show as the checker's to-dos, not as questions.
 
 ### For the lineup session
 
