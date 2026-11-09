@@ -220,7 +220,7 @@ function stepForm(n) {
   return `<form class="edit-form" data-form="step" data-n="${n}">
     ${labelled("Step", `<textarea name="do" rows="3" data-key="edit-do">${esc(o.do || "")}</textarea>`)}
     <div class="edit-fields">
-      ${field("Wait", "wait", o.wait, ` placeholder="e.g. 20 min"`)}
+      ${o.wait === false ? field("Wait", "wait", "", ` placeholder="Doesn't wait"`) : field("Wait", "wait", o.wait, ` placeholder="e.g. 20 min"`)}
       ${field("Cue", "cue", o.cue, ` placeholder="e.g. Golden at the edges"`)}
     </div>
     ${formButtons(act("move-up", "Move up") + act("move-down", "Move down") + act("split", "Split here")

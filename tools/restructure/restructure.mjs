@@ -101,6 +101,10 @@ const AFTER_TIMER = /^(?:then,?\s*)?(stir|pull|lift|uncover|baste|drain|flip|tur
 // Taking the dish out of the oven, not putting it in.
 const TAKE_OUT = /\b(?:take|pull|remove|lift)\b[^.]*\bout of the oven\b|\bremove (?:it |them )?from the oven\b|\bpull the (?:pan|tray|sheet|dish|pot)s? out\b/i;
 const isTotal = (s) => /\b(in all|in total|altogether|for the last)\b/i.test(s);
+// Cooking until it's done, with no time: "cover and simmer until tender", "Bake until deep golden".
+const COOKS_UNTIL = /\b(simmer|boil|bake|roast|braise|cook|poach|steam)\b[^.]*\buntil\b/i;
+// "5 minutes per side", "a side", "each side".
+const PER_SIDE = /(\d[\d\s/to–-]*\s*(?:min|minutes))\s*(?:per|a|each) side/i;
 
 export function restructure(r, titles, slug) {
   const out = structuredClone(r);
@@ -136,23 +140,25 @@ export function restructure(r, titles, slug) {
       const stove = POT.test(sent) || /\bover (?:low|medium|high)/i.test(sent);
       const startsNew = cur && isAction(sent) && !isTotal(sent) && (
         (t && cur.time) || (set && cur.set && set !== cur.set) || (MEANWHILE.test(sent) && cur.time)
-        // A wait after a timed step ("…35 to 45 minutes. Let cool completely"), timed or not.
-        || (cur.time && WAIT_SENTENCE.test(sent))
+        // A wait after a timed step ("…35 to 45 minutes. Let cool completely"),
+        // or one cooked until it's done ("…simmer until tender. Let it rest"), timed or not.
+        || ((cur.time || cur.cooks) && WAIT_SENTENCE.test(sent))
         // Something to do when the timer ends.
         || (cur.time && !t && AFTER_TIMER.test(sent))
         // Moving from the stove into another bowl or jar to carry on.
         || (cur.stove && !stove && OFF_THE_STOVE.test(sent)));
-      if (!cur || startsNew) { cur = { text: [sent], time: t ? sent : null, set, stove }; parts.push(cur); }
-      else { cur.text.push(sent); cur.time ||= t ? sent : null; cur.set ||= set; cur.stove ||= stove; }
+      const cooks = isAction(sent) && COOKS_UNTIL.test(sent);
+      if (!cur || startsNew) { cur = { text: [sent], time: t ? sent : null, set, stove, cooks }; parts.push(cur); }
+      else { cur.text.push(sent); cur.time ||= t ? sent : null; cur.set ||= set; cur.stove ||= stove; cur.cooks ||= cooks; }
     }
-    // A "per side" time becomes two steps, one per side.
+    // A time for each side ("per side", "a side", "each side") becomes two steps, one per side.
     const expanded = [];
     for (const p of parts) {
       const joined = p.text.join(" ");
-      const per = /(\d[\d\s/to–-]*\s*(?:min|minutes))\s+per side/i.exec(joined) || /(\d[\d\s/to–-]*\s*(?:min|minutes))\s*per side/i.exec(s.wait || "");
+      const per = PER_SIDE.exec(joined) || PER_SIDE.exec(s.wait || "");
       if (per) {
         const t = per[1].trim();
-        expanded.push({ ...p, text: [joined.replace(/\s*per side/i, " on the first side").replace(/,? flipping once,?/i, ",").replace(/,\s*,/g, ",")], waitText: t, perSide: 1 });
+        expanded.push({ ...p, text: [joined.replace(/\s*(?:per|a|each) side/i, " on the first side").replace(/,? flipping once,?/i, ",").replace(/,\s*,/g, ",")], waitText: t, perSide: 1 });
         expanded.push({ text: [`Flip and cook the second side ${t}.`], waitText: t, perSide: 2, set: p.set });
       } else expanded.push(p);
     }

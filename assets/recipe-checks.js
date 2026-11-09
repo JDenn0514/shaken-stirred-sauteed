@@ -105,6 +105,9 @@
       if (!s || typeof s !== "object") return;
       const step = `step ${n + 1}`;
       if (s.hands !== undefined && !isTime(s.hands)) problems.push(`${step}: "hands" must be a time, like "10 min"`);
+      // `wait: false` says a person checked the step and it doesn't wait, so
+      // the lineup stops asking how long it takes.
+      if (s.wait !== undefined && s.wait !== false && !isTime(s.wait)) problems.push(`${step}: "wait" must be a time, like "10 min", or false`);
       for (const k of ["oven", "preheat"]) {
         if (s[k] !== undefined && s[k] !== false && !isSetting(s[k])) problems.push(`${step}: oven setting "${s[k]}" isn't one of "200C", "400F", "broil" or "off"`);
       }

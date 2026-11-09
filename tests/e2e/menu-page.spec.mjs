@@ -60,6 +60,9 @@ test.describe("with dishes", () => {
     await onMenu(page, ["roast-chicken", "green-beans", "slow-cake"]);
     await page.goto("menu.html");
     await expect(card(page)).toBeVisible();
+    // Planned, so the card isn't redrawn under a click. (Using the card while
+    // it plans is tested on its own, below.)
+    await expect(page.getByRole("button", { name: /^Start cooking · about/ })).toBeVisible();
   });
 
   test("shows the dishes by course, with nested recipes under their dish", async ({ page }) => {
@@ -148,6 +151,70 @@ test("asks what the recipes don't say, and saves the answers to the recipe", asy
   await expect(page.getByRole("region", { name: /the recipes don't say/ })).toHaveCount(0);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sss:answers:mystery-stew"))))
     .toEqual({ waits: { 1: "25 min" }, serve: "soon" });
+});
+
+test("opening the search while the menu is still being planned stays on the search", async ({ page }) => {
+  // Planning that takes a while, as on a slow phone.
+  await page.addInitScript(() => {
+    const Slow = class extends window.Worker {
+      postMessage(m) { setTimeout(() => Worker.prototype.postMessage.call(this, m), 1000); }
+    };
+    window.Worker = Slow;
+  });
+  await onMenu(page, ["roast-chicken", "green-beans"]);
+  await page.goto("menu.html");
+  await expect(page.getByRole("button", { name: "Planning…" })).toBeVisible();
+  await card(page).getByRole("link", { name: "+ Add a dish" }).click();
+  await expect(page.getByRole("searchbox", { name: "Search recipes" })).toBeVisible();
+  await page.waitForTimeout(2500);
+  await expect(page.getByRole("searchbox", { name: "Search recipes" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Your menu" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^Start cooking/ })).toHaveCount(0);
+});
+
+test("a step that doesn't really wait can be answered so, and isn't asked about again", async ({ page }) => {
+  await onMenu(page, ["mystery-stew"]);
+  await page.goto("menu.html");
+  const asks = page.getByRole("region", { name: /the recipes don't say/ });
+  await asks.getByRole("button", { name: "It doesn't wait" }).click();
+  await expect(asks).not.toContainText("Bake for about 25 minutes.");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sss:answers:mystery-stew"))))
+    .toEqual({ waits: { 1: false } });
+  await page.reload();
+  await expect(page.getByRole("region", { name: /the recipes don't say/ })).not.toContainText("Bake for about 25 minutes.");
+});
+
+test("a wait in a step that waits for something else splits the step when answered, shown to check and undo", async ({ page }) => {
+  await onMenu(page, ["cooling-buns"]);
+  await page.goto("menu.html");
+  const asks = page.getByRole("region", { name: /the recipes don't say/ });
+  const bake = asks.locator("form").filter({ hasText: "Bake until deep golden." });
+  await expect(bake).toContainText("Then let them cool on a rack");
+  const start = page.getByRole("button", { name: /^Start cooking/ });
+  const before = await start.textContent();
+  await bake.getByRole("textbox", { name: /how long/i }).fill("25");
+  await bake.getByRole("button", { name: "Save" }).click();
+
+  const split = page.getByRole("region", { name: "Steps split by your answers" });
+  await expect(split).toContainText("Cooling Buns, step 2, is now two steps");
+  await expect(split.getByRole("listitem")).toHaveText([
+    "Bake until deep golden. ⏱ 25 min",
+    "Then let them cool on a rack, at least 15 minutes. ⏱ At least 15 min",
+  ]);
+  await expect(start).not.toHaveText(before);
+  await expect(asks.locator("form").filter({ hasText: "Bake until deep golden." })).toHaveCount(0);
+
+  // A later step's answer is saved to that step as the recipe numbers it.
+  await asks.locator("form").filter({ hasText: "let the glaze set" }).getByRole("textbox", { name: /how long/i }).fill("10");
+  await asks.locator("form").filter({ hasText: "let the glaze set" }).getByRole("button", { name: "Save" }).click();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sss:answers:cooling-buns"))))
+    .toEqual({ splits: { 1: { sentence: "Bake until deep golden.", wait: "25 min" } }, waits: { 2: "10 min" } });
+
+  await split.getByRole("button", { name: "Undo the split" }).click();
+  await expect(page.getByRole("region", { name: "Steps split by your answers" })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: /the recipes don't say/ }).locator("form").filter({ hasText: "Bake until deep golden." })).toHaveCount(1);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sss:answers:cooling-buns"))))
+    .toEqual({ splits: {}, waits: { 2: "10 min" } });
 });
 
 test("warns when a dish will be ready too early, and no order gets it closer", async ({ page }) => {

@@ -108,6 +108,14 @@ describe("steps", () => {
   test("an empty wait is taken out, and with it watch, which needs a wait", () =>
     assert.deepEqual(M.updateStep(keeper(), 1, { do: "Stir.", wait: "", cue: "Cold glass" }).steps[1].items[0], { do: "Stir.", cue: "Cold glass" }));
 
+  test("a step saved as not waiting stays that way when its wait is left empty, and takes a time when given one", () => {
+    const r = { title: "A", steps: [{ do: "Let it rest on the counter.", wait: false }] };
+    assert.deepEqual(M.updateStep(r, 0, { do: "Let it rest on the floured counter.", wait: "", cue: "" }).steps,
+      [{ do: "Let it rest on the floured counter.", wait: false }]);
+    assert.deepEqual(M.updateStep(r, 0, { do: "Let it rest on the counter.", wait: "10 min", cue: "" }).steps,
+      [{ do: "Let it rest on the counter.", wait: "10 min" }]);
+  });
+
   test("a plain-text step becomes { do } when it gets a wait", () => {
     const r = M.updateStep({ title: "A", steps: ["Boil."] }, 0, { do: "Boil.", wait: "5 min", cue: "" });
     assert.deepEqual(r.steps, [{ do: "Boil.", wait: "5 min" }]);

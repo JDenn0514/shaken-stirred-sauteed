@@ -194,6 +194,16 @@ Object.assign(PAGE_ONLY, {
       { do: "Bake for about 25 minutes.", oven: "180C", hands: "1 min" },
     ],
   }),
+  // A bake with no time in a step that waits for cooling, then a wait with no time.
+  "cooling-buns": recipe({
+    title: "Cooling Buns", category: "baking", serve: "keeps",
+    ingredients: [{ qty: "1", item: "Dough" }],
+    steps: [
+      { do: "Shape the buns.", hands: "10 min", uses: ["Dough"] },
+      { do: "Bake until deep golden. Then let them cool on a rack, at least 15 minutes.", oven: "180C", hands: "1 min", wait: "At least 15 min" },
+      { do: "Glaze them and let the glaze set.", hands: "2 min" },
+    ],
+  }),
   // Two recipes that each need the other: no order works.
   "loop-a": recipe({ title: "Loop A", ingredients: [{ qty: "1", item: "Loop B", recipe: "loop-b" }], steps: [{ do: "Use loop B.", uses: ["Loop B"] }] }),
   "loop-b": recipe({ title: "Loop B", ingredients: [{ qty: "1", item: "Loop A", recipe: "loop-a" }], steps: [{ do: "Use loop A.", uses: ["Loop A"] }] }),
@@ -203,7 +213,7 @@ Object.assign(PAGE_ONLY, {
 // picker and the link checks read.
 export const EDITOR_RECIPES = {
   // Fields the editor has no control for (abv, nutrition, origin, an unknown
-  // field), and lineup data, which must come out of an edit unchanged.
+  // field), and lineup data (`wait: false` too), which must come out of an edit unchanged.
   "old-fashioned": {
     title: "Old Fashioned", category: "cocktails", wobble: { kept: ["as", "is"] },
     abv: "32%", standardDrinks: 1.6, nutrition: "Mostly sugar", origin: "Louisville, 1880s", glass: "Rocks",
@@ -215,7 +225,8 @@ export const EDITOR_RECIPES = {
     ],
     steps: [
       { do: "Stir the bourbon, syrup and bitters with ice.", hands: "1 min", wait: "30 sec", watch: true, uses: ["Bourbon", "Demerara syrup", "Bitters"] },
-      { do: "Strain over a large cube.", hands: "30 sec" },
+      // Checked by a person: it doesn't wait.
+      { do: "Strain over a large cube.", hands: "30 sec", wait: false },
     ],
     tags: { spirit: ["whiskey"], ingredients: ["orange"] },
     time: { total: 5 },

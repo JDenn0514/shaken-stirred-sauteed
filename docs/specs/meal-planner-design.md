@@ -174,7 +174,7 @@ It's its own page, `menu.html` (round 5).
 
   Below the card, a full-width **"Start cooking · about 1 hr 45 min"** starts the whole lineup.
 - **Made ahead** (round 5): when a dish's first part is set to be made ahead, an **"Ahead of time"** box sits above the card, naming the part and its time, with its own start button ("Start the meringue · about 4 hr 23 min"). It's cooked through lineup cook mode like the day's plan. Once done, the box says "✓ The meringue is made". The day's Start cooking works either way, since the cook may have made it some other way.
-- **What the recipes don't say** (`unknown`, round 5): a box above Start cooking, "Two things the recipes don't say", asks for each wait with no time (pre-filled from `suggest`) and each assumed serving time (Hot · Soon · Keeps). Start cooking still works, planned on the guesses. **Answers are saved per recipe on this device** (`sss:answers:<slug>`) and given to the planner as if the recipe said them; the page can't change the recipe files. None of the 40 reviewed recipes has any; recipes from the intake may.
+- **What the recipes don't say** (`unknown`, round 5): a box above Start cooking, "Two things the recipes don't say", asks for each wait with no time (pre-filled from `suggest`) and each assumed serving time (Hot · Soon · Keeps). Start cooking still works, planned on the guesses. **Answers are saved per recipe on this device** (`sss:answers:<slug>`) and given to the planner as if the recipe said them; the page can't change the recipe files. None of the 40 reviewed recipes has any; recipes from the intake may. A step that doesn't really wait can be answered "It doesn't wait" (saved as `false`, like a recipe's `wait: false`). A wait the plan doesn't count in a step that waits for something else (`unknown` with `sentence`: a bake before the cooling the step's `wait` is for) splits the step there when answered: the bake gets its own step and timer. Splits are listed under "Steps split by your answers", each with Undo the split. Answers are saved by the step's place in the recipe as written, so a split doesn't move later answers.
 - **No order works:** if `planLineup` throws, the card stays and Start cooking is replaced by "These can't be planned together", with a line suggesting removing a dish or switching off Prep everything first.
 - **While cooking,** leaving cook mode with ✕ comes back here, and Start cooking reads "Back to cooking".
 
@@ -264,6 +264,7 @@ New optional fields. Each one has a fallback, so a recipe without them still get
 | Field | On | Means | Fallback |
 |---|---|---|---|
 | `hands` | step | Minutes your hands are busy, e.g. `"10 min"` | The recipe's active or prep time, spread over the steps that don't give one. Otherwise 2 min a step |
+| `wait` | step | `false`: checked by a person, the step doesn't wait though it sounds like it does | Asked about when its wording waits |
 | `watch` | step | `true` when the step's `wait` needs you there | The wait runs on its own |
 | `oven` | step | The setting the step needs while it runs: `"200C"`, `"400F"`, `"broil"` or `"off"` | No oven |
 | `preheat` | step | The step heats the oven to this setting in the background | The planner adds a heating step if a dish needs the oven |

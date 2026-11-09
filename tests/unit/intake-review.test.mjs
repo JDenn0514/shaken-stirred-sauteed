@@ -45,14 +45,29 @@ describe("asking for a time on every step that waits", () => {
     assert.equal(flat(state.recipe.steps)[2].wait, "35 to 40 min");
   });
 
-  test("a step that doesn't really wait can be answered \"no wait\"", () => {
+  test("a step that doesn't really wait can be answered \"no wait\", saved as `wait: false` so the lineup doesn't ask again", () => {
     let state = startReview(bread(), []);
     const rise = reviewOf(state).asks.find((a) => a.kind === "wait");
     state = answerWait(state, rise.id, null);
     const after = reviewOf(state).asks.find((a) => a.id === rise.id);
     assert.equal(after.answered, true);
     assert.equal(after.value, "");
-    assert.equal(flat(state.recipe.steps)[1].wait, undefined);
+    assert.equal(flat(state.recipe.steps)[1].wait, false);
+    assert.equal(flat(recipeToSave(state).steps)[1].wait, false);
+  });
+
+  test("editing a step answered \"no wait\", with its wait left empty, keeps the answer", () => {
+    let state = startReview(bread(), []);
+    const rise = reviewOf(state).asks.find((a) => a.kind === "wait");
+    state = updateStep(answerWait(state, rise.id, null), rise.step, { do: "Cover it.", wait: "" });
+    assert.equal(flat(state.recipe.steps)[1].wait, false);
+  });
+
+  test("a \"no wait\" answer can be changed to a time", () => {
+    let state = startReview(bread(), []);
+    const rise = reviewOf(state).asks.find((a) => a.kind === "wait");
+    state = answerWait(answerWait(state, rise.id, null), rise.id, "1 hr");
+    assert.equal(flat(state.recipe.steps)[1].wait, "1 hr");
   });
 
   test("a time the planner can't read isn't an answer", () => {
@@ -117,10 +132,20 @@ describe("a step with two waits, one without a time", () => {
   });
   const flags = [{ kind: "time", text: "Bake until deep golden.", why: "no time given" }];
 
-  test("is asked about, naming the part with no time", () => {
-    const ask = reviewOf(startReview(knots(), flags)).asks.find((a) => a.kind === "wait");
-    assert.equal(ask.text, "Bake until deep golden.");
-    assert.equal(ask.value, "");
+  test("is asked about once, naming the part with no time", () => {
+    const asks = reviewOf(startReview(knots(), flags)).asks.filter((a) => a.kind === "wait");
+    assert.deepEqual(asks.map((a) => [a.text, a.value]), [["Bake until deep golden.", ""]]);
+  });
+
+  test("is asked about from the planner too, without the intake's flag, and answering splits the step", () => {
+    let state = startReview(knots(), []);
+    const asks = reviewOf(state).asks.filter((a) => a.kind === "wait");
+    assert.deepEqual(asks.map((a) => a.text), ["Bake until deep golden."]);
+    state = answerWait(state, asks[0].id, "25 min");
+    assert.deepEqual(flat(state.recipe.steps).map((s) => [s.do, s.wait]), [
+      ["Sprinkle with pearl sugar. Bake until deep golden.", "25 min"],
+      ["Then let them cool on a rack, at least 15 minutes.", "At least 15 minutes"],
+    ]);
   });
 
   test("answering splits the step there, each part with its own wait", () => {

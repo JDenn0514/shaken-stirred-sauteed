@@ -74,6 +74,10 @@ const PAGES = [
   ["menu page asking what a recipe doesn't say", "menu.html", async (page) => {
     await expect(page.getByRole("region", { name: /the recipes don't say/ })).toBeVisible();
   }, ["mystery-stew"]],
+  ["menu page with a step split by an answer", "menu.html", async (page) => {
+    await expect(page.getByRole("region", { name: "Steps split by your answers" })).toBeVisible();
+  }, ["cooling-buns"], (page) => page.addInitScript(() => localStorage.setItem("sss:answers:cooling-buns",
+    JSON.stringify({ splits: { 1: { sentence: "Bake until deep golden.", wait: "25 min" } } })))],
   ["menu page when no order works", "menu.html", (page) => expect(page.getByRole("alert")).toBeVisible(), ["loop-a"]],
   ["recipe page on your menu, with its menu open", "recipe.html?r=lemon-bars", async (page) => {
     await page.getByRole("button", { name: /On your menu/ }).click();

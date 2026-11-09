@@ -127,7 +127,11 @@ export function updateStep(recipe, n, changes) {
   return change(recipe, "steps", n, (step) => {
     const plain = typeof step === "string";
     const s = asStep(step);
+    // `wait: false` (checked: it doesn't wait) shows as an empty box, and
+    // stays false until a time is given.
+    const notWaiting = s.wait === false;
     for (const k of ["do", "wait", "cue"]) if (k in changes) put(s, k, clean(changes[k]));
+    if (notWaiting && empty(s.wait)) s.wait = false;
     if (!s.wait) delete s.watch;
     return plain && Object.keys(s).length === 1 && "do" in s ? s.do : s;
   });
