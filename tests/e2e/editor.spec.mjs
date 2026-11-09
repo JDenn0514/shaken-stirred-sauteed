@@ -100,9 +100,11 @@ test.describe("steps, by keyboard", () => {
   test("splitting a step where the cursor is, and joining it back", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     await openStep(page, "Shred the pork.");
-    await page.getByLabel("Step", { exact: true }).fill("Shred the pork. Taste it.");
-    await page.getByLabel("Step", { exact: true }).press("Home");
-    for (let i = 0; i < "Shred the pork.".length; i++) await page.keyboard.press("ArrowRight");
+    // Typing leaves the cursor at the end; step back over " Taste it.". (Home
+    // would be shorter, but on a Mac it doesn't move the cursor in a textarea.)
+    await page.getByLabel("Step", { exact: true }).fill("");
+    await page.getByLabel("Step", { exact: true }).pressSequentially("Shred the pork. Taste it.");
+    for (let i = 0; i < " Taste it.".length; i++) await page.keyboard.press("ArrowLeft");
     await page.getByRole("button", { name: "Split here" }).press("Enter");
     expect((await stepTexts(page)).slice(2)).toEqual(["Shred the pork.", "Taste it.", "Crisp it in a hot pan."]);
 
