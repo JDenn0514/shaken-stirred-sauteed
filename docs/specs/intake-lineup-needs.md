@@ -45,6 +45,14 @@ somewhere warm, and any step that goes in the oven.
   recipes as code restructures them, and nothing in the 40 reviewed ones.
 - **Pre-fill the answer** from `suggest` when there is one (a time in the
   step's text that isn't in its `wait`).
+- **A wait in a step that waits for something else** ("Bake until deep
+  golden. Then let them cool on a rack, at least 15 minutes.", whose `wait` is
+  the cooling) is reported with `sentence`, the one that waits uncounted.
+  Answering splits the step after that sentence. The step's own wait is the
+  sentence whose time it is; when no sentence gives that time, nothing is said.
+- **"It doesn't wait"** is saved as `wait: false`, so the lineup doesn't ask
+  again. A sentence in a step that waits can't be saved that way yet: said not
+  to wait, it's asked again on the lineup page.
 - **Optional steps are a known gap.** The acini di pepe's "Use fresh, or
   leave… to dry, 8 to 24 hr" isn't reported, because a step can't yet be
   marked optional. Leave such a wait out rather than guess.

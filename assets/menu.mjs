@@ -34,19 +34,34 @@ async function loadRecipes(slugs) {
 }
 
 // What the cook told us a recipe doesn't say ("sss:answers:<slug>"), written
-// into a copy of the recipe as if it said it.
+// into a copy of the recipe as if it said it:
+// - waits: { step: "25 min" }, or false for a step that doesn't wait;
+// - splits: { step: { sentence, wait } }, a wait in a step that waits for
+//   something else ("Bake until deep golden. Then let them cool…"): the step is
+//   split after that sentence, the first part taking that wait and the rest
+//   keeping the step's own;
+// - serve: hot, soon or keeps.
+// Steps are counted as the recipe has them. In the copy each step keeps that
+// count as `asWritten` (once there are answers), and a split step's parts
+// are `split` 1 and 2.
 const SERVE = { hot: { serve: "hot" }, soon: { serve: "soon", sits: "30 min" }, keeps: { serve: "keeps" } };
 function withAnswers(r, slug) {
   const a = Menu.answers(slug);
-  if (!r || (!a.waits && !a.serve)) return r;
+  if (!r || (!a.waits && !a.splits && !a.serve)) return r;
   let n = 0;
-  const steps = (r.steps || []).map((g) => {
-    const fix = (s) => {
-      const k = n++, wait = a.waits?.[k];
-      return wait ? { ...(typeof s === "string" ? { do: s } : s), wait } : s;
-    };
-    return g && Array.isArray(g.items) ? { ...g, items: g.items.map(fix) } : fix(g);
-  });
+  const fix = (step) => {
+    const k = n++, s = { ...(typeof step === "string" ? { do: step } : step), asWritten: k };
+    if (a.waits && k in a.waits) s.wait = a.waits[k];
+    const split = a.splits?.[k], at = split ? s.do.indexOf(split.sentence) : -1;
+    const rest = at < 0 ? "" : s.do.slice(at + split.sentence.length).trim();
+    if (!rest) return [s];
+    const { holds, ...first } = s;
+    return [
+      { ...first, do: s.do.slice(0, at + split.sentence.length).trim(), wait: split.wait, split: 1 },
+      { do: rest, wait: s.wait, asWritten: k, split: 2, ...(holds && { holds }) },
+    ];
+  };
+  const steps = (r.steps || []).flatMap((g) => (g && Array.isArray(g.items) ? [{ ...g, items: g.items.flatMap(fix) }] : fix(g)));
   return { ...r, steps, ...SERVE[a.serve] };
 }
 
@@ -91,6 +106,8 @@ let state = { q: "", cat: "all" };
 const peek = $("menu-peek-host"), page = $("menu");
 function render() {
   if (location.hash === "#cook") return;
+  // A card still waiting for its plan isn't drawn over whatever this draws.
+  drawing++;
   const menu = Menu.load();
   // While searching, your menu sits beside the results on a wide screen.
   peek.hidden = !searching();
@@ -274,17 +291,31 @@ function drawCard(menu) {
   const asks = unknown.length ? `<section class="menu-asks" aria-labelledby="asks-h">
       <h2 id="asks-h">${unknown.length === 1 ? "One thing" : `${unknown.length} things`} the recipes don't say</h2>
       <p class="muted">The plan guesses until you say. Your answers are saved to the recipe on this device.</p>
-      ${unknown.map((u) => u.kind === "wait" ? `<form class="menu-ask fam-${esc(recipes[u.slug]?.category)}" data-wait="${esc(u.slug)}" data-step="${u.step}">
-          <p><b>${esc(title(u.slug))}</b>, step ${u.step + 1}:</p>
+      ${unknown.map((u) => u.kind === "wait" ? `<form class="menu-ask fam-${esc(recipes[u.slug]?.category)}" data-wait="${esc(u.slug)}" data-step="${steps(u.slug)[u.step]?.asWritten ?? u.step}"${u.sentence ? ` data-sentence="${esc(u.sentence)}"` : ""}>
+          <p><b>${esc(title(u.slug))}</b>, step ${(steps(u.slug)[u.step]?.asWritten ?? u.step) + 1}${u.sentence ? `: it waits for something else, but not for this: <q>${esc(u.sentence)}</q>` : ":"}</p>
           <blockquote>${esc(typeof steps(u.slug)[u.step] === "string" ? steps(u.slug)[u.step] : steps(u.slug)[u.step]?.do)}</blockquote>
           <label>How long, in minutes? <input type="text" inputmode="decimal" name="minutes" value="${esc(u.suggest ? Math.round(minutesIn(u.suggest)) : "")}" size="4" required></label>
-          <button class="btn" type="submit">Save</button>
+          <div class="menu-ask-acts"><button class="btn" type="submit">Save</button>${u.sentence ? ""
+            : `<button class="btn" type="button" data-no-wait="${esc(u.slug)}" data-step="${steps(u.slug)[u.step]?.asWritten ?? u.step}">It doesn't wait</button>`}</div>
+          ${u.sentence ? `<p class="muted">Saving splits the step there, so each part has its own timer.</p>` : ""}
         </form>` : `<div class="menu-ask fam-${esc(recipes[u.slug]?.category)}">
           <p><b>${esc(title(u.slug))}</b>: how is it served? Until you say, it's planned ${esc(u.assumed)}.</p>
           <span class="menu-seg menu-seg-stack" role="radiogroup" aria-label="How ${esc(title(u.slug))} is served">
             ${[["hot", "Hot · eat within a few minutes"], ["soon", "Soon · fine for half an hour"], ["keeps", "Keeps"]].map(([v, l]) =>
               `<label><input type="radio" name="serve-${esc(u.slug)}" value="${v}" data-serve="${esc(u.slug)}"><span>${l}</span></label>`).join("")}
           </span></div>`).join("")}
+    </section>` : "";
+
+  // Steps split by the cook's answers, to check, and undo.
+  const splits = Object.keys(recipes).flatMap((slug) => steps(slug).filter((s) => s?.split === 1)
+    .map((first) => ({ slug, first, second: steps(slug).find((s) => s?.split === 2 && s.asWritten === first.asWritten) })));
+  const splitBox = splits.length ? `<section class="menu-asks menu-splits" aria-labelledby="splits-h">
+      <h2 id="splits-h">Steps split by your answers</h2>
+      ${splits.map(({ slug, first, second }) => `<div class="menu-ask fam-${esc(recipes[slug]?.category)}">
+          <p><b>${esc(title(slug))}</b>, step ${first.asWritten + 1}, is now two steps:</p>
+          <ol class="menu-split">${[first, second].map((s) => `<li>${esc(s.do)} <span class="step-wait">⏱ ${esc(s.wait)}</span></li>`).join("")}</ol>
+          <button class="btn" type="button" data-unsplit="${esc(slug)}" data-step="${first.asWritten}">Undo the split</button>
+        </div>`).join("")}
     </section>` : "";
 
   const prep = lineup.prepFirst;
@@ -302,6 +333,7 @@ function drawCard(menu) {
       </div>
     </section>
     ${asks}
+    ${splitBox}
     ${error ? `<div class="menu-error" role="alert"><h2>These can't be planned together</h2>
         <p>No order gets every dish made: one needs another that needs it back, or nothing can go on. Try removing a dish, or switching off Prep everything first.</p></div>`
       : plan ? `<button class="btn cook-start menu-start" type="button" data-start="day">${cooking ? "Back to cooking" : `Start cooking · ${about(dayLength(plan))}`}</button>`
@@ -347,6 +379,16 @@ body.addEventListener("click", (e) => {
   if (d.remove) return changeMenu((m) => { m.dishes = m.dishes.filter((x) => x.slug !== d.remove); });
   if (d.ahead) return changeMenu((m) => { m.ahead = { ...m.ahead, [d.ahead]: d.value === "true" }; });
   if (d.start) return startCooking(d.start);
+  if (d.noWait) {
+    const a = Menu.answers(d.noWait);
+    Menu.setAnswers(d.noWait, { ...a, waits: { ...a.waits, [d.step]: false } });
+    return render();
+  }
+  if (d.unsplit) {
+    const a = Menu.answers(d.unsplit), { [d.step]: _, ...splits } = a.splits || {};
+    Menu.setAnswers(d.unsplit, { ...a, splits });
+    return render();
+  }
   if (!t.closest(".menu-pop")) closePop();
 });
 body.addEventListener("change", (e) => {
@@ -369,8 +411,9 @@ body.addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.target, n = parseFloat(f.elements.minutes.value);
   if (!(n > 0)) return f.elements.minutes.focus();
-  const a = Menu.answers(f.dataset.wait);
-  Menu.setAnswers(f.dataset.wait, { ...a, waits: { ...a.waits, [f.dataset.step]: `${n} min` } });
+  const a = Menu.answers(f.dataset.wait), { step, sentence } = f.dataset;
+  Menu.setAnswers(f.dataset.wait, sentence ? { ...a, splits: { ...a.splits, [step]: { sentence, wait: `${n} min` } } }
+    : { ...a, waits: { ...a.waits, [step]: `${n} min` } });
   render();
 });
 // A dish's menu: arrows move through it, Escape closes it.

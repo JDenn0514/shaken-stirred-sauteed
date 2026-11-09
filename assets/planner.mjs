@@ -459,23 +459,45 @@ const MAKE_AHEAD_SAVES = 30;
 // so the plan comes out short; a dish with no serving time is planned on an
 // assumption. Components, baking and cocktails have safe defaults, so they
 // aren't reported.
-const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight)|set (?:it |them )?aside (?:in|somewhere|until)|until (?:it's |they're |it has |they have )?(?:doubled|expanded|puffy|risen)|(?:in a warm (?:spot|place)|somewhere warm))\b/i;
+const WAITS = /\b(bake|roast|rise|proof|chill|refrigerate|cool|marinate|soak|freeze|let (?:it |them |the \w+ )?(?:rest|sit|stand|set)|(?<!the )rest (?:it|them|for|until|on|in)|leave (?:it|them) (?:to|until|on|in|overnight)|set (?:it |them )?aside (?:in|somewhere|until)|until (?:it's |they're |it has |they have )?(?:doubled|expanded|puffy|risen)|(?:in a warm (?:spot|place)|somewhere warm))\b/i;
 // Not waits: work done while something else waits, warnings ("Don't let them
 // soak"), keeping it for later ("refrigerate up to 24 hours"), a glass chilled
 // while you mix, the oven left on for later.
 const NOT_A_WAIT = /^(?:while|meanwhile|as|once|when|after|before|during|don't|do not|never|use (?:it )?(?:right away|immediately))\b|\bwhile you\b|\bup to \d|\buntil (?:serving|needed|you're ready|ready to)\b|\bchill (?:the |a |your )?(?:glass|glasses|coupe|mug|cup)|\b(?:leave|keep) the oven on\b/i;
 const TIME_IN = /\b\d+(?:\s+\d+\/\d+)?\s*(?:(?:to|-|–)\s*\d+(?:\s+\d+\/\d+)?\s*)?(?:sec|seconds?|min|minutes?|hrs?|hours?)\b|\bovernight\b/i;
+const waitingSentences = (text) => text.split(/(?<=[.!?])\s+/).filter((x) => !NOT_A_WAIT.test(x) && WAITS.test(x));
+// A step that waits for one thing can say another wait the plan doesn't count:
+// "Bake until deep golden. Then let them cool on a rack, at least 15 minutes."
+// has the cooling as its wait, so the bake takes no time. That's the waiting
+// sentence other than the one whose time is the step's wait. When no sentence
+// gives the wait's time, there's no telling which one it is, so nothing is said.
+function secondWait(s) {
+  const waiting = waitingSentences(s.do);
+  if (waiting.length < 2) return null;
+  const timeOf = (x) => TIME_IN.exec(x)?.[0];
+  const own = waiting.find((x) => timeOf(x) && Math.abs(minutes(timeOf(x)) - minutes(s.wait)) < 0.5);
+  const other = own && waiting.find((x) => x !== own);
+  if (!other) return null;
+  const time = timeOf(other);
+  return { sentence: other, ...(time && { suggest: time }) };
+}
 function unknownsOf(slugs, recipes) {
   const unknown = [];
   for (const slug of slugs) {
     const r = recipes[slug];
     for (const s of stepsOf(r)) {
-      // Prep's waits (butter softening) aren't what makes a plan short.
-      if (s.wait || s.during || s.prep || s.prepOnly) continue;
+      // Prep's waits (butter softening) aren't what makes a plan short, and a
+      // step saved with `wait: false` was checked by a person: it doesn't wait.
+      if (s.during || s.prep || s.prepOnly || s.wait === false) continue;
+      if (s.wait) {
+        const second = secondWait(s);
+        if (second) unknown.push({ kind: "wait", slug, step: s.n, text: s.do, ...second });
+        continue;
+      }
       // A step in the oven always takes time. (Not one on the stove: stirring
       // "until fragrant" is hands-on time the step already counts.)
       const cooking = s.oven && s.oven !== "off" && !NOT_A_WAIT.test(s.do);
-      const waiting = s.do.split(/(?<=[.!?])\s+/).find((x) => !NOT_A_WAIT.test(x) && WAITS.test(x)) || (cooking && s.do);
+      const waiting = waitingSentences(s.do)[0] || (cooking && s.do);
       if (!waiting) continue;
       const time = TIME_IN.exec(waiting);
       unknown.push({ kind: "wait", slug, step: s.n, text: s.do, ...(time && { suggest: time[0] }) });

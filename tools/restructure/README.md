@@ -13,7 +13,9 @@ free to run.
   alternatives ("Or knead it in a stand mixer…") with the step they belong to;
   also splits off a wait after a timed step, timed or not ("…35 to 45 minutes.
   Let cool completely"), and moving off the stove into a bowl or jar to carry
-  on ("Pour the milk into a large bowl…"), so each step has at most one wait
+  on ("Pour the milk into a large bowl…"), and a wait after a step cooked
+  until it's done ("…cover and simmer until tender. Let it rest off the heat"),
+  so each step has at most one wait
   and one place on the stove or in the oven. Getting ready for a wait ("Butter
   a bowl… Cover and let it rise") and taking a pan off the heat stay whole;
 - splits off what to do when a timer ends ("Microwave 7–8 minutes. Stir it
@@ -21,7 +23,7 @@ free to run.
   can place it when the timer rings; taking a pan off the heat stays put;
 - marks a step that takes the dish out of the oven (`oven: false`), so the
   lineup keeps the oven for it until then;
-- splits a "per side" time into one step per side, and a wait that holds two
+- splits a time "per side", "a side" or "each side" into one step per side, and a wait that holds two
   waits ("30 min ice bath, then about 1 hr fridge") into two steps;
 - reads waits, oven settings, heating the oven, burner, grill and microwave
   from the step's actions (not its explanations), and guesses watched waits;

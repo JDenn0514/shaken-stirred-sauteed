@@ -66,11 +66,12 @@ another page") and "Read the recipe". The website and the PDF are
 
 - **Questions**, which must be answered before going on to the editor (or copying):
   - a time for every step the planner can't time (`planLineup(...).unknown`),
-    filled in from its `suggest`, or "It doesn't wait";
-  - a bake, rise, chill or cool the intake flagged (`time`) inside a step
-    that already waits for something else ("Bake until deep golden. Then let
-    them cool…"): the planner can't see it, so it's asked too, and answering
-    splits the step after that sentence;
+    filled in from its `suggest`, or "It doesn't wait", saved as `wait: false`
+    so the lineup page doesn't ask again;
+  - a bake, rise, chill or cool inside a step that already waits for
+    something else ("Bake until deep golden. Then let them cool…"), from the
+    planner (`unknown` with `sentence`) or the intake's own `time` flag:
+    answering splits the step after that sentence;
   - for a cooking dish (not a component), how it's served (Hot, Soon, Keeps)
     and how long it can sit. Nothing is chosen for you; the reader's guess is
     shown as a hint. Baking, cocktails and components show their serving to
@@ -117,24 +118,6 @@ it as a new file (no `baseSha`), clears the kept review, and from then on it's
 
 Not yet: the "Couldn't place" list. Questions a change in the editor raises
 (a new bake with no time) show as the checker's to-dos, not as questions.
-
-### For the lineup session
-
-Found while building the review screen; `assets/planner.mjs` isn't changed here.
-
-- **`unknown` misses a wait in a step that already waits.** "Bake until deep
-  golden. Then let them cool on a rack, at least 15 minutes." has the cooling
-  as its `wait`, so the bake isn't reported, and a plan counts no baking time.
-  The intake asks about it from its own `time` flag; the lineup page wouldn't.
-- **There's no way to record "this step doesn't wait".** When the person
-  answers "It doesn't wait" (a false alarm from the wording), the recipe saves
-  without a `wait`, so `unknown` will report the same step again on the lineup
-  page. A field such as `wait: false` would let the intake save the answer.
-- **Some steps with two timed actions aren't split** by the restructuring:
-  "Bring … to a boil, then cover and simmer until tender. Let it rest off the
-  heat" stays one step, and "Brown the chicken …, 5 minutes a side" keeps one
-  5-minute wait rather than a step per side (the README says per-side times
-  are split).
 
 ## What the text reader does (`parse.mjs`)
 

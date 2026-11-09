@@ -596,6 +596,39 @@ describe("what the plan doesn't know", () => {
       [{ kind: "wait", slug: "pie", step: 0, text: "Bake for 45 minutes, until golden", suggest: "45 minutes" }]);
   });
 
+  test("a step whose wait is one thing (cooling) that also bakes with no time is reported, with the sentence that bakes", () => {
+    const text = "Bake until deep golden. Then let them cool on a rack, at least 15 minutes.";
+    const buns = recipe("Buns", [[text, { hands: "1 min", wait: "At least 15 min", oven: "350F" }]], { category: "baking" });
+    assert.deepEqual(planLineup({ dishes: [{ slug: "buns" }] }, { buns }).unknown,
+      [{ kind: "wait", slug: "buns", step: 0, text, sentence: "Bake until deep golden." }]);
+  });
+
+  test("a second sentence that waits, with a time the step's wait doesn't count, is reported with that time to suggest", () => {
+    const text = "Bake 25 minutes. Let them cool 15 minutes.";
+    const buns = recipe("Buns", [[text, { hands: "1 min", wait: "15 min", oven: "350F" }]], { category: "baking" });
+    assert.deepEqual(planLineup({ dishes: [{ slug: "buns" }] }, { buns }).unknown,
+      [{ kind: "wait", slug: "buns", step: 0, text, sentence: "Bake 25 minutes.", suggest: "25 minutes" }]);
+  });
+
+  test("a step that waits isn't reported when its other sentences only look like waits, or say the same wait again", () => {
+    const steps = [
+      ["Brush half the mixture over the potatoes, and keep the rest for basting. Bake 40 minutes.", { hands: "1 min", wait: "40 min", oven: "400F" }],
+      ["Turn the oven off and let the pavlova cool completely inside it. The slow cool keeps cracking down.", { hands: "1 min", wait: "About 2 hr" }],
+      ["Press plastic wrap onto the surface. Chill until set. For tarts, pour into them first and chill there.", { hands: "1 min", wait: "4 hr" }],
+    ];
+    assert.deepEqual(planLineup({ dishes: [{ slug: "a" }] }, { a: recipe("A", steps, { category: "baking" }) }).unknown, []);
+  });
+
+  test("a step saved as not waiting (`wait: false`) isn't reported, and takes only its hands-on time", () => {
+    const loaf = recipe("Loaf", [
+      ["Knead the dough", { hands: "10 min" }],
+      ["Turn it out and let it rest on the floured counter", { hands: "1 min", wait: false }],
+    ], { category: "baking" });
+    const plan = planLineup({ dishes: [{ slug: "loaf" }] }, { loaf });
+    assert.deepEqual(plan.unknown, []);
+    assert.equal(plan.minutes, 11);
+  });
+
   test("a dish with no serving time is reported, with what the plan assumed", () => {
     const stew = recipe("Stew", [["Simmer the stew", { hands: "2 min", wait: "60 min", burner: true }]]);
     const plan = planLineup({ dishes: [{ slug: "potatoes" }, { slug: "stew" }] }, { potatoes, stew });

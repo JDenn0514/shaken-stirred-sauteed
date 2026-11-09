@@ -54,28 +54,32 @@ function withNewAsks(state) {
   const steps = stepsOf(state.recipe);
   const waits = [...state.waits];
   const suggest = { ...state.suggest };
-  for (const u of unknownOf(state.recipe)) {
-    const id = u.kind === "wait" && steps[u.step]?.reviewId;
-    if (!id || waits.includes(id)) continue;
+  const sentences = { ...state.sentences };
+  // A wait in a step that waits for something else ("Bake until deep golden.
+  // Then let them cool, at least 15 minutes.") asks about its sentence, and
+  // answering splits the step there.
+  const askSentence = (step, text, time) => {
+    const id = `${step.reviewId}:${text}`;
+    if (waits.includes(id) || waits.some((w) => sentences[w]?.text === text)) return;
     waits.push(id);
-    if (u.suggest && isTime(u.suggest)) suggest[id] = u.suggest;
+    sentences[id] = { step: step.reviewId, text };
+    if (time && isTime(time)) suggest[id] = time;
+  };
+  for (const u of unknownOf(state.recipe)) {
+    const step = u.kind === "wait" && steps[u.step];
+    if (!step?.reviewId) continue;
+    if (u.sentence) { askSentence(step, u.sentence, u.suggest); continue; }
+    if (waits.includes(step.reviewId)) continue;
+    waits.push(step.reviewId);
+    if (u.suggest && isTime(u.suggest)) suggest[step.reviewId] = u.suggest;
   }
   // The intake's own "no time given" flags (a bake, rise, chill or cool). Most
-  // are already asked above; one in a step that waits for something else ("Bake
-  // until deep golden. Then let them cool, at least 15 minutes.") isn't, since
-  // the step has a wait. That one asks about its sentence, and splits there.
-  const sentences = { ...state.sentences };
+  // are already asked above.
   for (const f of state.flags.filter((x) => x.kind === "time")) {
     const step = steps.find((x) => x?.do?.includes(f.text));
     if (!step) continue;
-    if (!step.wait) {
-      if (!waits.includes(step.reviewId)) waits.push(step.reviewId);
-      continue;
-    }
-    const id = `${step.reviewId}:${f.text}`;
-    if (waits.includes(id) || waits.some((w) => sentences[w]?.text === f.text)) continue;
-    waits.push(id);
-    sentences[id] = { step: step.reviewId, text: f.text };
+    if (step.wait) askSentence(step, f.text);
+    else if (!waits.includes(step.reviewId)) waits.push(step.reviewId);
   }
   return { ...state, waits, suggest, sentences };
 }
@@ -118,7 +122,8 @@ export function answerWait(state, id, time) {
   const step = stepById(next.recipe, id);
   if (!step) return state;
   if (time === null) {
-    delete step.wait;
+    // Saved, so the lineup doesn't ask about it again.
+    step.wait = false;
     next.answered[id] = true;
     delete next.tried[id];
   } else if (isTime(time)) {
@@ -252,15 +257,16 @@ export function updateIngredient(state, id, changes) {
   return next;
 }
 
-// Editing a step's text (and its wait, which must be a time or empty). New
-// text can make a new question (a bake with no time).
+// Editing a step's text (and its wait, which must be a time or empty; empty
+// keeps a "doesn't wait" answer). New text can make a new question (a bake
+// with no time).
 export function updateStep(state, id, { do: text, wait } = {}) {
   const next = structuredClone(state);
   const step = stepById(next.recipe, id);
   if (!step) return state;
   if (text !== undefined && String(text).trim()) step.do = String(text).trim();
   if (wait !== undefined) {
-    if (!String(wait).trim()) delete step.wait;
+    if (!String(wait).trim()) { if (step.wait !== false) delete step.wait; }
     else if (isTime(wait)) step.wait = String(wait).trim();
   }
   return withNewAsks(next);

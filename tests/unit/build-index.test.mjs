@@ -191,6 +191,10 @@ describe("planning data", () => {
     "chili-oil": recipe({ title: "Chili Oil", kind: "component", serve: "keeps" }),
   }));
 
+  test("accepts a step saved as not waiting", () => passes({ "test-recipe": withStep({ wait: false }) }));
+  test("rejects a wait it can't read", () => rejects(withStep({ wait: "a while" }), /step 1: "wait" must be a time, like "10 min", or false/));
+  test("rejects a wait of true", () => rejects(withStep({ wait: true }), /step 1: "wait" must be a time/));
+  test("rejects watch on a step saved as not waiting", () => rejects(withStep({ wait: false, watch: true }), /step 1: "watch" needs a "wait"/));
   test("rejects a hands time it can't read", () => rejects(withStep({ hands: "a while" }), /step 1: "hands" must be a time/));
   test("rejects a hands time that isn't text", () => rejects(withStep({ hands: 5 }), /step 1: "hands" must be a time/));
   test("rejects a sits time it can't read", () => rejects(recipe({ sits: "not long" }), /"sits" must be a time/));

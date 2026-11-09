@@ -130,6 +130,13 @@ test("fields the editor has no control for come out of an edit unchanged", async
   expect(Object.keys(after)).toEqual(Object.keys(before));
 });
 
+test("a step saved as not waiting shows an empty wait that says so", async ({ page, baseURL }) => {
+  await openEditor(page, baseURL, "old-fashioned");
+  await preview(page).getByRole("button", { name: /^Strain over/ }).press("Enter");
+  await expect(page.getByLabel("Wait", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Wait", { exact: true })).toHaveAttribute("placeholder", "Doesn't wait");
+});
+
 test.describe("lineup fields in Details", () => {
   test("watch is only offered on a step with a wait", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");

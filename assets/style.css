@@ -1266,6 +1266,9 @@ body.cooking > .site-footer { display: none; }
 .menu-ask label { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-weight: 600; }
 .menu-ask input[type="text"] { width: 5em; font: inherit; padding: 6px 8px; border: 1.5px solid var(--rule-strong); border-radius: var(--radius-ctl); background: var(--bg); color: var(--text); }
 .menu-ask .btn { justify-self: start; min-height: 38px; }
+.menu-ask-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.menu-split { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; }
+.menu-split .step-wait { color: var(--muted); font-size: .9rem; white-space: nowrap; }
 .menu-start { width: 100%; justify-content: center; margin: 0; min-height: 52px; font-size: 1.05rem; }
 
 /* Cooking your menu: today's cook screen, plus a chip naming each step's

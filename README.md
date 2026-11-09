@@ -96,6 +96,7 @@ On a step:
 | Field | Means | Without it |
 |---|---|---|
 | `hands` | How long your hands are busy, e.g. `"10 min"`, `"30 sec"`, `"3 to 4 min"` | The recipe's active or prep time, spread over the steps without one; otherwise 2 min |
+| `wait` | Besides the time (see `steps` above), `false` says a person checked the step and it doesn't wait, though its wording sounds like it does ("let it rest a moment"). The lineup then stops asking how long it takes. The editor shows it as an empty wait that says "Doesn't wait" | The lineup asks about a step whose wording waits (bakes, rises, chills…) |
 | `watch` | `true` when the step's `wait` needs you there (searing, whisking a curd). Needs a `wait` | The wait runs on its own |
 | `oven` | The setting the step needs while it runs: `"200C"`, `"400F"`, `"broil"` or `"off"`. `false` says a step that mentions the oven doesn't use it ("set somewhere warm, away from the oven"), or takes the dish out ("Take the potatoes out of the oven"): after the dish's last oven step, the planner keeps the oven for it until that step is done | No oven |
 | `preheat` | The step heats the oven to this setting (`"200C"`, `"400F"`, `"broil"`), in the background | The planner adds a heating step when a dish needs the oven |
@@ -118,7 +119,7 @@ On an ingredient, `recipe` is the file name of the recipe that makes it. A requi
 ]
 ```
 
-The build fails on a `hands` or `sits` it can't read as a time, an oven setting it doesn't know, `watch` without a `wait`, more than one `holds`, a `recipe` that doesn't exist (or a list of them, which the planner can't follow yet), and links that loop. It warns when a step mentions the oven, broiler, a pan, the grill or the microwave but has no equipment field, when an ingredient says "optional" but isn't marked `optional`, and when no step uses a linked ingredient.
+The build fails on a `wait` that isn't a time or `false`, a `hands` or `sits` it can't read as a time, an oven setting it doesn't know, `watch` without a `wait`, more than one `holds`, a `recipe` that doesn't exist (or a list of them, which the planner can't follow yet), and links that loop. It warns when a step mentions the oven, broiler, a pan, the grill or the microwave but has no equipment field, when an ingredient says "optional" but isn't marked `optional`, and when no step uses a linked ingredient.
 
 ### Tags
 
