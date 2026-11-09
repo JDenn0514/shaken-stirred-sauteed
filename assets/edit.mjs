@@ -9,12 +9,22 @@
 // field the editor has no control for. An unsaved draft is kept in the browser
 // (sss:draft:<slug>) and offered back on return.
 //
+// A new recipe (edit.html?new) comes from the intake (intake.html), which reads
+// it and asks its questions, then keeps the review in the browser (sss:intake).
+// The editor opens that: the recipe, with the reader's guesses and checks on
+// its steps and ingredients, and the original it was read from beside the
+// preview (assets/import-view.mjs). Its file name is made from its title, and
+// its first Save publishes it as a new file; from then on it's edited like any
+// other recipe.
+//
 // The recipe is loaded from main through the Worker (GET /api/recipe/<slug>),
 // with its file's version. Save sends it back with that version (POST
 // /api/save), and the Worker publishes it, or refuses if the file changed since
 // (docs/specs/recipe-editor-plan.md, slice 6). Delete asks you to type the
 // recipe's name, and is off while another recipe links to it.
 import * as M from "./edit-model.mjs";
+import { originalHTML, stepNotesHTML, ingredientNotesHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
+import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
 const { esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
@@ -22,8 +32,11 @@ const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.S
 const ICONS = window.SSSIcons.KEYS;
 
 const root = document.getElementById("editor");
-const slug = new URLSearchParams(location.search).get("r") || "";
-const DRAFT = `sss:draft:${slug}`;
+const params = new URLSearchParams(location.search);
+let slug = params.get("r") || "";
+let fresh = !slug && params.has("new"); // a new recipe, from the intake, not saved yet
+const draftKey = () => `sss:draft:${slug}`;
+const KEPT_REVIEW = "sss:intake";      // the intake's review, which a new recipe is
 
 let original = null;   // the recipe as it is on the site (loaded, or last saved)
 let version = null;    // its file's version on main (git's blob SHA), sent with Save and Delete
@@ -37,6 +50,9 @@ let detailsOpen = false;
 let offer = null;      // an unsaved draft from before, offered back
 let focusKey = null;   // what to focus after the next draw
 let status = null;     // how the last save went: { saving }, { published }, or { error, problems, signIn }
+let review = null;     // a new recipe's review from the intake (tools/intake/review.mjs), its recipe kept in `recipe`
+let source = null;     // what a new recipe was read from: the original, shown beside the preview
+let sourceOpen = false; // on a phone, whether the original is shown
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 const ingName = (i) => (typeof i === "string" ? i : i?.item || "");
@@ -71,26 +87,41 @@ const KEPT = "Your changes are kept in this browser.";
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 function readDraft() {
-  try { return JSON.parse(localStorage.getItem(DRAFT)); } catch { return null; }
+  try { return JSON.parse(localStorage.getItem(draftKey())); } catch { return null; }
 }
 function keepDraft() {
   try {
-    if (same(recipe, original)) localStorage.removeItem(DRAFT);
-    else localStorage.setItem(DRAFT, JSON.stringify({ recipe, at: new Date().toISOString() }));
+    // A new recipe is the intake's review, kept as the intake keeps it.
+    if (fresh) localStorage.setItem(KEPT_REVIEW, JSON.stringify(toKeep(withReview(), { original: source })));
+    else if (same(recipe, original)) localStorage.removeItem(draftKey());
+    else localStorage.setItem(draftKey(), JSON.stringify({ recipe, at: new Date().toISOString() }));
   } catch {}
 }
+
+// A new recipe's review, with the recipe as it is now.
+const withReview = () => ({ ...review, recipe });
+// The file name: a new recipe's is made from its title.
+const fileName = () => (fresh ? slugOf(recipe.title) : slug);
 
 // --- Checks ----------------------------------------------------------------------------
 
 // The checker's errors and warnings for this recipe, with its links checked
 // against the site's other recipes (the index, with this recipe's entry in it).
 function checks() {
-  const { errors, warnings } = checkRecipe(slug, recipe, vocab);
-  const mine = `recipes/${slug}.json: `;
-  const links = checkLinks(patchIndex(index, slug, indexEntry(slug, recipe, vocab)))
-    .filter((e) => e.startsWith(mine) || (e.startsWith("recipe links loop:") && e.split(/ → |: /).includes(slug)))
+  const name = fileName();
+  if (fresh && !name) {
+    const { errors, warnings } = checkRecipe("new-recipe", recipe, vocab);
+    return { errors, warnings };
+  }
+  const { errors, warnings } = checkRecipe(name, recipe, vocab);
+  const mine = `recipes/${name}.json: `;
+  const links = checkLinks(patchIndex(index, name, indexEntry(name, recipe, vocab)))
+    .filter((e) => e.startsWith(mine) || (e.startsWith("recipe links loop:") && e.split(/ → |: /).includes(name)))
     .map((e) => (e.startsWith(mine) ? e.slice(mine.length) : e));
-  return { errors: [...errors, ...links], warnings };
+  // A new recipe can't take the name of one already on the site.
+  const taken = fresh && index.some((e) => e.slug === name)
+    ? [`There's already a recipe called recipes/${name}.json: give this one another "title", or open that one in the editor to change it.`] : [];
+  return { errors: [...taken, ...errors, ...links], warnings };
 }
 
 // Which part of the page a message is about: a step (by its number), an
@@ -123,12 +154,18 @@ function draw() {
   const key = focusKey || document.activeElement?.dataset?.key;
   focusKey = null;
   const { errors, warnings } = checks();
-  const entry = indexEntry(slug, recipe, vocab);
-  document.title = `Edit ${recipe.title || "a recipe"} · Shaken, Stirred & Sautéed`;
+  const name = fileName();
+  const entry = indexEntry(name || "new-recipe", recipe, vocab);
+  document.title = `${fresh ? "New recipe" : "Edit"}${recipe.title ? `: ${recipe.title}` : fresh ? "" : " a recipe"} · Shaken, Stirred & Sautéed`;
+  const imported = fresh && review ? reviewOf(withReview()) : null;
+  const unplaced = imported ? imported.checks.filter((c) => !c.step && !c.ingredient && c.kind !== "amounts") : [];
+  root.classList.toggle("edit-wide", !!(fresh && source));
   const hasOrders = stepOrder(recipe, true).differs;
   const showPrepFirst = hasOrders && prepFirst;
 
-  root.innerHTML = `
+  root.innerHTML = `<div class="with-original${fresh && source ? " has-original" : ""}">
+    ${fresh ? originalHTML(source, sourceOpen) : ""}
+    <div class="with-original-main">
     ${offer ? `<section class="edit-note" aria-labelledby="draft-h">
       <h2 id="draft-h">Unsaved changes</h2>
       <p>You changed this recipe on ${esc(new Date(offer.at).toLocaleString())} and didn't save. Editing it now starts from the recipe as it is on the site.</p>
@@ -138,16 +175,23 @@ function draw() {
       </div>
     </section>` : ""}
     <div class="edit-bar">
-      <p class="edit-kicker">Editing <code>recipes/${esc(slug)}.json</code></p>
+      <p class="edit-kicker">${fresh ? `New recipe: ${name ? `it'll be saved as <code>recipes/${esc(name)}.json</code>` : "give it a title, and its file name is made from it"}`
+        : `Editing <code>recipes/${esc(slug)}.json</code>`}</p>
       <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length || status?.saving ? ` disabled aria-describedby="save-why"` : ""}>Save</button>
       <p class="edit-status" id="save-why" role="status">${errors.length ? `Fix ${errors.length === 1 ? "the problem" : `the ${errors.length} problems`} below to save.`
         : status?.saving ? "Saving…"
-        : status?.published ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(slug)}">See ${esc(status.published)} on the site</a>` : ""}</p>
+        : status?.published ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(slug)}">See ${esc(status.published)} on the site</a>`
+        : fresh ? "Fix what was read wrong, check the guesses against the original, then save it to the site." : ""}</p>
       ${status?.error ? `<div class="edit-save-error" role="alert">${failureHTML(status)}</div>` : ""}
     </div>
     ${errors.length ? `<section class="edit-problems" aria-labelledby="problems-h">
       <h2 id="problems-h">Problems to fix</h2>
       <ul>${errors.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>
+    </section>` : ""}
+    ${unplaced.length ? `<section class="edit-todo" aria-labelledby="import-checks-h">
+      <h2 id="import-checks-h">Things to check</h2>
+      <p class="muted">From reading the recipe in. The rest sit beside the step or ingredient they're about.</p>
+      <ul>${unplaced.map((c) => `<li>${c.text ? `<b>${esc(c.text)}</b>: ` : ""}${esc(c.why)}</li>`).join("")}</ul>
     </section>` : ""}
     ${warnings.length ? `<section class="edit-todo" aria-labelledby="todo-h">
       <h2 id="todo-h">To do</h2>
@@ -164,9 +208,11 @@ function draw() {
       <summary data-key="details">Details</summary>
       ${detailsHTML()}
     </details>
-    ${deleteHTML()}`;
+    ${fresh ? "" : deleteHTML()}
+    </div></div>`;
 
   decorate(root.querySelector(".edit-preview"), errors, showPrepFirst);
+  if (imported) importNotes(root.querySelector(".edit-preview"), imported);
   const back = key && root.querySelector(`[data-key="${CSS.escape(key)}"]`);
   if (back) back.focus();
 }
@@ -320,6 +366,25 @@ function decorate(page, errors, showPrepFirst) {
     if (button) notes.set(button, [...(notes.get(button) || []), id]);
   });
   for (const [button, ids] of notes) button.setAttribute("aria-describedby", ids.join(" "));
+}
+
+// A new recipe's guesses and checks from the intake, on the step or
+// ingredient they're about (not while it's open for editing).
+function importNotes(page, imported) {
+  const titles = Object.fromEntries(index.map((e) => [e.slug, e.title]));
+  const steps = flat(recipe.steps), ings = flat(recipe.ingredients);
+  page.querySelectorAll("li[data-step]").forEach((li) => {
+    const n = Number(li.dataset.step);
+    if (editing !== `step:${n}`) li.insertAdjacentHTML("beforeend", stepNotesHTML(steps[n], imported));
+  });
+  page.querySelectorAll("li[data-ing-row]").forEach((li) => {
+    const n = Number(li.dataset.ingRow);
+    if (editing !== `ing:${n}`) li.insertAdjacentHTML("beforeend", ingredientNotesHTML(ings[n], imported, titles));
+  });
+  if (imported.checks.some((c) => c.kind === "amounts")) {
+    const ingHead = (page.querySelector("ul.ingredients")?.closest("section") || page.querySelector("section.section"))?.querySelector("h2");
+    ingHead?.insertAdjacentHTML("afterend", `<p class="import-check">${esc(AMOUNTS)}</p>`);
+  }
 }
 
 // Group headings as buttons that rename them (when they're the recipe's own),
@@ -521,7 +586,7 @@ dialog.addEventListener("click", async (e) => {
     problem.innerHTML = failureHTML(done);
     return;
   }
-  try { localStorage.removeItem(DRAFT); } catch {}
+  try { localStorage.removeItem(draftKey()); } catch {}
   const title = original.title || slug;
   dialog.remove();
   gate(`Deleted ${title}`, "The site updates in a minute or two.");
@@ -548,6 +613,7 @@ async function send(path, body) {
 }
 
 async function save() {
+  if (fresh) return saveNew();
   status = { saving: true };
   draw();
   const done = await send("/api/save", { slug, recipe, baseSha: version });
@@ -557,6 +623,32 @@ async function save() {
     version = done.sha;
     keepDraft();
     status = { published: recipe.title || slug };
+  }
+  focusKey = "save";
+  draw();
+}
+
+// A new recipe's first Save: published under a name made from its title, with
+// the review's marks taken off. From then on it's that recipe, edited as any
+// other, and the intake has nothing left to offer back.
+async function saveNew() {
+  const name = fileName();
+  const saved = recipeToSave(withReview(), { today: new Date().toLocaleDateString("en-CA") });
+  status = { saving: true };
+  draw();
+  const done = await send("/api/save", { slug: name, recipe: saved });
+  if (done.error) status = done;
+  else {
+    try { localStorage.removeItem(KEPT_REVIEW); } catch {}
+    fresh = false;
+    slug = name;
+    recipe = saved;
+    original = structuredClone(saved);
+    version = done.sha;
+    review = null;
+    source = null;
+    history.replaceState(null, "", `edit.html?r=${encodeURIComponent(slug)}`);
+    status = { published: saved.title || slug };
   }
   focusKey = "save";
   draw();
@@ -620,6 +712,12 @@ root.addEventListener("click", (e) => {
   const a = b.dataset.act;
   const form = b.closest(".edit-form");
 
+  if (a.startsWith("r-")) return fromReview(b);
+  if (a === "original") {
+    sourceOpen = !sourceOpen;
+    focusKey = "original";
+    return draw();
+  }
   if (a === "edit") {
     editing = b.dataset.target;
     focusKey = editing === "about" ? (b.dataset.key === "part-description" ? "edit-description" : b.dataset.key.startsWith("part-yield") ? "edit-yield" : "edit-title")
@@ -670,6 +768,15 @@ root.addEventListener("click", (e) => {
   }
 });
 
+// A guess from the intake, confirmed or changed (assets/import-view.mjs).
+function fromReview(el) {
+  const next = reviewAction(withReview(), el);
+  if (!next) return;
+  const { recipe: changed, ...rest } = next;
+  review = rest;
+  update(changed, () => { focusKey = el.dataset.key; });
+}
+
 // Buttons in an open ingredient or step form: they keep what's typed, then act.
 function formAction(a, form) {
   const kind = form.dataset.form;
@@ -703,6 +810,7 @@ function formAction(a, form) {
 root.addEventListener("change", (e) => {
   const t = e.target;
   const a = t.dataset.act;
+  if (a?.startsWith("r-")) return fromReview(t);
   if (!a) {
     if (t.id === "prep-first") { prepFirst = t.checked; focusKey = "prep-first"; draw(); }
     return;
@@ -759,6 +867,7 @@ root.addEventListener("toggle", (e) => {
   if (who === "out") return gate("Sign in to edit", "Editing recipes is only for the site's owner, signed in.");
   if (who === "stale") return gate("Sign in again", "Your sign-in has run out. Sign in again to edit.");
   if (who === "no-access") return gate("This account can't edit this site", "Only the site's owner can edit its recipes.");
+  if (fresh) return startNew();
   if (!/^[a-z0-9-]+$/.test(slug)) return gate("Recipe not found", "There's no recipe to edit at this address.");
   let loaded;
   try {
@@ -772,8 +881,30 @@ root.addEventListener("toggle", (e) => {
     return gate("Couldn't open the recipe", "The site couldn't reach GitHub. Check your connection, then reload to try again.");
   }
   ({ recipe: original, sha: version } = loaded);
+  // (A new recipe starts in startNew, below.)
   recipe = structuredClone(original);
   const draft = readDraft();
   if (draft?.recipe && !same(draft.recipe, original)) offer = draft;
   draw();
 })();
+
+// A new recipe: the review the intake keeps (sss:intake).
+async function startNew() {
+  let kept = null;
+  try { kept = fromKept(JSON.parse(localStorage.getItem(KEPT_REVIEW))); } catch {}
+  if (!kept) {
+    gate("Nothing to finish", "A new recipe starts on Add a recipe: give it a recipe's text, web address or PDF, answer its questions, then continue here.");
+    root.insertAdjacentHTML("beforeend", `<p><a class="btn edit-primary" href="intake.html">Add a recipe</a></p>`);
+    return;
+  }
+  try {
+    [vocab, index] = await Promise.all([getJSON("recipes/vocabulary.json"), getJSON("recipes/index.json").catch(() => [])]);
+  } catch {
+    return gate("Couldn't open the recipe", "Check your connection, then reload to try again.");
+  }
+  const { recipe: r, ...rest } = kept.state;
+  recipe = r;
+  review = rest;
+  source = kept.original;
+  draw();
+}

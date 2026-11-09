@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect, onMenu, signIn, EDITOR_INDEX } from "./fixtures.mjs";
-import { ROLLS, CHICKEN, readRecipe } from "./intake-samples.mjs";
+import { ROLLS, CHICKEN, NOODLES, readRecipe } from "./intake-samples.mjs";
 
 const PAGES = [
   ["welcome page", "index.html", (page) => expect(page.locator('[data-count="all"]')).toHaveText("all 6")],
@@ -129,16 +129,31 @@ const PAGES = [
   }, ["pork-carnitas", "lemon-bars"]],
   ["recipe intake, before reading", "intake.html", (page) => expect(page.getByRole("button", { name: "Read the recipe" })).toBeVisible()],
   ["recipe intake with questions, guesses and checks", "intake.html", (page) => readRecipe(page, CHICKEN, "Cooking")],
-  ["recipe intake with a split step, editing an ingredient", "intake.html", async (page) => {
-    await readRecipe(page, ROLLS, "Baking");
-    await page.getByRole("region", { name: "Preview" }).getByRole("button", { name: /bread flour/ }).click();
-    await expect(page.getByLabel("Amount")).toBeVisible();
-  }],
   ["recipe intake, finished and copied", "intake.html", async (page) => {
     await readRecipe(page, ROLLS, "Baking");
     await page.getByRole("button", { name: "Use this time" }).click();
     await page.getByRole("button", { name: "Copy recipe" }).click();
     await expect(page.getByLabel("Recipe file")).toBeVisible();
+  }],
+  ["recipe intake offering an unfinished review back", "intake.html", async (page) => {
+    await readRecipe(page, ROLLS, "Baking");
+    await page.reload();
+    await expect(page.getByRole("button", { name: "Carry on" })).toBeVisible();
+  }],
+  ["recipe intake in prep-first order", "intake.html", async (page) => {
+    await readRecipe(page, NOODLES, "Cooking");
+    await expect(page.getByRole("switch", { name: "Prep first" })).toBeChecked();
+  }],
+  ["recipe intake as written", "intake.html", async (page) => {
+    await readRecipe(page, NOODLES, "Cooking");
+    await page.getByRole("switch", { name: "Prep first" }).uncheck();
+    await expect(page.getByRole("switch", { name: "Prep first" })).not.toBeChecked();
+  }],
+  ["recipe intake on a phone with the original open", "intake.html", async (page) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await readRecipe(page, ROLLS, "Baking");
+    await page.getByRole("button", { name: "Show the original" }).click();
+    await expect(page.getByRole("button", { name: "Hide the original" })).toBeVisible();
   }],
   // From a recipe website or a PDF (tests/e2e/intake-import.spec.mjs)
   ["recipe intake with a website's recipe and its source", "intake.html", async (page) => {
@@ -223,23 +238,42 @@ const PAGES = [
   }, null, editorSaving({ json: { slug: "pork-carnitas", title: "Pork Carnitas", commit: "c".repeat(40) } }, "delete")],
   ["editor with Delete off for a recipe another uses", "edit.html?r=garlic-butter",
     (page) => expect(page.getByRole("button", { name: "Delete this recipe" })).toBeDisabled(), null, editor],
-  ["recipe intake signed in, ready to save", "intake.html", async (page) => {
+  ["recipe intake signed in, ready to continue in the editor", "intake.html", async (page) => {
     await readRecipe(page, ROLLS, "Baking");
     await page.getByRole("button", { name: "Use this time" }).click();
-    await expect(page.getByRole("button", { name: "Save", exact: true })).toBeEnabled();
+    await expect(page.getByRole("link", { name: "Continue in the editor" })).toBeVisible();
   }, null, editor],
-  ["recipe intake, published", "intake.html", async (page) => {
-    await readRecipe(page, ROLLS, "Baking");
-    await page.getByRole("button", { name: "Use this time" }).click();
+  // A new recipe from the intake, in the editor (tests/e2e/intake-to-editor.spec.mjs)
+  ["editor with a new recipe: the reader's guesses and checks, and the original", "intake.html", (page) => newRecipe(page), null, editor],
+  ["editor with a new recipe, an ingredient open for editing", "intake.html", async (page) => {
+    await newRecipe(page);
+    await editorPreview(page).getByRole("button", { name: /bread flour/ }).click();
+    await expect(page.getByLabel("Amount")).toBeVisible();
+  }, null, editor],
+  ["editor with a new recipe on a phone, the original open", "intake.html", async (page) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await newRecipe(page);
+    await page.getByRole("button", { name: "Show the original" }).click();
+    await expect(page.getByRole("button", { name: "Hide the original" })).toBeVisible();
+  }, null, editor],
+  ["editor with a new recipe whose title is taken", "intake.html", async (page) => {
+    await newRecipe(page);
+    await editorPreview(page).getByRole("button", { name: "Milk Rolls" }).click();
+    await page.getByLabel("Title").fill("Pork Carnitas");
+    await page.getByRole("button", { name: "Done" }).click();
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
+  }, null, editor],
+  ["editor with a new recipe, published", "intake.html", async (page) => {
+    await newRecipe(page);
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByRole("link", { name: "See Milk Rolls on the site" })).toBeVisible();
   }, null, editorSaving({ json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } })],
-  ["recipe intake, a save refused", "intake.html", async (page) => {
-    await readRecipe(page, ROLLS, "Baking");
-    await page.getByRole("button", { name: "Use this time" }).click();
+  ["editor with a new recipe, a save refused", "intake.html", async (page) => {
+    await newRecipe(page);
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByRole("alert")).toBeVisible();
   }, null, editorSaving({ status: 409, json: { error: "There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it." } })],
+  ["editor with no new recipe to finish", "edit.html?new", (page) => expect(page.getByRole("heading", { name: "Nothing to finish" })).toBeVisible(), null, editor],
   ["editor offering an unsaved draft back", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Pork Carnitas" }).click();
     await page.getByLabel("Title").fill("Carnitas, Edited");
@@ -271,6 +305,13 @@ function editorSaving(reply, what = "save") {
   };
 }
 function editorPreview(page) { return page.getByRole("region", { name: "Recipe preview" }); }
+// Milk Rolls read on the intake, its question answered, then on to the editor.
+async function newRecipe(page) {
+  await readRecipe(page, ROLLS, "Baking");
+  await page.getByRole("button", { name: "Use this time" }).click();
+  await page.getByRole("link", { name: "Continue in the editor" }).click();
+  await expect(editorPreview(page).getByRole("heading", { level: 1 })).toBeVisible();
+}
 
 function cook(page) { return page.getByRole("region", { name: "Cook mode" }); }
 function cookButton(page, name) { return cook(page).getByRole("button", { name, exact: true }); }

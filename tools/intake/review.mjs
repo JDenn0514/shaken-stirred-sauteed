@@ -318,6 +318,33 @@ export function removeStep(state, id) {
   return withNewAsks(next);
 }
 
+// An unfinished review, kept in the browser so a reload or an accidental back
+// doesn't lose it (the editor keeps its drafts the same way). It holds the
+// review and the text it was read from: pasted text, a PDF's text, or a web
+// page's address. Never the PDF itself or the page's HTML
+// (docs/specs/recipe-editor-design.md, "Originals").
+const KEPT = 1;
+function keptOriginal(o) {
+  if (!o || typeof o !== "object") return null;
+  if (o.kind === "page" && typeof o.url === "string") return { kind: "page", url: o.url };
+  if ((o.kind === "text" || o.kind === "pdf") && Array.isArray(o.pages) && o.pages.every((p) => typeof p === "string")) {
+    return { kind: o.kind, pages: [...o.pages], ...(typeof o.name === "string" && { name: o.name }) };
+  }
+  return null;
+}
+export function toKeep(state, { original, at } = {}) {
+  return { v: KEPT, at: at || new Date().toISOString(), state: structuredClone(state), original: keptOriginal(original) };
+}
+// What toKeep made, read back: { state, original, at, title }, or null for
+// anything that isn't a review this version can carry on with.
+export function fromKept(kept) {
+  if (!kept || typeof kept !== "object" || kept.v !== KEPT) return null;
+  const s = kept.state;
+  const isObject = (x) => !!x && typeof x === "object" && !Array.isArray(x);
+  if (!isObject(s) || !isObject(s.recipe) || !Array.isArray(s.flags) || !Array.isArray(s.waits) || !isObject(s.answered) || !isObject(s.tried)) return null;
+  return { state: s, original: keptOriginal(kept.original), at: typeof kept.at === "string" ? kept.at : "", title: s.recipe.title || "" };
+}
+
 // The recipe to save: the review's marks (`reviewId`, the reader's `review`) and
 // empty new entries taken off, and dated today if it has no date.
 export function recipeToSave(state, { today } = {}) {

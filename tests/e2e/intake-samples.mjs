@@ -26,6 +26,18 @@ METHOD
 3. Stir in the rice and stock and bring to a simmer. Put the chicken back on top and bake until the rice is tender.
 4. Let it rest, covered, then squeeze the lemon over and serve.`;
 
+// Its ingredient list has prep in it ("minced", "diced"), which the reader adds
+// as a prep step that shows only in prep-first order.
+export const NOODLES = `Garlic Noodles
+Serves 2
+INGREDIENTS
+8 oz noodles
+4 cloves garlic, minced
+1 onion, diced
+METHOD
+1. Boil the noodles, 8 minutes.
+2. Fry the garlic and onion in butter, then toss with the noodles.`;
+
 export async function readRecipe(page, text, section) {
   await page.goto("intake.html");
   await page.getByLabel("Recipe text").fill(text);
