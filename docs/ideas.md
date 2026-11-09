@@ -31,6 +31,20 @@ A tool that turns a recipe from a web page or a photo into the site's recipe JSO
 - **Run the recipe checker** (`node scripts/build-index.mjs`) before handing it over.
 - **Note:** fetching a site needs it allowed in the cloud environment's network settings. The same sites worked from the command line before the web-fetch tool picked up the change.
 
+## Step controls you can find in the editor
+
+2026-11-09 · from adding the 50-clove garlic soup through the intake
+
+The editor (`edit.html`, and `edit.html?new` from the intake) can already add, remove, move, split and join steps, but you can't tell. The controls only show once you tap a step's text, and nothing says the text can be tapped: it looks like a dotted underline, not a button. Adding the garlic soup, its step 2 ("Cook garlic 5 minutes in butter. Onion 2 minutes, potato 1 minute then add stock…") needed splitting, and it looked like there was no way to add a step between two others or delete one.
+
+**What it could change:**
+
+- **Show that a step can be edited:** an "Edit" button on each step, or a hint at the top of the steps, not only the dotted underline.
+- **Add a step in the middle:** "Add step" only adds at the end today (`add` in `assets/edit-model.mjs`), and then you move it up one place at a time. An "Add a step after this" button would be quicker.
+- **Remove without opening the step**, perhaps, if it's easy to undo.
+- **Where the wait goes when splitting:** "Split here" gives the step's wait, cue and equipment to the second part (`SECOND` in `assets/edit-model.mjs`). That's right for "Stir in the flour, then bake 20 minutes", but wrong when the time is in the first part, as with the soup's "Cook garlic 5 minutes". The wait could go to whichever part has that time in its text, the way the intake works out which sentence a step's wait belongs to, or the editor could ask.
+- **A step with several timed parts** ("Onion 2 minutes, potato 1 minute") could be offered as a split from the start, the way the intake already asks about a second wait in a step and splits the step there.
+
 ## Settings page
 
 2026-11-03 · from the lineup design (`docs/specs/meal-planner-design.md`)
