@@ -32,10 +32,17 @@ test.describe("a recipe website", () => {
     const asked = await siteServes(page, "recipe-page.html", "https://kitchen.example/honey-oat-bars");
     await getPage(page, "https://kitchen.example/honey-oat-bars");
     expect(asked).toEqual([{ url: "https://kitchen.example/honey-oat-bars" }]);
-    await expect(preview(page).getByRole("button", { name: "Honey Oat Bars" })).toBeVisible();
-    await expect(preview(page).getByRole("button", { name: /rolled oats/ })).toBeVisible();
+    await expect(preview(page).getByRole("heading", { name: "Honey Oat Bars" })).toBeVisible();
+    await expect(preview(page).getByRole("listitem").filter({ hasText: "rolled oats" })).toBeVisible();
     const source = preview(page).getByRole("link", { name: "Sam Example, Example Kitchen" });
     await expect(source).toHaveAttribute("href", "https://kitchen.example/honey-oat-bars");
+  });
+
+  test("the web page's address sits beside the preview, to open and check against", async ({ page }) => {
+    await siteServes(page, "recipe-page.html", "https://kitchen.example/honey-oat-bars");
+    await getPage(page, "https://kitchen.example/honey-oat-bars");
+    const original = page.getByRole("region", { name: "The original" });
+    await expect(original.getByRole("link", { name: "https://kitchen.example/honey-oat-bars" })).toHaveAttribute("href", "https://kitchen.example/honey-oat-bars");
   });
 
   test("a recipe card's ingredient groups and notes are kept, and shown in the preview", async ({ page }) => {
@@ -60,14 +67,14 @@ test.describe("a recipe website", () => {
     await page.getByRole("radio", { name: "Baking" }).check();
     await page.getByLabel("Recipe's web address").fill("https://kitchen.example/honey-oat-bars");
     await page.getByLabel("Recipe's web address").press("Enter");
-    await expect(preview(page).getByRole("button", { name: "Honey Oat Bars" })).toBeVisible();
+    await expect(preview(page).getByRole("heading", { name: "Honey Oat Bars" })).toBeVisible();
   });
 
   test("a page without recipe data is read from its text", async ({ page }) => {
     await siteServes(page, "plain-page.html", "https://pickles.example/onions");
     await getPage(page, "https://pickles.example/onions", "Cooking");
-    await expect(preview(page).getByRole("button", { name: "Quick Pickled Onions" })).toBeVisible();
-    await expect(preview(page).getByRole("button", { name: /cider vinegar/ })).toBeVisible();
+    await expect(preview(page).getByRole("heading", { name: "Quick Pickled Onions" })).toBeVisible();
+    await expect(preview(page).getByRole("listitem").filter({ hasText: "cider vinegar" })).toBeVisible();
     await expect(preview(page).getByRole("link", { name: "Pickle Notes" })).toHaveAttribute("href", "https://pickles.example/onions");
     await expect(page.getByRole("region", { name: "Things to check" })).toContainText("no recipe data");
   });
@@ -103,11 +110,14 @@ test.describe("a PDF", () => {
     await page.goto("intake.html");
     await page.getByRole("radio", { name: "Baking" }).check();
     await page.getByLabel("Choose a PDF").setInputFiles(sample("recipe.pdf").pathname);
-    await expect(preview(page).getByRole("button", { name: "Brown Butter Shortbread" })).toBeVisible();
+    await expect(preview(page).getByRole("heading", { name: "Brown Butter Shortbread" })).toBeVisible();
     for (const item of ["1 cup unsalted butter", "1/2 cup powdered sugar", "2 cups all-purpose flour", "1/2 teaspoon salt"]) {
-      await expect(preview(page).getByRole("button", { name: item })).toBeVisible();
+      await expect(preview(page).getByRole("listitem").filter({ hasText: item })).toBeVisible();
     }
     await expect(preview(page).locator("ol.steps > li").filter({ hasText: "bake until pale golden" })).toBeVisible();
+    const original = page.getByRole("region", { name: "The original" });
+    await expect(original).toContainText("recipe.pdf");
+    await expect(original).toContainText("2 cups all-purpose flour");
   });
 
   test("a scanned PDF, with no text, says so and suggests Live Text", async ({ page }) => {

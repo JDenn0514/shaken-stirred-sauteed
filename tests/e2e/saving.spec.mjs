@@ -1,5 +1,5 @@
 // Saving and deleting (docs/specs/recipe-editor-plan.md, slice 6): the editor's
-// Save and Delete, the intake's Save, and the recipe page's Edit link. The
+// Save and Delete, the intake's Finish, and the recipe page's Edit link. The
 // Worker's /api/ is faked here; the Worker itself is tested in worker/test.
 import { test, expect, EDITOR_INDEX, signIn, versionOf } from "./fixtures.mjs";
 import { ROLLS, readRecipe } from "./intake-samples.mjs";
@@ -175,36 +175,19 @@ test.describe("the editor's Delete", () => {
   });
 });
 
-test.describe("the intake's Save", () => {
+// The intake's Save moved to the editor: see tests/e2e/intake-to-editor.spec.mjs.
+test.describe("the intake's Finish", () => {
   const finish = (page) => page.getByRole("region", { name: "Finish" });
   async function ready(page) {
     await readRecipe(page, ROLLS, "Baking");
     await page.getByRole("button", { name: "Use this time" }).click();
   }
 
-  test("signed in, Save publishes the new recipe, with a link to it", async ({ page, baseURL }) => {
+  test("signed in, it continues in the editor, where it's saved", async ({ page, baseURL }) => {
     await signIn(page, baseURL);
-    const sent = await fakeWorker(page, "save", { json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } });
     await ready(page);
-    await finish(page).getByRole("button", { name: "Save" }).click();
-    await expect(finish(page).getByRole("status")).toHaveText("Published. The site updates in a minute or two. See Milk Rolls on the site");
-    await expect(finish(page).getByRole("link", { name: "See Milk Rolls on the site" })).toHaveAttribute("href", "recipe.html?r=milk-rolls");
-    expect(sent).toHaveLength(1);
-    expect(sent[0].body.slug).toBe("milk-rolls");
-    expect(sent[0].body.baseSha).toBeUndefined();
-    expect(sent[0].body.recipe.title).toBe("Milk Rolls");
-    expect(JSON.stringify(sent[0].body.recipe)).not.toContain("reviewId");
-  });
-
-  test("reading another recipe after a save starts its Finish afresh", async ({ page, baseURL }) => {
-    await signIn(page, baseURL);
-    await fakeWorker(page, "save", { json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } });
-    await ready(page);
-    await finish(page).getByRole("button", { name: "Save" }).click();
-    await expect(finish(page).getByRole("status")).toContainText("Published");
-    await page.getByRole("button", { name: "Read the recipe" }).click();
-    await expect(finish(page).getByRole("status")).toBeEmpty();
-    await expect(finish(page).getByRole("button", { name: "Save" })).toBeVisible();
+    await expect(finish(page).getByRole("link", { name: "Continue in the editor" })).toHaveAttribute("href", "edit.html?new");
+    await expect(finish(page).getByRole("button", { name: "Save" })).toHaveCount(0);
   });
 
   test("signed in, the recipe can still be copied instead", async ({ page, baseURL }) => {
@@ -214,26 +197,18 @@ test.describe("the intake's Save", () => {
     expect(JSON.parse(await page.getByLabel("Recipe file").inputValue()).title).toBe("Milk Rolls");
   });
 
-  test("a file name that's taken says so", async ({ page, baseURL }) => {
-    await signIn(page, baseURL);
-    await fakeWorker(page, "save", { status: 409, json: { error: "There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it." } });
-    await ready(page);
-    await finish(page).getByRole("button", { name: "Save" }).click();
-    await expect(finish(page).getByRole("alert")).toHaveText("There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it.");
-  });
-
-  test("signed in to an account that can't edit, there's no Save, only Copy", async ({ page, baseURL }) => {
+  test("signed in to an account that can't edit, there's no editor, only Copy", async ({ page, baseURL }) => {
     await signIn(page, baseURL);
     await page.route("**/api/me", (route) => route.fulfill({ json: { name: "A Friend", canEdit: false } }));
     await ready(page);
     await expect(finish(page)).toContainText("This account can't edit this site, so it can't save here.");
-    await expect(finish(page).getByRole("button", { name: "Save" })).toHaveCount(0);
+    await expect(finish(page).getByRole("link", { name: "Continue in the editor" })).toHaveCount(0);
     await expect(finish(page).getByRole("button", { name: "Copy recipe" })).toBeEnabled();
   });
 
-  test("signed out, there's no Save, only Copy", async ({ page }) => {
+  test("signed out, there's no editor, only Copy", async ({ page }) => {
     await ready(page);
-    await expect(finish(page).getByRole("button", { name: "Save" })).toHaveCount(0);
+    await expect(finish(page).getByRole("link", { name: "Continue in the editor" })).toHaveCount(0);
     await expect(finish(page).getByRole("button", { name: "Copy recipe" })).toBeEnabled();
   });
 });

@@ -1350,13 +1350,13 @@ body.cooking > .site-footer { display: none; }
 .intake-read > .btn { justify-self: start; }
 .intake-field { display: grid; gap: 5px; font-weight: 600; font-size: .95rem; }
 .intake-field.inline { display: inline-grid; margin: 6px 10px 6px 0; }
-.intake-field input, .intake-field textarea, .intake-field select, .intake-guess select {
+.intake-field input, .intake-field textarea, .intake-field select {
   font: inherit; font-weight: 400; color: var(--text); background: var(--surface);
   border: 1px solid var(--rule-strong); border-radius: var(--radius-ctl); padding: 8px 10px; min-height: 40px; max-width: 100%;
 }
 .intake-field textarea { width: 100%; line-height: 1.45; }
-.intake-field input:focus-visible, .intake-field textarea:focus-visible, .intake-field select:focus-visible, .intake-guess select:focus-visible,
-.intake-part:focus-visible, .intake input[type="radio"]:focus-visible, .intake input[type="checkbox"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.intake-field input:focus-visible, .intake-field textarea:focus-visible, .intake-field select:focus-visible,
+.intake input[type="radio"]:focus-visible, .intake input[type="checkbox"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .intake-choice, .intake-ask { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 0; display: grid; gap: 6px; }
 .intake-choice legend, .intake-ask legend { font-weight: 600; padding: 0 4px; }
 .intake-ask { margin-top: 12px; background: var(--surface); }
@@ -1368,22 +1368,18 @@ body.cooking > .site-footer { display: none; }
 .intake-problem { color: var(--baking); font-weight: 600; margin: 4px 0; }
 .intake-done { color: var(--cooking); font-weight: 600; margin: 2px 0 0; }
 .intake-preview { border-top: 0; }
-.intake-title { margin-top: 10px; font-size: 2rem; }
-.intake-part {
-  font: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 2px 0; cursor: pointer;
-  text-decoration: underline dotted var(--muted); text-underline-offset: 4px;
-}
-.intake-ingredients { list-style: none; margin: 0 0 10px; padding: 0; }
-.intake-ingredients > li { padding: 8px 0; border-bottom: 1px solid var(--border); }
-.intake-steps > li { cursor: default; }
-.intake-guess { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0 0; font-size: .92rem; color: var(--muted); }
-.intake-guess .btn { min-height: 34px; padding: 0 12px; font-size: .86rem; }
-.intake-flag { margin: 6px 0 0; font-size: .92rem; color: var(--baking); }
-.intake-edit { display: grid; gap: 10px; padding: 10px 0; }
-.intake-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.intake-holds { margin-top: 18px; }
-.intake-holds select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+/* The recipe as read (assets/recipe-view.js), to look at: it's fixed in the editor. */
+.intake-page { padding-top: 0; }
+.intake-page ol.steps > li { cursor: default; }
+.intake-page ul.ingredients > li { padding: 6px 0; }
+.intake-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.intake-row .btn { text-decoration: none; }
+.intake-row .btn.intake-primary:disabled { opacity: .5; }
 .intake-field { min-width: 0; }
+/* An unfinished review from before, offered back. */
+.intake-kept { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.intake-kept h2 { font-size: 1.15rem; margin: 0 0 6px; }
+.intake-kept p { margin: 0 0 10px; }
 /* A recipe website's address and "Choose a PDF" (assets/intake-import.mjs) */
 .intake-from { display: grid; gap: 8px; }
 .intake-from .btn { justify-self: start; }
@@ -1464,3 +1460,32 @@ body.cooking > .site-footer { display: none; }
 .edit-subhead { margin: 4px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .edit-chips { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .edit-uses { display: grid; gap: 4px; }
+
+/* ---- A new recipe's original, beside the preview (intake.html, edit.html?new):
+   on a phone, one tap away. assets/import-view.mjs ---- */
+.with-original { display: grid; grid-template-columns: minmax(0, 1fr); }
+.original { margin-top: 18px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); display: grid; gap: 8px; min-width: 0; }
+.original h2 { font-size: 1.15rem; margin: 0; }
+.original h3 { font-size: 1rem; margin: 8px 0 4px; }
+.original-toggle { justify-self: start; }
+.original-body p { margin: 0 0 8px; overflow-wrap: anywhere; }
+.original-body:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.original-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); font-size: .84rem; line-height: 1.5; }
+@media (max-width: 959px) {
+  .original:not(.open) .original-body { display: none; }
+}
+@media (min-width: 960px) {
+  .with-original.has-original { grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); column-gap: 28px; }
+  .with-original.has-original > .with-original-main { grid-column: 1; grid-row: 1; min-width: 0; }
+  .with-original.has-original > .original { grid-column: 2; grid-row: 1; align-self: start; position: sticky; top: 84px; }
+  .original-toggle { display: none; }
+  .original-body { max-height: calc(100vh - 170px); overflow: auto; }
+  .edit.edit-wide { max-width: 1120px; }
+}
+/* The reader's guesses and checks on a new recipe's steps and ingredients. */
+.import-notes { display: grid; gap: 4px; margin-top: 4px; }
+.import-guess { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 2px 0 0; font-size: .92rem; color: var(--muted); }
+.import-guess .btn { min-height: 34px; padding: 0 12px; font-size: .86rem; }
+.import-guess select { font: inherit; padding: 4px 6px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--bg); color: var(--text); }
+.import-guess input:focus-visible, .import-guess select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.import-check { margin: 4px 0 0; font-size: .92rem; color: var(--baking); }

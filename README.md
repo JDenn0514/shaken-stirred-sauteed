@@ -25,7 +25,7 @@ No frameworks and no build step: it's plain HTML, CSS, and JavaScript, served by
 
 ## Adding a recipe
 
-The quickest way is the intake, `intake.html` on the site (its "Add recipe" link shows only when you're signed in, but the page works for anyone at its address): give it a recipe website's address (signed in), choose a PDF, or paste the recipe's text (from a photo, copy it with Live Text); then answer its questions, check the preview, and press **Save**. Signed in as the site's owner, that publishes it straight to the site: the Worker commits the recipe and `recipes/index.json` to `main` in one commit, and Cloudflare deploys it a minute or two later. Signed out, or with "Copy instead", it gives you the recipe file to copy into `recipes/`; then carry on from step 3. See `tools/intake/README.md`.
+The quickest way is the intake, `intake.html` on the site (its "Add recipe" link shows only when you're signed in, but the page works for anyone at its address): give it a recipe website's address (signed in), choose a PDF, or paste the recipe's text (from a photo, copy it with Live Text); then answer its questions. Signed in as the site's owner, **Continue in the editor** opens it in the editor as a new recipe, with the original beside it: fix what was read wrong, check the reader's guesses, add tags, and press **Save**. That publishes it straight to the site: the Worker commits the recipe and `recipes/index.json` to `main` in one commit, and Cloudflare deploys it a minute or two later. Signed out, or with "Copy instead" on the intake, it gives you the recipe file to copy into `recipes/`; then carry on from step 3. See `tools/intake/README.md`.
 
 To change or delete a recipe, sign in and press **Edit** at the top of its page. That opens the editor (`edit.html?r=<recipe-name>`), which saves the same way. Delete asks you to type the recipe's name, and is off while another recipe uses it.
 
@@ -211,7 +211,8 @@ npm test
   - prep first or as written: the order of a recipe's steps on its page and in cook mode, that progress follows the step either way, and that the switch works from the keyboard
   - your menu: adding dishes, the menu card and its choices, the questions it asks, the links from other pages, and cooking a menu (waits, timers and what follows them, plating up, the part made ahead)
   - the recipe editor (`edit.html`, from a recipe's Edit link when signed in): the preview of the card and page, editing in place by keyboard, Details and the lineup fields, the checker's problems and to-dos, the unsaved draft, that fields the editor has no control for come out unchanged, and that it asks you to sign in
-  - saving and deleting, with the Worker faked: the published message and its link, a recipe changed since it was opened, sign-in running out, an account that can't edit, the delete confirmation, and the intake's Save
+  - saving and deleting, with the Worker faked: the published message and its link, a recipe changed since it was opened, sign-in running out, an account that can't edit, the delete confirmation, and the intake's Finish
+  - a new recipe from the intake in the editor (`edit.html?new`): the guesses and the original, a title that's taken, and the first Save
   - light and dark mode
   - signing in and out from the footer, with the Worker faked
   - the recipe intake (`intake.html`): its questions (times for steps that wait, how a dish is served) and what it holds back until they're answered, the guesses to confirm, fixing what was read in the preview, and its three ways in: pasted text, a recipe website's address (with `/api/fetch` faked by saved pages in `tests/samples/`) and a PDF (`tests/samples/recipe.pdf`, made by `tests/samples/make-pdfs.mjs`)

@@ -6,7 +6,8 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { draftFromText } from "../../tools/intake/intake.mjs";
 import { startReview, reviewOf, answerWait, answerServe, joinBack, splitBack, setPlanning, setHolds, setLink, updateIngredient,
-  updateStep, setField, addIngredient, removeIngredient, addStep, removeStep, recipeToSave, slugOf } from "../../tools/intake/review.mjs";
+  updateStep, setField, addIngredient, removeIngredient, addStep, removeStep, recipeToSave, slugOf,
+  toKeep, fromKept } from "../../tools/intake/review.mjs";
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 
@@ -286,6 +287,33 @@ describe("editing the draft", () => {
     state = setField(setField(state, "title", "  Steak for Two "), "yield", "Serves 2");
     assert.equal(state.recipe.title, "Steak for Two");
     assert.equal(state.recipe.yield, "Serves 2");
+  });
+});
+
+describe("keeping an unfinished review", () => {
+  test("what's kept brings back the review as it was, answers and all, with the text it was read from", () => {
+    let state = startReview(bread(), []);
+    state = answerWait(state, reviewOf(state).asks[0].id, "1 hr");
+    state = updateIngredient(state, "i1", { qty: "450 g" });
+    const original = { kind: "text", pages: ["Plain Loaf\n500 g flour"] };
+    const kept = JSON.parse(JSON.stringify(toKeep(state, { original, at: "2026-11-06T10:00:00.000Z" })));
+    const back = fromKept(kept);
+    assert.deepEqual(back.state, JSON.parse(JSON.stringify(state)));
+    assert.deepEqual(reviewOf(back.state), reviewOf(state));
+    assert.deepEqual(back.original, original);
+    assert.equal(back.at, "2026-11-06T10:00:00.000Z");
+    assert.equal(back.title, "Plain Loaf");
+  });
+
+  test("a web page keeps only its address, never the page", () => {
+    const kept = toKeep(startReview(bread(), []), { original: { kind: "page", url: "https://kitchen.example/loaf", html: "<html>…</html>" } });
+    assert.deepEqual(kept.original, { kind: "page", url: "https://kitchen.example/loaf" });
+  });
+
+  test("anything else isn't a review, and nothing is offered", () => {
+    for (const junk of [null, "nonsense", {}, { v: 1 }, { v: 1, state: { recipe: "x" } }, { v: 99, state: startReview(bread(), []) }]) {
+      assert.equal(fromKept(junk), null, JSON.stringify(junk));
+    }
   });
 });
 
