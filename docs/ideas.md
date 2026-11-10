@@ -45,6 +45,34 @@ The editor (`edit.html`, and `edit.html?new` from the intake) can already add, r
 - **Where the wait goes when splitting:** "Split here" gives the step's wait, cue and equipment to the second part (`SECOND` in `assets/edit-model.mjs`). That's right for "Stir in the flour, then bake 20 minutes", but wrong when the time is in the first part, as with the soup's "Cook garlic 5 minutes". The wait could go to whichever part has that time in its text, the way the intake works out which sentence a step's wait belongs to, or the editor could ask.
 - **A step with several timed parts** ("Onion 2 minutes, potato 1 minute") could be offered as a split from the start, the way the intake already asks about a second wait in a step and splits the step there.
 
+## Scaling a recipe
+
+2026-11-10 · from Jacob
+
+A size choice at the top of the recipe page: **1x** (the default), **2x**, **3x** and **Custom**. Picking one changes the amount of every ingredient to match.
+
+**Things to work out:**
+
+- **Which amounts can scale:** `grams`, `ml` and `qty` scale. A `qty` is text ("3/4 cup", "1 1/2 tsp"), so it has to be read as a number and written back as a kitchen fraction ("1 1/2 cups", not "1.5 cups"). A plain-string ingredient ("Salt to taste") can't be read, so it stays as written, perhaps with a mark saying so.
+- **Custom:** a number like 1.5 or 0.5, or "how many servings" when the recipe's `yield` has a number in it ("Serves 6", "Makes 24 cookies").
+- **What else changes:** the `yield` line, and a step's share of an ingredient in cook mode (`uses` with `"amount": "100 g"`). Shares like "half" or "the rest" stay as they are.
+- **What doesn't scale on its own:** times, pan size, eggs (2.5 eggs), and spices or salt, which often shouldn't go up as fast as the rest. The page could say so when the size isn't 1x, rather than guess.
+- **Where it goes:** whether cook mode and the lineup pick up the size from the recipe page, or have their own. A lineup cooking a double batch is the case that needs it.
+- **Remembered or not:** whether the size resets to 1x each time the recipe opens.
+
+## Your own notes on a recipe
+
+2026-11-10 · from Jacob
+
+A button on the recipe page, such as "Add a note", that lets you write your own notes on a recipe: what you changed, what to do differently next time, who liked it. They show on the recipe each time you open it, beside the recipe's own `notes` but marked as yours, and can be edited or deleted.
+
+**Things to work out:**
+
+- **Where they're saved:** on the device in `localStorage` is the easy start, but a note written on a phone won't show on a laptop, and clearing the browser loses it. That's the same question as the settings page's "Multiple users" below: notes belong to a person, so they need to be kept in one place that could later be saved per person.
+- **Kept with the recipe, or not:** a note that's good for everyone could be copied into the recipe's `notes` with the editor instead.
+- **Where they show:** in their own section on the recipe page, and maybe in cook mode, since that's when you'd want to remember "use less salt".
+- **Notes on a step,** not only the whole recipe, could come later.
+
 ## Settings page
 
 2026-11-03 · from the lineup design (`docs/specs/meal-planner-design.md`)
