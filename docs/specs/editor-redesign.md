@@ -380,17 +380,19 @@ Deferred: the hero image control, "Tidy up with AI" (slice 8), and the intake's 
 
 ---
 
-## 7. Open questions for you
+## 7. Decisions
 
-1. **Should a step's lineup settings move into the step?** (They're "In Details, per step" in the spec today.) I recommend yes: it's the biggest ease win, and it puts each error next to its fix.
-2. **Error colour.** Is the raspberry (`#a8123f` light / `#ff8fae` dark) right, or do you want something else outside the three family inks? I'll show you the failing contrast pairs before changing anything.
-3. **The card preview on a phone.** Keep it full size at the top, as the spec says, make it compact, or fold it under "How it looks in the list"?
-4. **The Edit button.** The word "Edit" with a pencil, or just the pencil? The word is clearer; the pencil is quieter on a 30-line ingredient list.
-5. **A side rail on wide laptops.** Is it OK for Details to leave "below the preview" at 1440px and up? And for an imported recipe, does the original or Details get the rail?
-6. **Category on saved recipes.** Do you want to move recipes between sections at all? It changes their page colours and which tags they can have.
-7. **Check before publishing.** Should Save ever show "What's changed" first, for example only when amounts, times or temperatures changed, or only on a new recipe? Or just offer it?
-8. **Amount ticks on imports.** When some imported amounts aren't ticked "Checked", should the first Save give a gentle reminder? It would never block.
-9. **Hiding the site header while you type on a phone.** OK to do, so you get more room above the keyboard?
-10. **Split.** Is "the wait goes with the half that mentions that time, else the second half" what you'd expect? And should a step with several times ("Onion 2 minutes, potato 1 minute") offer "Split at each time"?
-11. **Kind.** Keep `"kind": "dish"` exactly as each file has it (my recommendation), or tidy it out of all 27 files once, on purpose?
-12. **Image.** Leave the hero image for the step-images project, or add a simple control sooner?
+Jacob answered the open questions on 2026-11-10.
+
+1. **A step's lineup settings move into the step,** in a folded "For the lineup" panel (build step 16). The spec's "in Details, per step" (design.md:152, 162) is updated in that change.
+2. **Errors get the raspberry colour and the flag** (build step 13). The contrast numbers are shown before the colours change.
+3. **The card preview is compact on a phone,** not full size and not folded away.
+4. **The Edit button shows the pencil and the word "Edit"** where there's room, and only the pencil where there isn't (a narrow screen, or a narrow ingredient column). Screen readers hear "Edit step 3" either way.
+5. **The side rail on wide screens (1440px and up) is a yes, but later** (build step 29). For an imported recipe, the original keeps the rail.
+6. **A saved recipe can move to another section,** with a warning that lists the tags it would lose (build step 20). Jacob also asked whether a recipe should be able to be in **more than one section** (blueberry syrup in Cooking, Baking and Cocktails). That's a bigger change to the recipe format, the index and the section pages, so it's in `docs/ideas.md` as its own idea. Moving between sections should be built so it can later become picking several.
+7. **"What's changed" shows before Save only when an amount, time or temperature changed.** Other edits save in one tap, with the list one tap away (build step 24).
+8. **On the first Save of an import, a gentle reminder** names the amounts not yet ticked "Checked". It never blocks (build step 25).
+9. **The site header hides on a phone while you type** in an open form (build step 7).
+10. **When splitting, the wait goes with the half whose text has that time,** else the second half. Steps with several times also offer **"Split at each time"** (build step 11).
+11. **`"kind": "dish"` stays as each file has it.** Saving never removes it (build step 20).
+12. **No photo control yet.** It waits for the step-images project.
