@@ -129,13 +129,24 @@ function chains(lineup, recipes, parts = {}) {
       kit: Object.keys(CAPACITY).filter((k) => s[k]),
       needs: (Array.isArray(s.uses) ? s.uses : []).map((u) => lower(typeof u === "string" ? u : u.item)),
     }));
-    // A dish whose first oven setting isn't heated by an earlier step of its own
-    // gets a heating step, after its prep: prep isn't held back with the cooking.
-    const first = steps.findIndex((x) => x.oven);
-    if (first >= 0 && steps[first].oven !== "off" && !steps.slice(0, first).some((x) => x.preheat && covers(x.preheat, steps[first].oven))) {
-      const setting = steps[first].oven;
-      const afterPrep = steps.findIndex((x) => !x.prep);
-      steps.splice(afterPrep < 0 ? steps.length : afterPrep, 0, { slug, n: "heat", text: heatText(setting), hands: 1, wait: 0, watch: false, oven: null, preheat: setting, kit: [], needs: [], added: true });
+    // A dish that needs the oven at a setting its own steps haven't heated it to
+    // gets a heating step: the first after its prep (prep isn't held back with the
+    // cooking), and any later one, when it needs the oven hotter than its earlier
+    // steps left it (roasted, then broiled), just before the step that needs it.
+    // Ids: "heat", then "heat-2" and on.
+    let ovenAt = null, added = 0;
+    for (let i = 0; i < steps.length; i++) {
+      const { oven, preheat } = steps[i];
+      if (preheat) ovenAt = preheat;
+      if (!oven) continue;
+      if (oven !== "off" && !(ovenAt && covers(ovenAt, oven))) {
+        const afterPrep = steps.findIndex((x) => !x.prep);
+        const at = added ? i : Math.min(i, afterPrep < 0 ? steps.length : afterPrep);
+        steps.splice(at, 0, { slug, n: added ? `heat-${added + 1}` : "heat", text: heatText(oven), hands: 1, wait: 0, watch: false, oven: null, preheat: oven, kit: [], needs: [], added: true });
+        added++;
+        i++;
+      }
+      ovenAt = oven;
     }
     // After a `holds` step the dish keeps (a cooled meringue), so only the steps
     // after it are tied to serving.
@@ -386,12 +397,13 @@ function simulate(dishes, serve, early = {}, progress = {}) {
     const i = next[d]++;
     const s = dishes[d].steps[i];
     // Heating isn't needed if the oven's already at that setting: an added step
-    // is left out, and a recipe's own is marked skipped, taking no time.
+    // is left out, and a recipe's own is marked skipped, taking no time. Either
+    // way the dish now holds the oven, so no other dish turns it down first.
     if (s.preheat && heat && sameSetting(heat.setting, s.preheat)) {
+      oven.set(d, { setting: heat.setting, until: i === dishes[d].lastOven ? t : Infinity });
       if (s.added) continue;
       steps.push({ slug: s.slug, step: s.n, text: s.text, at: t, skipped: true });
       settle(d, t, t);
-      oven.set(d, { setting: heat.setting, until: i === dishes[d].lastOven ? t : Infinity });
       continue;
     }
     steps.push({ slug: s.slug, step: s.n, text: s.text, at: t, ...(s.added && { added: true }) });
@@ -526,7 +538,7 @@ function forThePage(plan, dishes, recipes, lineup) {
     const s = info.get(`${x.slug}:${x.step}`) || { hands: 1, wait: 0, watch: false };
     const out = { ...x, hands: s.hands, wait: s.wait, watch: s.watch };
     if (s.wait > 0) {
-      const from = x.at + s.hands, raw = x.step === "heat" ? null : stepsOf(recipes[x.slug])[x.step]?.wait;
+      const from = x.at + s.hands, raw = typeof x.step === "number" ? stepsOf(recipes[x.slug])[x.step]?.wait : null;
       out.timer = { from, short: from + (shortEnd(raw) || s.wait), ends: from + s.wait };
       const next = plan.steps.findIndex((y, j) => j > i && y.slug === x.slug && !info.get(`${y.slug}:${y.step}`)?.during);
       if (next >= 0) out.followUp = next;
