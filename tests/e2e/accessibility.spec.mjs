@@ -251,7 +251,7 @@ const PAGES = [
   ["editor with a new recipe: the reader's guesses and checks, and the original", "intake.html", (page) => newRecipe(page), null, editor],
   ["editor with a new recipe, an ingredient open for editing", "intake.html", async (page) => {
     await newRecipe(page);
-    await editorPreview(page).getByRole("button", { name: /bread flour/ }).click();
+    await editorPreview(page).getByRole("button", { name: "Edit bread flour" }).click();
     await expect(page.getByLabel("Amount")).toBeVisible();
   }, null, editor],
   ["editor with a new recipe on a phone, the original open", "intake.html", async (page) => {

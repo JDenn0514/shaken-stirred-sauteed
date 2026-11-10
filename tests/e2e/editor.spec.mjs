@@ -39,11 +39,11 @@ test.describe("the preview", () => {
 
   test("editing an ingredient changes the preview and the card's search", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
-    await preview(page).getByRole("button", { name: "1 orange" }).click();
+    await preview(page).getByRole("button", { name: "1 orange", exact: true }).click();
     await page.getByLabel("Ingredient", { exact: true }).fill("2 oranges");
     await page.getByRole("button", { name: "Done" }).click();
-    await expect(preview(page).getByRole("button", { name: "2 oranges" })).toBeVisible();
-    await expect(preview(page).getByRole("button", { name: "2 oranges" })).toBeFocused();
+    await expect(preview(page).getByRole("button", { name: "2 oranges", exact: true })).toBeVisible();
+    await expect(preview(page).getByRole("button", { name: "2 oranges", exact: true })).toBeFocused();
   });
 
   test("the title, description and yield are edited in place", async ({ page, baseURL }) => {
@@ -134,6 +134,46 @@ test.describe("steps, by keyboard", () => {
     expect((await stepTexts(page)).slice(0, 3)).toEqual(["Season the pork.", "Salt it overnight.", expect.stringMatching(/^Braise until tender/)]);
     await expect(preview(page).getByRole("button", { name: "Salt it overnight." })).toBeFocused();
   });
+});
+
+test.describe("ingredients, by keyboard", () => {
+  const ingredientTexts = (page) => preview(page).locator("ul.ingredients > li").evaluateAll((lis) =>
+    lis.map((li) => li.querySelector("input[name=item], input[name=text]")?.value ?? (li.querySelector("button") ?? li).textContent.trim()));
+
+  test("each ingredient has an Edit button that opens it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await expect(preview(page).getByRole("button", { name: "Edit Kosher salt" })).toHaveText(/Edit/);
+    await preview(page).getByRole("button", { name: "Edit Kosher salt" }).press("Enter");
+    await expect(page.getByLabel("Ingredient", { exact: true })).toBeFocused();
+    await expect(page.getByLabel("Ingredient", { exact: true })).toHaveValue("Kosher salt");
+  });
+
+  test("adding an ingredient after another", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit 1 orange" }).press("Enter");
+    await page.getByRole("button", { name: "Add an ingredient after this" }).press("Enter");
+    await expect(page.getByLabel("Ingredient", { exact: true })).toBeFocused();
+    await expect(page.getByLabel("Ingredient", { exact: true })).toHaveValue("");
+    await page.keyboard.type("Bay leaves");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    expect(await ingredientTexts(page)).toEqual([expect.stringMatching(/Pork shoulder/), "1 orange", "Bay leaves", "2 tsp Kosher salt"]);
+    await expect(preview(page).getByRole("heading", { name: "For the braise" })).toBeVisible();
+  });
+
+  test("tapping an ingredient's amount opens it at the amount", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "2 tsp Kosher salt" }).getByText("2 tsp").click();
+    await expect(page.getByLabel("Amount")).toBeFocused();
+  });
+});
+
+test("on a phone, an ingredient's Edit button keeps its name and still opens it", async ({ page, baseURL }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await openEditor(page, baseURL, "pork-carnitas");
+  const edit = preview(page).getByRole("button", { name: "Edit Kosher salt" });
+  await expect(edit).toBeVisible();
+  await edit.click();
+  await expect(page.getByLabel("Ingredient", { exact: true })).toHaveValue("Kosher salt");
 });
 
 test("on a phone, a step's Edit button keeps its name and still opens the step", async ({ page, baseURL }) => {

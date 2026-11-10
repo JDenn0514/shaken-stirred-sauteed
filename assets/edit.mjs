@@ -269,7 +269,7 @@ function aboutForm() {
 
 function ingredientForm(n) {
   const i = flat(recipe.ingredients)[n];
-  const moves = act("move-up", "Move up") + act("move-down", "Move down") + act("remove", "Remove");
+  const moves = act("add-after", "Add an ingredient after this") + act("move-up", "Move up") + act("move-down", "Move down") + act("remove", "Remove");
   if (typeof i === "string") {
     return `<form class="edit-form" data-form="ing" data-n="${n}">${field("Ingredient", "text", i)}${formButtons(moves)}</form>`;
   }
@@ -334,7 +334,8 @@ function decorate(page, errors, showPrepFirst) {
     if (editing === `ing:${n}`) li.innerHTML = ingredientForm(n);
     else {
       const text = box.nextElementSibling.innerHTML;
-      li.innerHTML = part(`ing:${n}`, `part-ing-${n}`, ingName(ings[n]) ? text : "Empty ingredient: add its name");
+      li.innerHTML = part(`ing:${n}`, `part-ing-${n}`, ingName(ings[n]) ? text : "Empty ingredient: add its name")
+        + editButton(`ing:${n}`, `edit-ing-${n}`, ingName(ings[n]) ? `Edit ${ingName(ings[n])}` : "Edit the empty ingredient");
     }
   });
   const ingSection = page.querySelector("ul.ingredients")?.closest("section") || page.querySelectorAll("section.section")[page.querySelector(".before") ? 1 : 0];
@@ -726,7 +727,8 @@ root.addEventListener("click", (e) => {
   if (a === "edit") {
     editing = b.dataset.target;
     focusKey = editing === "about" ? (b.dataset.key === "part-description" ? "edit-description" : b.dataset.key.startsWith("part-yield") ? "edit-yield" : "edit-title")
-      : editing.startsWith("ing:") ? (typeof flat(recipe.ingredients)[Number(editing.slice(4))] === "string" ? "edit-text" : "edit-item")
+      : editing.startsWith("ing:") ? (typeof flat(recipe.ingredients)[Number(editing.slice(4))] === "string" ? "edit-text"
+        : e.target.closest(".qty") ? "edit-qty" : "edit-item")
       : editing.startsWith("step:") ? "edit-do" : "edit-group";
     return draw();
   }
@@ -795,8 +797,8 @@ function formAction(a, form) {
     return update(next, () => { editing = `${kind}:${to}`; focusKey = `edit-act-${a}`; });
   }
   if (a === "add-after") {
-    const { recipe: added, at } = M.addStep(next, { after: n });
-    return update(added, () => { editing = `step:${at}`; focusKey = "edit-do"; });
+    const { recipe: added, at } = kind === "ing" ? M.addIngredient(next, { after: n }) : M.addStep(next, { after: n });
+    return update(added, () => { editing = `${kind}:${at}`; focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
   }
   if (a === "remove") {
     next = kind === "ing" ? M.removeIngredient(next, n) : M.removeStep(next, n);
