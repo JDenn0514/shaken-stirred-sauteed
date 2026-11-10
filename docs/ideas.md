@@ -22,7 +22,7 @@ A tool that turns a recipe from a web page or a photo into the site's recipe JSO
 - **Prep:** `prep` marks on steps that can be done before any cooking, `"just before"` where doing it early would hurt the dish, and added `prepOnly` steps for prep hidden in ingredient lines ("garlic, minced"). That lets the recipe show prep first or as written.
 - **Planning data:** hands-on minutes, waits that need you there, oven, broiler, burner, grill or microwave use, the point after which the dish keeps, and how it's served.
 - **Linked recipes:** an ingredient that's a recipe on the site ("garlic paste", "lemon curd") links to it, and an optional ingredient is marked `optional`. Required links are nested recipes, which come with the dish; optional ones are connected recipes, added on their own (see the lineup spec). One the source makes elsewhere ("steak seasoning, see recipe") is flagged, so Jacob can decide whether to add it.
-- **Tags** from `recipes/vocabulary.json`. A recipe that belongs in two sections (blueberry syrup in Cocktails and Baking) can only have one `category` today. That's a separate small change.
+- **Tags** from `recipes/vocabulary.json`. A recipe that belongs in two sections (blueberry syrup in Cocktails and Baking) can only have one `category` today; see "A recipe in more than one section" below.
 
 **Rules it should follow:**
 
@@ -30,6 +30,19 @@ A tool that turns a recipe from a web page or a photo into the site's recipe JSO
 - **Credit the source** in `source`, and don't copy a source's text word for word.
 - **Run the recipe checker** (`node scripts/build-index.mjs`) before handing it over.
 - **Note:** fetching a site needs it allowed in the cloud environment's network settings. The same sites worked from the command line before the web-fetch tool picked up the change.
+
+## A recipe in more than one section
+
+2026-11-10 · from Jacob, answering the editor review (`docs/specs/editor-redesign.md`, decision 6)
+
+Blueberry syrup goes in pancakes (Cooking), on cakes (Baking) and in drinks (Cocktails), but a recipe has one `category` today, so it shows in one section only.
+
+**Things to work out:**
+
+- **Home and guest sections:** one section stays the recipe's own (its colours, drawing and page), and it's listed in the others too. Or it has no single home.
+- **Tags:** each section has its own tags in `recipes/vocabulary.json`, so a recipe in two sections may need tags from both.
+- **What changes:** the recipe format (`category` as a list, or a new field such as `alsoIn`), the checker, `recipes/index.json`, the section pages and filters, and the editor's section control (decision 6 in the editor review, built so it can grow from one section to several).
+- **Components:** most recipes that belong in several sections are components (syrups, sauces, curds). Linking from other recipes may already cover some of the need.
 
 ## Step controls you can find in the editor
 

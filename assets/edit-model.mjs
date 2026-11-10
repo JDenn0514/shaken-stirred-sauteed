@@ -223,16 +223,22 @@ function dropEmptyGroups(r, key) {
   r[key] = r[key].filter((e) => !isGroup(e) || e.items.length);
 }
 
-// A new, empty entry at the end of the last list (or section). Returns where it is.
-function add(recipe, key) {
+// A new, empty entry: right after entry `after`, in the same group, or else at
+// the end of the last list (or section). Returns where it is.
+function add(recipe, key, { after } = {}) {
   const r = structuredClone(recipe);
   r[key] ||= [];
+  const at = after === undefined ? null : locate(r[key], after);
+  if (at) {
+    at.arr.splice(at.i + 1, 0, BLANK[key]());
+    return { recipe: r, at: after + 1 };
+  }
   const last = r[key].at(-1);
   (isGroup(last) ? last.items : r[key]).push(BLANK[key]());
   return { recipe: r, at: flat(r[key]).length - 1 };
 }
-export const addIngredient = (recipe) => add(recipe, "ingredients");
-export const addStep = (recipe) => add(recipe, "steps");
+export const addIngredient = (recipe, where) => add(recipe, "ingredients", where);
+export const addStep = (recipe, where) => add(recipe, "steps", where);
 
 function remove(recipe, key, n) {
   const r = structuredClone(recipe);
