@@ -127,6 +127,26 @@ describe("steps", () => {
     assert.deepEqual(recipe.steps[1].items[1], { do: "" });
   });
 
+  test("adding a step after another puts it next, in the same group", () => {
+    const r = { title: "Bars", steps: [
+      { group: "Crust", items: [{ do: "Press the crust." }, { do: "Bake the crust." }] },
+      { group: "Filling", items: [{ do: "Whisk the filling." }] },
+    ] };
+    const { recipe, at } = M.addStep(r, { after: 1 });
+    assert.equal(at, 2);
+    assert.deepEqual(recipe.steps, [
+      { group: "Crust", items: [{ do: "Press the crust." }, { do: "Bake the crust." }, { do: "" }] },
+      { group: "Filling", items: [{ do: "Whisk the filling." }] },
+    ]);
+    assert.deepEqual(M.addStep(r, { after: 0 }).recipe.steps[0].items, [{ do: "Press the crust." }, { do: "" }, { do: "Bake the crust." }]);
+  });
+
+  test("adding a step after one in an ungrouped list", () => {
+    const { recipe, at } = M.addStep({ title: "A", steps: ["Mix.", "Bake."] }, { after: 0 });
+    assert.equal(at, 1);
+    assert.deepEqual(recipe.steps, ["Mix.", { do: "" }, "Bake."]);
+  });
+
   test("splitting a step: the first part keeps what it uses, the second its wait", () => {
     const r = M.splitStep({ title: "A", steps: [{ do: "Mix the dough. Bake it.", uses: ["Flour"], hands: "5 min", wait: "20 min", cue: "Golden", oven: "200C" }] }, 0, 14);
     assert.deepEqual(r.steps, [

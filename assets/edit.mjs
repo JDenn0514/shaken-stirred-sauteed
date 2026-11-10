@@ -242,6 +242,10 @@ function todoHTML(w) {
 
 const part = (target, key, inner) =>
   `<button class="edit-part" type="button" data-act="edit" data-target="${target}" data-key="${key}">${inner}</button>`;
+// A visible way in, beside a line that can be edited: a pencil and "Edit"
+// (only the pencil where space is tight). Its name says which line it opens.
+const editButton = (target, key, name) =>
+  `<button class="edit-open" type="button" data-act="edit" data-target="${target}" data-key="${key}" aria-label="${esc(name)}"><span class="edit-pencil" aria-hidden="true">✎</span><span class="edit-word" aria-hidden="true">Edit</span></button>`;
 // A field with its label beside it, joined by id. (A label wrapped round a
 // field would make the field's own text part of its name.)
 function labelled(label, control, cls = "") {
@@ -290,7 +294,7 @@ function stepForm(n) {
       ${o.wait === false ? field("Wait", "wait", "", ` placeholder="Doesn't wait"`) : field("Wait", "wait", o.wait, ` placeholder="e.g. 20 min"`)}
       ${field("Cue", "cue", o.cue, ` placeholder="e.g. Golden at the edges"`)}
     </div>
-    ${formButtons(act("move-up", "Move up") + act("move-down", "Move down") + act("split", "Split here")
+    ${formButtons(act("add-after", "Add a step after this") + act("move-up", "Move up") + act("move-down", "Move down") + act("split", "Split here")
       + act("join", "Join with the next step") + act("remove", "Remove"))}
   </form>`;
 }
@@ -339,11 +343,12 @@ function decorate(page, errors, showPrepFirst) {
 
   // Steps.
   const steps = flat(recipe.steps);
-  page.querySelectorAll("li[data-step]").forEach((li) => {
+  page.querySelectorAll("li[data-step]").forEach((li, shown) => {
     const n = Number(li.dataset.step);
     li.removeAttribute("tabindex");
     if (editing === `step:${n}`) li.innerHTML = stepForm(n);
-    else li.innerHTML = part(`step:${n}`, `part-step-${n}`, stepText(steps[n]) ? li.innerHTML : "Empty step: add what to do");
+    else li.innerHTML = part(`step:${n}`, `part-step-${n}`, stepText(steps[n]) ? li.innerHTML : "Empty step: add what to do")
+      + editButton(`step:${n}`, `edit-step-${n}`, `Edit step ${shown + 1}`);
   });
   const stepSection = page.querySelector("#steps");
   // In prep-first order the headings are the order's own ("Prep", "Cooking"), not the recipe's groups.
@@ -730,7 +735,7 @@ root.addEventListener("click", (e) => {
     const { recipe: next, at } = list === "ingredients" ? M.addIngredient(recipe) : M.addStep(recipe);
     return update(next, () => { editing = `${list === "ingredients" ? "ing" : "step"}:${at}`; focusKey = list === "ingredients" ? "edit-item" : "edit-do"; });
   }
-  if (form && ["move-up", "move-down", "split", "join", "remove"].includes(a)) return formAction(a, form);
+  if (form && ["add-after", "move-up", "move-down", "split", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
     const draft = offer;
     return update(draft.recipe, () => { focusKey = "part-title"; });
@@ -788,6 +793,10 @@ function formAction(a, form) {
     const to = M.movedTo(next, list, n, dir);
     next = kind === "ing" ? M.moveIngredient(next, n, dir) : M.moveStep(next, n, dir);
     return update(next, () => { editing = `${kind}:${to}`; focusKey = `edit-act-${a}`; });
+  }
+  if (a === "add-after") {
+    const { recipe: added, at } = M.addStep(next, { after: n });
+    return update(added, () => { editing = `step:${at}`; focusKey = "edit-do"; });
   }
   if (a === "remove") {
     next = kind === "ing" ? M.removeIngredient(next, n) : M.removeStep(next, n);

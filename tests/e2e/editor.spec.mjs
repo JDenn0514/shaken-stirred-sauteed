@@ -20,9 +20,10 @@ const details = async (page) => {
 const stepBox = (scope, n) => scope.getByRole("group", { name: new RegExp(`^Step ${n}:`) });
 const ingredientBox = (scope, name) => scope.getByRole("group", { name, exact: true });
 const draftOf = (page, slug) => page.evaluate((s) => JSON.parse(localStorage.getItem(`sss:draft:${s}`))?.recipe, slug);
-// Each step as text, in the order shown (an open form shows its Step field's text).
+// Each step as text, in the order shown (an open form shows its Step field's
+// text). A step's text is its first button; its Edit button comes after.
 const stepTexts = (page) => preview(page).locator("ol.steps > li").evaluateAll((lis) =>
-  lis.map((li) => li.querySelector("textarea[name=do]")?.value ?? li.textContent.trim()));
+  lis.map((li) => li.querySelector("textarea[name=do]")?.value ?? (li.querySelector("button") ?? li).textContent.trim()));
 
 test.describe("the preview", () => {
   test("shows the card, then the recipe as its page does", async ({ page, baseURL }) => {
@@ -112,6 +113,36 @@ test.describe("steps, by keyboard", () => {
     await page.getByRole("button", { name: "Join with the next step" }).press("Enter");
     expect((await stepTexts(page)).slice(2)).toEqual(["Shred the pork. Taste it.", "Crisp it in a hot pan."]);
   });
+
+  test("each step has an Edit button that opens it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await expect(preview(page).getByRole("button", { name: "Edit step 3" })).toHaveText(/Edit/);
+    await preview(page).getByRole("button", { name: "Edit step 3" }).press("Enter");
+    await expect(page.getByLabel("Step", { exact: true })).toBeFocused();
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Shred the pork.");
+  });
+
+  test("adding a step after another", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByRole("button", { name: "Add a step after this" }).press("Enter");
+    await expect(page.getByLabel("Step", { exact: true })).toBeFocused();
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("");
+    await page.keyboard.type("Salt it overnight.");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    expect(await stepTexts(page)).toHaveLength(5);
+    expect((await stepTexts(page)).slice(0, 3)).toEqual(["Season the pork.", "Salt it overnight.", expect.stringMatching(/^Braise until tender/)]);
+    await expect(preview(page).getByRole("button", { name: "Salt it overnight." })).toBeFocused();
+  });
+});
+
+test("on a phone, a step's Edit button keeps its name and still opens the step", async ({ page, baseURL }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await openEditor(page, baseURL, "pork-carnitas");
+  const edit = preview(page).getByRole("button", { name: "Edit step 2" });
+  await expect(edit).toBeVisible();
+  await edit.click();
+  await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Braise until tender.");
 });
 
 test("fields the editor has no control for come out of an edit unchanged", async ({ page, baseURL }) => {
