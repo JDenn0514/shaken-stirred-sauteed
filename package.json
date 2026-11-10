@@ -17,7 +17,7 @@
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "fast-check": "^4.10.2",
-    "oxlint": "^1.90.0",
+    "oxlint": "^1.92.0",
     "wrangler": "4.157.0"
   },
   "workspaces": [
