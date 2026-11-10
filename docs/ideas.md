@@ -109,3 +109,19 @@ Accounts for friends and family, so each person can add their own recipes and ke
 - **Settings** (above): prep first, theme, pace, cooking setup, units.
 - **Your own notes on a recipe** (above).
 - **Saved lineups,** and maybe the size you last scaled a recipe to.
+- **Feedback and bug reports** (below).
+
+## Feedback and bug reports
+
+2026-11-10 · from Jacob, for when the multi-user version is built
+
+A way for people using the site to send feedback or report a bug, without leaving the site or needing a GitHub account: a "Send feedback" link in the footer, and maybe "Something wrong with this recipe?" on each recipe page.
+
+**Things to work out:**
+
+- **Feedback, bug reports, or both:** one form with a choice ("Something's broken", "An idea", "A recipe problem"), or separate ones.
+- **What it fills in for you:** the page and recipe it was sent from, the browser and device, and who sent it if they're signed in, so a report like "the timer didn't start" can be followed up. The person sees what's sent before sending it.
+- **Where reports go:** a GitHub issue on this repo, opened by the Worker (the GitHub App would need permission to open issues), keeps them next to the code. A table in D1 keeps them private. Either way, the person sending one doesn't connect to anything themselves.
+- **Who can send one:** signed-in people only keeps out spam. Anyone, with a limit per day, is easier for visitors.
+- **Hearing back:** whether the sender can see when a report is fixed, and whether Jacob gets told when one comes in.
+- **Privacy:** don't send recipe notes, settings or anything else personal unless the person adds it.
