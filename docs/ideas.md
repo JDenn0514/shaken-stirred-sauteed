@@ -87,3 +87,25 @@ Other settings that could move here:
 - **Units:** grams or cups first.
 
 **Saved where:** the theme is kept on the device in `localStorage`, and settings could start there too. **Multiple users** is what would change that. If the site ever plans for more than one person (each with their own pace, preferences and saved meals), settings need to belong to a person, not a device. That means some kind of account or profile, and somewhere to store it beyond the browser. That decision belongs to the multi-user project. A settings page on the device first doesn't block it, as long as the settings are kept in one place that could later be saved per person.
+
+## Multi-user
+
+2026-11-01 · from the recipe editor design (`docs/specs/recipe-editor-design.md`, where it's under "Later")
+
+Accounts for friends and family, so each person can add their own recipes and keep their own things on the site. Today only Jacob can sign in and edit; visitors see the site without an account.
+
+**What's already in place:** sign-in with GitHub through Better Auth in the Worker, with its tables in D1 (Cloudflare's database). Better Auth can add Google or email sign-in for others. The editor is built to be reused, with only saving swapped: from "commit to the repo" to "save to my account" in D1. D1 only holds sign-in data today.
+
+**Open questions,** parked on 2026-11-01:
+
+- **One shared library, or each person's own copies** of recipes.
+- **How people sign in:** GitHub suits Jacob, not most friends and family.
+- **Scope:** what a person can do (add recipes, edit others', only their own).
+- **Audience:** who it's for, and whether visitors without an account still see everything.
+- **The AI step:** friends importing with it would share the free daily allowance.
+
+**What waits for it**, and should be kept somewhere that can later move to a person's account:
+
+- **Settings** (above): prep first, theme, pace, cooking setup, units.
+- **Your own notes on a recipe** (above).
+- **Saved lineups,** and maybe the size you last scaled a recipe to.
