@@ -1,8 +1,10 @@
 # Testing
 
-- `npm test` runs everything: `npm run check` (the quick checks: lint with Oxlint, broken links, the recipes, and `npm run test:unit`, the recipe and link checker tests on Node's built-in runner) and `npm run test:e2e` (browser tests, Playwright driving the installed Google Chrome, then Playwright's WebKit for Safari; `--project=chrome` or `--project=webkit` runs just one).
+- `npm test` runs `npm run check` (the quick checks: lint with Oxlint, broken links, the recipes, `npm run test:unit`, the recipe and link checker tests on Node's built-in runner, and the Worker's tests) and `npm run test:e2e` (the browser tests, Playwright driving the installed Google Chrome). `npm run test:all` runs the same with the browser tests in Playwright's WebKit (Safari) too, as CI does. `npx playwright test --project=webkit` runs only WebKit.
 - `npm run check` also runs as a git pre-push hook (`.githooks/pre-push`, turned on by `npm install`). Don't skip it with `--no-verify` to get a push through; fix what it finds.
 - Run `npm test` before saying a change to the site's code is done, and before committing one. If anything fails, show the output; don't call it done.
+- Run `npm run test:all` instead when the change could behave differently in Safari: focus, scrolling, dates, timers, audio, layout, or a test that already does something different in WebKit. Otherwise CI's WebKit run catches it. If CI fails only in WebKit, reproduce it with `npx playwright test --project=webkit` before fixing.
+- While working, run just the tests you're changing (`npx playwright test cook-mode --project=chrome`), then the full `npm test` at the end. Don't start a browser test run while another one is running on this Mac (another session's included): they slow each other down badly.
 - Adding or editing a recipe's JSON doesn't need new tests; `node scripts/build-index.mjs` is the check for that.
 
 ## Write the test first
