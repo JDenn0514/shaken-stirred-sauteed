@@ -200,6 +200,19 @@ describe("the oven", () => {
     assert.equal(plan.steps[0].text, "Heat the oven to 200°C / 400°F");
   });
 
+  test("a dish that needs the oven hotter partway through gets a heating step there too", () => {
+    const roastThenBroil = recipe("Asparagus", [
+      ["Roast the asparagus", { hands: "1 min", wait: "9 min", oven: "200C" }],
+      ["Broil the asparagus", { hands: "0.5 min", wait: "2.5 min", watch: true, oven: "broil" }],
+    ]);
+    const plan = planLineup({ dishes: [{ slug: "asparagus" }] }, { asparagus: roastThenBroil });
+    assert.deepEqual(texts(plan), ["Heat the oven to 200°C / 400°F", "Roast the asparagus", "Switch the oven to broil", "Broil the asparagus"]);
+    assert.equal(plan.steps[2].added, true);
+    // Hot at 16, roasted by 26, then a minute to switch and 3 for the broiler.
+    assert.equal(at(plan, "Broil the asparagus"), 30);
+    assert.equal(plan.minutes, 33);
+  });
+
   test("turning the oven down or off needs no heating", () => {
     const meringue = recipe("Meringue", [
       ["Heat the oven to 350F", { hands: "0.5 min", preheat: "350F" }],
@@ -222,6 +235,18 @@ describe("the oven", () => {
     const second = plan.steps.find((s) => s.text === "Heat the oven for the asparagus");
     assert.equal(second.skipped, true);
     assert.equal(at(plan, "Bake the potatoes"), 16);
+  });
+
+  test("a dish using an oven another dish heated keeps it, so nobody turns it down first", () => {
+    // Found by the oven law in planner-laws.test.mjs.
+    const recipes = {
+      peppers: recipe("Peppers", [["Roast the peppers", { hands: "0 min", wait: "1 min", oven: "200C" }]]),
+      squash: recipe("Squash", [["Roast the squash", { hands: "0 min", wait: "1 min", oven: "350F" }]]),
+      tomatoes: recipe("Tomatoes", [["Roast the tomatoes", { hands: "0 min", wait: "1 min", oven: "200C" }], ["Simmer the sauce", { hands: "0 min", wait: "10 min", burner: true }]]),
+    };
+    const plan = planLineup({ dishes: [{ slug: "peppers" }, { slug: "squash" }, { slug: "tomatoes" }], prepFirst: false }, recipes);
+    assert.ok(at(plan, "Roast the peppers") < at(plan, "Heat the oven to 180°C / 350°F"),
+      `the peppers roast at 200C at ${at(plan, "Roast the peppers")}, after the oven was turned down to 350F at ${at(plan, "Heat the oven to 180°C / 350°F")}`);
   });
 
   test("no heating step is added when another dish has heated the oven to that setting", () => {

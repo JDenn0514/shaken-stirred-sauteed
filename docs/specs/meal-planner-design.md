@@ -66,7 +66,8 @@ The prototype on branch `prototype/meal-planner` (README there, with the publish
    - Dishes can share the oven only at the same setting. Temperatures within 15°F (about 10°C) count as the same, so 200°C and 400°F share. They share only if at most one of them needs the oven at another setting later: two that both change it (lime bars going down to 300°F, a pavlova down to 200°F and then off) would each wait for the other, so one waits its turn instead.
    - A dish holds the oven from its first oven step to its last, or, when a later step takes it out (`oven: false`), until that step is done. Nothing switches to broil while the potatoes are still in.
    - Heating the oven runs in the background while you carry on.
-   - If a dish needs the oven at a setting and its recipe has no step heating it, the planner adds "Heat the oven to 200°C / 400°F" at the start of that dish's cooking, after its prep, marked as added for this meal. If the oven is already at that setting, the added step is skipped.
+   - If a dish needs the oven at a setting and its recipe has no step heating it, the planner adds "Heat the oven to 200°C / 400°F" at the start of that dish's cooking, after its prep, marked as added for this meal. If the oven is already at that setting, the added step is skipped, but the dish still holds the oven from then, so no other dish turns it down before it goes in.
+   - The same goes for a dish that later needs the oven hotter than its own steps left it (roasted, then broiled, with no "switch the oven to broil" step): the planner adds a heating step just before the step that needs it.
    - Turning the oven down or off needs no heating time, and leaves it at that setting: a dish that needs it hotter afterwards heats it again.
 7. **Heating time counts.** Heating takes 15 minutes, or 3 minutes for the broiler. When the step straight after a heating step needs the oven hot, the heating time counts in the backward pass.
 8. **Fixing a late dish.** If a dish comes out late, the planner plans it to finish a little earlier, and does the same for any dish whose oven use held it up. It never moves a dish earlier than it can sit once done. If no order gets every hot dish there within its sitting time (three dishes that each must be eaten within 5 minutes, and one cook), it loosens the sitting times a little at a time (5 minutes more, then 10, 20, 40, 80) until one does, so dishes sit only as much longer as they must and the plan stays whole.
@@ -98,7 +99,7 @@ The planner is a pure module (`assets/planner.mjs`) with no page code.
 
 | Field | What it is | What the page does with it |
 |---|---|---|
-| `steps` | Every step in order: `slug`, `step` (its index in the recipe, or `"heat"` for an added heating step), `text`, `at`. Also `done`, `current`, `skipped` (oven already hot), `added` (not on the recipe card). | The list, one step at a time in cook mode. |
+| `steps` | Every step in order: `slug`, `step` (its index in the recipe, or `"heat"`, then `"heat-2"` and on, for an added heating step), `text`, `at`. Also `done`, `current`, `skipped` (oven already hot), `added` (not on the recipe card). | The list, one step at a time in cook mode. |
 | `steps[].hands`, `.wait`, `.watch` | Hands-on minutes, the wait after them (a range planned from its middle) and whether the wait needs you there. | Durations; "stay with it" on watched waits. |
 | `steps[].timer` | On a step with a wait: `from` (it starts), `short` (the short end of the range, where the timer starts, so you check early) and `ends`. | The timer, pinned at the top while it runs. |
 | `steps[].followUp` | On a step with a wait: the index of the dish's next step. | **What to do when the timer rings** ("Pull the pan out", "Stir it all around again"). The second test's testers lost these when they sat on the step that started the timer. |
@@ -368,6 +369,7 @@ Rules:
     - a nested recipe marked Already made;
     - a connected recipe being ready before the step that uses it;
     - a ringing timer making its follow-up the next step.
+  - **Planner laws** (`tests/unit/planner-laws.test.mjs`): rules from "How the planner works" that hold for every lineup, checked on random ones with fast-check. Every step planned once and in order, one pair of hands, waits waited, every dish ready by its course, no more equipment than the kitchen has, the oven at one setting at a time and hot before anything goes in. When a law breaks, fast-check shrinks the lineup to the smallest that still breaks it; turn that into an example test in `planner.test.mjs` before fixing it.
   - **Browser tests** use fixture recipes in `tests/e2e/fixtures.mjs`, with planning data and recipe links added there, never the real recipes.
   - **Checker tests** go through `tests/helpers/build-index.mjs`.
   - `npm test` passes before the work is called done.
