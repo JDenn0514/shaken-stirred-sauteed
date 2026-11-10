@@ -199,8 +199,11 @@ The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for deve
 ```sh
 npm install                      # once
 npx playwright install webkit    # once, and again when Playwright updates
-npm test
+npm test                         # the quick checks, then the browser tests in Chrome
+npm run test:all                 # the same, with the browser tests in WebKit too, like CI
 ```
+
+`npm test` leaves WebKit to CI, which runs every browser test in both, because running both locally doubles the wait. Run `npm run test:all` before pushing a change that could behave differently in Safari, such as focus, scrolling, dates, timers or layout. `npx playwright test --project=webkit` runs only the WebKit half, and naming a file (`npx playwright test cook-mode`) runs just that file's tests.
 
 - `npm run check` runs the quick checks in a few seconds: lint (Oxlint), broken links (`scripts/check-links.mjs`: every page, stylesheet font, app icon, recipe photo and recipe drawing the site points at must exist), the recipes, the tests in `tests/unit/` and the Worker's tests. After `npm install` it also runs before every `git push`, and stops the push if something fails.
 - `tests/unit/` checks the recipe checker (`scripts/build-index.mjs`, whose checks live in `assets/recipe-checks.js` so the editor can share them): what it rejects, what it warns about, and what it writes into the index, and that patching one recipe's entry into the index gives the same index as a full rebuild. It also checks the link checker, the lineup planner (`assets/planner.mjs`), what the menu's cook mode makes of a plan (`assets/menu-plan.mjs`), the editor's changes to a recipe (`assets/edit-model.mjs`), the old address's "moved" page (`moved/moved.js`), and the recipe intake: reading text and web pages into a draft (`tools/intake/`, `tools/restructure/`), and what its review screen asks, shows to confirm and checks (`tools/intake/review.mjs`).

@@ -1,7 +1,9 @@
-// Browser tests (tests/e2e). Every test runs twice: in the installed Google
+// Browser tests (tests/e2e). Every test can run twice: in the installed Google
 // Chrome, which keeps itself up to date, rather than a Chromium build bundled
 // with Playwright; and in Playwright's WebKit, the engine behind Safari and
 // every browser on an iPhone (install it once with `npx playwright install webkit`).
+// CI runs both. Locally, `npm test` runs Chrome only, to halve the wait;
+// `npm run test:all` runs both, like CI.
 import { defineConfig } from "@playwright/test";
 
 const PORT = 8123;

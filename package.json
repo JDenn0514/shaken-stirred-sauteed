@@ -5,7 +5,9 @@
   "scripts": {
     "test": "npm run check && npm run test:e2e",
     "test:unit": "node --test \"tests/unit/*.test.mjs\"",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=chrome",
+    "test:e2e:all": "playwright test",
+    "test:all": "npm run check && npm run test:e2e:all",
     "lint": "oxlint",
     "check:links": "node scripts/check-links.mjs",
     "check:recipes": "node scripts/build-index.mjs && git diff --exit-code --stat recipes/index.json",
