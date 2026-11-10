@@ -167,6 +167,82 @@ test.describe("ingredients, by keyboard", () => {
   });
 });
 
+test.describe("what you type is never lost", () => {
+  test("opening another line keeps what you typed in the open one", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await preview(page).getByRole("button", { name: "Edit step 3" }).press("Enter");
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Shred the pork.");
+  });
+
+  test("Cancel puts the line back as it was", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await page.getByRole("button", { name: "Cancel" }).press("Enter");
+    expect((await stepTexts(page))[0]).toBe("Season the pork.");
+    await expect(preview(page).getByRole("button", { name: "Season the pork.", exact: true })).toBeFocused();
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+  });
+
+  test("Escape is the same as Cancel", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit 1 orange" }).press("Enter");
+    await page.getByLabel("Ingredient", { exact: true }).fill("2 oranges");
+    await page.keyboard.press("Escape");
+    await expect(preview(page).getByRole("button", { name: "1 orange", exact: true })).toBeFocused();
+  });
+
+  test("Cancel on a line you just added takes it out again", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByRole("button", { name: "Add a step after this" }).press("Enter");
+    await page.keyboard.type("Salt it");
+    await page.getByRole("button", { name: "Cancel" }).press("Enter");
+    expect(await stepTexts(page)).toHaveLength(4);
+    await expect(preview(page).getByRole("button", { name: "Season the pork.", exact: true })).toBeFocused();
+
+    await preview(page).getByRole("button", { name: "Add ingredient" }).press("Enter");
+    await page.getByRole("button", { name: "Cancel" }).press("Enter");
+    await expect(preview(page).getByText("Empty ingredient")).toHaveCount(0);
+    await expect(preview(page).getByRole("button", { name: "Add ingredient" })).toBeFocused();
+  });
+
+  test("a reload brings back what was typed in an open line", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await page.reload();
+    await page.getByRole("button", { name: "Bring back my changes" }).click();
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+  });
+
+  test("the preview's links don't leave the editor", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    for (const name of ["← Cooking", "Grandma"]) {
+      const link = preview(page).getByRole("link", { name });
+      await expect(link).toHaveAttribute("aria-disabled", "true");
+      // Playwright won't click a disabled link by itself; a person still can.
+      await link.click({ force: true });
+    }
+    await expect(page).toHaveURL(/edit\.html\?r=pork-carnitas$/);
+    expect(page.context().pages()).toHaveLength(1);
+  });
+
+  test("Escape on a group's name puts focus back on the group", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "For the braise" }).press("Enter");
+    await page.getByLabel("Group name").fill("Braise");
+    await page.keyboard.press("Escape");
+    await expect(preview(page).getByRole("button", { name: "For the braise" })).toBeFocused();
+    await preview(page).getByRole("button", { name: "Add a group of steps" }).press("Enter");
+    await page.keyboard.press("Escape");
+    await expect(preview(page).getByRole("button", { name: "Add a group of steps" })).toBeFocused();
+  });
+});
+
 test("on a phone, an ingredient's Edit button keeps its name and still opens it", async ({ page, baseURL }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await openEditor(page, baseURL, "pork-carnitas");

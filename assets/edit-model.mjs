@@ -47,6 +47,15 @@ function change(recipe, key, n, fn) {
   return r;
 }
 
+// One line put back as it was in `before` ("about", "ing:3" or "step:2"),
+// keeping every other change: what Cancel does to the line that was open.
+export function putBack(recipe, before, target) {
+  if (target === "about") return ["title", "description", "yield"].reduce((r, k) => setField(r, k, before[k]), recipe);
+  const [kind, n] = target.split(":");
+  const key = kind === "ing" ? "ingredients" : "steps";
+  return change(recipe, key, Number(n), () => structuredClone(flat(before[key] || [])[Number(n)]));
+}
+
 // --- The recipe's own fields --------------------------------------------------
 
 const FIELDS = ["title", "description", "yield", "added", "kind", "icon", "serve", "sits", "source.name", "source.url"];
