@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   checks:
-    name: Lint, links and recipes
+    name: Lint, links, recipes and the Worker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,10 +46,17 @@ jobs:
       - name: Recipe checker and link checker tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: npm run test:unit
+      - name: Worker tests (sign-in)
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run test:worker
 
   browser:
     name: Browser tests (${{ matrix.shard }})
     runs-on: ubuntu-latest
+    # A group takes 2 to 4 minutes. Without a limit, a stuck install (apt
+    # hanging on a slow mirror) waits out GitHub's 6-hour default; this way it
+    # fails fast and can be re-run.
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -63,9 +70,70 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Chrome is already installed on GitHub's runners; WebKit isn't.
+      # Chrome is already installed on GitHub's runners; WebKit isn't. WebKit
+      # needs about 185 system packages (139 MB) from Ubuntu's mirror, and now
+      # and then that download crawls on one machine (50 KB/s, for 10 minutes or
+      # more) while it takes 10 seconds on the others. So:
+      # - The packages are kept in GitHub's cache, and a run only downloads what
+      #   isn't in it. The key changes with the runner image and
+      #   package-lock.json; a run with a new key starts from the newest older
+      #   cache, so it only downloads the packages that changed. (A pull
+      #   request can use main's cache and its own, not other pull requests'.)
+      # - What's left is downloaded in tries of TRY_TIME each, then installed
+      #   from what was downloaded. Stopping a download is harmless, and the
+      #   packages that finished are kept, so a new try only fetches the rest;
+      #   the one package that was cut off starts again.
+      - name: Name the cache of WebKit's system packages
+        id: webkit-debs-key
+        run: |
+          echo "prefix=webkit-debs-$ImageOS-" >> "$GITHUB_OUTPUT"
+          echo "key=webkit-debs-$ImageOS-$ImageVersion-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
+      - name: Restore WebKit's system packages
+        id: webkit-debs
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/webkit-debs
+          key: ${{ steps.webkit-debs-key.outputs.key }}
+          restore-keys: ${{ steps.webkit-debs-key.outputs.prefix }}
       - name: Install WebKit
-        run: npx playwright install --with-deps webkit
+        env:
+          TRY_TIME: 2m
+          TRIES: 4
+        run: |
+          # Start from the cached packages, if there are any.
+          if [ -d ~/webkit-debs ]; then sudo cp ~/webkit-debs/*.deb /var/cache/apt/archives/ 2> /dev/null || true; fi
+          # apt gives up on a download that has stalled after 30 seconds.
+          echo 'Acquire::http::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/99-ci-timeout > /dev/null
+          # Download only, with a time limit. timeout runs as root so it can stop
+          # the apt it starts.
+          echo 'APT::Get::Download-Only "true";' | sudo tee /etc/apt/apt.conf.d/99-ci-download-only > /dev/null
+          for try in $(seq "$TRIES"); do
+            if sudo env "PATH=$PATH" timeout --kill-after=15s "$TRY_TIME" npx playwright install-deps webkit; then
+              break
+            elif [ "$try" = "$TRIES" ]; then
+              echo "::error::Couldn't download WebKit's system packages in $TRIES tries of $TRY_TIME"
+              exit 1
+            fi
+            echo "::warning::Downloading WebKit's system packages didn't finish within $TRY_TIME (try $try of $TRIES); trying again"
+            # A stopped apt can take a moment to exit; until it does, it holds
+            # apt's lock and the next try would fail at once.
+            for second in $(seq 30); do pgrep -x apt-get > /dev/null || break; sleep 1; done
+          done
+          sudo rm /etc/apt/apt.conf.d/99-ci-download-only
+          # What's downloaded now is what the cache keeps, less old versions
+          # that apt no longer offers.
+          sudo apt-get autoclean -qq
+          rm -rf ~/webkit-debs && mkdir ~/webkit-debs
+          find /var/cache/apt/archives -maxdepth 1 -name '*.deb' -exec cp {} ~/webkit-debs/ \;
+          # Installs the packages from what was downloaded, and WebKit itself.
+          npx playwright install --with-deps webkit
+      # Only after a full download, so the cache never holds half of it.
+      - name: Save WebKit's system packages
+        if: steps.webkit-debs.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/webkit-debs
+          key: ${{ steps.webkit-debs-key.outputs.key }}
       - name: Browser tests
         run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
       - uses: actions/upload-artifact@v4

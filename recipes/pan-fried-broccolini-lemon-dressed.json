@@ -21,6 +21,8 @@
       "About 15 minutes"
     ]
   ],
+  "serve": "hot",
+  "sits": "5 min",
   "time": {
     "total": 15
   },
@@ -69,17 +71,33 @@
       "do": "Prep. Cut away the dried ends. Any stalk thicker than a pencil gets halved lengthwise. Dry the broccolini well — water caught in the florets will steam it instead of browning it.",
       "uses": [
         "broccolini"
-      ]
+      ],
+      "hands": "4 min",
+      "prep": true
     },
     {
       "do": "Season. Toss with 1 tsp oil, salt, pepper, and flakes. Go light; the dressing adds plenty more.",
       "uses": [
         "olive oil",
         "Salt, black pepper, red pepper flakes"
-      ]
+      ],
+      "hands": "1 min",
+      "prep": "just before"
     },
     {
-      "do": "Pan fry. Heat cast iron over medium-high until it just begins to smoke. Lay the broccolini in a single layer, cut side down. Leave it undisturbed 2–3 minutes, until the stalks have real color, then toss and cook 2 minutes more. A knife tip should slide into the stem with slight resistance, not none."
+      "do": "Pan fry. Heat cast iron over medium-high until it just begins to smoke. Lay the broccolini in a single layer, cut side down. Leave it undisturbed 2–3 minutes, until the stalks have real color, then toss and cook 2 minutes more. A knife tip should slide into the stem with slight resistance, not none.",
+      "hands": "8 min",
+      "burner": true
+    },
+    {
+      "do": "Zest the lemon, then juice half of it.",
+      "hands": "2 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Zest of 1 lemon",
+        "Juice of ½ lemon"
+      ]
     },
     {
       "do": "Dress. Take the pan off the heat. Whisk the dressing ingredients together in a bowl, add the broccolini, and toss to coat. Serve warm.",
@@ -89,7 +107,9 @@
         "Zest of 1 lemon",
         "garlic powder",
         "Pinch each salt, black pepper, red pepper flakes"
-      ]
+      ],
+      "hands": "2 min",
+      "burner": false
     }
   ],
   "notes": [

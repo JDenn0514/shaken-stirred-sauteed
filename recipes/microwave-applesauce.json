@@ -5,14 +5,35 @@
   "kind": "dish",
   "description": "Honeycrisp apples cooked with cinnamon and lemon in the microwave, then mashed.",
   "tags": {
-    "course": ["sweet", "side"],
-    "cuisine": ["american"],
-    "method": ["microwave"],
-    "flavor": ["sweet"],
-    "ingredients": ["apple", "lemon"],
-    "occasion": ["weeknight"],
-    "season": ["fall"],
-    "diet": ["vegan", "vegetarian", "gluten-free", "dairy-free"]
+    "course": [
+      "sweet",
+      "side"
+    ],
+    "cuisine": [
+      "american"
+    ],
+    "method": [
+      "microwave"
+    ],
+    "flavor": [
+      "sweet"
+    ],
+    "ingredients": [
+      "apple",
+      "lemon"
+    ],
+    "occasion": [
+      "weeknight"
+    ],
+    "season": [
+      "fall"
+    ],
+    "diet": [
+      "vegan",
+      "vegetarian",
+      "gluten-free",
+      "dairy-free"
+    ]
   },
   "added": "2026-08-29",
   "yield": "Makes about 3 cups",
@@ -26,6 +47,7 @@
       "15 min"
     ]
   ],
+  "serve": "keeps",
   "ingredients": [
     {
       "qty": "4",
@@ -49,23 +71,52 @@
   ],
   "steps": [
     {
+      "do": "Juice half a lemon.",
+      "hands": "1 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "Juice of ½ lemon"
+      ]
+    },
+    {
       "do": "Peel and core the apples. Quarter each one, then cut each quarter crosswise about five times — more or fewer depending on how big the apple is. You want small, even pieces.",
-      "uses": ["Honeycrisp apples"]
+      "uses": [
+        "Honeycrisp apples"
+      ],
+      "hands": "8 min",
+      "prep": "just before"
     },
     {
-      "do": "Put everything in a microwave-safe casserole dish: apples, water, sugar, cinnamon, lemon juice. Stir until every piece is coated.",
-      "uses": ["water", "sugar", "cinnamon", "Juice of ½ lemon"]
+      "do": "Put everything in a microwave-safe casserole dish: apples, water, sugar, cinnamon, lemon juice. Stir until every piece is coated, then cover the dish with its lid or a microwave-safe plate.",
+      "uses": [
+        "water",
+        "sugar",
+        "cinnamon",
+        "Juice of ½ lemon"
+      ],
+      "hands": "2 min",
+      "microwave": false
     },
     {
-      "do": "Microwave 7–8 minutes on high. Stir it all around again.",
-      "wait": "7 to 8 min"
+      "do": "Microwave 7–8 minutes on high.",
+      "wait": "7 to 8 min",
+      "hands": "30 sec",
+      "microwave": true
+    },
+    {
+      "do": "Uncover it away from your face, using a towel on the sides, stir it all around, and cover it again.",
+      "hands": "1 min"
     },
     {
       "do": "Microwave another 7–8 minutes on high.",
-      "wait": "7 to 8 min"
+      "wait": "7 to 8 min",
+      "hands": "30 sec",
+      "microwave": true
     },
     {
-      "do": "Mash to the texture you want, and eat."
+      "do": "Uncover it, then mash to the texture you want.",
+      "hands": "2 min"
     }
   ],
   "notes": [

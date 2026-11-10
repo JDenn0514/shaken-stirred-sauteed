@@ -21,6 +21,8 @@
       "55 minutes"
     ]
   ],
+  "serve": "hot",
+  "sits": "10 min",
   "time": {
     "total": 55
   },
@@ -118,7 +120,18 @@
   ],
   "steps": [
     {
-      "do": "Grate the carrot, onion and 2 garlic cloves. Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes.",
+      "do": "Grate the carrot, onion and 2 garlic cloves.",
+      "hands": "4 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "carrot, grated",
+        "onion, grated",
+        "garlic, grated"
+      ]
+    },
+    {
+      "do": "Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes.",
       "wait": "2 to 3 min",
       "uses": [
         "carrot, grated",
@@ -129,24 +142,44 @@
           "group": "Congee"
         },
         "toasted sesame oil"
-      ]
+      ],
+      "hands": "4 min",
+      "watch": true,
+      "burner": true
     },
     {
       "do": "Stir in the cooked rice to coat, pour in the broth, and bring to a boil. Drop the heat to a simmer.",
       "uses": [
         "cooked rice, preferably day-old (200 g)",
         "chicken broth (400 g)"
-      ]
+      ],
+      "hands": "2 min",
+      "burner": true
     },
     {
       "do": "Simmer 20 to 30 minutes, stirring occasionally, until the grains collapse and it thickens to porridge. Loosen with more broth or reduce further to suit. Salt to taste.",
       "wait": "20 to 30 min",
       "uses": [
         "salt, to taste"
+      ],
+      "hands": "1 min",
+      "burner": true
+    },
+    {
+      "do": "Mince the chilies, 5 garlic cloves and scallion whites, saving the greens. Thinly slice the scallion greens and ginger for the top.",
+      "hands": "6 min",
+      "prep": true,
+      "prepOnly": true,
+      "uses": [
+        "green bird's eye chilies, minced",
+        "garlic, minced",
+        "scallion, whites minced, greens saved",
+        "scallion greens, thinly sliced",
+        "fresh ginger, thinly sliced"
       ]
     },
     {
-      "do": "Meanwhile, mince the chilies, 5 garlic cloves and scallion whites. Heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",
+      "do": "Meanwhile, heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",
       "wait": "1 to 2 min",
       "uses": [
         "green bird's eye chilies, minced",
@@ -156,7 +189,11 @@
           "item": "neutral oil",
           "group": "Chili garlic pork"
         }
-      ]
+      ],
+      "hands": "5 min",
+      "watch": true,
+      "burner": true,
+      "during": true
     },
     {
       "do": "Turn the heat to high and add the pork with a sprinkle of salt. Break it into small pebbles with a potato masher; the extra surface area is what lets the rendering fat crisp it, 3 to 5 minutes.",
@@ -164,7 +201,11 @@
       "uses": [
         "ground pork (454 g)",
         "salt, a sprinkle"
-      ]
+      ],
+      "hands": "1 min",
+      "watch": true,
+      "burner": true,
+      "during": true
     },
     {
       "do": "Splash in the water and scrape up the browned bits. Once it has cooked off, add the soy sauce and hoisin and toss until the pork is coated and slightly sticky. Taste and adjust with salt, soy or hoisin.",
@@ -172,7 +213,10 @@
         "water",
         "soy sauce",
         "hoisin"
-      ]
+      ],
+      "hands": "2 min",
+      "burner": true,
+      "during": true
     },
     {
       "do": "Ladle congee into bowls, spoon the pork over, and finish with ginger, scallion greens and chili crisp.",
@@ -180,7 +224,8 @@
         "fresh ginger, thinly sliced",
         "scallion greens, thinly sliced",
         "chili crisp"
-      ]
+      ],
+      "hands": "3 min"
     }
   ],
   "notes": [

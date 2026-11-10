@@ -1,5 +1,5 @@
 (() => {
-  const { CATEGORIES, esc, fmtMinutes, getJSON } = window.SSS;
+  const { CATEGORIES, esc, getJSON } = window.SSS;
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -152,27 +152,8 @@
     return list.sort(byTitle);
   }
 
-  function card(r) {
-    const c = CATEGORIES[r.category] || { label: r.category };
-    const meta = [
-      r.totalMinutes != null ? `⏱ ${fmtMinutes(r.totalMinutes)}` : "",
-      r.yield ? `🍽 ${esc(r.yield)}` : "",
-    ].filter(Boolean).map((m) => `<span>${m}</span>`).join("");
-    const icon = r.icon ? ` data-icon="${esc(r.icon)}"` : "";
-    return `<li><a class="card" href="recipe.html?r=${encodeURIComponent(r.slug)}"${icon}>
-      ${r.image ? `<img class="card-img" src="${esc(r.image)}" alt="" loading="lazy">` : ""}
-      <div class="card-body">
-        ${r.icon ? `<span class="card-icon" aria-hidden="true"></span>` : ""}
-        <div class="badges">
-          <span class="badge ${esc(r.category)}">${esc(c.label)}</span>
-          ${r.kind === "component" ? `<span class="badge component">Component</span>` : ""}
-        </div>
-        <h2>${esc(r.title)}</h2>
-        ${r.description ? `<p>${esc(r.description)}</p>` : ""}
-        ${meta ? `<div class="card-meta">${meta}</div>` : ""}
-      </div>
-    </a></li>`;
-  }
+  // Cards are drawn by assets/recipe-view.js.
+  const card = (r) => window.SSSView.cardHTML(r, { onMenu: !!(window.SSSMenu && window.SSSMenu.has(r.slug)) });
 
   function render() {
     renderTabs();
@@ -240,6 +221,8 @@
       }
       prune();
       render();
+      // Your menu, beside the recipes (or behind a button on a phone).
+      if (window.SSSMenuPeek) window.SSSMenuPeek.render($("menu-peek-host"), recipes);
     })
     .catch((err) => {
       els.empty.hidden = false;

@@ -21,6 +21,8 @@
       "30 min"
     ]
   ],
+  "serve": "soon",
+  "sits": "30 min",
   "time": {
     "total": 30
   },
@@ -64,15 +66,19 @@
   "steps": [
     {
       "do": "Cut the tomatoes, cucumber, onion and both peppers into a very small, even dice, and chop the herbs. The finer the cut, the better the salad, so take your time and use your sharpest knife.",
-      "uses": ["extra-large tomatoes", "English cucumber", "red onion (about 1/2 medium)", "red bell pepper", "yellow bell pepper", "fresh herbs: parsley, mint, cilantro or a mix"]
+      "uses": ["extra-large tomatoes", "English cucumber", "red onion (about 1/2 medium)", "red bell pepper", "yellow bell pepper", "fresh herbs: parsley, mint, cilantro or a mix"],
+      "hands": "15 min",
+      "prep": true
     },
     {
       "do": "Toss everything in a large bowl with the zest, olive oil, half the lemon's juice, salt and pepper.",
-      "uses": [{ "item": "lemon, zested, then juiced to taste (start with half)", "amount": "zest and half the juice" }, "olive oil", "salt and pepper"]
+      "uses": [{ "item": "lemon, zested, then juiced to taste (start with half)", "amount": "zest and half the juice" }, "olive oil", "salt and pepper"],
+      "hands": "2 min"
     },
     {
       "do": "Taste and adjust. If it seems flat, it usually wants more salt, then more lemon.",
-      "uses": [{ "item": "salt and pepper", "amount": "to taste" }, { "item": "lemon, zested, then juiced to taste (start with half)", "amount": "more juice, to taste" }]
+      "uses": [{ "item": "salt and pepper", "amount": "to taste" }, { "item": "lemon, zested, then juiced to taste (start with half)", "amount": "more juice, to taste" }],
+      "hands": "1 min"
     }
   ],
   "notes": [

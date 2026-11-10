@@ -23,6 +23,7 @@
       "38 min"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 38
   },
@@ -55,10 +56,15 @@
         "Pomegranate juice",
         "Granulated sugar",
         "Lemon juice"
-      ]
+      ],
+      "hands": "1 min",
+      "watch": true,
+      "burner": true
     },
     {
-      "do": "Pull from the heat and cool to room temperature, then funnel into the bottle and refrigerate."
+      "do": "Pull from the heat and cool to room temperature, then funnel into the bottle and refrigerate.",
+      "hands": "2 min",
+      "wait": "About 30 min"
     }
   ],
   "notes": [

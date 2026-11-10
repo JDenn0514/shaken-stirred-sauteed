@@ -367,6 +367,9 @@ test.describe("timers", () => {
     await toBake(page);
     await cook(page).getByRole("button", { name: "Start 15 min timer" }).click();
     await page.reload();
+    // The page loads the recipe after it loads, and the clock stands still, so
+    // wait until the timer is back on screen before letting time pass.
+    await expect(timer(page, "Step 2")).toContainText("15:00");
     await page.clock.runFor(15 * 60_000 + 3000);
     await expect(timer(page, "Step 2")).toContainText("Pale gold at the edges");
     expect((await alarm(page)).buzzes).toBeGreaterThan(0);
@@ -401,6 +404,8 @@ test("text in a recipe is shown as text in cook mode, never run as page code", a
 
 // Every real recipe, walked through from start to finish, so a recipe the
 // checker allows but cook mode can't show gets caught here rather than mid-cook.
+// Steps come prep first (see prep-order.spec.mjs), so each one shown is found
+// in the recipe by its text, and every step must be shown exactly once.
 test.describe("every real recipe in cook mode", () => {
   test.use({ testRecipes: false });
   const file = (p) => JSON.parse(readFileSync(new URL(`../../recipes/${p}`, import.meta.url), "utf8"));
@@ -414,12 +419,18 @@ test.describe("every real recipe in cook mode", () => {
       const r = file(`${slug}.json`);
       await start(page, slug);
       if (r.beforeYouStart?.length) await next(page).click();
-      for (const [n, s] of steps(r).entries()) {
-        await expect(stepLabel(page)).toHaveText(new RegExp(`Step ${n + 1} of ${steps(r).length}$`));
-        await expect(cook(page).getByRole("checkbox"), `${title}, step ${n + 1}`).toHaveCount(s.uses?.length ?? 0);
+      const all = steps(r), seen = [];
+      for (let n = 0; n < all.length; n++) {
+        await expect(stepLabel(page)).toHaveText(new RegExp(`Step ${n + 1} of ${all.length}$`));
+        const text = await instruction(page).textContent();
+        const k = all.findIndex((s, i) => !seen.includes(i) && (typeof s === "string" ? s : s.do) === text);
+        expect(k, `${title}, step ${n + 1}: "${text}"`).toBeGreaterThanOrEqual(0);
+        seen.push(k);
+        await expect(cook(page).getByRole("checkbox"), `${title}, step ${n + 1}`).toHaveCount(all[k].uses?.length ?? 0);
         await next(page).click();
       }
       await expect(cook(page).getByRole("heading", { name: "All done" })).toBeVisible();
+      expect(seen.toSorted((a, b) => a - b)).toEqual(all.map((_, i) => i));
       expect(errors).toEqual([]);
     });
   }

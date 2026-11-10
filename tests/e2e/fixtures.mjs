@@ -2,7 +2,11 @@
 // - the page only ever talks to the local test server; requests anywhere else are blocked
 // - the site loads a small, fixed set of test recipes instead of the real ones, so tests
 //   don't break when recipes are added. The index is built by the real build script.
+// - /api/ (the Worker: sign-in and saving) is faked: signed out, unless a test
+//   answers it with its own page.route (see tests/e2e/sign-in.spec.mjs), or
+//   signs in with signIn() below
 // - the page makes no sound
+import { createHash } from "node:crypto";
 import { test as base, expect } from "@playwright/test";
 import { buildIndex, recipe } from "../helpers/build-index.mjs";
 
@@ -86,7 +90,7 @@ export const INDEX = built.index;
 
 // Recipe files the page can open but that aren't in the index. This one would
 // fail the recipe checker; it stands in for a bad file that slipped past it.
-const PAGE_ONLY = {
+export const PAGE_ONLY = {
   "sneaky-recipe": {
     title: `Sneaky <img src="x" class="injected">`,
     category: "cooking",
@@ -106,7 +110,184 @@ PAGE_ONLY["every-wait"] = recipe({
   title: "Every Wait",
   steps: WAITS.map((wait, n) => ({ do: TIMERS[n], wait })),
 });
+// Recipes for menus (the lineup), with planning data. They're page-only so
+// adding them changes no counts; tests put them on the menu through
+// localStorage (see `onMenu` below).
+Object.assign(PAGE_ONLY, {
+  // A hot main in the oven, with a nested recipe (herb butter) and a gather item.
+  "roast-chicken": recipe({
+    title: "Roast Chicken", description: "Crisp skin, juicy inside.", serve: "hot", sits: "10 min",
+    beforeYouStart: ["Have a meat thermometer ready."],
+    ingredients: [
+      { qty: "1", item: "Chicken", note: "about 1.5 kg" },
+      { qty: "2 tbsp", item: "Herb butter", recipe: "herb-butter" },
+    ],
+    steps: [
+      { do: "Rub the herb butter under the skin.", prep: true, hands: "5 min", uses: ["Chicken", "Herb butter"] },
+      { do: "Roast until golden.", oven: "200C", hands: "2 min", wait: "40 to 50 min", cue: "Juices run clear" },
+      { do: "Take it out, rest it, carve and serve hot.", oven: false, hands: "5 min", wait: "10 min" },
+    ],
+  }),
+  "herb-butter": recipe({
+    title: "Herb Butter", kind: "component",
+    ingredients: [{ grams: 115, qty: "8 tbsp", item: "Butter", note: "soft" }, { qty: "2 tbsp", item: "Parsley", note: "chopped" }],
+    steps: [
+      { do: "Chop the parsley.", prep: true, hands: "3 min", uses: ["Parsley"] },
+      { do: "Mash the parsley into the butter.", hands: "2 min", uses: ["Butter", "Parsley"] },
+    ],
+  }),
+  // A hot side on the stove that can't sit long.
+  "green-beans": recipe({
+    title: "Green Beans", serve: "hot", sits: "5 min",
+    ingredients: [{ grams: 400, qty: "1 lb", item: "Green beans" }],
+    steps: [
+      { do: "Trim the beans.", prep: true, hands: "5 min", uses: ["Green beans"] },
+      { do: "Boil the beans.", burner: true, hands: "1 min", wait: "5 to 7 min" },
+      { do: "Drain and toss with butter, then serve.", hands: "2 min" },
+    ],
+  }),
+  // Prep first or as written: an added prep step (prepOnly), prep written
+  // mid-recipe, and prep that's left where it is ("just before").
+  "veg-stir-fry": recipe({
+    title: "Veg Stir-Fry", serve: "hot", sits: "5 min",
+    ingredients: [
+      { qty: "2", item: "Peppers", note: "sliced" }, { qty: "2 cloves", item: "Garlic", note: "minced" },
+      { grams: 200, item: "Tofu" }, { qty: "2 tbsp", item: "Soy sauce" },
+    ],
+    steps: [
+      { do: "Slice the peppers and mince the garlic.", prep: true, prepOnly: true, uses: ["Peppers", "Garlic"] },
+      { do: "Heat the wok until it smokes.", burner: true },
+      { do: "Stir the soy sauce into a splash of water.", prep: true, uses: ["Soy sauce"] },
+      { do: "Pat the tofu dry.", prep: "just before", uses: ["Tofu"] },
+      { do: "Stir-fry everything.", burner: true, wait: "3 min", uses: ["Peppers", "Garlic", "Tofu"] },
+      { do: "Pour in the sauce, toss and serve.", uses: ["Soy sauce"] },
+    ],
+  }),
+  // Two hot dishes that each end with 15 minutes at the stove and can wait
+  // only 2: one cook can't get both there on time, so one comes out early.
+  "fried-rice": recipe({
+    title: "Fried Rice", serve: "hot", sits: "2 min",
+    ingredients: [{ qty: "3 cups", item: "Rice" }],
+    steps: [{ do: "Fry the rice.", burner: true, hands: "15 min", uses: ["Rice"] }],
+  }),
+  "crispy-fish": recipe({
+    title: "Crispy Fish", serve: "hot", sits: "2 min",
+    ingredients: [{ qty: "2", item: "Fish fillets" }],
+    steps: [{ do: "Fry the fish.", burner: true, hands: "15 min", uses: ["Fish fillets"] }],
+  }),
+  // A dessert that keeps once baked and cooled, so it's worth making ahead.
+  "slow-cake": recipe({
+    title: "Slow Cake", category: "baking",
+    ingredients: [{ qty: "2 cups", item: "Flour" }, { qty: "1 cup", item: "Cream" }],
+    steps: [
+      { do: "Mix the batter.", hands: "10 min", uses: ["Flour"] },
+      { do: "Bake low and slow.", oven: "150C", hands: "2 min", wait: "2 hr" },
+      { do: "Cool it completely.", oven: false, hands: "1 min", wait: "1 hr", holds: true },
+      { do: "Whip the cream and pile it on.", hands: "5 min", uses: ["Cream"] },
+    ],
+    notes: ["Keeps two days, unfrosted."],
+  }),
+  // A recipe that doesn't say how long a wait is, or how it's served.
+  "mystery-stew": recipe({
+    title: "Mystery Stew",
+    ingredients: [{ qty: "1 kg", item: "Beef" }],
+    steps: [
+      { do: "Brown the beef.", burner: true, hands: "10 min", uses: ["Beef"] },
+      { do: "Bake for about 25 minutes.", oven: "180C", hands: "1 min" },
+    ],
+  }),
+  // A bake with no time in a step that waits for cooling, then a wait with no time.
+  "cooling-buns": recipe({
+    title: "Cooling Buns", category: "baking", serve: "keeps",
+    ingredients: [{ qty: "1", item: "Dough" }],
+    steps: [
+      { do: "Shape the buns.", hands: "10 min", uses: ["Dough"] },
+      { do: "Bake until deep golden. Then let them cool on a rack, at least 15 minutes.", oven: "180C", hands: "1 min", wait: "At least 15 min" },
+      { do: "Glaze them and let the glaze set.", hands: "2 min" },
+    ],
+  }),
+  // Two recipes that each need the other: no order works.
+  "loop-a": recipe({ title: "Loop A", ingredients: [{ qty: "1", item: "Loop B", recipe: "loop-b" }], steps: [{ do: "Use loop B.", uses: ["Loop B"] }] }),
+  "loop-b": recipe({ title: "Loop B", ingredients: [{ qty: "1", item: "Loop A", recipe: "loop-a" }], steps: [{ do: "Use loop A.", uses: ["Loop A"] }] }),
+});
+// Recipes for the editor (edit.html). Page-only, so they change no counts; the
+// editor tests see them in EDITOR_INDEX (below), which the linked-recipe
+// picker and the link checks read.
+export const EDITOR_RECIPES = {
+  // Fields the editor has no control for (abv, nutrition, origin, an unknown
+  // field), and lineup data (`wait: false` too), which must come out of an edit unchanged.
+  "old-fashioned": {
+    title: "Old Fashioned", category: "cocktails", wobble: { kept: ["as", "is"] },
+    abv: "32%", standardDrinks: 1.6, nutrition: "Mostly sugar", origin: "Louisville, 1880s", glass: "Rocks",
+    serve: "soon", sits: "5 min",
+    ingredients: [
+      { qty: "2 oz", ml: 60, item: "Bourbon" },
+      { qty: "1 tsp", item: "Demerara syrup" },
+      { qty: "2 dashes", item: "Bitters", optional: true },
+    ],
+    steps: [
+      { do: "Stir the bourbon, syrup and bitters with ice.", hands: "1 min", wait: "30 sec", watch: true, uses: ["Bourbon", "Demerara syrup", "Bitters"] },
+      // Checked by a person: it doesn't wait.
+      { do: "Strain over a large cube.", hands: "30 sec", wait: false },
+    ],
+    tags: { spirit: ["whiskey"], ingredients: ["orange"] },
+    time: { total: 5 },
+  },
+  // Two linked recipes: the bread uses the butter. The bread's bake mentions
+  // the oven without saying it uses it, so the checker warns.
+  "garlic-bread": recipe({
+    title: "Garlic Bread", serve: "hot", sits: "5 min",
+    ingredients: [{ qty: "1", item: "Baguette" }, { qty: "4 tbsp", item: "Garlic butter", recipe: "garlic-butter" }],
+    steps: [
+      { do: "Split the baguette and spread on the garlic butter.", hands: "3 min", uses: ["Baguette", "Garlic butter"] },
+      { do: "Bake in the oven until crisp.", hands: "1 min", wait: "10 min" },
+      { do: "Slice and serve.", hands: "2 min" },
+    ],
+    tags: { course: ["side"], ingredients: ["garlic"] },
+  }),
+  "garlic-butter": recipe({
+    title: "Garlic Butter", kind: "component", serve: "keeps",
+    ingredients: [{ grams: 115, qty: "8 tbsp", item: "Butter", note: "soft" }, { qty: "4 cloves", item: "Garlic", note: "grated" }],
+    steps: [{ do: "Mash the garlic into the butter.", hands: "3 min", uses: ["Butter", "Garlic"] }],
+    tags: { course: ["sauce"], ingredients: ["garlic"] },
+  }),
+};
+Object.assign(PAGE_ONLY, EDITOR_RECIPES);
+const editorBuilt = buildIndex({ ...RECIPES, ...EDITOR_RECIPES });
+if (!editorBuilt.ok) throw new Error(`Editor test recipes don't pass the recipe checker:\n${editorBuilt.output}`);
+export const EDITOR_INDEX = editorBuilt.index;
+
 const FILES = { ...RECIPES, ...PAGE_ONLY };
+
+// A test recipe's file version, as GET /api/recipe/:slug gives it (the Worker
+// gives git's blob SHA; any 40 hex characters will do here).
+export const versionOf = (slug) => createHash("sha1").update(`test ${slug}`).digest("hex");
+
+// Signed in, as far as the site can tell: the readable "signed-in" hint
+// cookie, /api/me answering, and the Worker's GET /api/recipe/:slug giving the
+// test recipes, as main has them. Saving and deleting are left to each test.
+export async function signIn(page, baseURL) {
+  await page.context().addCookies([{ name: "signed-in", value: "1", url: baseURL }]);
+  await page.route("**/api/me", (route) => route.fulfill({ json: { name: "Tester", canEdit: true } }));
+  await page.route("**/api/recipe/*", (route) => {
+    const slug = new URL(route.request().url()).pathname.split("/").pop();
+    return FILES[slug]
+      ? route.fulfill({ json: { slug, recipe: FILES[slug], sha: versionOf(slug) } })
+      : route.fulfill({ status: 404, json: { error: "There's no recipe with that name." } });
+  });
+}
+
+// Puts dishes on the menu before the page loads: onMenu(page, ["roast-chicken"])
+// or with each dish's choices, onMenu(page, [{ slug: "slow-cake", course: "Main" }]).
+export async function onMenu(page, dishes, extra = {}) {
+  const menu = { dishes: dishes.map((d) => (typeof d === "string" ? { slug: d } : d)), ...extra };
+  await page.addInitScript((m) => {
+    if (!sessionStorage.getItem("menu-seeded")) {
+      localStorage.setItem("sss:lineup", JSON.stringify(m));
+      sessionStorage.setItem("menu-seeded", "1");
+    }
+  }, menu);
+}
 
 export const test = base.extend({
   // Serve the test recipes in place of the real ones. Turn off with
@@ -117,6 +298,7 @@ export const test = base.extend({
     await page.route("**/*", (route) => {
       const url = new URL(route.request().url());
       if (url.origin !== origin) return route.abort("blockedbyclient");
+      if (url.pathname.startsWith("/api/")) return route.fulfill({ status: 401, json: { error: "Sign in first." } });
       if (testRecipes) {
         if (url.pathname.endsWith("/recipes/index.json")) return route.fulfill({ json: INDEX });
         const slug = /\/recipes\/([a-z0-9-]+)\.json$/.exec(url.pathname)?.[1];

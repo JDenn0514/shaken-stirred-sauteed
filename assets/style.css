@@ -183,19 +183,19 @@
    home page or a recipe of that section is open. */
 .tab[data-cat="baking"], .badge.baking, .card:has(.badge.baking), .fam-baking,
 body:has(.tab[data-cat="baking"][aria-pressed="true"]),
-body:has(.recipe > .back[href*="cat=baking"]) {
+body:has(.recipe .recipe-toprow > .back[href*="cat=baking"]) {
   --section: var(--baking); --section-wash: var(--baking-wash); --section-paper: var(--baking-paper);
   --section-fill: var(--baking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
 }
 .tab[data-cat="cooking"], .badge.cooking, .card:has(.badge.cooking), .fam-cooking,
 body:has(.tab[data-cat="cooking"][aria-pressed="true"]),
-body:has(.recipe > .back[href*="cat=cooking"]) {
+body:has(.recipe .recipe-toprow > .back[href*="cat=cooking"]) {
   --section: var(--cooking); --section-wash: var(--cooking-wash); --section-paper: var(--cooking-paper);
   --section-fill: var(--cooking-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
 }
 .tab[data-cat="cocktails"], .badge.cocktails, .card:has(.badge.cocktails), .fam-cocktails,
 body:has(.tab[data-cat="cocktails"][aria-pressed="true"]),
-body:has(.recipe > .back[href*="cat=cocktails"]) {
+body:has(.recipe .recipe-toprow > .back[href*="cat=cocktails"]) {
   --section: var(--cocktails); --section-wash: var(--cocktails-wash); --section-paper: var(--cocktails-paper);
   --section-fill: var(--cocktails-fill); --on-section: var(--on-family); --on-section-fill: var(--on-fill);
 }
@@ -205,9 +205,9 @@ body:has(.recipe > .back[href*="cat=cocktails"]) {
 }
 
 /* The page itself: sheet and hairlines pick up the family tint too. */
-body:has(.tab[data-cat="baking"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=baking"]), .fam-baking.g-sheet { --surface: var(--baking-sheet); --border: var(--baking-line); }
-body:has(.tab[data-cat="cooking"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=cooking"]), .fam-cooking.g-sheet { --surface: var(--cooking-sheet); --border: var(--cooking-line); }
-body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe > .back[href*="cat=cocktails"]), .fam-cocktails.g-sheet { --surface: var(--cocktails-sheet); --border: var(--cocktails-line); }
+body:has(.tab[data-cat="baking"][aria-pressed="true"]), body:has(.recipe .recipe-toprow > .back[href*="cat=baking"]), .fam-baking.g-sheet { --surface: var(--baking-sheet); --border: var(--baking-line); }
+body:has(.tab[data-cat="cooking"][aria-pressed="true"]), body:has(.recipe .recipe-toprow > .back[href*="cat=cooking"]), .fam-cooking.g-sheet { --surface: var(--cooking-sheet); --border: var(--cooking-line); }
+body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe .recipe-toprow > .back[href*="cat=cocktails"]), .fam-cocktails.g-sheet { --surface: var(--cocktails-sheet); --border: var(--cocktails-line); }
 
 /* Each family's plate drawing, used as a mask so it takes the family ink.
    (Cards use their recipe's own drawing; the plate is only a fallback.) */
@@ -304,7 +304,7 @@ code { font-family: var(--mono); font-size: .88em; }
   padding-top: max(10px, env(safe-area-inset-top));
 }
 body:has(.tab:not([data-cat="all"])[aria-pressed="true"]) .site-header,
-body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color: var(--section); }
+body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: var(--section); }
 .brand {
   display: flex; align-items: center; gap: 11px;
   max-width: 1048px; margin: 0 auto;
@@ -463,6 +463,8 @@ body:has(.recipe > .back) .site-header { border-image: none; border-bottom-color
   padding-right: env(safe-area-inset-right);
 }
 .sheet[hidden], .backdrop[hidden] { display: none; }
+/* Links only for the signed-in owner (assets/common.js shows them). */
+[data-signed-in][hidden] { display: none !important; }
 .sheet-head {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
   padding: 14px 16px 12px; border-bottom: 1px solid var(--border);
@@ -643,15 +645,15 @@ body.sheet-open { overflow: hidden; }
 .recipe:has(> .loading)::before, .recipe:has(> .error)::before { content: none; }
 /* A recipe with a photo lets the photo be the plate (the family drawing still closes the sheet). */
 .recipe:has(> .recipe-hero)::before { content: none; }
-.recipe:has(> .back[href*="cat=baking"])::before {
+.recipe:has(.recipe-toprow > .back[href*="cat=baking"])::before {
   -webkit-mask: url("./plate-baking.svg") right top / 78% no-repeat, url("./spec-cinnamon.svg") left bottom / 48% no-repeat;
   mask: url("./plate-baking.svg") right top / 78% no-repeat, url("./spec-cinnamon.svg") left bottom / 48% no-repeat;
 }
-.recipe:has(> .back[href*="cat=cooking"])::before {
+.recipe:has(.recipe-toprow > .back[href*="cat=cooking"])::before {
   -webkit-mask: url("./plate-cooking.svg") right top / 78% no-repeat, url("./spec-chili.svg") left bottom / 46% no-repeat;
   mask: url("./plate-cooking.svg") right top / 78% no-repeat, url("./spec-chili.svg") left bottom / 46% no-repeat;
 }
-.recipe:has(> .back[href*="cat=cocktails"])::before {
+.recipe:has(.recipe-toprow > .back[href*="cat=cocktails"])::before {
   -webkit-mask: url("./plate-cocktails.svg") right top / 80% no-repeat, url("./spec-mint.svg") left bottom / 48% no-repeat;
   mask: url("./plate-cocktails.svg") right top / 80% no-repeat, url("./spec-mint.svg") left bottom / 48% no-repeat;
 }
@@ -755,6 +757,10 @@ body.sheet-open { overflow: hidden; }
 }
 .section > h2 + h3 { margin-top: 14px; }
 .section.before .notes { margin-top: 12px; }
+/* Prep first or as written, under the Steps rule (only on recipes where the
+   two orders differ). */
+.menu-switch.prep-switch { display: flex; justify-content: flex-end; margin: 10px 0 -4px; font-size: .92rem; }
+.prep-switch + h3 { margin-top: 10px; }
 
 /* Ingredients: a lettered specimen list, ticked off as they go in. */
 .section:has(> .ingredients) { counter-reset: ing; }
@@ -868,7 +874,7 @@ body.sheet-open { overflow: hidden; }
 .loading, .error { color: var(--muted); padding: 40px 0; }
 
 /* Colophon: the family plate closes the sheet. */
-.recipe:has(> .back)::after {
+.recipe:has(.back)::after {
   content: "";
   display: block; clear: both;
   width: 34px; height: 34px; margin: 40px auto 0;
@@ -876,9 +882,9 @@ body.sheet-open { overflow: hidden; }
   -webkit-mask: url("./plate-leaf.svg") center / contain no-repeat;
   mask: url("./plate-leaf.svg") center / contain no-repeat;
 }
-.recipe:has(> .back[href*="cat=baking"])::after { -webkit-mask-image: url("./plate-baking.svg"); mask-image: url("./plate-baking.svg"); }
-.recipe:has(> .back[href*="cat=cooking"])::after { -webkit-mask-image: url("./plate-cooking.svg"); mask-image: url("./plate-cooking.svg"); }
-.recipe:has(> .back[href*="cat=cocktails"])::after { -webkit-mask-image: url("./plate-cocktails.svg"); mask-image: url("./plate-cocktails.svg"); }
+.recipe:has(.recipe-toprow > .back[href*="cat=baking"])::after { -webkit-mask-image: url("./plate-baking.svg"); mask-image: url("./plate-baking.svg"); }
+.recipe:has(.recipe-toprow > .back[href*="cat=cooking"])::after { -webkit-mask-image: url("./plate-cooking.svg"); mask-image: url("./plate-cooking.svg"); }
+.recipe:has(.recipe-toprow > .back[href*="cat=cocktails"])::after { -webkit-mask-image: url("./plate-cocktails.svg"); mask-image: url("./plate-cocktails.svg"); }
 
 @media (max-width: 359px) {
   .recipe::before { width: 88px; height: 88px; }
@@ -912,8 +918,7 @@ body.sheet-open { overflow: hidden; }
     justify-self: end; align-self: start;
     width: 168px; height: 168px; margin: -4px -6px 0 0;
   }
-  .recipe > .back, .recipe > h1, .recipe > .lede, .recipe > .badge { grid-column: 1 / 9; }
-  .recipe > .back { justify-self: start; }
+  .recipe > .recipe-toprow, .recipe > h1, .recipe > .lede, .recipe > .badge { grid-column: 1 / 9; }
   .recipe h1 { font-size: 3.6rem; }
   .facts { margin-top: 28px; }
   .fact { background: var(--surface); }
@@ -1100,6 +1105,212 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 }
 
 /* ===== Print: a clean specimen sheet on white ===== */
+/* ===== The site bar: Recipes · Menu (the site's title goes home) =====
+   Under the header, the same at every width. It scrolls away with the page
+   (only the header stays), and it's hidden in cook mode and in print. */
+.site-nav { display: flex; justify-content: center; gap: clamp(18px, 7vw, 48px); padding: 8px max(16px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left)); border-bottom: 1px solid var(--border); }
+.site-nav a {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 4px;
+  color: var(--muted); text-decoration: none; border-bottom: 3px solid transparent;
+  font-family: var(--mono); font-size: .85rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+}
+.site-nav a:hover { color: var(--text); }
+.site-nav a[aria-current="page"], .site-nav a.nav-active { color: var(--text); font-weight: 700; border-bottom-color: var(--text); }
+.nav-count:empty { display: none; }
+.nav-count { min-width: 20px; padding: 2px 6px; border-radius: 10px; background: var(--lime); color: var(--on-lime); font-size: .72rem; letter-spacing: 0; text-align: center; }
+body.cooking > .site-nav { display: none; }
+
+/* The footer: a quiet "Sign in" / "Sign out" at the bottom of every page. */
+.site-footer {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 14px;
+  margin-top: 40px; padding: 14px max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; text-align: center;
+}
+.site-footer a, .site-footer .link-button {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 4px;
+  font: inherit; font-family: var(--mono); font-size: .78rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--muted); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.site-footer a:hover, .site-footer .link-button:hover { color: var(--text); }
+.site-footer .footer-status { flex-basis: 100%; margin: 0; }
+.site-footer .footer-status:empty { display: none; }
+body.cooking > .site-footer { display: none; }
+
+/* The back link and the way to your menu share one row; "+ Add to menu" sits
+   beside Start. */
+.recipe-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.recipe-toprow .back { margin: 0; }
+.recipe-edit { font-family: var(--mono); font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+@media print { .recipe-edit { display: none; } }
+.menu-link {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 5px 10px 4px;
+  font-family: var(--mono); font-size: .78rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text); text-decoration: none; border: 1px solid var(--rule-strong); border-radius: 999px; white-space: nowrap;
+}
+.start-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px; }
+.start-row .cook-start { margin: 0; }
+.menu-on { min-height: 46px; padding: 0 18px; font-weight: 600; border-color: var(--section); color: var(--section); }
+.menu-on[aria-haspopup] { background: var(--section-wash); }
+.start-row .menu-pop { min-width: 220px; }
+/* Your menu while choosing recipes: a panel beside them on a wide screen, a
+   "Your menu ▾" button over them on a phone (hidden while the menu is empty). */
+.menu-peek { position: relative; }
+.menu-peek-head { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.menu-peek-toggle {
+  display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 44px; padding: 0 14px; margin-bottom: 10px;
+  border: 1.5px solid var(--text); border-radius: var(--radius-ctl); background: var(--surface); color: var(--text); cursor: pointer;
+  font: 500 .8rem var(--mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.menu-peek.empty .menu-peek-toggle { display: none; }
+.menu-peek-body { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px; border: 1.5px solid var(--text); border-radius: var(--radius); background: var(--surface); }
+.menu-peek-body[hidden] { display: none; }
+.menu-peek-body p { margin: 0; font-size: .9rem; }
+.menu-peek-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.menu-peek-list li { display: grid; grid-template-columns: auto minmax(12px, 1fr) auto; align-items: baseline; gap: 6px; }
+.menu-peek-list a { font-family: var(--display); font-weight: 600; color: var(--section); text-decoration: none; }
+.menu-peek-list a:hover { text-decoration: underline; }
+.menu-peek-go { font-weight: 600; color: var(--text); }
+@media (min-width: 960px) {
+  .container.has-peek { display: grid; grid-template-columns: minmax(0, 1fr) 280px; column-gap: 28px; row-gap: 14px; align-items: start; }
+  .has-peek > * { grid-column: 1; }
+  .has-peek > .menu-peek-host { grid-column: 2; grid-row: 1 / span 20; position: sticky; top: 76px; }
+  .menu-page.has-peek { max-width: 1040px; }
+  .menu-page.has-peek > #menu-body { min-width: 0; }
+  .menu-peek { padding-top: 14px; }
+  .menu-peek::before { content: ""; position: absolute; top: 5px; left: 20px; z-index: 1; width: 56px; height: 15px; background: var(--lime); transform: rotate(-3deg); }
+  .menu-peek-head { position: static; width: auto; height: auto; clip: auto; overflow: visible; margin: 0 0 -1px; padding: 14px 14px 0; border: 1.5px solid var(--text); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; background: var(--surface);
+    font: 500 .72rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .menu-peek-toggle { display: none; }
+  .menu-peek-body, .menu-peek-body[hidden] { display: grid; border-top: 0; border-radius: 0 0 var(--radius) var(--radius); }
+}
+@media (max-width: 959px) { .menu-page .menu-peek-host { display: none; } }
+/* A card on your menu gets a strip of lime tape across its corner. */
+.grid > li { position: relative; }
+.menu-tape { position: absolute; z-index: 1; top: -6px; right: 14px; transform: rotate(3deg); background: var(--lime); color: var(--on-lime); font: 500 .68rem/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; padding: 6px 9px; pointer-events: none; }
+.welcome .menu-link { margin: 14px auto 0; }
+.welcome .add-link { margin-top: 10px; }
+
+/* ===== Your menu (menu.html) =====
+   The recipes you're cooking together. Empty, it invites a search; with
+   dishes it's a menu card: courses in italics, each dish in its family ink
+   with a dotted leader to its time, nested recipes indented under their dish. */
+.menu-page { display: flex; flex-direction: column; gap: 14px; padding-top: 16px; padding-bottom: 48px; max-width: 680px; }
+.menu-page .back { margin: 0; }
+.menu-page .search[hidden] { display: none; }
+#menu-body { display: flex; flex-direction: column; gap: 16px; }
+#menu-body > p { margin: 0; }
+.menu-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.eyebrow { margin: 0; font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.menu-title { font-family: var(--display); font-size: clamp(2rem, 8vw, 2.8rem); line-height: 1.05; margin: 6px 0 10px; letter-spacing: -.02em; text-wrap: balance; }
+.menu-browse { font-weight: 600; color: var(--text); }
+.menu-how { margin: 0; padding: 14px 14px 14px 34px; border: 1.5px dashed var(--border); border-radius: var(--radius); color: var(--muted); display: grid; gap: 6px; }
+.menu-how b { color: var(--text); }
+.menu-tabs { margin: 0; }
+.menu-results { list-style: none; margin: 0; padding: 0; display: grid; }
+.menu-results li { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
+.menu-results .card-icon { width: 32px; height: 32px; }
+.menu-result { display: grid; gap: 2px; color: var(--text); text-decoration: none; min-width: 0; }
+.menu-result span { color: var(--muted); font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.menu-add { min-height: 40px; padding: 0 14px; font-size: .9rem; border-color: var(--section); color: var(--section); }
+.menu-added { color: var(--section); font-weight: 600; font-size: .9rem; padding: 0 6px; }
+
+.menu-card { position: relative; padding: 26px 20px 20px; border: 1.5px solid var(--text); border-radius: var(--radius); background: var(--surface); text-align: center; }
+.menu-card::before { content: ""; position: absolute; top: -9px; left: 28px; width: 70px; height: 18px; background: var(--lime); transform: rotate(-3deg); }
+.menu-head { margin: 0; font: 500 .74rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.menu-course { margin: 18px 0 8px; font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.35rem; }
+.menu-course small { font: 500 .72rem var(--mono); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-left: 6px; }
+.menu-list, .menu-nest { list-style: none; margin: 0; padding: 0; text-align: left; display: grid; gap: 12px; }
+.menu-list > li, .menu-nest > li { display: grid; grid-template-columns: auto minmax(12px, 1fr) auto; align-items: baseline; gap: 4px 6px; }
+.menu-nest { grid-column: 1 / -1; margin: 4px 0 0 14px; padding-left: 12px; border-left: 2px solid var(--border); gap: 8px; }
+.menu-anchor { position: relative; min-width: 0; }
+.menu-dish { all: unset; cursor: pointer; font-family: var(--display); font-size: 1.12rem; font-weight: 600; color: var(--section); }
+.menu-dish::after { content: " ▾" / ""; font-size: .75em; color: var(--muted); }
+.menu-dish:focus-visible, .menu-choice:focus-visible { outline: 2px solid var(--section); outline-offset: 2px; border-radius: 2px; }
+.menu-name { font-family: var(--display); font-size: .98rem; font-weight: 600; color: var(--section); }
+.menu-dots { border-bottom: 2px dotted var(--rule-strong); transform: translateY(-4px); }
+.menu-time { font: 500 .85rem var(--mono); color: var(--muted); white-space: nowrap; }
+.menu-with { grid-column: 1 / -1; padding-left: 12px; color: var(--muted); font-size: .88rem; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.menu-choice { border: 0; border-bottom: 1.5px solid var(--rule-strong); background: none; font: inherit; font-weight: 600; color: var(--text); padding: 0 2px; cursor: pointer; }
+.menu-pop { position: absolute; z-index: 5; top: calc(100% + 6px); left: 0; display: grid; min-width: 210px; background: var(--surface); border: 1.5px solid var(--text); border-radius: var(--radius-ctl); box-shadow: 0 8px 22px rgba(0, 0, 0, .16); overflow: hidden; text-align: left; }
+.menu-pop > * { border: 0; background: none; text-align: left; padding: 12px 14px; font: inherit; font-size: .95rem; color: var(--text); text-decoration: none; cursor: pointer; }
+.menu-pop > * + * { border-top: 1px solid var(--border); }
+.menu-pop > :focus-visible { outline: 2px solid var(--text); outline-offset: -3px; }
+.menu-pop .menu-danger { color: var(--baking); font-weight: 600; }
+.menu-seg { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+.menu-seg label { position: relative; }
+.menu-seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.menu-seg span { display: inline-block; border: 1.5px solid var(--rule-strong); border-radius: 999px; background: var(--surface); color: var(--text); font-size: .82rem; padding: 4px 11px; }
+.menu-seg input:checked + span { background: var(--text); color: var(--bg); font-weight: 600; border-color: var(--text); }
+.menu-seg input:focus-visible + span { outline: 2px solid var(--section); outline-offset: 2px; }
+.menu-seg-stack { flex-direction: column; align-items: stretch; }
+.menu-seg-stack span { display: block; border-radius: var(--radius-ctl); padding: 10px 14px; font-size: .92rem; }
+.menu-slot { display: block; padding: 12px; border: 1.5px dashed var(--rule-strong); border-radius: var(--radius); color: var(--muted); text-decoration: none; font-weight: 600; margin-top: 16px; }
+.menu-foot { display: grid; gap: 4px; margin-top: 16px; font-size: .92rem; }
+.menu-switch { font-weight: 600; color: var(--text); display: inline-flex; gap: 8px; align-items: center; justify-content: center; }
+.menu-switch input { width: 40px; height: 22px; accent-color: var(--text); }
+.menu-warn { text-align: left; margin: 14px 0 0; padding: 10px 12px; border-left: 4px solid var(--baking); background: var(--baking-wash); color: var(--text); border-radius: 4px; font-size: .92rem; }
+.menu-error { display: grid; gap: 8px; padding: 16px; border: 1.5px solid var(--baking); border-radius: var(--radius); background: var(--surface); }
+.menu-error h2 { margin: 0; font-size: 1.2rem; }
+.menu-error p { margin: 0; }
+.menu-ahead { display: grid; gap: 8px; padding: 16px; border: 1.5px dashed var(--rule-strong); border-radius: var(--radius); }
+.menu-ahead h2 { margin: 0; font-family: var(--display); font-style: italic; font-weight: 500; font-size: 1.25rem; }
+.menu-ahead p { margin: 0; color: var(--muted); }
+.menu-ahead .btn { justify-self: start; border-color: var(--text); font-weight: 600; min-height: 44px; }
+.menu-done { color: var(--text) !important; font-weight: 600; }
+.menu-asks { display: grid; gap: 14px; padding: 16px; border: 1.5px solid var(--text); border-radius: var(--radius); background: var(--surface); }
+.menu-asks h2 { margin: 0; font-size: 1.15rem; }
+.menu-asks > p { margin: 0; font-size: .9rem; }
+.menu-ask { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
+.menu-ask p { margin: 0; }
+.menu-ask blockquote { margin: 0; padding-left: 10px; border-left: 3px solid var(--section); color: var(--muted); font-style: italic; }
+.menu-ask label { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-weight: 600; }
+.menu-ask input[type="text"] { width: 5em; font: inherit; padding: 6px 8px; border: 1.5px solid var(--rule-strong); border-radius: var(--radius-ctl); background: var(--bg); color: var(--text); }
+.menu-ask .btn { justify-self: start; min-height: 38px; }
+.menu-ask-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.menu-split { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; }
+.menu-split .step-wait { color: var(--muted); font-size: .9rem; white-space: nowrap; }
+.menu-start { width: 100%; justify-content: center; margin: 0; min-height: 52px; font-size: 1.05rem; }
+
+/* Cooking your menu: today's cook screen, plus a chip naming each step's
+   dish, the wait screen's ring, and the plate-up step. */
+.menu-chip { display: inline-block; margin-right: 8px; padding: 3px 7px; border-radius: 3px; background: var(--section-fill); color: var(--on-section-fill); font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; }
+.menu-cook .cook-label { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; }
+.menu-gather { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.menu-gather h3 { margin: 0 0 4px; font-size: 1.1rem; color: var(--section); }
+.menu-plate { list-style: none; margin: 0; padding: 0; }
+.menu-plate li { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 1.2rem; font-family: var(--display); font-weight: 600; color: var(--section); }
+.menu-behind { margin: 0; font-size: .92rem; color: var(--muted); }
+.menu-behind b { color: var(--text); }
+.menu-land { margin: 0; padding: 10px 12px; border: 1.5px solid var(--section); border-radius: var(--radius-ctl); background: var(--section-wash); display: grid; gap: 2px; font-size: .95rem; }
+.menu-land b { font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--section); }
+.menu-range { display: block; font-weight: 400; font-size: .92rem; margin-top: 2px; }
+.menu-due { display: inline-block; padding: 1px 6px; border-radius: 3px; background: var(--lime); color: var(--on-lime); font: 500 .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.menu-notes { border-bottom: 1px solid var(--border); padding: 10px 0; }
+.menu-notes summary { cursor: pointer; font-weight: 600; font-size: 1.1rem; }
+.menu-notes .cook-list { margin-top: 8px; }
+.menu-waitbody { align-items: center; text-align: center; justify-content: center; }
+.menu-wait-text { font-size: 1.3rem; }
+.menu-waitbody > .muted { margin: 0; }
+.menu-ring { position: relative; width: min(200px, 50vw, 28vh); aspect-ratio: 1; max-width: 100%; }
+.menu-waitbody .menu-land { align-self: stretch; text-align: left; }
+.menu-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.menu-ring circle { fill: none; stroke-width: 8; }
+.menu-ring-track { stroke: var(--border); }
+.menu-ring-left { stroke: var(--section); stroke-linecap: round; }
+.menu-ring.up .menu-ring-track { stroke: var(--section); }
+.menu-ring.up .menu-ring-left { display: none; }
+.menu-ring > span { position: absolute; inset: 0; display: grid; place-content: center; }
+.menu-ring b { font: 500 3rem/1 var(--mono); color: var(--section); font-variant-numeric: tabular-nums; }
+.menu-ring small { font-family: var(--mono); color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .menu-ring.running .menu-ring-left { transition: stroke-dashoffset 1s linear; }
+  .menu-ring.ringing { animation: menu-pulse 1s ease-in-out infinite; }
+}
+@keyframes menu-pulse { 50% { transform: scale(1.05); } }
+.menu-wait-actions { display: flex; gap: 10px; justify-content: center; }
+.menu-wait-actions .btn { min-height: 46px; padding: 0 20px; font-weight: 600; }
+.menu-stop { min-height: 56px !important; min-width: 200px; font-size: 1.15rem; background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
+
 @media print {
   :root {
     --bg: #fff; --surface: #fff; --surface-2: #f2f2f2; --text: #000; --muted: #333;
@@ -1109,13 +1320,13 @@ body.cooking > .site-header, body.cooking > main { display: none; }
     --baking-paper: #fff; --cooking-paper: #fff; --cocktails-paper: #fff;
   }
   @page { margin: 14mm 14mm 16mm; }
-  .site-header, .back, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
+  .site-header, .site-nav, .site-footer, .back, .menu-link, .menu-peek, .start-row .menu-anchor, .prep-switch, .toolbar, .tag-groups, .sheet, .backdrop { display: none !important; }
   body { background: #fff; color: #000; font-size: 11pt; line-height: 1.45; }
   .container { padding: 0; max-width: none; }
   .recipe { padding: 0; margin: 0; max-width: none; display: block; border: 0; background: #fff; }
   .recipe::before, .recipe > .recipe-icon { float: right; width: 72px; height: 72px; background: #000; margin: 0 0 6px 12px; }
   .card-icon { background: #000; }
-  .recipe:has(> .back)::after { width: 22px; height: 22px; margin-top: 18px; background: #000; }
+  .recipe:has(.back)::after { width: 22px; height: 22px; margin-top: 18px; background: #000; }
   .recipe h1 { font-size: 26pt; color: #000; }
   .recipe h1::before { color: #333; }
   .facts::after { display: none; }
@@ -1135,3 +1346,167 @@ body.cooking > .site-header, body.cooking > main { display: none; }
   .step-cue, .step-wait { color: #000; }
   a { color: #000; text-decoration: none; }
 }
+
+/* ---- Recipe intake (intake.html): paste a recipe, answer, check, copy ---- */
+.intake h1 { margin-top: 18px; }
+.intake-read { display: grid; gap: 14px; margin-top: 12px; }
+.intake-read > .btn { justify-self: start; }
+.intake-field { display: grid; gap: 5px; font-weight: 600; font-size: .95rem; }
+.intake-field.inline { display: inline-grid; margin: 6px 10px 6px 0; }
+.intake-field input, .intake-field textarea, .intake-field select {
+  font: inherit; font-weight: 400; color: var(--text); background: var(--surface);
+  border: 1px solid var(--rule-strong); border-radius: var(--radius-ctl); padding: 8px 10px; min-height: 40px; max-width: 100%;
+}
+.intake-field textarea { width: 100%; line-height: 1.45; }
+.intake-field input:focus-visible, .intake-field textarea:focus-visible, .intake-field select:focus-visible,
+.intake input[type="radio"]:focus-visible, .intake input[type="checkbox"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.intake-choice, .intake-ask { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 0; display: grid; gap: 6px; }
+.intake-choice legend, .intake-ask legend { font-weight: 600; padding: 0 4px; }
+.intake-ask { margin-top: 12px; background: var(--surface); }
+.intake-ask.answered { border-color: var(--section, var(--rule-strong)); }
+.intake-ask .btn { justify-self: start; display: inline-flex; margin-right: 8px; }
+.intake-option { display: flex; gap: 8px; align-items: baseline; }
+.intake-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.intake-primary:disabled { opacity: .5; cursor: not-allowed; }
+.intake-problem { color: var(--baking); font-weight: 600; margin: 4px 0; }
+.intake-done { color: var(--cooking); font-weight: 600; margin: 2px 0 0; }
+.intake-preview { border-top: 0; }
+/* The recipe as read (assets/recipe-view.js), to look at: it's fixed in the editor. */
+.intake-page { padding-top: 0; }
+.intake-page ol.steps > li { cursor: default; }
+.intake-page ul.ingredients > li { padding: 6px 0; }
+.intake-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.intake-row .btn { text-decoration: none; }
+.intake-row .btn.intake-primary:disabled { opacity: .5; }
+.intake-field { min-width: 0; }
+/* An unfinished review from before, offered back. */
+.intake-kept { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.intake-kept h2 { font-size: 1.15rem; margin: 0 0 6px; }
+.intake-kept p { margin: 0 0 10px; }
+/* A recipe website's address and "Choose a PDF" (assets/intake-import.mjs) */
+.intake-from { display: grid; gap: 8px; }
+.intake-from .btn { justify-self: start; }
+.intake-from .intake-hint { margin: 0; font-size: .9rem; }
+.intake-file { position: relative; cursor: pointer; }
+.intake-file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.intake-file:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+#import-status:empty { display: none; }
+.intake-preview .source { margin-top: 6px; }
+.intake-finish code, .intake-checks code { font-family: var(--mono); font-size: .9em; overflow-wrap: anywhere; }
+
+/* ---- Recipe editor (edit.html): the recipe as it will look, edited in place ---- */
+.edit { max-width: 760px; padding-top: 18px; padding-bottom: 48px; }
+.edit-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.edit-kicker { margin: 0; font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); flex: 1 1 auto; }
+.edit-kicker code { text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
+.edit-status { flex: 1 1 100%; margin: 0; font-size: .92rem; color: var(--muted); }
+.edit-status:empty { display: none; }
+.edit-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.edit-primary:disabled { opacity: .5; cursor: not-allowed; }
+.edit-note, .edit-problems, .edit-todo { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.edit-note h2, .edit-problems h2, .edit-todo h2 { font-size: 1.15rem; margin: 0 0 6px; }
+.edit-problems { border-color: var(--baking); }
+.edit-problems ul, .edit-todo ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.edit-todo li .edit-row { margin-top: 6px; }
+.edit-card { margin-top: 20px; }
+.edit-card .grid { margin: 0; }
+.edit-preview { margin-top: 20px; padding-top: 0; }
+.edit-part {
+  font: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 2px 0; margin: 0; cursor: pointer;
+  text-decoration: underline dotted var(--muted); text-underline-offset: 4px; letter-spacing: inherit; line-height: inherit;
+}
+.edit-preview h1 .edit-part, .edit-preview h3 .edit-part { text-decoration-thickness: 2px; }
+.edit-part:focus-visible, .edit input:focus-visible, .edit textarea:focus-visible, .edit select:focus-visible, .edit summary:focus-visible {
+  outline: 2px solid var(--focus); outline-offset: 2px;
+}
+.edit-preview ol.steps > li { cursor: default; }
+/* A line that can be edited: its text, then an Edit button at the right. */
+.edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 10px; }
+.edit-preview :is(ol.steps, ul.ingredients) > li > .edit-part { flex: 1 1 0; min-width: 0; }
+/* Errors and the intake's notes go on their own line, under the text. */
+.edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) > :not(.edit-part, .edit-open) { flex: 1 1 100%; }
+.edit-open {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-width: 44px; min-height: 44px; margin: -6px -4px -6px 0; padding: 0 10px;
+  font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-ctl); cursor: pointer;
+}
+.edit-pencil { font-size: 1.1rem; letter-spacing: 0; text-transform: none; }
+.edit-open:hover { color: var(--section); border-color: var(--section); background: var(--section-wash); }
+.edit-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* Where the list is narrow (a phone, or the ingredients column beside the
+   steps), the pencil alone. */
+.edit-preview :is(ol.steps, ul.ingredients) { container-type: inline-size; }
+@container (max-width: 300px) { .edit-word { display: none; } .edit-open { padding: 0; } }
+.edit-preview ul.ingredients > li { padding: 6px 0; }
+.edit-add-line { margin: 10px 0 0; }
+.edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--baking); }
+/* Saving and deleting: why a save didn't happen, Delete, and its confirmation. */
+.edit-save-error { flex: 1 1 100%; font-size: .95rem; color: var(--baking); font-weight: 600; }
+.edit-save-error:empty { display: none; }
+.edit-save-error p { margin: 0 0 4px; }
+.edit-save-error ul { margin: 4px 0; padding-left: 1.2em; font-weight: 400; color: var(--text); }
+.edit-save-error a, .edit-status a { color: inherit; font-weight: 600; }
+.edit-delete { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
+.edit-delete .muted { margin: 8px 0 0; }
+.edit-danger { color: var(--baking); border-color: var(--baking); }
+.edit-danger:disabled { opacity: .55; cursor: not-allowed; }
+.edit-dialog { max-width: min(460px, calc(100vw - 32px)); padding: 18px 20px; color: var(--text); background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--radius); }
+.edit-dialog::backdrop { background: var(--scrim); }
+.edit-dialog h2 { font-size: 1.3rem; margin: 0 0 8px; }
+.edit-dialog-body { display: grid; gap: 12px; }
+.edit-dialog-body p { margin: 0; }
+.edit-dialog input:focus-visible, .edit-dialog button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.edit-form { display: grid; gap: 10px; padding: 10px 12px; margin: 6px 0; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.edit-fields { display: flex; flex-wrap: wrap; gap: 10px; }
+.edit-fields > .edit-field { flex: 1 1 140px; }
+.edit-field { display: grid; gap: 5px; font-weight: 600; font-size: .95rem; min-width: 0; }
+.edit-field.inline { display: inline-grid; margin: 4px 0 4px 26px; }
+.edit-field input, .edit-field textarea, .edit-field select {
+  font: inherit; font-weight: 400; color: var(--text); background: var(--surface);
+  border: 1px solid var(--rule-strong); border-radius: var(--radius-ctl); padding: 8px 10px; min-height: 40px; max-width: 100%; width: 100%;
+}
+.edit-field textarea { line-height: 1.45; }
+.edit-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.edit-adds { margin-top: 12px; }
+.edit-adds .edit-form { flex: 1 1 100%; }
+.edit-check { display: flex; gap: 8px; align-items: baseline; font-size: .95rem; }
+.edit-details { margin-top: 28px; border-top: var(--rule) solid var(--section); padding-top: 10px; }
+.edit-details > summary { cursor: pointer; font-family: var(--display, inherit); font-size: 1.5rem; font-weight: 600; padding: 6px 0; }
+.edit-details-body { display: grid; gap: 16px; margin-top: 8px; }
+.edit-set { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 0; display: grid; gap: 12px; min-width: 0; }
+.edit-set > legend { font-weight: 700; padding: 0 4px; }
+.edit-tags, .edit-ing, .edit-step { border: 0; border-top: 1px solid var(--border); padding: 10px 0 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+.edit-tags > legend, .edit-ing > legend, .edit-step > legend { font-weight: 600; padding: 0; float: left; width: 100%; margin-bottom: 4px; }
+.edit-subhead { margin: 4px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.edit-chips { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.edit-uses { display: grid; gap: 4px; }
+
+/* ---- A new recipe's original, beside the preview (intake.html, edit.html?new):
+   on a phone, one tap away. assets/import-view.mjs ---- */
+.with-original { display: grid; grid-template-columns: minmax(0, 1fr); }
+.original { margin-top: 18px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); display: grid; gap: 8px; min-width: 0; }
+.original h2 { font-size: 1.15rem; margin: 0; }
+.original h3 { font-size: 1rem; margin: 8px 0 4px; }
+.original-toggle { justify-self: start; }
+.original-body p { margin: 0 0 8px; overflow-wrap: anywhere; }
+.original-body:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.original-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); font-size: .84rem; line-height: 1.5; }
+@media (max-width: 959px) {
+  .original:not(.open) .original-body { display: none; }
+}
+@media (min-width: 960px) {
+  .with-original.has-original { grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); column-gap: 28px; }
+  .with-original.has-original > .with-original-main { grid-column: 1; grid-row: 1; min-width: 0; }
+  .with-original.has-original > .original { grid-column: 2; grid-row: 1; align-self: start; position: sticky; top: 84px; }
+  .original-toggle { display: none; }
+  .original-body { max-height: calc(100vh - 170px); overflow: auto; }
+  .edit.edit-wide { max-width: 1120px; }
+}
+/* The reader's guesses and checks on a new recipe's steps and ingredients. */
+.import-notes { display: grid; gap: 4px; margin-top: 4px; }
+.import-guess { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 2px 0 0; font-size: .92rem; color: var(--muted); }
+.import-guess .btn { min-height: 34px; padding: 0 12px; font-size: .86rem; }
+.import-guess select { font: inherit; padding: 4px 6px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--bg); color: var(--text); }
+.import-guess input:focus-visible, .import-guess select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.import-check { margin: 4px 0 0; font-size: .92rem; color: var(--baking); }

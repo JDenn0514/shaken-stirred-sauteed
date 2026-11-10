@@ -23,6 +23,7 @@
       "About 4 hr with chilling"
     ]
   ],
+  "serve": "keeps",
   "time": {
     "total": 240
   },
@@ -31,7 +32,6 @@
   "heatLabel": "Oven",
   "beforeYouStart": [
     "Make the blueberry sauce first. Once the crust is in the oven, everything moves fast.",
-    "Preheat the oven to 350°F (175°C) while the sauce cooks.",
     "Check the condensed milk: it must be full-fat sweetened, and a full 14 oz can. Evaporated, fat-free or a short can leaves the filling runny.",
     "Don't use a springform pan; the crust leaks."
   ],
@@ -119,7 +119,8 @@
       "group": "To serve (optional)",
       "items": [
         {
-          "item": "Lemon slices, blueberries, leftover sauce, whipped cream"
+          "item": "Lemon slices, blueberries, leftover sauce, whipped cream",
+          "optional": true
         }
       ]
     }
@@ -130,17 +131,30 @@
       "items": [
         {
           "do": "Stir the cornstarch into the lemon juice with a fork until dissolved; set aside.",
-          "uses": ["Cornstarch", { "item": "Lemon juice", "group": "Blueberry sauce" }]
+          "uses": ["Cornstarch", { "item": "Lemon juice", "group": "Blueberry sauce" }],
+          "hands": "1 min",
+          "prep": true
+        },
+        {
+          "do": "Heat the oven to 350°F (175°C) while the sauce cooks.",
+          "hands": "30 sec",
+          "preheat": "350F"
         },
         {
           "do": "Warm the blueberries and sugar in a small saucepan over medium heat for 3 min, stirring now and then and mashing the berries against the pan to break them down.",
           "wait": "3 min",
-          "uses": ["Blueberries", { "item": "Granulated sugar", "group": "Blueberry sauce" }]
+          "uses": ["Blueberries", { "item": "Granulated sugar", "group": "Blueberry sauce" }],
+          "hands": "1 min",
+          "watch": true,
+          "burner": true
         },
         {
           "do": "Stir in the slurry and cook 2 min more, then take off the heat and leave at room temperature until the filling goes in. It makes 1/2 to 2/3 cup; about half goes in the tart and the rest is for serving.",
           "wait": "2 min",
-          "cue": "Thickened"
+          "cue": "Thickened",
+          "hands": "30 sec",
+          "watch": true,
+          "burner": true
         }
       ]
     },
@@ -148,20 +162,36 @@
       "group": "Crust",
       "items": [
         {
-          "do": "In a medium bowl, stir together the melted butter, sugar, vanilla and salt. Add the flour and mix until fully combined.",
-          "cue": "Thick and a little greasy, as it should be",
-          "uses": ["Unsalted butter", { "item": "Granulated sugar", "group": "Shortbread crust" }, "Pure vanilla extract", "Salt", "All-purpose flour"]
+          "do": "Melt the butter for the crust. Zest one lemon, then juice about 2 to make 6 Tbsp for the filling.",
+          "hands": "4 min",
+          "prep": true,
+          "prepOnly": true,
+          "uses": [{ "group": "Shortbread crust", "item": "Unsalted butter" }, "Lemon zest", { "group": "Filling", "item": "Lemon juice" }]
         },
         {
-          "do": "Press firmly and evenly into an ungreased 9-inch tart pan, across the bottom and up the sides. It looks like too little but it stretches. The base of a measuring cup helps, though it can stick."
+          "do": "In a medium bowl, stir together the melted butter, sugar, vanilla and salt. Add the flour and mix until fully combined.",
+          "cue": "Thick and a little greasy, as it should be",
+          "uses": ["Unsalted butter", { "item": "Granulated sugar", "group": "Shortbread crust" }, "Pure vanilla extract", "Salt", "All-purpose flour"],
+          "hands": "3 min",
+          "prep": true
+        },
+        {
+          "do": "Press firmly and evenly into an ungreased 9-inch tart pan, across the bottom and up the sides. It looks like too little but it stretches. The base of a measuring cup helps, though it can stick.",
+          "hands": "5 min",
+          "oven": false,
+          "prep": true
         },
         {
           "do": "Bake at 350°F (175°C).",
           "wait": "15 min",
-          "cue": "Edges just barely browned"
+          "cue": "Edges just barely browned",
+          "hands": "30 sec",
+          "oven": "350F"
         },
         {
-          "do": "Poke a few fork holes across the warm crust, not all the way through, so the filling has something to grip. Leave the oven on."
+          "do": "Poke a few fork holes across the warm crust, not all the way through, so the filling has something to grip. Leave the oven on.",
+          "hands": "1 min",
+          "oven": "350F"
         }
       ]
     },
@@ -170,15 +200,20 @@
       "items": [
         {
           "do": "Whisk the condensed milk, lemon juice, zest and egg yolk until smooth. Pour into the still-warm crust.",
-          "uses": ["Sweetened condensed milk", { "item": "Lemon juice", "group": "Filling" }, "Lemon zest", "Large egg yolk"]
+          "uses": ["Sweetened condensed milk", { "item": "Lemon juice", "group": "Filling" }, "Lemon zest", "Large egg yolk"],
+          "hands": "3 min"
         },
         {
-          "do": "Stir the sauce to loosen it, since it thickens as it sits; give it 5 to 10 sec in the microwave if needed (warm is fine). Spoon about half over the filling and swirl with a toothpick or knife, then shimmy the pan back and forth two or three times to settle it."
+          "do": "Stir the sauce to loosen it, since it thickens as it sits; give it 5 to 10 sec in the microwave if needed (warm is fine). Spoon about half over the filling and swirl with a toothpick or knife, then shimmy the pan back and forth two or three times to settle it.",
+          "hands": "3 min",
+          "microwave": true
         },
         {
           "do": "Bake at 350°F (175°C). Err toward underbaking; it keeps firming in the fridge, and overbaked filling turns rubbery.",
           "wait": "17 to 19 min",
-          "cue": "Center stops jiggling when you tap the pan; top still a little tacky"
+          "cue": "Center stops jiggling when you tap the pan; top still a little tacky",
+          "hands": "30 sec",
+          "oven": "350F"
         }
       ]
     },
@@ -187,11 +222,14 @@
       "items": [
         {
           "do": "Cool completely on a rack, then refrigerate uncovered. Cover it if chilling longer than 2 hr, up to 1 day.",
-          "wait": "At least 2 hr in the fridge"
+          "wait": "At least 2 hr in the fridge",
+          "hands": "1 min"
         },
         {
           "do": "Remove the pan sides, slice, and serve with the reserved sauce and any garnishes.",
-          "uses": ["Lemon slices, blueberries, leftover sauce, whipped cream"]
+          "uses": ["Lemon slices, blueberries, leftover sauce, whipped cream"],
+          "hands": "5 min",
+          "oven": false
         }
       ]
     }

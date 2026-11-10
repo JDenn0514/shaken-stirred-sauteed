@@ -32,7 +32,8 @@ function check(from, ref, base = dirname(from)) {
 for (const file of walk()) {
   if (file.endsWith(".html")) {
     // Only real tags: a tag shown as text (&lt;a href=...&gt;) isn't a link.
-    for (const [tag] of readFileSync(file, "utf8").matchAll(/<[a-z][^>]*>/gi)) {
+    // <base> sets where links start; it doesn't point at a file.
+    for (const [tag] of readFileSync(file, "utf8").matchAll(/<(?!base\b)[a-z][^>]*>/gi)) {
       for (const [, ref] of tag.matchAll(/\s(?:href|src)="([^"]*)"/g)) check(file, ref);
     }
   } else if (file.endsWith(".css")) {
