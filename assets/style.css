@@ -1420,6 +1420,7 @@ body.cooking > .site-footer { display: none; }
   outline: 2px solid var(--focus); outline-offset: 2px;
 }
 .edit-preview ol.steps > li { cursor: default; }
+.edit :is(.edit-preview, .edit-card) a[aria-disabled="true"] { cursor: default; }
 /* A line that can be edited: its text, then an Edit button at the right. */
 .edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 10px; }
 .edit-preview :is(ol.steps, ul.ingredients) > li > .edit-part { flex: 1 1 0; min-width: 0; }

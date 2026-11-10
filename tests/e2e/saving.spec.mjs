@@ -74,6 +74,27 @@ test.describe("the editor's Save", () => {
     expect(sent[1].body.baseSha).toBe("1".repeat(40));
   });
 
+  test("a line still open when you press Save is saved as typed, and closed", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).click();
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent[0].body.recipe.steps[0]).toBe("Season the pork well.");
+    await expect(page.getByLabel("Step", { exact: true })).toHaveCount(0);
+  });
+
+  test("a sign-in that runs out while a line is open keeps what's typed in it", async ({ page, baseURL }) => {
+    await fakeWorker(page, "save", { status: 401, json: { error: "Your GitHub sign-in has expired. Sign in again." } });
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).click();
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("alert").getByRole("link", { name: "Sign in again" })).toBeVisible();
+    expect(JSON.parse(await draftOf(page, "pork-carnitas")).recipe.steps[0]).toBe("Season the pork well.");
+  });
+
   test("a recipe changed since it was opened isn't overwritten: it says why and keeps the draft", async ({ page, baseURL }) => {
     await fakeWorker(page, "save", { status: 409, json: { error: "This recipe changed since you opened it. Your changes are kept in this browser: reload to see the new version, then bring your changes back if you still want them." } });
     await openEditor(page, baseURL, "pork-carnitas");

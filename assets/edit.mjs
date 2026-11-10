@@ -44,6 +44,7 @@ let recipe = null;     // the recipe being edited
 let vocab = null;      // recipes/vocabulary.json
 let index = [];        // recipes/index.json
 let editing = null;    // the part open for editing: "about", "ing:3", "step:2", "group:steps:0", "new-group:ingredients"
+let opened = null;     // how it was when it opened, for Cancel: { before, added, back } (see openLine)
 let prepFirst = true;  // which order the preview shows steps in, when the recipe has both
 let ovenTemp = null;   // a step whose oven was just set to "At a temperature", before a temperature is typed
 let detailsOpen = false;
@@ -212,6 +213,7 @@ function draw() {
     </div></div>`;
 
   decorate(root.querySelector(".edit-preview"), errors, showPrepFirst);
+  root.querySelectorAll(".edit-card a[href]").forEach((a) => { a.tabIndex = -1; a.setAttribute("aria-disabled", "true"); });
   if (imported) importNotes(root.querySelector(".edit-preview"), imported);
   const back = key && root.querySelector(`[data-key="${CSS.escape(key)}"]`);
   if (back) back.focus();
@@ -255,7 +257,7 @@ function labelled(label, control, cls = "") {
 const field = (label, name, value, extra = "") =>
   labelled(label, `<input name="${name}" value="${esc(value ?? "")}" data-key="edit-${name}"${extra}>`);
 const formButtons = (more = "") => `<div class="edit-row">
-  <button class="btn edit-primary" type="submit" data-key="edit-done">Done</button>${more}</div>`;
+  <button class="btn edit-primary" type="submit" data-key="edit-done">Done</button>${act("cancel", "Cancel")}${more}</div>`;
 const act = (name, label) => `<button class="btn" type="button" data-act="${name}" data-key="edit-act-${name}">${label}</button>`;
 
 function aboutForm() {
@@ -306,6 +308,9 @@ const groupForm = (form, value, list, g = "") => `<form class="edit-form" data-f
 const namedGroups = (list) => (recipe[list] || []).filter((e) => e && Array.isArray(e.items) && e.group).map((e) => e.group);
 
 function decorate(page, errors, showPrepFirst) {
+  // Links in the preview go nowhere here: following one would leave the
+  // editor. They keep their href, which the section colours are read from.
+  page.querySelectorAll("a[href]").forEach((a) => { a.tabIndex = -1; a.setAttribute("aria-disabled", "true"); });
   page.querySelectorAll(".start-row, .toolbar").forEach((n) => n.remove());
 
   // The title, description and yield: one form for all three.
@@ -662,6 +667,37 @@ async function saveNew() {
 
 // --- What the person does ----------------------------------------------------------------------
 
+// What to focus for a part once its form closes: its line on the page.
+function partKey(target) {
+  if (target === "about") return "part-title";
+  const [kind, a, b] = target.split(":");
+  return kind === "group" ? `part-group-${a}-${b}` : kind === "new-group" ? `add-group-${a}` : `part-${kind}-${a}`;
+}
+
+// Opens a part for editing, remembering the recipe as it was for Cancel.
+// added: the line was just added, so Cancel takes it out again. back: what
+// to focus after Cancel (the part's own line, unless it was just added).
+function openLine(target, { added = false, back = partKey(target), before = recipe } = {}) {
+  editing = target;
+  opened = { before, added, back };
+}
+
+// Cancel (or Escape): the open part goes back as it was, and a line that was
+// just added comes out again. Changes made elsewhere meanwhile are kept.
+function cancel() {
+  const was = editing;
+  const { before, added, back } = opened || { back: partKey(was) };
+  editing = null;
+  opened = null;
+  focusKey = back;
+  const [kind, n] = was.split(":");
+  if (added && (kind === "ing" || kind === "step")) {
+    return update(kind === "ing" ? M.removeIngredient(recipe, Number(n)) : M.removeStep(recipe, Number(n)), () => { focusKey = back; });
+  }
+  if (before && (was === "about" || kind === "ing" || kind === "step")) return update(M.putBack(recipe, before, was), () => { focusKey = back; });
+  draw();
+}
+
 function update(next, after) {
   recipe = next;
   offer = null;
@@ -694,25 +730,32 @@ root.addEventListener("submit", (e) => {
     if (!name) { editing = null; focusKey = `add-group-${f.dataset.list}`; return draw(); }
     const { recipe: made, at } = M.addGroup(next, f.dataset.list, name);
     const kind = f.dataset.list === "ingredients" ? "ing" : "step";
-    return update(made, () => { editing = `${kind}:${at}`; focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
+    return update(made, () => { openLine(`${kind}:${at}`, { added: true, back: `add-group-${f.dataset.list}`, before: made }); focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
   }
   editing = null;
-  update(next, () => {
-    focusKey = was === "about" ? "part-title" : was?.startsWith("ing:") ? `part-ing-${was.slice(4)}`
-      : was?.startsWith("step:") ? `part-step-${was.slice(5)}` : was?.startsWith("group:") ? `part-group-${was.split(":")[1]}-${was.split(":")[2]}` : null;
-  });
+  opened = null;
+  update(next, () => { focusKey = was ? partKey(was) : null; });
+});
+
+// What's typed in an open line goes into the recipe (and its draft) as it's
+// typed, so opening another line, Save or a reload never loses it. Done only
+// closes the line; Cancel puts it back as it was.
+root.addEventListener("input", (e) => {
+  const form = e.target.closest(".edit-form");
+  if (!form || !["about", "ing", "step"].includes(form.dataset.form)) return;
+  recipe = applyForm(form);
+  offer = null;
+  keepDraft();
 });
 
 root.addEventListener("keydown", (e) => {
-  // Escape closes an open form without keeping its changes.
-  if (e.key !== "Escape" || !e.target.closest(".edit-form")) return;
-  const was = editing;
-  editing = null;
-  focusKey = was === "about" ? "part-title" : was?.startsWith("ing:") ? `part-ing-${was.slice(4)}` : was?.startsWith("step:") ? `part-step-${was.slice(5)}` : null;
-  draw();
+  // Escape is Cancel: the open form closes without keeping its changes.
+  if (e.key !== "Escape" || !e.target.closest(".edit-form") || !editing) return;
+  cancel();
 });
 
 root.addEventListener("click", (e) => {
+  if (e.target.closest(".edit-preview a[href], .edit-card a[href]")) return e.preventDefault();
   const b = e.target.closest("button[data-act]");
   if (!b) return;
   const a = b.dataset.act;
@@ -724,8 +767,9 @@ root.addEventListener("click", (e) => {
     focusKey = "original";
     return draw();
   }
+  if (a === "cancel") return cancel();
   if (a === "edit") {
-    editing = b.dataset.target;
+    openLine(b.dataset.target);
     focusKey = editing === "about" ? (b.dataset.key === "part-description" ? "edit-description" : b.dataset.key.startsWith("part-yield") ? "edit-yield" : "edit-title")
       : editing.startsWith("ing:") ? (typeof flat(recipe.ingredients)[Number(editing.slice(4))] === "string" ? "edit-text"
         : e.target.closest(".qty") ? "edit-qty" : "edit-item")
@@ -735,7 +779,7 @@ root.addEventListener("click", (e) => {
   if (a === "add") {
     const list = b.dataset.list;
     const { recipe: next, at } = list === "ingredients" ? M.addIngredient(recipe) : M.addStep(recipe);
-    return update(next, () => { editing = `${list === "ingredients" ? "ing" : "step"}:${at}`; focusKey = list === "ingredients" ? "edit-item" : "edit-do"; });
+    return update(next, () => { openLine(`${list === "ingredients" ? "ing" : "step"}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = list === "ingredients" ? "edit-item" : "edit-do"; });
   }
   if (form && ["add-after", "move-up", "move-down", "split", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
@@ -748,7 +792,8 @@ root.addEventListener("click", (e) => {
     focusKey = "part-title";
     return draw();
   }
-  if (a === "save") return save();
+  // What's typed in an open line is already in the recipe; Save closes it.
+  if (a === "save") { editing = null; return save(); }
   if (a === "delete") return openDelete();
   if (a === "no-equipment") {
     return update(M.setStepField(recipe, Number(b.dataset.step), b.dataset.field, false), () => { focusKey = "save"; });
@@ -763,7 +808,7 @@ root.addEventListener("click", (e) => {
   if (a === "add-prep") {
     const { recipe: next, at } = M.addPrepStep(recipe);
     prepFirst = true;
-    return update(next, () => { editing = `step:${at}`; focusKey = "edit-do"; });
+    return update(next, () => { openLine(`step:${at}`, { added: true, back: "d-add-prep", before: next }); focusKey = "edit-do"; });
   }
   if (a === "use-drop") {
     const n = Number(b.dataset.n);
@@ -794,11 +839,11 @@ function formAction(a, form) {
     const dir = a === "move-up" ? -1 : 1;
     const to = M.movedTo(next, list, n, dir);
     next = kind === "ing" ? M.moveIngredient(next, n, dir) : M.moveStep(next, n, dir);
-    return update(next, () => { editing = `${kind}:${to}`; focusKey = `edit-act-${a}`; });
+    return update(next, () => { openLine(`${kind}:${to}`, { before: next }); focusKey = `edit-act-${a}`; });
   }
   if (a === "add-after") {
     const { recipe: added, at } = kind === "ing" ? M.addIngredient(next, { after: n }) : M.addStep(next, { after: n });
-    return update(added, () => { editing = `${kind}:${at}`; focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
+    return update(added, () => { openLine(`${kind}:${at}`, { added: true, back: `part-${kind}-${n}`, before: added }); focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
   }
   if (a === "remove") {
     next = kind === "ing" ? M.removeIngredient(next, n) : M.removeStep(next, n);

@@ -154,6 +154,25 @@ describe("steps", () => {
     assert.deepEqual(recipe.steps, ["Mix.", { do: "" }, "Bake."]);
   });
 
+  test("putting one line back as it was keeps every other change", () => {
+    const before = keeper();
+    let now = M.updateStep(before, 0, { do: "Stir it all.", wait: "", cue: "" });
+    now = M.setStepField(now, 1, "hands", "2 min");
+    now = M.setField(now, "title", "Older Fashioned");
+    const back = M.putBack(now, before, "step:0");
+    assert.deepEqual(flat(back.steps)[0], flat(before.steps)[0]);
+    assert.equal(flat(back.steps)[1].hands, "2 min");
+    assert.equal(back.title, "Older Fashioned");
+    assert.equal(M.putBack(now, before, "about").title, "Old Fashioned");
+    assert.equal(flat(M.putBack(now, before, "about").steps)[0].do, "Stir it all.");
+  });
+
+  test("putting an ingredient back as it was", () => {
+    const before = keeper();
+    const now = M.updateIngredient(before, 2, { qty: "3 dashes", item: "Bitters", note: "" });
+    assert.deepEqual(M.putBack(now, before, "ing:2"), before);
+  });
+
   test("splitting a step: the first part keeps what it uses, the second its wait", () => {
     const r = M.splitStep({ title: "A", steps: [{ do: "Mix the dough. Bake it.", uses: ["Flour"], hands: "5 min", wait: "20 min", cue: "Golden", oven: "200C" }] }, 0, 14);
     assert.deepEqual(r.steps, [
