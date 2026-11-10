@@ -287,6 +287,25 @@ test("a step saved as not waiting shows an empty wait that says so", async ({ pa
 });
 
 test.describe("lineup fields in Details", () => {
+  test("typing in a field and moving on with Tab lands on the next field, and keeps what was typed", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    const d = await details(page);
+    await stepBox(d, 1).getByLabel("Hands-on time").fill("5 min");
+    await page.keyboard.press("Tab");
+    await expect(stepBox(d, 1).getByLabel("Prep")).toBeFocused();
+    await expect(stepBox(d, 1).getByLabel("Hands-on time")).toHaveValue("5 min");
+
+    await d.getByLabel("Source", { exact: true }).fill("Aunt May");
+    await page.keyboard.press("Tab");
+    await expect(d.getByLabel("Source link")).toBeFocused();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type("https://example.com/bread");
+    await page.keyboard.press("Shift+Tab");
+    await expect(d.getByLabel("Source", { exact: true })).toBeFocused();
+    // The field saves just after focus has moved on.
+    await expect.poll(async () => (await draftOf(page, "garlic-bread")).source).toEqual({ name: "Aunt May", url: "https://example.com/bread" });
+  });
+
   test("watch is only offered on a step with a wait", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
     const d = await details(page);

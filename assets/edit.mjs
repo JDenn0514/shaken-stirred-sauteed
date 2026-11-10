@@ -152,7 +152,12 @@ const mentions = (w) => {
 // --- Drawing -------------------------------------------------------------------------------
 
 function draw() {
-  const key = focusKey || document.activeElement?.dataset?.key;
+  const active = document.activeElement;
+  const key = focusKey || active?.dataset?.key;
+  // The field being typed in keeps what's in it and where the cursor is: a
+  // typed field only saves when you leave it, so the recipe may not have it yet.
+  const live = !focusKey && active && ["INPUT", "TEXTAREA"].includes(active.tagName) && !["checkbox", "radio"].includes(active.type)
+    ? { value: active.value, start: active.selectionStart, end: active.selectionEnd } : null;
   focusKey = null;
   const { errors, warnings } = checks();
   const name = fileName();
@@ -217,6 +222,11 @@ function draw() {
   if (imported) importNotes(root.querySelector(".edit-preview"), imported);
   const back = key && root.querySelector(`[data-key="${CSS.escape(key)}"]`);
   if (back) back.focus();
+  if (back && live && "value" in back) {
+    back.value = live.value;
+    // Some fields (type="url") have no cursor position to set.
+    try { if (live.start != null) back.setSelectionRange(live.start, live.end); } catch {}
+  }
 }
 
 // Why a save or delete didn't happen: the Worker's words, its list of
@@ -755,6 +765,7 @@ root.addEventListener("keydown", (e) => {
 });
 
 root.addEventListener("click", (e) => {
+  finishPending();
   if (e.target.closest(".edit-preview a[href], .edit-card a[href]")) return e.preventDefault();
   const b = e.target.closest("button[data-act]");
   if (!b) return;
@@ -863,8 +874,36 @@ function formAction(a, form) {
   }
 }
 
+// A typed field saves when you leave it, but the change comes before focus
+// lands on the next field: redrawing then would drop it. So the change waits
+// until focus has moved, and the redraw puts focus where it went. Anything
+// else you do first (Save, another button) finishes it before acting.
+// While a button is being pressed, the redraw waits for its release too:
+// replacing the button under the pointer would lose the click.
+let pending = null;
+let pressing = false;
+function finishPending() {
+  const run = pending;
+  pending = null;
+  if (run) { clearTimeout(run.timer); run.fn(); }
+}
+const finishLater = () => setTimeout(() => { if (!pressing) finishPending(); });
+document.addEventListener("pointerdown", () => { pressing = true; }, true);
+document.addEventListener("pointerup", () => { pressing = false; if (pending) pending.timer = finishLater(); }, true);
+document.addEventListener("pointercancel", () => { pressing = false; if (pending) pending.timer = finishLater(); }, true);
+const typed = (t) => (t.tagName === "INPUT" && !["checkbox", "radio"].includes(t.type)) || t.tagName === "TEXTAREA";
+
 root.addEventListener("change", (e) => {
   const t = e.target;
+  // A checkbox or a list keeps focus where it is, so it can act at once.
+  if (!typed(t) || !t.dataset.act) { finishPending(); return onChange(t); }
+  // Focus is moving now, so an earlier field still waiting goes with this one.
+  const earlier = pending;
+  if (earlier) clearTimeout(earlier.timer);
+  pending = { fn: () => { earlier?.fn(); onChange(t); }, timer: finishLater() };
+});
+
+function onChange(t) {
   const a = t.dataset.act;
   if (a?.startsWith("r-")) return fromReview(t);
   if (!a) {
@@ -910,7 +949,7 @@ root.addEventListener("change", (e) => {
     if (["burner", "grill", "microwave"].includes(f)) return update(M.setStepField(recipe, n, f, t.value === "" ? undefined : t.value === "true"));
     return update(M.setStepField(recipe, n, f, t.value));
   }
-});
+}
 
 root.addEventListener("toggle", (e) => {
   if (e.target.matches?.("details.edit-details")) detailsOpen = e.target.open;

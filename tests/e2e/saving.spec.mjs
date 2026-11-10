@@ -85,6 +85,16 @@ test.describe("the editor's Save", () => {
     await expect(page.getByLabel("Step", { exact: true })).toHaveCount(0);
   });
 
+  test("typing in a Details field and clicking Save straight away saves what was typed", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await page.getByText("Details", { exact: true }).click();
+    await page.getByLabel("Source", { exact: true }).fill("Aunt May");
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent[0].body.recipe.source.name).toBe("Aunt May");
+  });
+
   test("a sign-in that runs out while a line is open keeps what's typed in it", async ({ page, baseURL }) => {
     await fakeWorker(page, "save", { status: 401, json: { error: "Your GitHub sign-in has expired. Sign in again." } });
     await openEditor(page, baseURL, "pork-carnitas");
