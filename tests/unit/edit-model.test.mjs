@@ -141,6 +141,13 @@ describe("steps", () => {
     assert.deepEqual(M.addStep(r, { after: 0 }).recipe.steps[0].items, [{ do: "Press the crust." }, { do: "" }, { do: "Bake the crust." }]);
   });
 
+  test("adding an ingredient after another puts it next, in the same group", () => {
+    const { recipe, at } = M.addIngredient(keeper(), { after: 1 });
+    assert.equal(at, 2);
+    assert.deepEqual(recipe.ingredients[1].items, ["1 tsp sugar", { item: "" }, { qty: "2 dashes", item: "Bitters", optional: true }]);
+    assert.deepEqual(recipe.ingredients[0], keeper().ingredients[0]);
+  });
+
   test("adding a step after one in an ungrouped list", () => {
     const { recipe, at } = M.addStep({ title: "A", steps: ["Mix.", "Bake."] }, { after: 0 });
     assert.equal(at, 1);

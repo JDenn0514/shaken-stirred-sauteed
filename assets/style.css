@@ -1421,8 +1421,10 @@ body.cooking > .site-footer { display: none; }
 }
 .edit-preview ol.steps > li { cursor: default; }
 /* A line that can be edited: its text, then an Edit button at the right. */
-.edit-preview ol.steps > li:has(> .edit-open) { display: flex; align-items: flex-start; gap: 10px; }
-.edit-preview ol.steps > li > .edit-part { flex: 1 1 auto; min-width: 0; }
+.edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 10px; }
+.edit-preview :is(ol.steps, ul.ingredients) > li > .edit-part { flex: 1 1 0; min-width: 0; }
+/* Errors and the intake's notes go on their own line, under the text. */
+.edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) > :not(.edit-part, .edit-open) { flex: 1 1 100%; }
 .edit-open {
   flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
   min-width: 44px; min-height: 44px; margin: -6px -4px -6px 0; padding: 0 10px;
@@ -1432,8 +1434,10 @@ body.cooking > .site-footer { display: none; }
 .edit-pencil { font-size: 1.1rem; letter-spacing: 0; text-transform: none; }
 .edit-open:hover { color: var(--section); border-color: var(--section); background: var(--section-wash); }
 .edit-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-/* Where space is tight, the pencil alone. */
-@media (max-width: 420px) { .edit-word { display: none; } .edit-open { padding: 0; } }
+/* Where the list is narrow (a phone, or the ingredients column beside the
+   steps), the pencil alone. */
+.edit-preview :is(ol.steps, ul.ingredients) { container-type: inline-size; }
+@container (max-width: 300px) { .edit-word { display: none; } .edit-open { padding: 0; } }
 .edit-preview ul.ingredients > li { padding: 6px 0; }
 .edit-add-line { margin: 10px 0 0; }
 .edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--baking); }
