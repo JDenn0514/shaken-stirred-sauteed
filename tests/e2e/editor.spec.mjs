@@ -114,6 +114,45 @@ test.describe("steps, by keyboard", () => {
     expect((await stepTexts(page)).slice(2)).toEqual(["Shred the pork. Taste it.", "Crisp it in a hot pan."]);
   });
 
+  test("a step opens with the cursor at the end, and Split here there asks where to split", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await openStep(page, "Shred the pork.");
+    await page.keyboard.type(" Taste it.");
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Shred the pork. Taste it.");
+    await page.getByRole("button", { name: "Split here" }).press("Enter");
+    await expect(page.getByRole("region", { name: "Editing" }).getByRole("status")).toHaveText("Put the cursor where the new step starts.");
+    // Nothing was split, and the step is still open to put the cursor in.
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Shred the pork. Taste it.");
+    expect(await stepTexts(page)).toHaveLength(4);
+  });
+
+  test("splitting the garlic soup's step: its wait stays with the half that says 5 minutes", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-soup");
+    await openStep(page, /^Cook garlic/);
+    for (let i = 0; i < " Onion 2 minutes, potato 1 minute then add stock and simmer.".length; i++) await page.keyboard.press("ArrowLeft");
+    await page.getByRole("button", { name: "Split here" }).press("Enter");
+    expect(await stepTexts(page)).toEqual([
+      "Peel the garlic.", "Cook garlic 5 minutes in butter.⏱ 5 min✓ Soft but not brown", "Onion 2 minutes, potato 1 minute then add stock and simmer.",
+    ]);
+    await expect(page.getByRole("region", { name: "Editing" }).getByRole("status"))
+      .toHaveText("Check what steps 2 and 3 use: the ingredients all stayed with step 2.");
+  });
+
+  test("a step that says several times can be split at each time", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-soup");
+    await openStep(page, "Peel the garlic.");
+    await expect(page.getByRole("button", { name: "Split at each time" })).toHaveCount(0);
+    await openStep(page, /^Cook garlic/);
+    await page.getByRole("button", { name: "Split at each time" }).press("Enter");
+    expect(await stepTexts(page)).toEqual([
+      "Peel the garlic.", "Cook garlic 5 minutes in butter.⏱ 5 min✓ Soft but not brown", "Onion 2 minutes.⏱ 2 min",
+      "Potato 1 minute then add stock and simmer.⏱ 1 min",
+    ]);
+    await expect(page.getByRole("region", { name: "Editing" }).getByRole("status"))
+      .toHaveText("Check what steps 2, 3 and 4 use: the ingredients all stayed with step 2.");
+    await expect(preview(page).getByRole("button", { name: /^Cook garlic/ })).toBeFocused();
+  });
+
   test("each step has an Edit button that opens it", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     await expect(preview(page).getByRole("button", { name: "Edit step 3" })).toHaveText(/Edit/);

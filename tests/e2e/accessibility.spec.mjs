@@ -205,6 +205,15 @@ const PAGES = [
     await editorPreview(page).getByRole("button", { name: "Braise until tender." }).click();
     await expect(page.getByRole("button", { name: "Split here" })).toBeVisible();
   }, null, editor],
+  ["editor with a step open that can be split at each time", "edit.html?r=garlic-soup", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
+    await expect(page.getByRole("button", { name: "Split at each time" })).toBeVisible();
+  }, null, editor],
+  ["editor asking where to split a step", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
+    await page.getByRole("button", { name: "Split here" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Put the cursor where the new step starts." })).toBeVisible();
+  }, null, editor],
   ["editor on a phone, typing in a line, the site header out of the way", "edit.html?r=lemon-bars", async (page) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).press("Enter");
