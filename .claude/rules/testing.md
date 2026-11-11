@@ -16,6 +16,7 @@
 
 ## What a good test looks like here
 
+- Rules about what a page shows (which recipes match, counts, order, what the URL holds) belong in a module with unit tests, like `assets/recipe-list.mjs` for the recipes page, `edit-model.mjs` for the editor and `planner.mjs` for the lineup. Browser tests then only check that the page is wired to it: one test per control, not one per rule. A new rule for the recipes page's list gets a test in `tests/unit/recipe-list.test.mjs`, not `index-page.spec.mjs`.
 - Test what a visitor sees and does: roles, labels, visible text, the URL. Avoid internal function names and styling classes, so tests survive redesigns.
 - Browser tests import `test` and `expect` from `tests/e2e/fixtures.mjs`, not from `@playwright/test`. The fixture blocks every request that isn't to the local test server and serves the fixed test recipes.
 - Browser tests use the test recipes in `tests/e2e/fixtures.mjs`, never the real ones, so adding a recipe never breaks a test. Add a test recipe when a test needs a new case.
