@@ -419,16 +419,38 @@ test.describe("lineup fields in Details", () => {
 });
 
 test("a step using an ingredient that isn't there shows the checker's message and turns Save off", async ({ page, baseURL }) => {
+  // Renaming in the editor carries through to the steps, so the broken use
+  // comes from a draft, as an older draft or file could have it.
   await openEditor(page, baseURL, "lemon-bars");
+  const recipe = await page.evaluate(async () => (await (await fetch("/api/recipe/lemon-bars")).json()).recipe);
+  recipe.ingredients[0].items.find((i) => i.item === "Butter").item = "Ghee";
+  await page.evaluate((r) => localStorage.setItem("sss:draft:lemon-bars", JSON.stringify({ recipe: r, at: new Date().toISOString() })), recipe);
+  await page.reload();
+  await page.getByRole("button", { name: "Bring back my changes" }).click();
   const save = page.getByRole("button", { name: "Save" });
-  await expect(save).toBeEnabled();
-  await preview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
-  await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
-  await page.getByRole("button", { name: "Done" }).click();
   const message = `step 1 uses "Butter", which isn't one of the ingredients`;
   await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText(message);
   await expect(preview(page).locator("ol.steps > li").first()).toContainText(message);
   await expect(save).toBeDisabled();
+});
+
+test("renaming an ingredient renames it in the steps that use it", async ({ page, baseURL }) => {
+  await openEditor(page, baseURL, "lemon-bars");
+  await preview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
+  await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
+  await page.getByRole("button", { name: "Done" }).click();
+  await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Save" })).toBeEnabled();
+  const uses = stepBox(await details(page), 1).getByRole("group", { name: "Ingredients step 1 uses" });
+  await expect(uses.getByLabel("Ghee")).toBeChecked();
+});
+
+test("removing an ingredient takes it out of the steps that use it", async ({ page, baseURL }) => {
+  await openEditor(page, baseURL, "lemon-bars");
+  await preview(page).getByRole("button", { name: "Edit Eggs" }).click();
+  await page.getByRole("button", { name: "Remove" }).click();
+  await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Save" })).toBeEnabled();
 });
 
 test("only the section's tags are offered, and none can be typed", async ({ page, baseURL }) => {

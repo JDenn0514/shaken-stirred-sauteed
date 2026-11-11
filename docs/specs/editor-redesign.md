@@ -308,7 +308,7 @@ A step is marked **Done** once its pull request is merged.
      - Save with a form open sends the open text;
      - the sign-in-expired (401) case keeps it too.
 4. **Done** (#48, 2026-11-11). **(S) Fix the focus jump in Details.** Test: Tab from "Hands-on time" lands on the next field.
-5. **(S) Make the editor look like the sheet again.**
+5. **Done** (#49, 2026-11-11). **(S) Make the editor look like the sheet again.**
    - Numbering 1–n across groups.
    - Uppercase group headings.
    - No hover box.

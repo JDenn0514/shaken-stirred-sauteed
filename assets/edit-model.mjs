@@ -53,7 +53,9 @@ export function putBack(recipe, before, target) {
   if (target === "about") return ["title", "description", "yield"].reduce((r, k) => setField(r, k, before[k]), recipe);
   const [kind, n] = target.split(":");
   const key = kind === "ing" ? "ingredients" : "steps";
-  return change(recipe, key, Number(n), () => structuredClone(flat(before[key] || [])[Number(n)]));
+  const back = change(recipe, key, Number(n), () => structuredClone(flat(before[key] || [])[Number(n)]));
+  // An ingredient's old name goes back to the steps that use it, too.
+  return key === "ingredients" ? carryUses(recipe, back, (k) => k) : back;
 }
 
 // --- The recipe's own fields --------------------------------------------------
@@ -102,8 +104,9 @@ export function setTags(recipe, dimension, values) {
 
 // changes: { qty, grams, ml, item, note } for an ingredient object, or { text }
 // for a plain-text one.
+// A rename carries through to the steps that use the ingredient (carryUses).
 export function updateIngredient(recipe, n, changes) {
-  return change(recipe, "ingredients", n, (ing) => {
+  return carryUses(recipe, change(recipe, "ingredients", n, (ing) => {
     if (typeof ing === "string" && "text" in changes) return clean(changes.text);
     const i = asIngredient(ing);
     for (const k of ["qty", "grams", "ml", "item", "note"]) {
@@ -112,7 +115,7 @@ export function updateIngredient(recipe, n, changes) {
       put(i, k, (k === "grams" || k === "ml") && !empty(v) && !Number.isNaN(Number(v)) ? Number(v) : v);
     }
     return i;
-  });
+  }), (k) => k);
 }
 
 // Lineup fields on an ingredient: recipe (the linked recipe's slug), optional
@@ -257,7 +260,8 @@ function remove(recipe, key, n) {
   dropEmptyGroups(r, key);
   return r;
 }
-export const removeIngredient = (recipe, n) => remove(recipe, "ingredients", n);
+export const removeIngredient = (recipe, n) =>
+  carryUses(recipe, remove(recipe, "ingredients", n), (k) => (k === n ? null : k > n ? k - 1 : k));
 export const removeStep = (recipe, n) => remove(recipe, "steps", n);
 
 // Moves an entry one place up (-1) or down (1). Crossing into or out of a
@@ -297,7 +301,10 @@ export function movedTo(recipe, key, n, dir) {
   return at.top === -1 && isGroup(at.arr[j]) ? n : n + dir;
 }
 
-export const moveIngredient = (recipe, n, dir) => move(recipe, "ingredients", n, dir);
+export function moveIngredient(recipe, n, dir) {
+  const to = movedTo(recipe, "ingredients", n, dir);
+  return carryUses(recipe, move(recipe, "ingredients", n, dir), (k) => (k === n ? to : k === to ? n : k));
+}
 export const moveStep = (recipe, n, dir) => move(recipe, "steps", n, dir);
 
 // A new named section at the end, holding one empty entry. Returns where that is.
@@ -313,7 +320,7 @@ export function renameGroup(recipe, key, g, name) {
   const r = structuredClone(recipe);
   const sections = (r[key] || []).filter((e) => isGroup(e) && e.group);
   if (sections[g] && clean(name)) sections[g].group = clean(name);
-  return r;
+  return key === "ingredients" ? carryUses(recipe, r, (k) => k) : r;
 }
 
 // --- What a step uses ----------------------------------------------------------------
@@ -334,12 +341,55 @@ export function usesOf(recipe, n) {
   const ings = named(recipe);
   const picks = [], unmatched = [];
   for (const u of (step && typeof step === "object" && Array.isArray(step.uses) ? step.uses : [])) {
-    const { item, group, amount } = typeof u === "string" ? { item: u } : u || {};
-    const hits = ings.map((x, k) => [x, k]).filter(([x]) => lower(x.name) === lower(item) && (group === undefined || lower(x.group) === lower(group)));
-    if (hits.length === 1) picks.push({ ing: hits[0][1], amount: typeof amount === "string" ? amount : "" });
+    const { item, amount } = useParts(u);
+    const k = resolve(ings, u);
+    if (k >= 0) picks.push({ ing: k, amount: typeof amount === "string" ? amount : "" });
     else unmatched.push(item ?? "");
   }
   return { picks, unmatched };
+}
+
+const useParts = (u) => (typeof u === "string" ? { item: u } : u || {});
+// The one ingredient a use names (by name, and by group when it gives one),
+// or -1 when it names none or more than one.
+function resolve(ings, u) {
+  const { item, group } = useParts(u);
+  const hits = ings.flatMap((x, k) => (lower(x.name) === lower(item) && (group === undefined || lower(x.group) === lower(group)) ? [k] : []));
+  return hits.length === 1 ? hits[0] : -1;
+}
+// A use of ingredient k: by name, with its section's name only where two
+// ingredients share the name, and its amount if it has one.
+function useOf(ings, k, amount) {
+  const { group, name } = ings[k];
+  const twice = ings.filter((x) => lower(x.name) === lower(name)).length > 1;
+  const amt = clean(amount);
+  if (!twice && !amt) return name;
+  return { ...(twice && { group }), item: name, ...(amt && { amount: amt }) };
+}
+
+// After an ingredient is renamed, removed, moved or regrouped (before ->
+// after; place(k) is where ingredient k went, or null if it's gone), every
+// step's uses still point at the same ingredients. A use that still finds its
+// ingredient is kept as written; one that doesn't is written again, or taken
+// out with its ingredient. Names that matched nothing before stay, for the
+// checker to point out.
+function carryUses(before, after, place) {
+  const was = named(before), now = named(after);
+  for (const step of flat(after.steps || [])) {
+    if (!step || typeof step !== "object" || !Array.isArray(step.uses)) continue;
+    let changed = false;
+    const uses = step.uses.flatMap((u) => {
+      const k = resolve(was, u);
+      if (k < 0) return [u];
+      const to = place(k);
+      if (to === null) { changed = true; return []; }
+      if (resolve(now, u) === to) return [u];
+      changed = true;
+      return [useOf(now, to, useParts(u).amount)];
+    });
+    if (changed) put(step, "uses", uses.length ? uses : undefined);
+  }
+  return after;
 }
 
 // Writes a step's uses from picks: each by name, with its section's name only
@@ -349,13 +399,7 @@ export function setUses(recipe, n, picks) {
   const ings = named(recipe);
   return change(recipe, "steps", n, (step) => {
     const s = asStep(step);
-    const uses = picks.filter((p) => ings[p.ing]).map(({ ing, amount }) => {
-      const { group, name } = ings[ing];
-      const twice = ings.filter((x) => lower(x.name) === lower(name)).length > 1;
-      const amt = clean(amount);
-      if (!twice && !amt) return name;
-      return { ...(twice && { group }), item: name, ...(amt && { amount: amt }) };
-    });
+    const uses = picks.filter((p) => ings[p.ing]).map(({ ing, amount }) => useOf(ings, ing, amount));
     put(s, "uses", uses.length ? uses : undefined);
     return s;
   });
