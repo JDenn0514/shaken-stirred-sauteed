@@ -18,43 +18,45 @@
   "ingredients": [
     {
       "qty": "1 cup",
-      "item": "smooth peanut butter"
+      "item": "Smooth peanut butter"
     },
     {
       "qty": "1/4 cup",
-      "item": "soy sauce or tamari"
+      "item": "Soy sauce or tamari"
     },
     {
       "qty": "1/4 cup",
-      "item": "toasted sesame oil"
+      "item": "Toasted sesame oil"
     },
     {
       "qty": "3 tbsp",
-      "item": "rice vinegar"
+      "item": "Rice vinegar"
     },
     {
       "qty": "2 tbsp",
-      "item": "fresh ginger, chopped"
+      "item": "Fresh ginger",
+      "note": "chopped"
     },
     {
       "qty": "2 tbsp",
-      "item": "garlic, chopped"
+      "item": "Garlic",
+      "note": "chopped"
     },
     {
       "qty": "1 tsp",
-      "item": "hot sauce"
+      "item": "Hot sauce"
     },
     {
       "qty": "1 tbsp",
-      "item": "hoisin sauce"
+      "item": "Hoisin sauce"
     },
     {
       "qty": "1 tbsp",
-      "item": "fresh lime juice"
+      "item": "Fresh lime juice"
     },
     {
       "qty": "3/4 cup",
-      "item": "water"
+      "item": "Water"
     }
   ],
   "steps": [
@@ -64,25 +66,25 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "fresh ginger, chopped",
-        "garlic, chopped",
-        "fresh lime juice"
+        "Fresh ginger",
+        "Garlic",
+        "Fresh lime juice"
       ]
     },
     {
       "do": "Put everything in a food processor. Blend until completely smooth, stopping to scrape down the sides a few times so no peanut butter hides at the bottom, about 1 to 2 minutes.",
       "wait": "1 to 2 min",
       "uses": [
-        "smooth peanut butter",
-        "soy sauce or tamari",
-        "toasted sesame oil",
-        "rice vinegar",
-        "fresh ginger, chopped",
-        "garlic, chopped",
-        "hot sauce",
-        "hoisin sauce",
-        "fresh lime juice",
-        "water"
+        "Smooth peanut butter",
+        "Soy sauce or tamari",
+        "Toasted sesame oil",
+        "Rice vinegar",
+        "Fresh ginger",
+        "Garlic",
+        "Hot sauce",
+        "Hoisin sauce",
+        "Fresh lime juice",
+        "Water"
       ],
       "hands": "30 sec",
       "watch": true

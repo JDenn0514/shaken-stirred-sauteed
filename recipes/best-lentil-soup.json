@@ -33,66 +33,75 @@
   "ingredients": [
     {
       "qty": "1/4 cup",
-      "item": "extra virgin olive oil"
+      "item": "Extra virgin olive oil"
     },
     {
       "qty": "1 medium",
-      "item": "yellow or white onion, chopped"
+      "item": "Yellow or white onion",
+      "note": "chopped"
     },
     {
       "qty": "2",
-      "item": "carrots, peeled and chopped"
+      "item": "Carrots",
+      "note": "peeled and chopped"
     },
     {
       "qty": "4 cloves",
-      "item": "garlic, pressed or minced"
+      "item": "Garlic",
+      "note": "pressed or minced"
     },
     {
       "qty": "2 tsp",
-      "item": "ground cumin"
+      "item": "Ground cumin"
     },
     {
       "qty": "1 tsp",
-      "item": "curry powder"
+      "item": "Curry powder"
     },
     {
       "qty": "1/2 tsp",
-      "item": "dried thyme"
+      "item": "Dried thyme"
     },
     {
       "qty": "28 oz can",
-      "item": "diced tomatoes, lightly drained"
+      "item": "Diced tomatoes",
+      "note": "lightly drained"
     },
     {
       "qty": "1 cup",
-      "item": "brown or green lentils, picked over and rinsed"
+      "item": "Brown or green lentils",
+      "note": "picked over and rinsed"
     },
     {
       "qty": "4 cups",
-      "item": "vegetable broth"
+      "item": "Vegetable broth"
     },
     {
       "qty": "2 cups",
-      "item": "water"
+      "item": "Water"
     },
     {
       "qty": "1 tsp",
-      "item": "salt, plus more to taste"
+      "item": "Salt",
+      "note": "plus more to taste"
     },
     {
       "qty": "pinch",
-      "item": "red pepper flakes"
+      "item": "Red pepper flakes"
     },
     {
-      "item": "black pepper, freshly ground, to taste"
+      "item": "Black pepper",
+      "note": "freshly ground, to taste"
     },
     {
       "qty": "1 cup",
-      "item": "collard greens or kale, chopped, tough ribs removed"
+      "item": "Collard greens or kale",
+      "note": "chopped, tough ribs removed"
     },
     {
       "qty": "1 to 2 tbsp",
-      "item": "lemon juice (1/2 to 1 medium lemon), to taste"
+      "item": "Lemon juice (1/2 to 1 medium lemon)",
+      "note": "to taste"
     }
   ],
   "steps": [
@@ -102,18 +111,18 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "yellow or white onion, chopped",
-        "carrots, peeled and chopped",
-        "garlic, pressed or minced"
+        "Yellow or white onion",
+        "Carrots",
+        "Garlic"
       ]
     },
     {
       "do": "Heat the oil over medium in a Dutch oven or heavy stainless pot of 5 quarts or more until it shimmers. Add the onion and carrot and cook, stirring often, about 5 minutes, until the onion is soft and translucent.",
       "wait": "About 5 min",
       "uses": [
-        "extra virgin olive oil",
-        "yellow or white onion, chopped",
-        "carrots, peeled and chopped"
+        "Extra virgin olive oil",
+        "Yellow or white onion",
+        "Carrots"
       ],
       "hands": "1 min",
       "watch": true,
@@ -122,11 +131,11 @@
     {
       "do": "Add the garlic, cumin, curry powder and thyme and stir constantly about 30 seconds, just until fragrant; stainless scorches spices fast, so keep stirring. Add the tomatoes and cook a few minutes more, stirring often.",
       "uses": [
-        "garlic, pressed or minced",
-        "ground cumin",
-        "curry powder",
-        "dried thyme",
-        "diced tomatoes, lightly drained"
+        "Garlic",
+        "Ground cumin",
+        "Curry powder",
+        "Dried thyme",
+        "Diced tomatoes"
       ],
       "hands": "3 min",
       "burner": true
@@ -137,25 +146,25 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "brown or green lentils, picked over and rinsed",
-        "collard greens or kale, chopped, tough ribs removed",
-        "lemon juice (1/2 to 1 medium lemon), to taste"
+        "Brown or green lentils",
+        "Collard greens or kale",
+        "Lemon juice (1/2 to 1 medium lemon)"
       ]
     },
     {
       "do": "Add the lentils, broth, water, 1 tsp salt, the pepper flakes and plenty of black pepper. Bring to a boil, partially cover, and simmer gently 25 to 30 minutes, until the lentils are tender but still hold their shape.",
       "wait": "25 to 30 min",
       "uses": [
-        "brown or green lentils, picked over and rinsed",
-        "vegetable broth",
-        "water",
+        "Brown or green lentils",
+        "Vegetable broth",
+        "Water",
         {
-          "item": "salt, plus more to taste",
+          "item": "Salt",
           "amount": "1 tsp"
         },
-        "red pepper flakes",
+        "Red pepper flakes",
         {
-          "item": "black pepper, freshly ground, to taste",
+          "item": "Black pepper",
           "amount": "plenty"
         }
       ],
@@ -171,7 +180,7 @@
       "do": "Add the greens and simmer 5 minutes more, until as tender as you like.",
       "wait": "5 min",
       "uses": [
-        "collard greens or kale, chopped, tough ribs removed"
+        "Collard greens or kale"
       ],
       "hands": "1 min",
       "burner": true
@@ -179,13 +188,13 @@
     {
       "do": "Off the heat, stir in 1 tbsp lemon juice. Taste and adjust with more salt, pepper or lemon. Serve hot.",
       "uses": [
-        "lemon juice (1/2 to 1 medium lemon), to taste",
+        "Lemon juice (1/2 to 1 medium lemon)",
         {
-          "item": "salt, plus more to taste",
+          "item": "Salt",
           "amount": "to taste"
         },
         {
-          "item": "black pepper, freshly ground, to taste",
+          "item": "Black pepper",
           "amount": "to taste"
         }
       ],

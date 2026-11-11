@@ -28,39 +28,43 @@
   "ingredients": [
     {
       "qty": "3/4 cup",
-      "item": "plain yogurt, milk kefir or vegan yogurt"
+      "item": "Plain yogurt, milk kefir or vegan yogurt"
     },
     {
       "qty": "1/4 cup",
-      "item": "tahini, stirred"
+      "item": "Tahini",
+      "note": "stirred"
     },
     {
       "qty": "1 to 2",
-      "item": "garlic cloves, finely minced (or 1/2 tsp granulated)"
+      "item": "Garlic cloves",
+      "note": "finely minced (or 1/2 tsp granulated)"
     },
     {
       "qty": "1/4 to 1/2 tsp",
-      "item": "salt, plus more to taste"
+      "item": "Salt",
+      "note": "plus more to taste"
     },
     {
       "qty": "1/4 tsp",
-      "item": "black pepper"
+      "item": "Black pepper"
     },
     {
       "qty": "1 tsp",
-      "item": "lemon juice (optional)",
+      "item": "Lemon juice",
       "optional": true
     },
     {
       "qty": "1 tsp",
-      "item": "olive oil (optional, for fat-free yogurt)",
+      "item": "Olive oil",
+      "note": "for fat-free yogurt",
       "optional": true
     },
     {
       "group": "To garnish (optional)",
       "items": [
         {
-          "item": "parsley, dill, cilantro or chives"
+          "item": "Parsley, dill, cilantro or chives"
         },
         {
           "item": "Aleppo chile flakes or Urfa biber"
@@ -75,32 +79,32 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "garlic cloves, finely minced (or 1/2 tsp granulated)"
+        "Garlic cloves"
       ]
     },
     {
       "do": "Whisk the yogurt, tahini, garlic, salt and pepper in a medium bowl until completely smooth.",
       "uses": [
-        "plain yogurt, milk kefir or vegan yogurt",
-        "tahini, stirred",
-        "garlic cloves, finely minced (or 1/2 tsp granulated)",
-        "salt, plus more to taste",
-        "black pepper"
+        "Plain yogurt, milk kefir or vegan yogurt",
+        "Tahini",
+        "Garlic cloves",
+        "Salt",
+        "Black pepper"
       ],
       "hands": "2 min"
     },
     {
       "do": "Taste. Add the lemon juice only if your yogurt isn't tangy, since some are sharper than others. With fat-free yogurt, add the olive oil or a little extra tahini for richness. Adjust salt and pepper.",
       "uses": [
-        "lemon juice (optional)",
-        "olive oil (optional, for fat-free yogurt)"
+        "Lemon juice",
+        "Olive oil"
       ],
       "hands": "1 min"
     },
     {
       "do": "Refrigerate until serving, then top with herbs and chile flakes if you like.",
       "uses": [
-        "parsley, dill, cilantro or chives",
+        "Parsley, dill, cilantro or chives",
         "Aleppo chile flakes or Urfa biber"
       ],
       "hands": "1 min"

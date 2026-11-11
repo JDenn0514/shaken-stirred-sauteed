@@ -41,43 +41,48 @@
       "items": [
         {
           "qty": "5 ears",
-          "item": "fresh corn, husked, silks removed"
+          "item": "Fresh corn",
+          "note": "husked, silks removed"
         },
         {
-          "qty": "1 ½ Tbsp",
-          "item": "extra-virgin olive oil"
+          "qty": "1 1/2 tbsp",
+          "item": "Extra-virgin olive oil"
         },
         {
           "qty": "2 tsp",
-          "item": "kosher salt"
+          "item": "Kosher salt"
         },
         {
-          "qty": "¾ tsp",
-          "item": "ground black pepper"
+          "qty": "3/4 tsp",
+          "item": "Ground black pepper"
         },
         {
           "qty": "1 pint",
-          "item": "cherry tomatoes, halved (about 2 cups)"
+          "item": "Cherry tomatoes",
+          "note": "halved (about 2 cups)"
         },
         {
           "qty": "2 cups",
-          "item": "packed arugula"
+          "item": "Packed arugula"
         },
         {
           "qty": "1",
-          "item": "medium avocado, peeled, pitted, diced"
+          "item": "Medium avocado",
+          "note": "peeled, pitted, diced"
         },
         {
           "qty": "1",
-          "item": "small red bell pepper, cored and finely chopped"
+          "item": "Small red bell pepper",
+          "note": "cored and finely chopped"
         },
         {
           "qty": "4",
-          "item": "green onions, finely chopped"
+          "item": "Green onions",
+          "note": "finely chopped"
         },
         {
-          "qty": "¼ cup",
-          "item": "chopped fresh cilantro"
+          "qty": "1/4 cup",
+          "item": "Chopped fresh cilantro"
         }
       ]
     },
@@ -85,32 +90,32 @@
       "group": "Dressing",
       "items": [
         {
-          "qty": "¼ cup",
-          "item": "fresh lime juice (about 2 limes)"
+          "qty": "1/4 cup",
+          "item": "Fresh lime juice (about 2 limes)"
         },
         {
-          "qty": "2 Tbsp",
-          "item": "extra-virgin olive oil"
+          "qty": "2 tbsp",
+          "item": "Extra-virgin olive oil"
         },
         {
-          "qty": "1 Tbsp",
-          "item": "honey"
+          "qty": "1 tbsp",
+          "item": "Honey"
         },
         {
           "qty": "1 tsp",
-          "item": "paprika"
+          "item": "Paprika"
         },
         {
-          "qty": "¾ tsp",
-          "item": "kosher salt"
+          "qty": "3/4 tsp",
+          "item": "Kosher salt"
         },
         {
-          "qty": "¼ tsp",
-          "item": "ground black pepper"
+          "qty": "1/4 tsp",
+          "item": "Ground black pepper"
         },
         {
-          "qty": "¼ tsp",
-          "item": "onion powder"
+          "qty": "1/4 tsp",
+          "item": "Onion powder"
         }
       ]
     }
@@ -122,24 +127,24 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "fresh corn, husked, silks removed"
+        "Fresh corn"
       ]
     },
     {
       "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
       "wait": "7 min",
       "uses": [
-        "fresh corn, husked, silks removed",
+        "Fresh corn",
         {
-          "item": "extra-virgin olive oil",
+          "item": "Extra-virgin olive oil",
           "group": "Salad"
         },
         {
-          "item": "kosher salt",
+          "item": "Kosher salt",
           "group": "Salad"
         },
         {
-          "item": "ground black pepper",
+          "item": "Ground black pepper",
           "group": "Salad"
         }
       ],
@@ -153,44 +158,44 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "cherry tomatoes, halved (about 2 cups)",
-        "small red bell pepper, cored and finely chopped",
-        "green onions, finely chopped",
-        "chopped fresh cilantro",
-        "fresh lime juice (about 2 limes)"
+        "Cherry tomatoes",
+        "Small red bell pepper",
+        "Green onions",
+        "Chopped fresh cilantro",
+        "Fresh lime juice (about 2 limes)"
       ]
     },
     {
       "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape.",
       "uses": [
-        "cherry tomatoes, halved (about 2 cups)",
-        "packed arugula",
-        "medium avocado, peeled, pitted, diced",
-        "small red bell pepper, cored and finely chopped",
-        "green onions, finely chopped",
-        "chopped fresh cilantro"
+        "Cherry tomatoes",
+        "Packed arugula",
+        "Medium avocado",
+        "Small red bell pepper",
+        "Green onions",
+        "Chopped fresh cilantro"
       ],
       "hands": "6 min"
     },
     {
       "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table.",
       "uses": [
-        "fresh lime juice (about 2 limes)",
+        "Fresh lime juice (about 2 limes)",
         {
-          "item": "extra-virgin olive oil",
+          "item": "Extra-virgin olive oil",
           "group": "Dressing"
         },
-        "honey",
-        "paprika",
+        "Honey",
+        "Paprika",
         {
-          "item": "kosher salt",
+          "item": "Kosher salt",
           "group": "Dressing"
         },
         {
-          "item": "ground black pepper",
+          "item": "Ground black pepper",
           "group": "Dressing"
         },
-        "onion powder"
+        "Onion powder"
       ],
       "hands": "3 min"
     }

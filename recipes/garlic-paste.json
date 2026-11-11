@@ -17,15 +17,17 @@
   "ingredients": [
     {
       "qty": "8",
-      "item": "garlic cloves, peeled"
+      "item": "Garlic cloves",
+      "note": "peeled"
     },
     {
       "qty": "1/2 tsp",
-      "item": "coarse kosher salt"
+      "item": "Coarse kosher salt"
     },
     {
       "qty": "2 tsp",
-      "item": "olive oil (optional, for storage)",
+      "item": "Olive oil",
+      "note": "for storage",
       "optional": true
     }
   ],
@@ -36,13 +38,13 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "garlic cloves, peeled"
+        "Garlic cloves"
       ]
     },
     {
       "do": "Trim the tough root end off each clove. If a clove has a green sprout running through it, halve it lengthwise and pull the sprout out — bitter, and it won't break down.",
       "uses": [
-        "garlic cloves, peeled"
+        "Garlic cloves"
       ],
       "hands": "3 min",
       "prep": true
@@ -55,7 +57,7 @@
     {
       "do": "Scatter the salt over the garlic. The coarse crystals are the abrasive doing the work — fine salt dissolves and grinds nothing.",
       "uses": [
-        "coarse kosher salt"
+        "Coarse kosher salt"
       ],
       "hands": "30 sec",
       "prep": true
@@ -68,7 +70,7 @@
     {
       "do": "Use immediately, or stir in the olive oil until the paste is coated, jar it, and refrigerate.",
       "uses": [
-        "olive oil (optional, for storage)"
+        "Olive oil"
       ],
       "hands": "1 min",
       "prep": true

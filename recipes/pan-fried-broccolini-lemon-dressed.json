@@ -29,14 +29,14 @@
   "ingredients": [
     {
       "qty": "1 lb",
-      "item": "broccolini"
+      "item": "Broccolini"
     },
     {
       "group": "For the pan",
       "items": [
         {
           "qty": "1 tsp",
-          "item": "olive oil"
+          "item": "Olive oil"
         },
         {
           "item": "Salt, black pepper, red pepper flakes"
@@ -48,17 +48,17 @@
       "items": [
         {
           "qty": "2 tbsp",
-          "item": "extra-virgin olive oil"
+          "item": "Extra-virgin olive oil"
         },
         {
-          "item": "Juice of ½ lemon"
+          "item": "Juice of 1/2 lemon"
         },
         {
           "item": "Zest of 1 lemon"
         },
         {
-          "qty": "¼ tsp",
-          "item": "garlic powder"
+          "qty": "1/4 tsp",
+          "item": "Garlic powder"
         },
         {
           "item": "Pinch each salt, black pepper, red pepper flakes"
@@ -70,7 +70,7 @@
     {
       "do": "Prep. Cut away the dried ends. Any stalk thicker than a pencil gets halved lengthwise. Dry the broccolini well — water caught in the florets will steam it instead of browning it.",
       "uses": [
-        "broccolini"
+        "Broccolini"
       ],
       "hands": "4 min",
       "prep": true
@@ -78,7 +78,7 @@
     {
       "do": "Season. Toss with 1 tsp oil, salt, pepper, and flakes. Go light; the dressing adds plenty more.",
       "uses": [
-        "olive oil",
+        "Olive oil",
         "Salt, black pepper, red pepper flakes"
       ],
       "hands": "1 min",
@@ -96,16 +96,16 @@
       "prepOnly": true,
       "uses": [
         "Zest of 1 lemon",
-        "Juice of ½ lemon"
+        "Juice of 1/2 lemon"
       ]
     },
     {
       "do": "Dress. Take the pan off the heat. Whisk the dressing ingredients together in a bowl, add the broccolini, and toss to coat. Serve warm.",
       "uses": [
-        "extra-virgin olive oil",
-        "Juice of ½ lemon",
+        "Extra-virgin olive oil",
+        "Juice of 1/2 lemon",
         "Zest of 1 lemon",
-        "garlic powder",
+        "Garlic powder",
         "Pinch each salt, black pepper, red pepper flakes"
       ],
       "hands": "2 min",

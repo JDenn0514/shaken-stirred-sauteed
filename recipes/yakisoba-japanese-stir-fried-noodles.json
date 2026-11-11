@@ -24,77 +24,83 @@
   },
   "ingredients": [
     {
-      "qty": "300g/10.5oz",
-      "item": "yellow noodles",
+      "grams": 300,
+      "qty": "10.5 oz",
+      "item": "Yellow noodles",
       "note": "note 1"
     },
     {
       "qty": "1 tbsp",
-      "item": "sesame oil"
+      "item": "Sesame oil"
     },
     {
       "qty": "2 tbsp",
-      "item": "oil",
+      "item": "Oil",
       "note": "vegetable oil or peanut oil"
     },
     {
-      "qty": "200g/7oz",
-      "item": "pork",
+      "grams": 200,
+      "qty": "7 oz",
+      "item": "Pork",
       "note": "thinly sliced into bite size pieces (note2)"
     },
     {
-      "qty": "60g/2oz",
-      "item": "carrot",
+      "grams": 60,
+      "qty": "2 oz",
+      "item": "Carrot",
       "note": "thinly sliced diagonally"
     },
     {
-      "qty": "100g/3.5oz",
-      "item": "cabbage",
+      "grams": 100,
+      "qty": "3.5 oz",
+      "item": "Cabbage",
       "note": "cut into bite size pieces (note 3)"
     },
     {
       "qty": "3",
-      "item": "shiitake mushrooms",
+      "item": "Shiitake mushrooms",
       "note": "sliced into 2mm / 1/16\" thick"
     },
     {
       "qty": "2 stalks",
-      "item": "green onions",
+      "item": "Green onions",
       "note": "diagonally sliced"
     },
     {
       "qty": "1 cup",
-      "item": "bean sprouts"
+      "item": "Bean sprouts"
     },
     {
       "group": "Yakisoba Sauce (Note 4)",
       "items": [
         {
-          "qty": "40ml/1.4oz",
+          "qty": "1.4 oz",
+          "ml": 40,
           "item": "Bulldog tonkatsu sōsu",
           "note": "note 5"
         },
         {
-          "qty": "50ml/1.7oz",
+          "qty": "1.7 oz",
+          "ml": 50,
           "item": "Bulldog usutā sōsu",
           "note": "note 5"
         },
         {
           "qty": "1 tsp",
-          "item": "soy sauce"
+          "item": "Soy sauce"
         },
         {
-          "qty": "½ tbsp",
-          "item": "tomato sauce",
+          "qty": "1/2 tbsp",
+          "item": "Tomato sauce",
           "note": "or tomato ketchup"
         },
         {
           "qty": "1 tsp",
-          "item": "sugar"
+          "item": "Sugar"
         },
         {
-          "qty": "½ tsp",
-          "item": "dashi seasoning powder diluted in ½ tsp hot water",
+          "qty": "1/2 tsp",
+          "item": "Dashi seasoning powder diluted in 1/2 tsp hot water",
           "note": "note 6"
         }
       ]
@@ -104,12 +110,12 @@
       "items": [
         {
           "qty": "2 tbsp",
-          "item": "aonori",
+          "item": "Aonori",
           "note": "dried seaweed flakes, note 7"
         },
         {
           "qty": "2 tbsp",
-          "item": "benishōga",
+          "item": "Benishōga",
           "note": "red pickled ginger, note 8"
         }
       ]
@@ -121,11 +127,11 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "pork",
-        "carrot",
-        "cabbage",
-        "shiitake mushrooms",
-        "green onions"
+        "Pork",
+        "Carrot",
+        "Cabbage",
+        "Shiitake mushrooms",
+        "Green onions"
       ],
       "hands": "2 min"
     },
@@ -136,10 +142,10 @@
       "uses": [
         "Bulldog tonkatsu sōsu",
         "Bulldog usutā sōsu",
-        "soy sauce",
-        "tomato sauce",
-        "sugar",
-        "dashi seasoning powder diluted in ½ tsp hot water"
+        "Soy sauce",
+        "Tomato sauce",
+        "Sugar",
+        "Dashi seasoning powder diluted in 1/2 tsp hot water"
       ]
     },
     {
@@ -147,14 +153,14 @@
       "burner": true,
       "hands": "30 sec",
       "uses": [
-        "yellow noodles"
+        "Yellow noodles"
       ]
     },
     {
       "do": "Drain and sprinkle sesame oil over the noodles and mix until all noodles are coated. This is to prevent the noodles from sticking to each other.",
       "hands": "45 sec",
       "uses": [
-        "sesame oil"
+        "Sesame oil"
       ]
     },
     {
@@ -164,8 +170,8 @@
       "watch": true,
       "hands": "30 sec",
       "uses": [
-        "oil",
-        "pork"
+        "Oil",
+        "Pork"
       ]
     },
     {
@@ -173,9 +179,9 @@
       "wait": "30 seconds",
       "hands": "45 sec",
       "uses": [
-        "carrot",
-        "cabbage",
-        "shiitake mushrooms"
+        "Carrot",
+        "Cabbage",
+        "Shiitake mushrooms"
       ]
     },
     {
@@ -183,8 +189,8 @@
       "wait": "About 1 minute",
       "hands": "45 sec",
       "uses": [
-        "green onions",
-        "bean sprouts"
+        "Green onions",
+        "Bean sprouts"
       ]
     },
     {
@@ -204,8 +210,8 @@
       "do": "Sprinkle aonori over the noodles and add the benishōga on the top or the side of the noodles or serve in a separate bowl/plate for individual to add topping themselves. Serve immediately.",
       "hands": "45 sec",
       "uses": [
-        "aonori",
-        "benishōga"
+        "Aonori",
+        "Benishōga"
       ]
     }
   ],

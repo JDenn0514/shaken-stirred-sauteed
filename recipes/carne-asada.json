@@ -32,46 +32,50 @@
   "ingredients": [
     {
       "qty": "1 1/2 lb",
-      "item": "flank steak (or skirt or flap)"
+      "item": "Flank steak (or skirt or flap)"
     },
     {
       "qty": "1/2 cup",
-      "item": "chopped fresh cilantro leaves"
+      "item": "Chopped fresh cilantro leaves"
     },
     {
       "qty": "1/3 cup",
-      "item": "olive oil"
+      "item": "Olive oil"
     },
     {
       "qty": "1/4 cup",
-      "item": "reduced-sodium soy sauce"
+      "item": "Reduced-sodium soy sauce"
     },
     {
       "qty": "1/4 cup",
-      "item": "fresh orange juice"
+      "item": "Fresh orange juice"
     },
     {
       "qty": "2 tbsp",
-      "item": "fresh lime juice"
+      "item": "Fresh lime juice"
     },
     {
       "qty": "4 cloves",
-      "item": "garlic, minced"
+      "item": "Garlic",
+      "note": "minced"
     },
     {
       "qty": "1",
-      "item": "jalapeño, seeded and diced"
+      "item": "Jalapeño",
+      "note": "seeded and diced"
     },
     {
       "qty": "1 tsp",
-      "item": "ground cumin"
+      "item": "Ground cumin"
     },
     {
       "qty": "1 tsp",
-      "item": "freshly ground black pepper, plus more for seasoning"
+      "item": "Freshly ground black pepper",
+      "note": "plus more for seasoning"
     },
     {
-      "item": "Kosher salt, to taste"
+      "item": "Kosher salt",
+      "note": "to taste"
     }
   ],
   "steps": [
@@ -81,26 +85,26 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "chopped fresh cilantro leaves",
-        "garlic, minced",
-        "jalapeño, seeded and diced",
-        "fresh orange juice",
-        "fresh lime juice"
+        "Chopped fresh cilantro leaves",
+        "Garlic",
+        "Jalapeño",
+        "Fresh orange juice",
+        "Fresh lime juice"
       ]
     },
     {
       "do": "Whisk the cilantro, olive oil, soy sauce, orange juice, lime juice, garlic, jalapeño, cumin and 1 tsp pepper in a medium bowl. Take out 1/2 cup and refrigerate it as the finishing sauce. It has to come out now, before anything touches raw meat.",
       "uses": [
-        "chopped fresh cilantro leaves",
-        "olive oil",
-        "reduced-sodium soy sauce",
-        "fresh orange juice",
-        "fresh lime juice",
-        "garlic, minced",
-        "jalapeño, seeded and diced",
-        "ground cumin",
+        "Chopped fresh cilantro leaves",
+        "Olive oil",
+        "Reduced-sodium soy sauce",
+        "Fresh orange juice",
+        "Fresh lime juice",
+        "Garlic",
+        "Jalapeño",
+        "Ground cumin",
         {
-          "item": "freshly ground black pepper, plus more for seasoning",
+          "item": "Freshly ground black pepper",
           "amount": "1 tsp"
         }
       ],
@@ -111,7 +115,7 @@
       "do": "Put the steak and the rest of the marinade in a gallon zip bag or bowl. Chill 4 to 8 hours, ideally the full 8 hours overnight, turning now and then. Stop at 8 hours: the citrus acid keeps breaking down the muscle and the texture turns mushy rather than tender.",
       "wait": "4 to 8 hr",
       "uses": [
-        "flank steak (or skirt or flap)"
+        "Flank steak (or skirt or flap)"
       ],
       "hands": "2 min"
     },
@@ -123,9 +127,9 @@
     {
       "do": "Drain the steak and discard the used marinade. Pat both sides completely dry, since any film left on the surface steams instead of charring. Season with salt and pepper.",
       "uses": [
-        "Kosher salt, to taste",
+        "Kosher salt",
         {
-          "item": "freshly ground black pepper, plus more for seasoning",
+          "item": "Freshly ground black pepper",
           "amount": "to taste"
         }
       ],

@@ -33,24 +33,28 @@
   },
   "ingredients": [
     {
-      "qty": "1 lb (450 g)",
-      "item": "skin-on pork belly, cut into 1/2 in pieces"
+      "grams": 450,
+      "qty": "1 lb",
+      "item": "Skin-on pork belly",
+      "note": "cut into 1/2 in pieces"
     },
     {
       "qty": "2 tsp",
-      "item": "neutral oil"
+      "item": "Neutral oil"
     },
     {
-      "qty": "25 g",
-      "item": "rock sugar (or 1 1/2 tbsp granulated sugar)"
+      "grams": 25,
+      "item": "Rock sugar (or 1 1/2 tbsp granulated sugar)"
     },
     {
       "qty": "1 small",
-      "item": "onion, diced (or 2 to 3 shallots)"
+      "item": "Onion",
+      "note": "diced (or 2 to 3 shallots)"
     },
     {
       "qty": "8",
-      "item": "shiitake mushrooms, fresh or dried, cut into 1/2 in dice"
+      "item": "Shiitake mushrooms, fresh or dried",
+      "note": "cut into 1/2 in dice"
     },
     {
       "qty": "1/4 cup",
@@ -58,42 +62,44 @@
     },
     {
       "qty": "3 tbsp",
-      "item": "light soy sauce (45 ml)"
+      "item": "Light soy sauce (45 ml)"
     },
     {
       "qty": "2 tbsp",
-      "item": "dark soy sauce (30 ml)"
+      "item": "Dark soy sauce (30 ml)"
     },
     {
       "qty": "2 cups",
-      "item": "water (475 ml)"
+      "item": "Water (475 ml)"
     },
     {
       "qty": "4",
-      "item": "hard-boiled eggs, peeled (optional)",
+      "item": "Hard-boiled eggs",
+      "note": "peeled",
       "optional": true
     },
     {
-      "item": "steamed white rice, to serve"
+      "item": "Steamed white rice",
+      "note": "to serve"
     },
     {
       "group": "Spice bundle",
       "items": [
         {
           "qty": "3",
-          "item": "star anise"
+          "item": "Star anise"
         },
         {
           "qty": "1",
-          "item": "cinnamon stick (Chinese cassia)"
+          "item": "Cinnamon stick (Chinese cassia)"
         },
         {
           "qty": "6",
-          "item": "whole cloves"
+          "item": "Whole cloves"
         },
         {
           "qty": "3",
-          "item": "bay leaves"
+          "item": "Bay leaves"
         },
         {
           "qty": "2 tsp",
@@ -101,11 +107,11 @@
         },
         {
           "qty": "2 pieces",
-          "item": "dried tangerine peel"
+          "item": "Dried tangerine peel"
         },
         {
           "qty": "2 slices",
-          "item": "fresh ginger"
+          "item": "Fresh ginger"
         }
       ]
     }
@@ -113,7 +119,7 @@
   "steps": [
     {
       "do": "Tie all the spice bundle ingredients into a square of cheesecloth with kitchen string, so they can be fished out whole before reducing.",
-      "uses": ["star anise", "cinnamon stick (Chinese cassia)", "whole cloves", "bay leaves", "Sichuan peppercorns", "dried tangerine peel", "fresh ginger"],
+      "uses": ["Star anise", "Cinnamon stick (Chinese cassia)", "Whole cloves", "Bay leaves", "Sichuan peppercorns", "Dried tangerine peel", "Fresh ginger"],
       "hands": "3 min",
       "prep": true
     },
@@ -122,30 +128,30 @@
       "hands": "8 min",
       "prep": true,
       "prepOnly": true,
-      "uses": ["skin-on pork belly, cut into 1/2 in pieces", "onion, diced (or 2 to 3 shallots)", "shiitake mushrooms, fresh or dried, cut into 1/2 in dice", "hard-boiled eggs, peeled (optional)"]
+      "uses": ["Skin-on pork belly", "Onion", "Shiitake mushrooms, fresh or dried", "Hard-boiled eggs"]
     },
     {
       "do": "Bring enough water to cover the pork to a boil. Blanch the pork belly 1 minute, drain, and rinse off any scum.",
       "wait": "1 min",
-      "uses": ["skin-on pork belly, cut into 1/2 in pieces"],
+      "uses": ["Skin-on pork belly"],
       "hands": "2 min",
       "burner": true
     },
     {
       "do": "Warm the oil in a wok over low heat and add the sugar. Once it starts to melt, add the onion, raise the heat to medium-high and stir-fry 1 minute. Add the mushrooms and stir-fry 2 minutes more.",
-      "uses": ["neutral oil", "rock sugar (or 1 1/2 tbsp granulated sugar)", "onion, diced (or 2 to 3 shallots)", "shiitake mushrooms, fresh or dried, cut into 1/2 in dice"],
+      "uses": ["Neutral oil", "Rock sugar (or 1 1/2 tbsp granulated sugar)", "Onion", "Shiitake mushrooms, fresh or dried"],
       "hands": "5 min",
       "burner": true
     },
     {
       "do": "Add the pork, Shaoxing wine, both soy sauces and the water, and bring to a boil. Drop in the spice bundle and the eggs, then turn the heat to its lowest setting.",
-      "uses": ["Shaoxing wine (60 ml)", "light soy sauce (45 ml)", "dark soy sauce (30 ml)", "water (475 ml)", "hard-boiled eggs, peeled (optional)"],
+      "uses": ["Shaoxing wine (60 ml)", "Light soy sauce (45 ml)", "Dark soy sauce (30 ml)", "Water (475 ml)", "Hard-boiled eggs"],
       "hands": "2 min",
       "burner": true
     },
     {
       "do": "Start the rice your usual way. It has the whole simmer to cook, and a rice cooker keeps it warm until the pork is done.",
-      "uses": ["steamed white rice, to serve"],
+      "uses": ["Steamed white rice"],
       "hands": "2 min"
     },
     {
@@ -162,7 +168,7 @@
     },
     {
       "do": "Spoon the pork and sauce over steamed rice, with an egg (halved) in each bowl.",
-      "uses": ["steamed white rice, to serve"],
+      "uses": ["Steamed white rice"],
       "hands": "2 min"
     }
   ],
