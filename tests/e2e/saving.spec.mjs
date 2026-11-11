@@ -166,6 +166,49 @@ test.describe("the editor's Save", () => {
   });
 });
 
+// A draft is kept in the browser. If the recipe was saved since (from another
+// device or tab), bringing the draft back mustn't quietly undo that save.
+test.describe("unsaved drafts and newer versions", () => {
+  const draftFull = (page, slug) => page.evaluate((s) => JSON.parse(localStorage.getItem(`sss:draft:${s}`)), slug);
+  // Leaves a draft (title changed) as if made on the given version, then opens the editor again.
+  async function leaveDraft(page, base) {
+    await page.evaluate(([b]) => {
+      const kept = JSON.parse(localStorage.getItem("sss:draft:pork-carnitas"));
+      localStorage.setItem("sss:draft:pork-carnitas", JSON.stringify({ ...kept, base: b }));
+    }, [base]);
+    await page.reload();
+  }
+
+  test("a draft remembers which version of the recipe it was made from", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    expect((await draftFull(page, "pork-carnitas")).base).toBe(versionOf("pork-carnitas"));
+  });
+
+  test("a draft from the version on the site is offered back as before", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await leaveDraft(page, versionOf("pork-carnitas"));
+    const offer = page.getByRole("region", { name: "Unsaved changes" });
+    await expect(offer).toBeVisible();
+    await expect(offer).not.toContainText("saved since");
+  });
+
+  test("a draft from an older version says so, and saving it doesn't overwrite the newer one", async ({ page, baseURL }) => {
+    const older = "0".repeat(40);
+    const sent = await fakeWorker(page, "save", { status: 409, json: { error: "This recipe changed since you opened it. Your changes are kept in this browser: reload to see the new version, then bring your changes back if you still want them." } });
+    await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await leaveDraft(page, older);
+    const offer = page.getByRole("region", { name: "Unsaved changes" });
+    await expect(offer).toContainText("The recipe has been saved since you made these changes");
+    await offer.getByRole("button", { name: "Bring back my changes" }).click();
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("alert")).toContainText("This recipe changed since you opened it.");
+    expect(sent[0].body.baseSha).toBe(older);
+  });
+});
+
 test.describe("the editor's Delete", () => {
   const dialog = (page) => page.getByRole("dialog", { name: "Delete Pork Carnitas?" });
 
