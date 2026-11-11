@@ -6,6 +6,13 @@ import AxeBuilder from "@axe-core/playwright";
 import { test, expect, onMenu, signIn, EDITOR_INDEX } from "./fixtures.mjs";
 import { ROLLS, CHICKEN, NOODLES, readRecipe } from "./intake-samples.mjs";
 
+// Save is off until something changes, so the saving states change a step first.
+async function changeThenSave(page) {
+  await editorPreview(page).getByRole("button", { name: "Edit step 1" }).click();
+  await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+  await page.getByRole("button", { name: "Save" }).click();
+}
+
 const PAGES = [
   ["welcome page", "index.html", (page) => expect(page.locator('[data-count="all"]')).toHaveText("all 6")],
   ["index page", "recipes.html", (page) => expect(page.locator("#count")).toHaveText("6 recipes")],
@@ -198,6 +205,17 @@ const PAGES = [
     await editorPreview(page).getByRole("button", { name: "Braise until tender." }).click();
     await expect(page.getByRole("button", { name: "Split here" })).toBeVisible();
   }, null, editor],
+  ["editor on a phone, typing in a line, the site header out of the way", "edit.html?r=lemon-bars", async (page) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await editorPreview(page).getByRole("button", { name: "Edit step 2" }).press("Enter");
+    await expect(page.locator(".site-header")).toBeHidden();
+  }, null, editor],
+  ["editor after a rename that also changed a step", "edit.html?r=lemon-bars", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit Butter" }).click();
+    await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
+    await page.getByRole("button", { name: "Done" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Also updated step 1" })).toBeVisible();
+  }, null, editor],
   ["editor showing check errors", "edit.html?r=lemon-bars", async (page) => {
     // An ingredient with no name is an error (a rename isn't: it carries through to the steps).
     await editorPreview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
@@ -213,15 +231,15 @@ const PAGES = [
   ["editor with its to-do list", "edit.html?r=garlic-bread", (page) => expect(page.getByRole("region", { name: "To do" })).toBeVisible(), null, editor],
   ["editor in prep-first order", "edit.html?r=veg-stir-fry", (page) => expect(editorPreview(page).getByRole("switch", { name: "Prep first" })).toBeChecked(), null, editor],
   ["editor after publishing", "edit.html?r=pork-carnitas", async (page) => {
-    await page.getByRole("button", { name: "Save" }).click();
+    await changeThenSave(page);
     await expect(page.getByRole("link", { name: "See Pork Carnitas on the site" })).toBeVisible();
   }, null, editorSaving({ json: { slug: "pork-carnitas", title: "Pork Carnitas", sha: "1".repeat(40), commit: "c".repeat(40) } })],
   ["editor when the recipe changed since it was opened", "edit.html?r=pork-carnitas", async (page) => {
-    await page.getByRole("button", { name: "Save" }).click();
+    await changeThenSave(page);
     await expect(page.getByRole("alert")).toBeVisible();
   }, null, editorSaving({ status: 409, json: { error: "This recipe changed since you opened it. Your changes are kept in this browser: reload to see the new version, then bring your changes back if you still want them." } })],
   ["editor with problems the Worker found, and sign in again", "edit.html?r=pork-carnitas", async (page) => {
-    await page.getByRole("button", { name: "Save" }).click();
+    await changeThenSave(page);
     await expect(page.getByRole("alert")).toBeVisible();
   }, null, editorSaving({ status: 401, json: { error: "Your GitHub sign-in has expired. Sign in again." } })],
   ["editor's delete confirmation", "edit.html?r=pork-carnitas", async (page) => {

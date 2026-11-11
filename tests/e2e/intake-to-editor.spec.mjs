@@ -149,7 +149,8 @@ test.describe("saving a new recipe", () => {
     expect(JSON.stringify(sent[0].recipe)).not.toMatch(/reviewId|"review"/);
     expect(JSON.stringify(sent[0])).not.toContain("METHOD");
     await expect(page).toHaveURL(/edit\.html\?r=milk-rolls$/);
-    await expect(page.getByText(/^Editing/)).toContainText("recipes/milk-rolls.json");
+    // From then on it's an ordinary recipe: the bar names it and its section.
+    await expect(page.getByRole("region", { name: "Editing" })).toContainText("Editing · Baking");
     expect(await kept(page)).toBeNull();
 
     // The next save is an edit of the file it made.

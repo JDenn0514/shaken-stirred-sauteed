@@ -85,6 +85,18 @@ test.describe("the editor's Save", () => {
     await expect(page.getByLabel("Step", { exact: true })).toHaveCount(0);
   });
 
+  test("Ctrl+S (Cmd+S on a Mac) saves, with a line still open, and does nothing when nothing changed", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.keyboard.press("ControlOrMeta+s");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await page.keyboard.press("ControlOrMeta+s");
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent).toHaveLength(1);
+    expect(sent[0].body.recipe.steps[0]).toBe("Season the pork well.");
+  });
+
   test("typing in a Details field and clicking Save straight away saves what was typed", async ({ page, baseURL }) => {
     const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
     await openEditor(page, baseURL, "pork-carnitas");
@@ -118,6 +130,7 @@ test.describe("the editor's Save", () => {
   test("problems the Worker finds are listed", async ({ page, baseURL }) => {
     await fakeWorker(page, "save", { status: 422, json: { error: "This recipe has problems to fix before it can be saved.", problems: [`"Garlic butter" links to recipe "garlic-butter", which doesn't exist`] } });
     await openEditor(page, baseURL, "garlic-bread");
+    await retitle(page, "Garlic Bread", "Crusty Garlic Bread");
     await page.getByRole("button", { name: "Save" }).click();
     const alert = page.getByRole("alert");
     await expect(alert).toContainText("This recipe has problems to fix before it can be saved.");
@@ -138,6 +151,7 @@ test.describe("the editor's Save", () => {
   test("an account that can't push is told so, not given a failed save", async ({ page, baseURL }) => {
     await fakeWorker(page, "save", { status: 403, json: { error: "This account can't edit this site." } });
     await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("alert")).toHaveText("This account can't edit this site.");
   });

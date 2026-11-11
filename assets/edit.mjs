@@ -26,7 +26,7 @@ import * as M from "./edit-model.mjs";
 import { originalHTML, stepNotesHTML, ingredientNotesHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
 import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
-const { esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
+const { CATEGORIES, esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
 const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.SSSChecks;
 const ICONS = window.SSSIcons.KEYS;
@@ -160,6 +160,7 @@ function draw() {
     ? { value: active.value, start: active.selectionStart, end: active.selectionEnd } : null;
   focusKey = null;
   const { errors, warnings } = checks();
+  problemCount = errors.length;
   const name = fileName();
   const entry = indexEntry(name || "new-recipe", recipe, vocab);
   document.title = `${fresh ? "New recipe" : "Edit"}${recipe.title ? `: ${recipe.title}` : fresh ? "" : " a recipe"} · Shaken, Stirred & Sautéed`;
@@ -180,14 +181,15 @@ function draw() {
         <button class="btn" type="button" data-act="discard" data-key="discard">Discard them</button>
       </div>
     </section>` : ""}
-    <div class="edit-bar">
-      <p class="edit-kicker">${fresh ? `New recipe: ${name ? `it'll be saved as <code>recipes/${esc(name)}.json</code>` : "give it a title, and its file name is made from it"}`
-        : `Editing <code>recipes/${esc(slug)}.json</code>`}</p>
-      <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length || status?.saving ? ` disabled aria-describedby="save-why"` : ""}>Save</button>
-      <p class="edit-status" id="save-why" role="status">${errors.length ? `Fix ${errors.length === 1 ? "the problem" : `the ${errors.length} problems`} below to save.`
-        : status?.saving ? "Saving…"
-        : status?.published ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(slug)}">See ${esc(status.published)} on the site</a>`
-        : fresh ? "Fix what was read wrong, check the guesses against the original, then save it to the site." : ""}</p>
+    <div class="edit-bar" role="region" aria-label="Editing">
+      <div class="edit-name">
+        <p class="edit-title">${esc(recipe.title || (fresh ? "New recipe" : slug))}</p>
+        <p class="edit-kicker">${fresh ? `New recipe · ${name ? `will be saved as <code>recipes/${esc(name)}.json</code>` : "give it a title, and its file name is made from it"}`
+          : `Editing · ${esc(CATEGORIES[recipe.category]?.label || recipe.category || "")}`}</p>
+      </div>
+      <p class="edit-changes" id="edit-changes">${changesText()}</p>
+      <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length || status?.saving ? ` disabled aria-describedby="save-why"` : !unsaved() ? ` disabled aria-describedby="edit-changes"` : ""}>Save</button>
+      <p data-status-slot></p>
       ${status?.error ? `<div class="edit-save-error" role="alert">${failureHTML(status)}</div>` : ""}
     </div>
     ${errors.length ? `<section class="edit-problems" aria-labelledby="problems-h">
@@ -217,11 +219,24 @@ function draw() {
     ${fresh ? "" : deleteHTML()}
     </div></div>`;
 
+  // The status line is one element for the life of the page, moved into each
+  // new bar, so screen readers read out what it says as it changes.
+  root.querySelector("[data-status-slot]").replaceWith(statusLine);
+  const said = errors.length ? `Fix ${errors.length === 1 ? "the problem" : `the ${errors.length} problems`} below to save.`
+    : status?.saving ? "Saving…"
+    : status?.published ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(slug)}">See ${esc(status.published)} on the site</a>`
+    : note ? esc(note)
+    : !unsaved() ? ""
+    : fresh ? "Fix what was read wrong, check the guesses against the original, then save it to the site." : "";
+  if (statusLine.innerHTML !== said) statusLine.innerHTML = said;
   decorate(root.querySelector(".edit-preview"), errors, showPrepFirst);
   root.querySelectorAll(".edit-card a[href]").forEach((a) => { a.tabIndex = -1; a.setAttribute("aria-disabled", "true"); });
   if (imported) importNotes(root.querySelector(".edit-preview"), imported);
   const back = key && root.querySelector(`[data-key="${CSS.escape(key)}"]`);
   if (back) back.focus();
+  // A redraw can drop focus without a focusout, so check where it is now.
+  typingInLine(inLineField(document.activeElement));
+  measureBars();
   if (back && live && "value" in back) {
     back.value = live.value;
     // Some fields (type="url") have no cursor position to set.
@@ -715,6 +730,7 @@ function update(next, after) {
   recipe = next;
   offer = null;
   status = null;
+  note = null;
   keepDraft();
   if (after) after();
   draw();
@@ -736,8 +752,11 @@ root.addEventListener("submit", (e) => {
   e.preventDefault();
   const f = e.target;
   const was = editing;
+  // What the line was when it opened: a rename carries through to the steps as it's typed.
+  const base = (f.dataset.form === "ing" && opened?.before) || recipe;
   let next = applyForm(f);
   if (f.dataset.form === "group") next = M.renameGroup(next, f.dataset.list, Number(f.dataset.g), new FormData(f).get("group"));
+  const touched = f.dataset.form === "ing" || (f.dataset.form === "group" && f.dataset.list === "ingredients") ? stepsTouched(base, next) : null;
   if (f.dataset.form === "new-group") {
     const name = String(new FormData(f).get("group") || "").trim();
     if (!name) { editing = null; focusKey = `add-group-${f.dataset.list}`; return draw(); }
@@ -747,18 +766,86 @@ root.addEventListener("submit", (e) => {
   }
   editing = null;
   opened = null;
-  update(next, () => { focusKey = was ? partKey(was) : null; });
+  update(next, () => {
+    focusKey = was ? partKey(was) : null;
+    if (touched) note = `Also updated ${touched}, which ${touched.startsWith("steps") ? "use" : "uses"} ${f.dataset.form === "group" ? "that group" : "it"}.`;
+  });
 });
+
+// The bar sticks under the site header, whose height changes with the screen,
+// and what sticks below the bar needs the bar's height: both are measured into
+// CSS properties (set from here, as the page's CSP allows no inline styles).
+const siteHeader = document.querySelector(".site-header");
+function measureBars() {
+  const css = document.documentElement.style;
+  css.setProperty("--header-h", `${siteHeader?.offsetHeight || 0}px`);
+  css.setProperty("--edit-bar-h", `${root.querySelector(".edit-bar")?.offsetHeight || 0}px`);
+}
+if (window.ResizeObserver && siteHeader) new ResizeObserver(measureBars).observe(siteHeader);
+
+// On a phone, with the keyboard up, there's little room: while you type in an
+// open line the site header steps aside (style.css), leaving the bar at the top.
+const inLineField = (el) => !!el?.closest?.(".edit-form") && ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName);
+function typingInLine(on) {
+  if (document.body.classList.contains("edit-typing") === on) return;
+  document.body.classList.toggle("edit-typing", on);
+  measureBars();
+}
+document.addEventListener("focusin", (e) => typingInLine(inLineField(e.target)));
+document.addEventListener("focusout", (e) => { if (!inLineField(e.relatedTarget)) typingInLine(false); });
+
+// Whether there's anything to save: a new recipe always has, until it's saved.
+let typing = false; // a typed Details field changed, but saves only when you leave it
+const unsaved = () => fresh || typing || !same(recipe, original);
+const changesText = () => (fresh ? "Not saved yet" : unsaved() ? "Unsaved changes" : "No changes");
+const statusLine = Object.assign(document.createElement("p"), { className: "edit-status", id: "save-why" });
+statusLine.setAttribute("role", "status");
+let note = null; // what the last change also did, said on the status line until the next one
+// The steps whose uses differ between two versions of the recipe, as "step 1"
+// or "steps 3 and 4" (numbered as on the recipe page), or null for none.
+function stepsTouched(a, b) {
+  const was = flat(a.steps), now = flat(b.steps);
+  const ns = now.map((s, n) => (JSON.stringify(s?.uses) !== JSON.stringify(was[n]?.uses) ? n + 1 : 0)).filter(Boolean);
+  if (!ns.length) return null;
+  return ns.length === 1 ? `step ${ns[0]}` : `steps ${ns.slice(0, -1).join(", ")} and ${ns.at(-1)}`;
+}
+let problemCount = 0; // the checker's errors at the last draw
+// Typing doesn't redraw the page, so the bar's words and Save follow along here.
+function showChanges() {
+  const el = root.querySelector(".edit-changes");
+  if (el) el.textContent = changesText();
+  const button = root.querySelector('[data-act="save"]');
+  if (!button || problemCount || status?.saving) return;
+  // Off only for want of changes here: the bar's "No changes" says why.
+  button.disabled = !unsaved();
+  if (button.disabled) button.setAttribute("aria-describedby", "edit-changes"); else button.removeAttribute("aria-describedby");
+}
 
 // What's typed in an open line goes into the recipe (and its draft) as it's
 // typed, so opening another line, Save or a reload never loses it. Done only
 // closes the line; Cancel puts it back as it was.
 root.addEventListener("input", (e) => {
+  // A typed field in Details is saved when you leave it, but it's a change
+  // now: Save has to be on for a click that comes straight after.
+  if (!e.target.closest(".edit-form") && e.target.dataset?.act && typed(e.target)) { typing = true; return showChanges(); }
   const form = e.target.closest(".edit-form");
   if (!form || !["about", "ing", "step"].includes(form.dataset.form)) return;
   recipe = applyForm(form);
   offer = null;
   keepDraft();
+  showChanges();
+});
+
+// Ctrl+S (Cmd+S on a Mac) saves, as Save does, and never opens the browser's
+// own Save dialog. It does nothing while Save is off.
+document.addEventListener("keydown", (e) => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || e.key.toLowerCase() !== "s" || !recipe) return;
+  e.preventDefault();
+  finishPending();
+  // Typing doesn't redraw, so the problems are counted afresh.
+  if (checks().errors.length || status?.saving || !unsaved()) return draw();
+  editing = null;
+  save();
 });
 
 root.addEventListener("keydown", (e) => {
@@ -860,10 +947,15 @@ function formAction(a, form) {
     return update(added, () => { openLine(`${kind}:${at}`, { added: true, back: `part-${kind}-${n}`, before: added }); focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
   }
   if (a === "remove") {
+    const kept = next;
     next = kind === "ing" ? M.removeIngredient(next, n) : M.removeStep(next, n);
     editing = null;
     const left = flat(next[list]).length;
-    return update(next, () => { focusKey = left ? `part-${kind}-${Math.min(n, left - 1)}` : `add-${list}`; });
+    const touched = kind === "ing" ? stepsTouched(kept, next) : null;
+    return update(next, () => {
+      focusKey = left ? `part-${kind}-${Math.min(n, left - 1)}` : `add-${list}`;
+      if (touched) note = `Also updated ${touched}, which used it.`;
+    });
   }
   if (a === "split") {
     const area = form.querySelector("textarea[name=do]");
@@ -888,6 +980,7 @@ let pressing = false;
 function finishPending() {
   const run = pending;
   pending = null;
+  typing = false;
   if (run) { clearTimeout(run.timer); run.fn(); }
 }
 const finishLater = () => setTimeout(() => { if (!pressing) finishPending(); });

@@ -1396,11 +1396,32 @@ body.cooking > .site-footer { display: none; }
 
 /* ---- Recipe editor (edit.html): the recipe as it will look, edited in place ---- */
 .edit { padding-top: 18px; padding-bottom: 48px; }
-.edit-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.edit-kicker { margin: 0; font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); flex: 1 1 auto; }
+/* The bar: the recipe's name, whether anything has changed, and Save. It
+   stays just under the site header as you scroll (edit.mjs measures both
+   into --header-h and --edit-bar-h). */
+.edit-bar {
+  position: sticky; top: var(--header-h, 0px); z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 10px 0;
+  background: var(--section-paper); border-bottom: 2px solid var(--section);
+}
+.edit-name { flex: 1 1 12rem; min-width: 0; }
+.edit-title {
+  margin: 0; font-family: var(--display); font-variation-settings: var(--soft); font-weight: 600;
+  font-size: 1.2rem; line-height: 1.15; color: var(--section); overflow-wrap: anywhere;
+}
+.edit-kicker { margin: 2px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .edit-kicker code { text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
+.edit-changes { margin: 0; font-size: .88rem; color: var(--muted); }
+/* Save in the section's colour, like "Start cooking"; off, a dashed outline with the reason beside it. */
+.edit-bar .edit-primary { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section-fill); }
+.edit-bar .edit-primary:disabled { background: transparent; color: var(--muted); border: var(--rule) dashed var(--rule-strong); opacity: 1; }
+/* On a phone, while you type in an open line, the site header steps aside. */
+@media (max-width: 599px) { body.edit-typing .site-header { display: none; } }
+/* Sticky parts of the page sit below the bar too. */
+.edit .recipe > .section:has(> .ingredients) { top: calc(var(--header-h, 60px) + var(--edit-bar-h, 0px) + 12px); }
 .edit-status { flex: 1 1 100%; margin: 0; font-size: .92rem; color: var(--muted); }
-.edit-status:empty { display: none; }
+/* Kept in the page when empty (it's a live region, read out when it fills), but taking no room. */
+.edit-status:empty { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .edit-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
 .edit-primary:disabled { opacity: .5; cursor: not-allowed; }
 .edit-note, .edit-problems, .edit-todo { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
@@ -1522,6 +1543,7 @@ body.cooking > .site-footer { display: none; }
   .with-original.has-original { grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); column-gap: 28px; }
   .with-original.has-original > .with-original-main { grid-column: 1; grid-row: 1; min-width: 0; }
   .with-original.has-original > .original { grid-column: 2; grid-row: 1; align-self: start; position: sticky; top: 84px; }
+  .edit .with-original.has-original > .original { top: calc(var(--header-h, 60px) + var(--edit-bar-h, 0px) + 12px); }
   .original-toggle { display: none; }
   .original-body { max-height: calc(100vh - 170px); overflow: auto; }
   .edit.edit-wide { max-width: 1120px; }
