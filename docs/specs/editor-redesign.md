@@ -290,12 +290,14 @@ These were found with axe (including the newer WCAG 2.2 checks) and by driving t
 
 Each item is one candidate pull request. S is about a day or less, M a few days, L a week or more. Each one starts with a failing test, per the testing rules. Browser tests check what you see (roles, labels, text) and use the keyboard to check where focus lands.
 
-1. **(S) Edit button on each step, plus "Add a step after this".** This is the change already agreed.
+A step is marked **Done** once its pull request is merged.
+
+1. **Done** (#44, 2026-11-10). **(S) Edit button on each step, plus "Add a step after this".** This is the change already agreed.
    - Model: `add(recipe, key, {after: n})` inserts into the same group as step n (`edit-model.mjs:227-233`). It gets unit tests, including across groups and on an imported recipe (the new step needs an intake id).
    - UI: a visible "Edit" button on each step line (named "Edit step 3"), and "Add a step after this" in the open step form.
    - Browser test: add after step 2 of 4 and see it as step 3.
-2. **(S) Ingredients get the same.** An "Edit" button on each ingredient, "Add an ingredient after this", and the form focuses the field for the part you tapped (amount or name).
-3. **(M) Never lose typing.**
+2. **Done** (#45, 2026-11-10). **(S) Ingredients get the same.** An "Edit" button on each ingredient, "Add an ingredient after this", and the form focuses the field for the part you tapped (amount or name).
+3. **Done** (#46, 2026-11-10). **(M) Never lose typing.**
    - Keep the open form's text when you tap another line, and before Save.
    - Add a visible Cancel. Cancel on a just-added empty line removes it.
    - Escape focus on group forms.
@@ -305,7 +307,7 @@ Each item is one candidate pull request. S is about a day or less, M a few days,
      - switch lines and the text is kept;
      - Save with a form open sends the open text;
      - the sign-in-expired (401) case keeps it too.
-4. **(S) Fix the focus jump in Details.** Test: Tab from "Hands-on time" lands on the next field.
+4. **Done** (#48, 2026-11-11). **(S) Fix the focus jump in Details.** Test: Tab from "Hands-on time" lands on the next field.
 5. **(S) Make the editor look like the sheet again.**
    - Numbering 1–n across groups.
    - Uppercase group headings.
