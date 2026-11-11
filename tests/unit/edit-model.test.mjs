@@ -302,3 +302,93 @@ describe("the ingredients a step uses", () => {
 
   test("an empty list is taken out", () => assert.equal(M.setUses(bars(), 0, []).steps[0].uses, undefined));
 });
+
+// A step's "uses" names its ingredients, so renaming, removing, moving or
+// regrouping an ingredient has to change the steps that use it too, or the
+// checker turns Save off. Steps that don't use it stay exactly as they were.
+describe("changing an ingredient carries through to the steps that use it", () => {
+  const pie = () => ({
+    title: "Pie",
+    ingredients: [
+      { group: "Crust", items: [{ item: "Flour", reviewId: "i1" }, { item: "Sugar" }, { item: "Butter" }] },
+      { group: "Filling", items: [{ item: "Sugar" }, { qty: "1 cup", item: "Whole milk" }] },
+    ],
+    steps: [
+      { do: "Rub in the butter.", uses: ["Flour", { group: "Crust", item: "Sugar" }, "butter"] },
+      { do: "Warm the milk.", uses: [{ item: "Whole milk", amount: "half" }, "Vanilla"] },
+      { do: "Whisk the filling.", uses: [{ group: "Filling", item: "Sugar" }, "Whole milk"] },
+      { do: "Bake.", oven: "180C" },
+    ],
+  });
+  const usesOfStep = (r, n) => flat(r.steps)[n].uses;
+
+  test("renaming an ingredient renames it in every step that uses it, keeping amounts", () => {
+    const r = M.updateIngredient(pie(), 4, { item: "Milk" });
+    assert.deepEqual(usesOfStep(r, 1), [{ item: "Milk", amount: "half" }, "Vanilla"]);
+    assert.deepEqual(usesOfStep(r, 2), [{ group: "Filling", item: "Sugar" }, "Milk"]);
+    assert.deepEqual(usesOfStep(r, 0), usesOfStep(pie(), 0));
+    assert.deepEqual(flat(r.steps)[3], flat(pie().steps)[3]);
+  });
+
+  test("a name that matched nothing stays, so its error still says what to fix", () => {
+    const r = M.updateIngredient(pie(), 4, { item: "Milk" });
+    assert.ok(usesOfStep(r, 1).includes("Vanilla"));
+  });
+
+  test("renaming one of two same-named ingredients: neither needs its group any more", () => {
+    const r = M.updateIngredient(pie(), 1, { item: "Brown sugar" });
+    assert.deepEqual(usesOfStep(r, 0), ["Flour", "Brown sugar", "butter"]);
+    // The filling's Sugar is still found by its group, so its step is left alone.
+    assert.deepEqual(usesOfStep(r, 2), usesOfStep(pie(), 2));
+  });
+
+  test("renaming into a name another group uses: both get their group", () => {
+    const r = M.updateIngredient(pie(), 4, { item: "Flour" });
+    assert.deepEqual(usesOfStep(r, 0), [{ group: "Crust", item: "Flour" }, { group: "Crust", item: "Sugar" }, "butter"]);
+    assert.deepEqual(usesOfStep(r, 1), [{ group: "Filling", item: "Flour", amount: "half" }, "Vanilla"]);
+    assert.deepEqual(usesOfStep(r, 2), [{ group: "Filling", item: "Sugar" }, { group: "Filling", item: "Flour" }]);
+  });
+
+  test("typing over a name, through an empty one, keeps the link", () => {
+    let r = M.updateIngredient(pie(), 4, { item: "" });
+    r = M.updateIngredient(r, 4, { item: "M" });
+    r = M.updateIngredient(r, 4, { item: "Milk" });
+    assert.deepEqual(usesOfStep(r, 1), [{ item: "Milk", amount: "half" }, "Vanilla"]);
+  });
+
+  test("putting a renamed ingredient back as it was puts its steps back too", () => {
+    const renamed = M.updateIngredient(pie(), 4, { item: "Milk" });
+    assert.deepEqual(M.putBack(renamed, pie(), "ing:4").steps, pie().steps);
+  });
+
+  test("a rename keeps the intake's marks on the ingredient", () => {
+    assert.equal(flat(M.updateIngredient(pie(), 0, { item: "Plain flour" }).ingredients)[0].reviewId, "i1");
+  });
+
+  test("removing an ingredient takes it out of the steps that use it", () => {
+    const r = M.removeIngredient(pie(), 4);
+    assert.deepEqual(usesOfStep(r, 1), ["Vanilla"]);
+    assert.deepEqual(usesOfStep(r, 2), [{ group: "Filling", item: "Sugar" }]);
+    assert.deepEqual(usesOfStep(r, 0), usesOfStep(pie(), 0));
+  });
+
+  test("removing one of two same-named ingredients leaves the other's steps as they were", () => {
+    const r = M.removeIngredient(pie(), 1);
+    assert.deepEqual(usesOfStep(r, 0), ["Flour", "butter"]);
+    assert.deepEqual(usesOfStep(r, 2), usesOfStep(pie(), 2));
+  });
+
+  test("renaming an ingredient group changes the group its steps name", () => {
+    const r = M.renameGroup(pie(), "ingredients", 1, "Custard");
+    assert.deepEqual(usesOfStep(r, 2), [{ group: "Custard", item: "Sugar" }, "Whole milk"]);
+    assert.deepEqual(usesOfStep(r, 0), usesOfStep(pie(), 0));
+  });
+
+  test("moving an ingredient into another group keeps its steps pointing at it", () => {
+    // Butter, the last of the crust, moves down into the filling.
+    const r = M.moveIngredient(pie(), 2, 1);
+    assert.equal(M.usesOf(r, 0).unmatched.length, 0);
+    assert.deepEqual(M.usesOf(r, 0).picks.map((p) => flat(r.ingredients)[p.ing].item), ["Flour", "Sugar", "Butter"]);
+    assert.equal(M.usesOf(r, 2).unmatched.length, 0);
+  });
+});
