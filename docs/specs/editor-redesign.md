@@ -315,7 +315,7 @@ A step is marked **Done** once its pull request is merged.
    - Lettering at rest, and the clean ingredient form.
    - 16px inputs.
    - Full-width sheet on laptops (drop the 760px cap).
-6. **(S–M) Renaming or removing an ingredient carries through to its steps.**
+6. **Done** (#50, 2026-11-11). **(S–M) Renaming or removing an ingredient carries through to its steps.**
    - Use the checker's own matching rule (name plus group when names repeat).
    - Group renames update uses too.
    - Status: "Also updated steps 1 and 3".
