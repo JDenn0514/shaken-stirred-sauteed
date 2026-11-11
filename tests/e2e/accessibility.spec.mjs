@@ -304,6 +304,17 @@ const PAGES = [
     await page.reload();
     await expect(page.getByRole("button", { name: "Bring back my changes" })).toBeVisible();
   }, null, editor],
+  ["editor offering back a draft made before a newer save", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Pork Carnitas" }).click();
+    await page.getByLabel("Title").fill("Carnitas, Edited");
+    await page.getByRole("button", { name: "Done" }).click();
+    await page.evaluate(() => {
+      const kept = JSON.parse(localStorage.getItem("sss:draft:pork-carnitas"));
+      localStorage.setItem("sss:draft:pork-carnitas", JSON.stringify({ ...kept, base: "0".repeat(40) }));
+    });
+    await page.reload();
+    await expect(page.getByText("The recipe has been saved since you made these changes")).toBeVisible();
+  }, null, editor],
 ];
 
 // Signed in: the hint cookie the Worker sets (/api/ is faked by the fixture),

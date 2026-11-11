@@ -95,7 +95,9 @@ function keepDraft() {
     // A new recipe is the intake's review, kept as the intake keeps it.
     if (fresh) localStorage.setItem(KEPT_REVIEW, JSON.stringify(toKeep(withReview(), { original: source })));
     else if (same(recipe, original)) localStorage.removeItem(draftKey());
-    else localStorage.setItem(draftKey(), JSON.stringify({ recipe, at: new Date().toISOString() }));
+    // base: the version of the recipe the draft was made from, so a draft made
+    // before a newer save (on another device or tab) can say so.
+    else localStorage.setItem(draftKey(), JSON.stringify({ recipe, at: new Date().toISOString(), base: version }));
   } catch {}
 }
 
@@ -176,6 +178,7 @@ function draw() {
     ${offer ? `<section class="edit-note" aria-labelledby="draft-h">
       <h2 id="draft-h">Unsaved changes</h2>
       <p>You changed this recipe on ${esc(new Date(offer.at).toLocaleString())} and didn't save. Editing it now starts from the recipe as it is on the site.</p>
+      ${offer.base && offer.base !== version ? `<p><strong>The recipe has been saved since you made these changes</strong>, on another device or in another tab. If you bring them back, Save will stop and say so rather than replace what was saved.</p>` : ""}
       <div class="edit-row">
         <button class="btn edit-primary" type="button" data-act="restore" data-key="restore">Bring back my changes</button>
         <button class="btn" type="button" data-act="discard" data-key="discard">Discard them</button>
@@ -885,6 +888,9 @@ root.addEventListener("click", (e) => {
   if (form && ["add-after", "move-up", "move-down", "split", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
     const draft = offer;
+    // A draft made on an older version saves against that version, so the
+    // Worker refuses it rather than quietly undoing the newer save.
+    if (draft.base) version = draft.base;
     return update(draft.recipe, () => { focusKey = "part-title"; });
   }
   if (a === "discard") {
