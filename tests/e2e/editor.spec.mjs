@@ -167,6 +167,74 @@ test.describe("ingredients, by keyboard", () => {
   });
 });
 
+test.describe("undo and redo", () => {
+  const undo = (page) => page.getByRole("button", { name: "Undo" });
+  const redo = (page) => page.getByRole("button", { name: "Redo" });
+  async function editStep1(page, text) {
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill(text);
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+  }
+
+  test("Undo takes back a whole edit, and Redo puts it back, focusing the line", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await expect(undo(page)).toBeDisabled();
+    await expect(redo(page)).toBeDisabled();
+    await editStep1(page, "Season the pork well.");
+    await undo(page).press("Enter");
+    expect((await stepTexts(page))[0]).toBe("Season the pork.");
+    await expect(preview(page).getByRole("button", { name: "Season the pork.", exact: true })).toBeFocused();
+    await expect(page.getByRole("region", { name: "Editing" }).getByRole("status")).toHaveText("Undone.");
+    await redo(page).press("Enter");
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+  });
+
+  test("each edit is one step back", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await editStep1(page, "Season the pork well.");
+    await editStep1(page, "Salt the pork.");
+    await undo(page).press("Enter");
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+    await undo(page).press("Enter");
+    expect((await stepTexts(page))[0]).toBe("Season the pork.");
+    await expect(undo(page)).toBeDisabled();
+  });
+
+  test("Undo brings back a removed line", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 3" }).press("Enter");
+    await page.getByRole("button", { name: "Remove" }).press("Enter");
+    expect(await stepTexts(page)).toHaveLength(3);
+    await undo(page).press("Enter");
+    expect(await stepTexts(page)).toHaveLength(4);
+    await expect(preview(page).getByRole("button", { name: "Shred the pork.", exact: true })).toBeFocused();
+  });
+
+  test("Undo with a line open takes back what's typed in it and closes it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await expect(undo(page)).toBeEnabled();
+    await undo(page).press("Enter");
+    await expect(page.getByLabel("Step", { exact: true })).toHaveCount(0);
+    expect((await stepTexts(page))[0]).toBe("Season the pork.");
+  });
+
+  test("Ctrl+Z undoes and Shift+Ctrl+Z redoes, but inside a text field they're the field's own", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await editStep1(page, "Season the pork well.");
+    // Focus is back on the step's line, outside any text field.
+    await page.keyboard.press("ControlOrMeta+z");
+    expect((await stepTexts(page))[0]).toBe("Season the pork.");
+    await page.keyboard.press("ControlOrMeta+Shift+z");
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).press("ControlOrMeta+z");
+    await expect(page.getByLabel("Step", { exact: true })).toBeVisible();
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+  });
+});
+
 test.describe("the editor's bar", () => {
   const bar = (page) => page.getByRole("region", { name: "Editing" });
 

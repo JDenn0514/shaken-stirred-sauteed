@@ -1423,6 +1423,8 @@ body.cooking > .site-footer { display: none; }
 .edit-bar .edit-primary:disabled { background: transparent; color: var(--muted); border: var(--rule) dashed var(--rule-strong); opacity: 1; }
 /* On a phone, while you type in an open line, the site header steps aside. */
 @media (max-width: 599px) { body.edit-typing .site-header { display: none; } }
+/* Undo and Redo when there's nothing to take back or put back: the same dashed outline as Save. */
+.edit-history .btn:disabled { background: transparent; color: var(--muted); border: var(--rule) dashed var(--rule-strong); cursor: default; }
 /* Sticky parts of the page sit below the bar too. */
 .edit .recipe > .section:has(> .ingredients) { top: calc(var(--header-h, 60px) + var(--edit-bar-h, 0px) + 12px); }
 .edit-status { flex: 1 1 100%; margin: 0; font-size: .92rem; color: var(--muted); }

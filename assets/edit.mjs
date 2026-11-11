@@ -191,6 +191,10 @@ function draw() {
           : `Editing · ${esc(CATEGORIES[recipe.category]?.label || recipe.category || "")}`}</p>
       </div>
       <p class="edit-changes" id="edit-changes">${changesText()}</p>
+      <div class="edit-row edit-history">
+        <button class="btn" type="button" data-act="undo" data-key="undo"${canUndo() ? "" : " disabled"}>Undo</button>
+        <button class="btn" type="button" data-act="redo" data-key="redo"${future.length ? "" : " disabled"}>Redo</button>
+      </div>
       <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length || status?.saving ? ` disabled aria-describedby="save-why"` : !unsaved() ? ` disabled aria-describedby="edit-changes"` : ""}>Save</button>
       <p data-status-slot></p>
       ${status?.error ? `<div class="edit-save-error" role="alert">${failureHTML(status)}</div>` : ""}
@@ -664,6 +668,7 @@ async function save() {
     original = structuredClone(recipe);
     version = done.sha;
     keepDraft();
+    forgetHistory();
     status = { published: recipe.title || slug };
   }
   focusKey = "save";
@@ -690,6 +695,7 @@ async function saveNew() {
     review = null;
     source = null;
     history.replaceState(null, "", `edit.html?r=${encodeURIComponent(slug)}`);
+    forgetHistory();
     status = { published: saved.title || slug };
   }
   focusKey = "save";
@@ -709,6 +715,7 @@ function partKey(target) {
 // added: the line was just added, so Cancel takes it out again. back: what
 // to focus after Cancel (the part's own line, unless it was just added).
 function openLine(target, { added = false, back = partKey(target), before = recipe } = {}) {
+  commit(); // what was typed in the line being left is one step
   editing = target;
   opened = { before, added, back };
 }
@@ -729,11 +736,74 @@ function cancel() {
   draw();
 }
 
+// --- Undo and redo ----------------------------------------------------------------------------
+// Each change that lands (Done, Remove, a Details choice...) is a step back.
+// What's typed in an open line becomes one step when the line closes or
+// another opens, so Undo takes back a whole edit, not a letter. A new
+// recipe's steps keep its review too. Up to 50, cleared on Save.
+const UNDO_LIMIT = 50;
+let past = [], future = [];
+let committed = null; // the recipe (and review) as of the last step
+const snapshot = () => ({ recipe: structuredClone(recipe), review: review && structuredClone(review) });
+// Anything changed since the last step: the recipe, or a new recipe's review.
+const typedSince = () => committed && (!same(committed.recipe, recipe) || !same(committed.review ?? null, review ?? null));
+function commit() {
+  if (typedSince()) {
+    past.push(committed);
+    if (past.length > UNDO_LIMIT) past.shift();
+    future = [];
+  }
+  committed = snapshot();
+}
+function forgetHistory() {
+  past = [];
+  future = [];
+  committed = snapshot();
+}
+// The first line that differs between two versions, to focus after an undo.
+function changedLine(a, b) {
+  if (["title", "description", "yield"].some((k) => a[k] !== b[k])) return "part-title";
+  for (const [list, kind] of [["ingredients", "ing"], ["steps", "step"]]) {
+    const was = flat(a[list]), now = flat(b[list]);
+    const i = Math.max(was.length, now.length);
+    for (let k = 0; k < i; k++) {
+      if (JSON.stringify(was[k]) !== JSON.stringify(now[k])) return now.length ? `part-${kind}-${Math.min(k, now.length - 1)}` : `add-${list}`;
+    }
+  }
+  return "undo";
+}
+function travel(from, to, said) {
+  const target = from.pop();
+  if (!target) return;
+  finishPending();
+  editing = null;
+  opened = null;
+  const was = recipe;
+  to.push(typedSince() ? snapshot() : committed);
+  recipe = structuredClone(target.recipe);
+  review = target.review && structuredClone(target.review);
+  committed = snapshot();
+  offer = null;
+  status = null;
+  note = said;
+  keepDraft();
+  focusKey = changedLine(was, recipe);
+  draw();
+}
+function undo() {
+  // What's typed in an open line, not yet a step, is taken back first.
+  if (typedSince()) { past.push(committed); committed = snapshot(); }
+  travel(past, future, "Undone.");
+}
+const redo = () => travel(future, past, "Redone.");
+const canUndo = () => past.length > 0 || !!typedSince();
+
 function update(next, after) {
   recipe = next;
   offer = null;
   status = null;
   note = null;
+  commit();
   keepDraft();
   if (after) after();
   draw();
@@ -817,6 +887,8 @@ let problemCount = 0; // the checker's errors at the last draw
 function showChanges() {
   const el = root.querySelector(".edit-changes");
   if (el) el.textContent = changesText();
+  const undoButton = root.querySelector('[data-act="undo"]');
+  if (undoButton) undoButton.disabled = !canUndo();
   const button = root.querySelector('[data-act="save"]');
   if (!button || problemCount || status?.saving) return;
   // Off only for want of changes here: the bar's "No changes" says why.
@@ -841,6 +913,18 @@ root.addEventListener("input", (e) => {
 
 // Ctrl+S (Cmd+S on a Mac) saves, as Save does, and never opens the browser's
 // own Save dialog. It does nothing while Save is off.
+// Ctrl+Z (Cmd+Z) undoes and Shift+Ctrl+Z (or Ctrl+Y) redoes, except in a
+// text field, where they're the field's own undo.
+document.addEventListener("keydown", (e) => {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey || !recipe) return;
+  const k = e.key.toLowerCase();
+  if (k !== "z" && k !== "y") return;
+  const t = e.target;
+  if (t.isContentEditable || t.tagName === "TEXTAREA" || (t.tagName === "INPUT" && !["checkbox", "radio", "button", "submit"].includes(t.type))) return;
+  e.preventDefault();
+  if (k === "y" || e.shiftKey) redo(); else undo();
+});
+
 document.addEventListener("keydown", (e) => {
   if (!(e.ctrlKey || e.metaKey) || e.altKey || e.key.toLowerCase() !== "s" || !recipe) return;
   e.preventDefault();
@@ -872,6 +956,8 @@ root.addEventListener("click", (e) => {
     return draw();
   }
   if (a === "cancel") return cancel();
+  if (a === "undo") return undo();
+  if (a === "redo") return redo();
   if (a === "edit") {
     openLine(b.dataset.target);
     focusKey = editing === "about" ? (b.dataset.key === "part-description" ? "edit-description" : b.dataset.key.startsWith("part-yield") ? "edit-yield" : "edit-title")
@@ -1080,6 +1166,7 @@ root.addEventListener("toggle", (e) => {
   ({ recipe: original, sha: version } = loaded);
   // (A new recipe starts in startNew, below.)
   recipe = structuredClone(original);
+  committed = snapshot();
   const draft = readDraft();
   if (draft?.recipe && !same(draft.recipe, original)) offer = draft;
   draw();
@@ -1103,5 +1190,6 @@ async function startNew() {
   recipe = r;
   review = rest;
   source = kept.original;
+  committed = snapshot();
   draw();
 }

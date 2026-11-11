@@ -17,18 +17,9 @@
   "added": "2026-09-02",
   "yield": "Serves 6 (about 6 cups)",
   "times": [
-    [
-      "Prep",
-      "15 min"
-    ],
-    [
-      "Grill",
-      "7 min"
-    ],
-    [
-      "Total",
-      "25 min"
-    ]
+    ["Prep", "15 min"],
+    ["Grill", "7 min"],
+    ["Total", "25 min"]
   ],
   "serve": "soon",
   "sits": "1 hr",
@@ -126,13 +117,10 @@
       "hands": "4 min",
       "prep": true,
       "prepOnly": true,
-      "uses": [
-        "Fresh corn"
-      ]
+      "uses": ["Fresh corn"]
     },
     {
-      "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
-      "wait": "7 min",
+      "do": "Heat the grill to medium, about 400°F.",
       "uses": [
         "Fresh corn",
         {
@@ -149,6 +137,15 @@
         }
       ],
       "hands": "3 min",
+      "holds": true,
+      "grill": true
+    },
+    {
+      "do": "Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper."
+    },
+    {
+      "do": "Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
+      "wait": "7 min",
       "watch": true,
       "grill": true
     },
@@ -166,7 +163,7 @@
       ]
     },
     {
-      "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob. Add the tomatoes, arugula, avocado, bell pepper, green onions, and cilantro. Dice the avocado right before it goes in; cut too early it softens and smears through the salad instead of holding its shape.",
+      "do": "Stand each cooled ear upright in a wide bowl and cut the kernels away from the cob.",
       "uses": [
         "Cherry tomatoes",
         "Packed arugula",
@@ -176,6 +173,12 @@
         "Chopped fresh cilantro"
       ],
       "hands": "6 min"
+    },
+    {
+      "do": "Add the tomatoes, arugula, bell pepper, green onions, and cilantro to corn."
+    },
+    {
+      "do": "Dice the avocado and add to the corn mix. Do this right before adding. If cut too early it softens and smears through the salad instead of holding its shape."
     },
     {
       "do": "Stir the lime juice, 2 Tbsp oil, honey, paprika, ¾ tsp salt, ¼ tsp pepper, and onion powder together in a small bowl. Pour over the salad and toss. Serve at room temperature — there's no mayo in it, so it sits happily on an outdoor table.",
