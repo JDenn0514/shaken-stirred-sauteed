@@ -380,21 +380,30 @@ async function toCrustBake(page) {
 const summarize = (violations) => violations.flatMap((v) =>
   v.nodes.map((n) => `${v.id} (${v.impact}): ${n.failureSummary.split("\n").slice(1).join(" ").trim()}\n    at ${n.target.join(" ")}`));
 
-for (const scheme of ["light", "dark"]) {
-  test.describe(`${scheme} mode`, () => {
-    test.use({ colorScheme: scheme });
+// Each page state is set up once and scanned in light mode, then in dark: the
+// theme follows the system setting live, so switching it needs no reload.
+// Reduced motion turns off the stylesheet's colour transitions, so the dark
+// scan never catches a colour halfway through changing.
+test.use({ colorScheme: "light", reducedMotion: "reduce" });
 
-    for (const [name, url, ready, menu, before] of PAGES) {
-      test(`${name} has no detectable accessibility problems`, async ({ page }) => {
-        if (menu) await onMenu(page, menu);
-        if (before) await before(page);
-        await page.goto(url);
-        await ready(page);
-        const { violations } = await new AxeBuilder({ page })
-          .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-          .analyze();
-        expect(summarize(violations)).toEqual([]);
-      });
-    }
+const scan = async (page) => {
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  return summarize(violations);
+};
+
+for (const [name, url, ready, menu, before] of PAGES) {
+  test(`${name} has no detectable accessibility problems, in light or dark mode`, async ({ page }) => {
+    if (menu) await onMenu(page, menu);
+    if (before) await before(page);
+    await page.goto(url);
+    await ready(page);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    expect.soft(await scan(page), "light mode").toEqual([]);
+
+    await page.emulateMedia({ colorScheme: "dark" });
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    expect(await scan(page), "dark mode").toEqual([]);
   });
 }

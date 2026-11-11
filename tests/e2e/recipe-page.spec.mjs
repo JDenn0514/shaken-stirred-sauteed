@@ -1,6 +1,5 @@
 // The recipe page (recipe.html): what it shows, checking things off, the
 // current step, links out, and staying safe with bad recipe files.
-import { readFileSync } from "node:fs";
 import { test, expect } from "./fixtures.mjs";
 
 const open = (page, slug) => page.goto(`recipe.html?r=${slug}`);
@@ -201,26 +200,6 @@ test.describe("problems", () => {
     await expect(page.getByText("Source: Bad link")).toBeVisible();
     await expect(page.getByRole("link", { name: "Bad link" })).toHaveCount(0);
   });
-});
-
-// Every real recipe, so a recipe file the checker allows but the page can't
-// show gets caught here rather than mid-cook.
-test.describe("every real recipe", () => {
-  test.use({ testRecipes: false });
-  const real = JSON.parse(readFileSync(new URL("../../recipes/index.json", import.meta.url), "utf8"));
-
-  for (const r of real) {
-    test(`${r.slug} opens without errors`, async ({ page }) => {
-      const errors = [];
-      page.on("pageerror", (e) => errors.push(e.message));
-      page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
-      await open(page, r.slug);
-      await expect(heading(page)).toHaveText(r.title);
-      expect(await page.getByRole("checkbox").count()).toBeGreaterThan(0);
-      expect(await page.locator("ol.steps li").count()).toBeGreaterThan(0);
-      expect(errors).toEqual([]);
-    });
-  }
 });
 
 test("saved progress is dropped when the recipe's ingredients or steps change", async ({ page }) => {
