@@ -546,6 +546,38 @@ test.describe("lineup fields in Details", () => {
     expect((await draftOf(page, "garlic-bread")).steps[1].oven).toBe(false);
   });
 
+  // Veg Stir-Fry's file order: 1 slice (added prep), 2 heat the wok, 3 stir the
+  // sauce (prep), 4 pat the tofu, 5 stir-fry, 6 pour. Prep first shows slice,
+  // sauce, wok...; as written hides the added prep step.
+  const giveBadHands = async (page, d, step) => {
+    await d.getByRole("group", { name: step }).getByLabel("Hands-on time").fill("soon");
+    await d.getByRole("group", { name: step }).getByLabel("Hands-on time").press("Tab");
+  };
+
+  test("messages and Details number the steps as the sheet does", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "veg-stir-fry");
+    const d = await details(page);
+    await expect(d.getByRole("group", { name: /^Step 3: Heat the wok/ })).toBeVisible();
+    await giveBadHands(page, d, /Heat the wok/);
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText('step 3: "hands" must be a time');
+    await expect(page.getByRole("region", { name: "Problems to fix" })).not.toContainText("step 2:");
+
+    await preview(page).getByRole("switch", { name: "Prep first" }).click();
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText('step 1: "hands" must be a time');
+  });
+
+  test("a hidden added prep step is named by its words, with a way to show it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "veg-stir-fry");
+    const d = await details(page);
+    await giveBadHands(page, d, /Slice the peppers/);
+    await preview(page).getByRole("switch", { name: "Prep first" }).click();
+    const problems = page.getByRole("region", { name: "Problems to fix" });
+    await expect(problems).toContainText('the added prep step "Slice the peppers and mince the garlic.": "hands" must be a time');
+    await problems.getByRole("button", { name: "Show prep first" }).click();
+    await expect(preview(page).getByRole("switch", { name: "Prep first" })).toBeChecked();
+    await expect(problems).toContainText('step 1: "hands" must be a time');
+  });
+
   test("an added prep step shows only in the prep-first preview", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
     await expect(preview(page).getByRole("switch", { name: "Prep first" })).toHaveCount(0);
