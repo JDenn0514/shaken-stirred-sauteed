@@ -216,6 +216,13 @@ const PAGES = [
     await page.getByRole("button", { name: "Done" }).click();
     await expect(page.getByRole("status").filter({ hasText: "Also updated step 1" })).toBeVisible();
   }, null, editor],
+  ["editor after an undo, with Redo on", "edit.html?r=lemon-bars", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit Butter" }).click();
+    await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
+    await page.getByRole("button", { name: "Done" }).click();
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect(page.getByRole("button", { name: "Redo" })).toBeEnabled();
+  }, null, editor],
   ["editor showing check errors", "edit.html?r=lemon-bars", async (page) => {
     // An ingredient with no name is an error (a rename isn't: it carries through to the steps).
     await editorPreview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
