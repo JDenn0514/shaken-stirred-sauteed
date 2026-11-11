@@ -83,13 +83,13 @@
     },
     {
       "item": "Fresh herbs",
-      "note": "optional; rosemary and thyme",
+      "note": "rosemary and thyme",
       "optional": true
     },
     {
       "qty": "2 cloves",
       "item": "Garlic",
-      "note": "optional, peeled and left whole",
+      "note": "peeled and left whole",
       "optional": true
     }
   ],

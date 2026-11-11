@@ -32,44 +32,46 @@
   "ingredients": [
     {
       "qty": "10 medium",
-      "item": "apples, a sweet and tart mix (about half Honeycrisp, half Granny Smith)"
+      "item": "Apples, a sweet and tart mix (about half Honeycrisp, half Granny Smith)"
     },
     {
       "qty": "1",
-      "item": "orange"
+      "item": "Orange"
     },
     {
       "qty": "4",
-      "item": "cinnamon sticks (or 1 tbsp ground cinnamon)"
+      "item": "Cinnamon sticks (or 1 tbsp ground cinnamon)"
     },
     {
       "qty": "1 tsp",
-      "item": "ground cloves (or 2 tsp whole cloves)"
+      "item": "Ground cloves (or 2 tsp whole cloves)"
     },
     {
+      "grams": 75,
       "qty": "6 tbsp",
-      "item": "granulated sugar (75 g), or to taste"
+      "item": "Granulated sugar",
+      "note": "or to taste"
     },
     {
-      "item": "water, just enough to cover"
+      "item": "Water, just enough to cover"
     }
   ],
   "steps": [
     {
       "do": "Peel the orange and put only the segments into a 4-quart or larger slow cooker; peel and pith make the cider bitter. Quarter the apples, cut out the cores and add them, then the cinnamon, cloves and sugar.",
       "uses": [
-        "apples, a sweet and tart mix (about half Honeycrisp, half Granny Smith)",
-        "orange",
-        "cinnamon sticks (or 1 tbsp ground cinnamon)",
-        "ground cloves (or 2 tsp whole cloves)",
-        "granulated sugar (75 g), or to taste"
+        "Apples, a sweet and tart mix (about half Honeycrisp, half Granny Smith)",
+        "Orange",
+        "Cinnamon sticks (or 1 tbsp ground cinnamon)",
+        "Ground cloves (or 2 tsp whole cloves)",
+        "Granulated sugar"
       ],
       "hands": "10 min"
     },
     {
       "do": "Pour in water until the fruit is just covered. Any more dilutes the flavor.",
       "uses": [
-        "water, just enough to cover"
+        "Water, just enough to cover"
       ],
       "hands": "1 min"
     },

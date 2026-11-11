@@ -613,7 +613,7 @@ test("a step using an ingredient that isn't there shows the checker's message an
 
 test("renaming an ingredient renames it in the steps that use it", async ({ page, baseURL }) => {
   await openEditor(page, baseURL, "lemon-bars");
-  await preview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
+  await preview(page).getByRole("button", { name: "8 tbsp Butter melted" }).click();
   await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
   await page.getByRole("button", { name: "Done" }).click();
   await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);

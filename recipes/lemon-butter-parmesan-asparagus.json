@@ -55,31 +55,37 @@
   "ingredients": [
     {
       "qty": "2 lb",
-      "item": "asparagus, trimmed"
+      "item": "Asparagus",
+      "note": "trimmed"
     },
     {
       "qty": "1",
-      "item": "lemon, half juiced and half sliced into rings"
+      "item": "Lemon",
+      "note": "half juiced and half sliced into rings"
     },
     {
       "qty": "4 tbsp",
-      "item": "unsalted butter, cut into pats"
+      "item": "Unsalted butter",
+      "note": "cut into pats"
     },
     {
       "qty": "1 tbsp",
-      "item": "olive oil"
+      "item": "Olive oil"
     },
     {
       "qty": "1 tsp",
-      "item": "sea salt, or to taste"
+      "item": "Sea salt",
+      "note": "or to taste"
     },
     {
       "qty": "1/2 tsp",
-      "item": "black pepper, freshly ground, or to taste"
+      "item": "Black pepper",
+      "note": "freshly ground, or to taste"
     },
     {
       "qty": "1/2 cup",
-      "item": "shredded parmesan cheese, or to taste"
+      "item": "Shredded parmesan cheese",
+      "note": "or to taste"
     }
   ],
   "steps": [
@@ -94,19 +100,19 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "asparagus, trimmed",
-        "lemon, half juiced and half sliced into rings",
-        "unsalted butter, cut into pats",
-        "shredded parmesan cheese, or to taste"
+        "Asparagus",
+        "Lemon",
+        "Unsalted butter",
+        "Shredded parmesan cheese"
       ]
     },
     {
       "do": "Arrange the trimmed asparagus in a single layer on a rimmed baking sheet. Drizzle with the olive oil, season with the salt and pepper, and roll to coat evenly.",
       "uses": [
-        "asparagus, trimmed",
-        "olive oil",
-        "sea salt, or to taste",
-        "black pepper, freshly ground, or to taste"
+        "Asparagus",
+        "Olive oil",
+        "Sea salt",
+        "Black pepper"
       ],
       "hands": "4 min",
       "prep": "just before"
@@ -114,8 +120,8 @@
     {
       "do": "Pour the lemon juice over the asparagus. Lay the lemon rings across the top third of the spears, then scatter the butter pats over the center.",
       "uses": [
-        "lemon, half juiced and half sliced into rings",
-        "unsalted butter, cut into pats"
+        "Lemon",
+        "Unsalted butter"
       ],
       "hands": "3 min",
       "prep": "just before"
@@ -141,7 +147,7 @@
       "do": "Scatter the parmesan over the center of the asparagus and broil 2 to 3 minutes, until melted and golden.",
       "wait": "2 to 3 min",
       "uses": [
-        "shredded parmesan cheese, or to taste"
+        "Shredded parmesan cheese"
       ],
       "hands": "30 sec",
       "watch": true,

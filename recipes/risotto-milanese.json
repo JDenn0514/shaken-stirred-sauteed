@@ -32,16 +32,19 @@
       "group": "Aromatic base",
       "items": [
         {
-          "qty": "28 g",
-          "item": "butter (2 tbsp)"
+          "grams": 28,
+          "qty": "2 tbsp",
+          "item": "Butter"
         },
         {
           "qty": "1",
-          "item": "shallot, minced"
+          "item": "Shallot",
+          "note": "minced"
         },
         {
-          "qty": "~100 g",
-          "item": "dry white wine (about 3 oz)"
+          "qty": "about 3 oz",
+          "ml": 100,
+          "item": "Dry white wine"
         }
       ]
     },
@@ -49,12 +52,14 @@
       "group": "Rice and liquid",
       "items": [
         {
-          "qty": "120 g",
-          "item": "arborio rice"
+          "grams": 120,
+          "item": "Arborio rice"
         },
         {
-          "qty": "~360 g",
-          "item": "broth (about 1 1/2 cups), 3 parts liquid to 1 part rice"
+          "qty": "about 1 1/2 cups",
+          "ml": 360,
+          "item": "Broth",
+          "note": "3 parts liquid to 1 part rice"
         }
       ]
     },
@@ -62,23 +67,26 @@
       "group": "To finish",
       "items": [
         {
-          "qty": "0.25 g",
-          "item": "saffron (a pinch)"
+          "grams": 0.25,
+          "qty": "a pinch",
+          "item": "Saffron"
         },
         {
           "qty": "splash",
-          "item": "water, to bloom the saffron"
+          "item": "Water, to bloom the saffron"
         },
         {
-          "qty": "~40 g",
-          "item": "Parmigiano Reggiano, finely grated, plus more to taste"
+          "grams": 40,
+          "item": "Parmigiano Reggiano",
+          "note": "finely grated, plus more to taste"
         },
         {
           "qty": "knob",
-          "item": "cold butter"
+          "item": "Cold butter"
         },
         {
-          "item": "salt, to taste"
+          "item": "Salt",
+          "note": "to taste"
         }
       ]
     }
@@ -90,16 +98,16 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "shallot, minced",
-        "Parmigiano Reggiano, finely grated, plus more to taste"
+        "Shallot",
+        "Parmigiano Reggiano"
       ]
     },
     {
       "do": "Melt the butter in a wide pan over medium heat. Cook the shallot 1 to 2 minutes, until soft and fragrant.",
       "wait": "1 to 2 min",
       "uses": [
-        "butter (2 tbsp)",
-        "shallot, minced"
+        "Butter",
+        "Shallot"
       ],
       "hands": "1 min",
       "watch": true,
@@ -108,7 +116,7 @@
     {
       "do": "Stir in the rice and keep it moving until every grain is glossy with fat and lightly toasted; this helps the grains hold their shape.",
       "uses": [
-        "arborio rice"
+        "Arborio rice"
       ],
       "hands": "2 min",
       "burner": true
@@ -116,7 +124,7 @@
     {
       "do": "Pour in the wine and scrape up the bottom of the pan. Let it cook down until almost gone, so its acidity stays and the raw alcohol edge doesn't.",
       "uses": [
-        "dry white wine (about 3 oz)"
+        "Dry white wine"
       ],
       "hands": "3 min",
       "burner": true
@@ -125,7 +133,7 @@
       "do": "Add about 80% of the broth, holding the rest back for adjusting at the end. Bring to a simmer over medium-high, stir once so nothing sticks, then drop to low.",
       "uses": [
         {
-          "item": "broth (about 1 1/2 cups), 3 parts liquid to 1 part rice",
+          "item": "Broth",
           "amount": "about 80%"
         }
       ],
@@ -141,8 +149,8 @@
     {
       "do": "While it cooks, drop the saffron into a little water to bloom. Crumble or grind it first, or use warm water, for a stronger infusion.",
       "uses": [
-        "saffron (a pinch)",
-        "water, to bloom the saffron"
+        "Saffron",
+        "Water, to bloom the saffron"
       ],
       "hands": "1 min",
       "prep": true
@@ -151,7 +159,7 @@
       "do": "Taste a grain. If it's still chalky, add reserved broth and keep simmering until the rice and texture are where you want them.",
       "uses": [
         {
-          "item": "broth (about 1 1/2 cups), 3 parts liquid to 1 part rice",
+          "item": "Broth",
           "amount": "the rest, as needed"
         }
       ],
@@ -166,9 +174,9 @@
     {
       "do": "Off the heat, add the Parmigiano and cold butter and stir or toss hard until creamy and emulsified. Salt to taste, loosen with broth or enrich with butter or cheese, and serve right away.",
       "uses": [
-        "Parmigiano Reggiano, finely grated, plus more to taste",
-        "cold butter",
-        "salt, to taste"
+        "Parmigiano Reggiano",
+        "Cold butter",
+        "Salt"
       ],
       "hands": "2 min"
     }

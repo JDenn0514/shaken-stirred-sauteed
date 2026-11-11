@@ -31,43 +31,49 @@
       "items": [
         {
           "qty": "8 oz",
-          "item": "lean ground beef (80 to 90% lean)"
+          "item": "Lean ground beef (80 to 90% lean)"
         },
         {
           "qty": "8 oz",
-          "item": "ground pork"
+          "item": "Ground pork"
         },
         {
           "qty": "1/2 cup",
-          "item": "fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)"
+          "item": "Fresh bread crumbs",
+          "note": "not dried (1 slice rustic bread, ground in a food processor)"
         },
         {
           "qty": "1/4 cup",
-          "item": "fresh parsley, chopped"
+          "item": "Fresh parsley",
+          "note": "chopped"
         },
         {
           "qty": "1 1/2 tsp",
-          "item": "fresh oregano, minced (or 3/4 tsp dried)"
+          "item": "Fresh oregano",
+          "note": "minced (or 3/4 tsp dried)"
         },
         {
           "qty": "1/2 cup",
-          "item": "Parmesan, finely shredded"
+          "item": "Parmesan",
+          "note": "finely shredded"
         },
         {
           "qty": "1",
-          "item": "large egg"
+          "item": "Large egg"
         },
         {
           "qty": "1 tsp",
-          "item": "salt"
+          "item": "Salt"
         },
         {
           "qty": "1/4 tsp",
-          "item": "black pepper, freshly ground"
+          "item": "Black pepper",
+          "note": "freshly ground"
         },
         {
           "qty": "1 tbsp",
-          "item": "olive oil, for browning"
+          "item": "Olive oil",
+          "note": "for browning"
         }
       ]
     },
@@ -76,40 +82,46 @@
       "items": [
         {
           "qty": "1 tbsp",
-          "item": "olive oil"
+          "item": "Olive oil"
         },
         {
           "qty": "1 1/4 cups",
-          "item": "carrots, chopped"
+          "item": "Carrots",
+          "note": "chopped"
         },
         {
           "qty": "1 1/4 cups",
-          "item": "yellow onion, chopped"
+          "item": "Yellow onion",
+          "note": "chopped"
         },
         {
           "qty": "3/4 cup",
-          "item": "celery, chopped"
+          "item": "Celery",
+          "note": "chopped"
         },
         {
           "qty": "4 cloves",
-          "item": "garlic, minced (1 1/2 tbsp)"
+          "item": "Garlic",
+          "note": "minced (1 1/2 tbsp)"
         },
         {
           "qty": "8 3/4 cups",
-          "item": "low-sodium chicken broth or chicken bone broth (about 70 oz)"
+          "item": "Low-sodium chicken broth or chicken bone broth (about 70 oz)"
         },
         {
-          "item": "salt and black pepper, to taste"
+          "item": "Salt and black pepper",
+          "note": "to taste"
         },
         {
           "qty": "1 cup",
-          "item": "dry acini di pepe or orzo",
+          "item": "Dry acini di pepe or orzo",
           "recipe": "homemade-acini-di-pepe",
           "alreadyMade": true
         },
         {
           "qty": "6 oz",
-          "item": "baby spinach, roughly chopped"
+          "item": "Baby spinach",
+          "note": "roughly chopped"
         }
       ]
     },
@@ -117,7 +129,8 @@
       "group": "To serve",
       "items": [
         {
-          "item": "Parmesan, finely shredded"
+          "item": "Parmesan",
+          "note": "finely shredded"
         }
       ]
     }
@@ -128,18 +141,18 @@
       "hands": "6 min",
       "prep": true,
       "prepOnly": true,
-      "uses": ["fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)", "fresh parsley, chopped", "fresh oregano, minced (or 3/4 tsp dried)", { "group": "Meatballs", "item": "Parmesan, finely shredded" }, { "group": "To serve", "item": "Parmesan, finely shredded" }]
+      "uses": ["Fresh bread crumbs", "Fresh parsley", "Fresh oregano", { "group": "Meatballs", "item": "Parmesan" }, { "group": "To serve", "item": "Parmesan" }]
     },
     {
       "do": "Combine the beef, pork, bread crumbs, parsley, oregano, Parmesan, egg, 1 tsp salt and 1/4 tsp pepper. Toss gently with your hands until evenly mixed. Roll into 3/4 to 1 inch balls, small enough to fit a spoon and spread evenly.",
-      "uses": ["lean ground beef (80 to 90% lean)", "ground pork", "fresh bread crumbs, not dried (1 slice rustic bread, ground in a food processor)", "fresh parsley, chopped", "fresh oregano, minced (or 3/4 tsp dried)", { "item": "Parmesan, finely shredded", "group": "Meatballs" }, "large egg", "salt", "black pepper, freshly ground"],
+      "uses": ["Lean ground beef (80 to 90% lean)", "Ground pork", "Fresh bread crumbs", "Fresh parsley", "Fresh oregano", { "item": "Parmesan", "group": "Meatballs" }, "Large egg", "Salt", "Black pepper"],
       "hands": "12 min",
       "prep": true
     },
     {
       "do": "Heat 1 tbsp oil in a large nonstick skillet over medium-high. Brown half the meatballs, turning to color 2 or 3 sides, about 4 minutes; two batches leave them room to brown. Drain on paper towels, keep the oil in the pan, and repeat. They finish cooking in the soup.",
       "wait": "About 4 min",
-      "uses": ["olive oil, for browning"],
+      "uses": [{ "item": "Olive oil", "group": "Meatballs" }],
       "hands": "5 min",
       "watch": true,
       "burner": true
@@ -149,31 +162,31 @@
       "hands": "8 min",
       "prep": true,
       "prepOnly": true,
-      "uses": ["carrots, chopped", "yellow onion, chopped", "celery, chopped", "garlic, minced (1 1/2 tbsp)", "baby spinach, roughly chopped"]
+      "uses": ["Carrots", "Yellow onion", "Celery", "Garlic", "Baby spinach"]
     },
     {
       "do": "Meanwhile, heat 1 tbsp oil in a large pot over medium-high. Sauté the carrots, onion and celery until soft, 6 to 8 minutes; add the garlic for 1 minute.",
       "wait": "6 to 8 min",
-      "uses": ["olive oil", "carrots, chopped", "yellow onion, chopped", "celery, chopped", "garlic, minced (1 1/2 tbsp)"],
+      "uses": [{ "item": "Olive oil", "group": "Soup" }, "Carrots", "Yellow onion", "Celery", "Garlic"],
       "hands": "1 min",
       "burner": true
     },
     {
       "do": "Add the broth, season with salt and pepper, and bring to a boil. Stir in the pasta and meatballs and lower the heat to medium-low.",
-      "uses": ["low-sodium chicken broth or chicken bone broth (about 70 oz)", "salt and black pepper, to taste", "dry acini di pepe or orzo"],
+      "uses": ["Low-sodium chicken broth or chicken bone broth (about 70 oz)", "Salt and black pepper", "Dry acini di pepe or orzo"],
       "hands": "3 min",
       "burner": true
     },
     {
       "do": "Cover and simmer, stirring now and then, until the pasta is tender and the meatballs are cooked through, about 10 minutes. Stir in the spinach for the last 1 minute.",
       "wait": "About 10 min",
-      "uses": ["baby spinach, roughly chopped"],
+      "uses": ["Baby spinach"],
       "hands": "1 min",
       "burner": true
     },
     {
       "do": "Serve hot, with Parmesan over each bowl.",
-      "uses": [{ "item": "Parmesan, finely shredded", "group": "To serve" }],
+      "uses": [{ "item": "Parmesan", "group": "To serve" }],
       "hands": "2 min"
     }
   ],

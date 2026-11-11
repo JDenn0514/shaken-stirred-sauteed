@@ -49,7 +49,7 @@ GitHub Actions re-runs the index check on every pull request and push to main, a
 |---|---|---|
 | `title` | yes | |
 | `category` | yes | `baking`, `cooking`, or `cocktails` |
-| `ingredients` | yes | List of ingredients, or `{ "group": "For the sauce", "items": [...] }` sections. An ingredient is a string, or `{ "grams": 150, "qty": "3/4 cup", "ml": 60, "item": "Sugar", "note": "softened" }` (only `item` is required). Add `"recipe": "garlic-paste"` when another recipe makes it, and `"optional": true` when the dish works without it |
+| `ingredients` | yes | List of ingredients, or `{ "group": "For the sauce", "items": [...] }` sections. An ingredient is a string, or `{ "grams": 150, "qty": "3/4 cup", "ml": 60, "item": "Sugar", "note": "softened" }` (only `item` is required). Add `"recipe": "garlic-paste"` when another recipe makes it, and `"optional": true` when the dish works without it (the page labels it "optional"). See "Writing ingredients" below |
 | `steps` | yes | Same list format. A step is a string, or `{ "do": "...", "wait": "10 min", "cue": "Golden at the edges", "uses": [...] }`. A `wait` that starts with a time ("12 to 15 min", "About 1 hr in the fridge") gets a timer in cook mode, set to the shortest time. See "Step ingredients" below for `uses`, and "Planning a lineup" for the fields the lineup planner reads |
 | `kind` | | `dish` (the default) or `component`, for things made to go into other recipes: sauces, curds, syrups, homemade pasta |
 | `description` | | Short blurb shown on the card |
@@ -72,6 +72,17 @@ Category-specific display fields:
 | Any | `origin` (e.g. `Milan, Italy`), `nutrition` |
 | Baking | `pan`, `heat` with `heatLabel` (`Oven` or `Heat`) |
 | Cocktails | `glass`, `ice`, `garnish`, `method`, `keeps`, `abv`, `standardDrinks` |
+
+### Writing ingredients
+
+So every recipe reads the same way, the build fails (and the editor won't save) when an ingredient is written differently. Plain-string ingredients aren't checked. The recipe intake writes its drafts this way for you: capitals, lowercase amounts, slash fractions, "about", and grams or ml moved out of the amount.
+
+- **Names start with a capital:** `"Olive oil"`, not `"olive oil"`.
+- **Prep goes in `note`, not the name:** `{ "qty": "2", "item": "Carrots", "note": "peeled and chopped" }`, not `"item": "carrots, peeled and chopped"`. It looks for prep words after a comma (chopped, minced, sliced, peeled, to taste, plus more, for serving…), so a comma that's part of the name ("Boneless, skinless chicken thighs") or inside brackets is fine.
+- **Amounts are lowercase:** `"4 tbsp"`, `"pinch"`, not `"4 Tbsp"`.
+- **Grams and millilitres go in `grams` and `ml`,** as numbers, not in `qty`: `{ "grams": 300, "qty": "10.5 oz", "item": "Yellow noodles" }`, shown as "300 g · 10.5 oz". A recipe that gives only a metric amount leaves `qty` out.
+- **Write "about", not "~",** and fractions with a slash (`1 1/2`), not `½`.
+- **Optional is said once,** with `"optional": true`, which the page shows. Don't also write "optional" in the amount, name or note.
 
 ### Step ingredients
 
@@ -119,7 +130,7 @@ On an ingredient, `recipe` is the file name of the recipe that makes it. A requi
 ]
 ```
 
-The build fails on a `wait` that isn't a time or `false`, a `hands` or `sits` it can't read as a time, an oven setting it doesn't know, `watch` without a `wait`, more than one `holds`, a `recipe` that doesn't exist (or a list of them, which the planner can't follow yet), and links that loop. It warns when a step mentions the oven, broiler, a pan, the grill or the microwave but has no equipment field, when an ingredient says "optional" but isn't marked `optional`, and when no step uses a linked ingredient.
+The build fails on a `wait` that isn't a time or `false`, a `hands` or `sits` it can't read as a time, an oven setting it doesn't know, `watch` without a `wait`, more than one `holds`, a `recipe` that doesn't exist (or a list of them, which the planner can't follow yet), and links that loop. It warns when a step mentions the oven, broiler, a pan, the grill or the microwave but has no equipment field, when an ingredient says "optional" but isn't marked `optional`, and when no step uses a linked ingredient. An ingredient that's marked `optional` and says it too is refused (see "Writing ingredients").
 
 ### Tags
 

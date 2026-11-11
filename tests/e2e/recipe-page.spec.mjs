@@ -55,6 +55,12 @@ test.describe("shows", () => {
   });
 });
 
+test("an optional ingredient says so", async ({ page }) => {
+  await open(page, "old-fashioned");
+  await expect(page.locator(".ingredients li", { hasText: "Bitters" })).toHaveText("2 dashes Bitters optional");
+  await expect(page.locator(".ingredients li", { hasText: "Bourbon" })).not.toContainText("optional");
+});
+
 test("cocktails call their sections Spec and Method, and show the glass", async ({ page }) => {
   await open(page, "daiquiri");
   await expect(page.getByRole("heading", { name: "Spec" })).toBeVisible();

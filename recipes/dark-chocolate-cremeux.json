@@ -83,7 +83,7 @@
         {
           "grams": 50,
           "item": "Unsalted butter",
-          "note": "optional, softened",
+          "note": "softened",
           "optional": true
         }
       ]

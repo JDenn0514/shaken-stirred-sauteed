@@ -32,34 +32,38 @@
       "items": [
         {
           "qty": "1 2/3 cups",
-          "item": "chicken broth (400 g)"
+          "item": "Chicken broth (400 g)"
         },
         {
           "qty": "1 1/4 cups",
-          "item": "cooked rice, preferably day-old (200 g)"
+          "item": "Cooked rice, preferably day-old (200 g)"
         },
         {
           "qty": "1",
-          "item": "carrot, grated"
+          "item": "Carrot",
+          "note": "grated"
         },
         {
           "qty": "1/4",
-          "item": "onion, grated"
+          "item": "Onion",
+          "note": "grated"
         },
         {
           "qty": "2 cloves",
-          "item": "garlic, grated"
+          "item": "Garlic",
+          "note": "grated"
         },
         {
           "qty": "1 tbsp",
-          "item": "neutral oil"
+          "item": "Neutral oil"
         },
         {
           "qty": "1 tsp",
-          "item": "toasted sesame oil"
+          "item": "Toasted sesame oil"
         },
         {
-          "item": "salt, to taste"
+          "item": "Salt",
+          "note": "to taste"
         }
       ]
     },
@@ -68,38 +72,41 @@
       "items": [
         {
           "qty": "1 lb",
-          "item": "ground pork (454 g)"
+          "item": "Ground pork (454 g)"
         },
         {
           "qty": "2",
-          "item": "green bird's eye chilies, minced"
+          "item": "Green bird's eye chilies",
+          "note": "minced"
         },
         {
           "qty": "5 cloves",
-          "item": "garlic, minced"
+          "item": "Garlic",
+          "note": "minced"
         },
         {
           "qty": "1",
-          "item": "scallion, whites minced, greens saved"
+          "item": "Scallion",
+          "note": "whites minced, greens saved"
         },
         {
           "qty": "1 tbsp",
-          "item": "neutral oil"
+          "item": "Neutral oil"
         },
         {
           "qty": "2 tbsp",
-          "item": "water"
+          "item": "Water"
         },
         {
           "qty": "1 tbsp",
-          "item": "soy sauce"
+          "item": "Soy sauce"
         },
         {
           "qty": "1 tsp",
-          "item": "hoisin"
+          "item": "Hoisin"
         },
         {
-          "item": "salt, a sprinkle"
+          "item": "Salt, a sprinkle"
         }
       ]
     },
@@ -107,13 +114,15 @@
       "group": "To finish",
       "items": [
         {
-          "item": "chili crisp"
+          "item": "Chili crisp"
         },
         {
-          "item": "fresh ginger, thinly sliced"
+          "item": "Fresh ginger",
+          "note": "thinly sliced"
         },
         {
-          "item": "scallion greens, thinly sliced"
+          "item": "Scallion greens",
+          "note": "thinly sliced"
         }
       ]
     }
@@ -125,23 +134,23 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "carrot, grated",
-        "onion, grated",
-        "garlic, grated"
+        "Carrot",
+        "Onion",
+        { "item": "Garlic", "group": "Congee" }
       ]
     },
     {
       "do": "Set a pot over medium heat with the neutral oil and sesame oil, add the vegetables, and cook until they begin to brown, 2 to 3 minutes.",
       "wait": "2 to 3 min",
       "uses": [
-        "carrot, grated",
-        "onion, grated",
-        "garlic, grated",
+        "Carrot",
+        "Onion",
+        { "item": "Garlic", "group": "Congee" },
         {
-          "item": "neutral oil",
+          "item": "Neutral oil",
           "group": "Congee"
         },
-        "toasted sesame oil"
+        "Toasted sesame oil"
       ],
       "hands": "4 min",
       "watch": true,
@@ -150,8 +159,8 @@
     {
       "do": "Stir in the cooked rice to coat, pour in the broth, and bring to a boil. Drop the heat to a simmer.",
       "uses": [
-        "cooked rice, preferably day-old (200 g)",
-        "chicken broth (400 g)"
+        "Cooked rice, preferably day-old (200 g)",
+        "Chicken broth (400 g)"
       ],
       "hands": "2 min",
       "burner": true
@@ -160,7 +169,7 @@
       "do": "Simmer 20 to 30 minutes, stirring occasionally, until the grains collapse and it thickens to porridge. Loosen with more broth or reduce further to suit. Salt to taste.",
       "wait": "20 to 30 min",
       "uses": [
-        "salt, to taste"
+        "Salt"
       ],
       "hands": "1 min",
       "burner": true
@@ -171,22 +180,22 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "green bird's eye chilies, minced",
-        "garlic, minced",
-        "scallion, whites minced, greens saved",
-        "scallion greens, thinly sliced",
-        "fresh ginger, thinly sliced"
+        "Green bird's eye chilies",
+        { "item": "Garlic", "group": "Chili garlic pork" },
+        "Scallion",
+        "Scallion greens",
+        "Fresh ginger"
       ]
     },
     {
       "do": "Meanwhile, heat the oil in a wok over medium, add the aromatics, and sauté 1 to 2 minutes until fragrant but not browned.",
       "wait": "1 to 2 min",
       "uses": [
-        "green bird's eye chilies, minced",
-        "garlic, minced",
-        "scallion, whites minced, greens saved",
+        "Green bird's eye chilies",
+        { "item": "Garlic", "group": "Chili garlic pork" },
+        "Scallion",
         {
-          "item": "neutral oil",
+          "item": "Neutral oil",
           "group": "Chili garlic pork"
         }
       ],
@@ -199,8 +208,8 @@
       "do": "Turn the heat to high and add the pork with a sprinkle of salt. Break it into small pebbles with a potato masher; the extra surface area is what lets the rendering fat crisp it, 3 to 5 minutes.",
       "wait": "3 to 5 min",
       "uses": [
-        "ground pork (454 g)",
-        "salt, a sprinkle"
+        "Ground pork (454 g)",
+        "Salt, a sprinkle"
       ],
       "hands": "1 min",
       "watch": true,
@@ -210,9 +219,9 @@
     {
       "do": "Splash in the water and scrape up the browned bits. Once it has cooked off, add the soy sauce and hoisin and toss until the pork is coated and slightly sticky. Taste and adjust with salt, soy or hoisin.",
       "uses": [
-        "water",
-        "soy sauce",
-        "hoisin"
+        "Water",
+        "Soy sauce",
+        "Hoisin"
       ],
       "hands": "2 min",
       "burner": true,
@@ -221,9 +230,9 @@
     {
       "do": "Ladle congee into bowls, spoon the pork over, and finish with ginger, scallion greens and chili crisp.",
       "uses": [
-        "fresh ginger, thinly sliced",
-        "scallion greens, thinly sliced",
-        "chili crisp"
+        "Fresh ginger",
+        "Scallion greens",
+        "Chili crisp"
       ],
       "hands": "3 min"
     }
