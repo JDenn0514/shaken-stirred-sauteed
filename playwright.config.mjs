@@ -6,7 +6,14 @@
 // `npm run test:all` runs both, like CI.
 import { defineConfig } from "@playwright/test";
 
-const PORT = 8123;
+// The test server's port. TEST_PORT picks another, when something else (a
+// server left running by another checkout, say) already has 8123.
+const PORT = Number(process.env.TEST_PORT) || 8123;
+
+// The seed for tests/e2e/recipe-laws.spec.mjs: picked here, once per run, so
+// every worker (they inherit it) makes the same random recipes and the test
+// names match. Set RECIPE_SEED to run the same recipes again.
+process.env.RECIPE_SEED ||= String(Date.now() % 2 ** 31);
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -27,6 +34,9 @@ export default defineConfig({
   webServer: {
     command: `node tests/helpers/serve.mjs ${PORT}`,
     url: `http://localhost:${PORT}/`,
-    reuseExistingServer: !process.env.CI,
+    // Never reuse a server already on the port: it may be serving another
+    // copy of the site, and the tests would quietly check that copy instead.
+    // A server still there fails the run with "port already used".
+    reuseExistingServer: false,
   },
 });
