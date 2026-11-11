@@ -320,7 +320,7 @@ A step is marked **Done** once its pull request is merged.
    - Group renames update uses too.
    - Status: "Also updated steps 1 and 3".
    - Unit tests: a rename, duplicate names across groups, remove, group rename, and an imported recipe's "check this amount" flag still attaching.
-7. **(M) The sticky bar.**
+7. **Done** (#51, 2026-11-11). **(M) The sticky bar.**
    - Title and section caption; "Unsaved changes" / "No changes".
    - Family-fill Save, off when nothing changed (not for new recipes, restored drafts or after a conflict).
    - A lasting status line that keeps the "See X on the site" link.
