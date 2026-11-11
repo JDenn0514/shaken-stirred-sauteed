@@ -97,7 +97,6 @@
           "optional": true
         },
         {
-          "qty": "optional",
           "item": "Lemon curd",
           "recipe": "lemon-curd",
           "optional": true

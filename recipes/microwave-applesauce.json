@@ -55,18 +55,18 @@
     },
     {
       "qty": "1 cup",
-      "item": "water"
+      "item": "Water"
     },
     {
-      "qty": "½ cup",
-      "item": "sugar"
+      "qty": "1/2 cup",
+      "item": "Sugar"
     },
     {
-      "qty": "½ tsp",
-      "item": "cinnamon"
+      "qty": "1/2 tsp",
+      "item": "Cinnamon"
     },
     {
-      "item": "Juice of ½ lemon"
+      "item": "Juice of 1/2 lemon"
     }
   ],
   "steps": [
@@ -76,7 +76,7 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "Juice of ½ lemon"
+        "Juice of 1/2 lemon"
       ]
     },
     {
@@ -90,10 +90,10 @@
     {
       "do": "Put everything in a microwave-safe casserole dish: apples, water, sugar, cinnamon, lemon juice. Stir until every piece is coated, then cover the dish with its lid or a microwave-safe plate.",
       "uses": [
-        "water",
-        "sugar",
-        "cinnamon",
-        "Juice of ½ lemon"
+        "Water",
+        "Sugar",
+        "Cinnamon",
+        "Juice of 1/2 lemon"
       ],
       "hands": "2 min",
       "microwave": false

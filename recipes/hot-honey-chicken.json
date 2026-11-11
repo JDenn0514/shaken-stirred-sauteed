@@ -35,22 +35,23 @@
       "items": [
         {
           "qty": "1 lb",
-          "item": "boneless skinless chicken breasts (2)"
+          "item": "Boneless skinless chicken breasts (2)"
         },
         {
-          "item": "salt and pepper"
+          "item": "Salt and pepper"
         },
         {
           "qty": "1/3 cup",
-          "item": "flour"
+          "item": "Flour"
         },
         {
           "qty": "1 tbsp",
-          "item": "cooking oil"
+          "item": "Cooking oil"
         },
         {
           "qty": "2 tbsp",
-          "item": "cold unsalted butter, divided"
+          "item": "Cold unsalted butter",
+          "note": "divided"
         }
       ]
     },
@@ -59,31 +60,33 @@
       "items": [
         {
           "qty": "4 cloves",
-          "item": "garlic, minced"
+          "item": "Garlic",
+          "note": "minced"
         },
         {
           "qty": "1 tbsp",
-          "item": "soy sauce"
+          "item": "Soy sauce"
         },
         {
           "qty": "1 1/2 tbsp",
-          "item": "chili paste, Sriracha or Frank's RedHot"
+          "item": "Chili paste, Sriracha or Frank's RedHot"
         },
         {
           "qty": "1/3 cup",
-          "item": "honey"
+          "item": "Honey"
         },
         {
           "qty": "3/4 tsp",
-          "item": "cayenne, to taste"
+          "item": "Cayenne",
+          "note": "to taste"
         },
         {
           "qty": "1/2 tsp",
-          "item": "garlic powder"
+          "item": "Garlic powder"
         },
         {
           "qty": "1/2 tsp",
-          "item": "red chili flakes, or 1/4 tsp chili powder"
+          "item": "Red chili flakes, or 1/4 tsp chili powder"
         }
       ]
     }
@@ -91,26 +94,26 @@
   "steps": [
     {
       "do": "Halve each breast horizontally into 4 cutlets, then pound between plastic wrap to an even 1/2 inch. Even thickness lets lean breast cook through in minutes without drying out.",
-      "uses": ["boneless skinless chicken breasts (2)"],
+      "uses": ["Boneless skinless chicken breasts (2)"],
       "hands": "6 min",
       "prep": true
     },
     {
       "do": "Pat the cutlets completely dry; wet chicken steams instead of browning. Season both sides with salt and pepper.",
-      "uses": ["salt and pepper"],
+      "uses": ["Salt and pepper"],
       "hands": "2 min",
       "prep": true
     },
     {
       "do": "Dredge in the flour and shake off the excess. A thin coat is all you want: it crisps and shields the meat.",
-      "uses": ["flour"],
+      "uses": ["Flour"],
       "hands": "3 min",
       "prep": "just before"
     },
     {
       "do": "Melt 1 tbsp of the butter with the oil in a large skillet over medium-high. Lay in the chicken and sear 2 to 3 minutes, until golden underneath.",
       "wait": "2 to 3 min",
-      "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "cooking oil"],
+      "uses": [{ "item": "Cold unsalted butter", "amount": "1 tbsp" }, "Cooking oil"],
       "hands": "2 min",
       "watch": true,
       "burner": true
@@ -127,26 +130,26 @@
       "hands": "2 min",
       "prep": true,
       "prepOnly": true,
-      "uses": ["garlic, minced"]
+      "uses": ["Garlic"]
     },
     {
       "do": "Add the remaining butter to the pan and cook the garlic until fragrant, about 1 minute.",
       "wait": "About 1 min",
-      "uses": [{ "item": "cold unsalted butter, divided", "amount": "1 tbsp" }, "garlic, minced"],
+      "uses": [{ "item": "Cold unsalted butter", "amount": "1 tbsp" }, "Garlic"],
       "hands": "30 sec",
       "watch": true,
       "burner": true
     },
     {
       "do": "Turn the heat to low before the honey goes in, since honey scorches fast. Stir in the soy sauce, chili paste, honey, cayenne and garlic powder.",
-      "uses": ["soy sauce", "chili paste, Sriracha or Frank's RedHot", "honey", "cayenne, to taste", "garlic powder"],
+      "uses": ["Soy sauce", "Chili paste, Sriracha or Frank's RedHot", "Honey", "Cayenne", "Garlic powder"],
       "hands": "2 min",
       "burner": true
     },
     {
       "do": "Return the chicken and turn it in the sauce for 30 seconds to coat. Finish with chili flakes, salt and pepper to taste. If the glaze tightens toward toffee, loosen it with 1 to 2 tbsp warm water.",
       "wait": "30 sec",
-      "uses": ["red chili flakes, or 1/4 tsp chili powder", { "item": "salt and pepper", "amount": "to taste" }],
+      "uses": ["Red chili flakes, or 1/4 tsp chili powder", { "item": "Salt and pepper", "amount": "to taste" }],
       "hands": "1 min",
       "watch": true,
       "burner": true

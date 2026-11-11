@@ -16,7 +16,7 @@ describe("a page with recipe data", () => {
   test("is read from its data, with the author and the site's name as the source", () => {
     const { recipe } = draftFromPage(withData('<meta property="og:site_name" content="Example Kitchen">'), { url: "https://www.example.com/lemon-bars", category: "baking" });
     assert.equal(recipe.title, "Lemon Bars");
-    assert.deepEqual(flat(recipe.ingredients).map((i) => i.item), ["flour", "lemons"]);
+    assert.deepEqual(flat(recipe.ingredients).map((i) => i.item), ["Flour", "Lemons"]);
     assert.deepEqual(recipe.source, { name: "A. Baker, Example Kitchen", url: "https://www.example.com/lemon-bars" });
   });
 
@@ -44,7 +44,7 @@ describe("a page without recipe data", () => {
 
   test("is read from its visible text", () => {
     assert.equal(recipe.title, "Garlic Bread");
-    assert.deepEqual(flat(recipe.ingredients).map((i) => i.item), ["baguette", "butter", "garlic"]);
+    assert.deepEqual(flat(recipe.ingredients).map((i) => i.item), ["Baguette", "Butter", "Garlic"]);
     const steps = flat(recipe.steps).map((s) => s.do);
     for (const written of ["Heat the oven to 400°F.", "Mix the butter & garlic, and spread it on the bread.", "Bake until golden, 10 minutes."]) {
       assert.ok(steps.includes(written), written);
@@ -102,15 +102,16 @@ describe("a page with a WP Recipe Maker card", () => {
   test("keeps the card's ingredient groups, named as on the page", () => {
     // The card's first group has no name: its ingredients come first, ungrouped.
     assert.deepEqual(recipe.ingredients.map((e) => (Array.isArray(e.items) ? `group: ${e.group}` : e.item)),
-      ["egg noodles", "oil", "group: Sesame Sauce (Note 2)"]);
+      ["Egg noodles", "Oil", "group: Sesame Sauce (Note 2)"]);
     const sauce = recipe.ingredients.find((e) => e.group === "Sesame Sauce (Note 2)");
-    assert.deepEqual(sauce.items.map((i) => i.item), ["soy sauce", "sugar"]);
+    assert.deepEqual(sauce.items.map((i) => i.item), ["Soy sauce", "Sugar"]);
   });
 
   test("takes each ingredient's amount, name and note from the card, as written", () => {
     const [noodles, , , sugar] = flat(recipe.ingredients);
-    assert.equal(noodles.qty, "200g/7oz");
-    assert.equal(noodles.item, "egg noodles");
+    assert.equal(noodles.grams, 200);
+    assert.equal(noodles.qty, "7 oz");
+    assert.equal(noodles.item, "Egg noodles");
     assert.equal(noodles.note, "note 1");
     assert.equal(sugar.qty, "1 tsp");
     assert.equal(sugar.note, "or honey");

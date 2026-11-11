@@ -24,7 +24,8 @@ window.SSSView = (() => {
     const amount = [it.grams != null && `${it.grams} g`, it.qty].filter(Boolean).join(" · ");
     return `${amount ? `<b class="qty">${esc(amount)}</b> ` : ""}${esc(it.item)}`
       + `${it.ml != null ? ` <span class="muted">${esc(it.ml)} ml</span>` : ""}`
-      + `${it.note ? ` <span class="muted">${esc(it.note)}</span>` : ""}`;
+      + `${it.note ? ` <span class="muted">${esc(it.note)}</span>` : ""}`
+      + `${it.optional === true ? ` <span class="ing-optional">optional</span>` : ""}`;
   };
 
   // A step is a plain string, or { do, wait, cue }.

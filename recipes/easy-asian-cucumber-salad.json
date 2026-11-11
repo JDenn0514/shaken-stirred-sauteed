@@ -34,35 +34,36 @@
     },
     {
       "qty": "1/2 tsp",
-      "item": "salt (for sweating)"
+      "item": "Salt (for sweating)"
     },
     {
       "qty": "1/2 tbsp",
-      "item": "sesame oil"
+      "item": "Sesame oil"
     },
     {
       "qty": "3/4 tbsp",
-      "item": "light soy sauce"
+      "item": "Light soy sauce"
     },
     {
       "qty": "1/2 to 1 tbsp",
-      "item": "sugar"
+      "item": "Sugar"
     },
     {
       "qty": "3/4 tbsp",
-      "item": "rice vinegar"
+      "item": "Rice vinegar"
     },
     {
       "qty": "1 tbsp",
-      "item": "chili oil"
+      "item": "Chili oil"
     },
     {
       "qty": "1/2 tbsp",
-      "item": "sesame seeds"
+      "item": "Sesame seeds"
     },
     {
       "qty": "1/2 tbsp",
-      "item": "garlic, minced (optional)",
+      "item": "Garlic",
+      "note": "minced",
       "optional": true
     }
   ],
@@ -79,7 +80,7 @@
       "do": "Toss the slices with 1/2 tsp salt and refrigerate at least 20 minutes (up to an hour) to pull the water out.",
       "wait": "20 min to 1 hr",
       "uses": [
-        "salt (for sweating)"
+        "Salt (for sweating)"
       ],
       "hands": "1 min"
     },
@@ -93,19 +94,19 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "garlic, minced (optional)"
+        "Garlic"
       ]
     },
     {
       "do": "Add the sesame oil, soy sauce, sugar, rice vinegar, chili oil, sesame seeds, and garlic if using. Toss to coat and serve.",
       "uses": [
-        "sesame oil",
-        "light soy sauce",
-        "sugar",
-        "rice vinegar",
-        "chili oil",
-        "sesame seeds",
-        "garlic, minced (optional)"
+        "Sesame oil",
+        "Light soy sauce",
+        "Sugar",
+        "Rice vinegar",
+        "Chili oil",
+        "Sesame seeds",
+        "Garlic"
       ],
       "hands": "1 min"
     }

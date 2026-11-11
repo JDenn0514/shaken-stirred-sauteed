@@ -143,6 +143,33 @@
     return { problems, notes };
   }
 
+  // How ingredients are written, so every recipe reads the same way (README,
+  // "Writing ingredients"). A recipe that breaks one is refused.
+  // Words that mean the text after a comma in a name is prep or how much to use.
+  const PREP = /\b(chopped|ground|minced|diced|sliced|grated|shredded|peeled|halved|quartered|cubed|crushed|trimmed|rinsed|drained|melted|softened|beaten|juiced|zested|seeded|cored|pitted|husked|divided|stirred|cut into|to (taste|serve|finish)|plus more|for)\b/i;
+  function checkFormat(ings) {
+    const notes = [];
+    for (const i of ings) {
+      // An ingredient without an item is already an error.
+      if (!i || typeof i !== "object" || typeof i.item !== "string" || !i.item) continue;
+      const name = i.item, qty = typeof i.qty === "string" ? i.qty : "";
+      if (/[A-Z]/.test(qty)) notes.push(`"${name}": write "${qty}" in lowercase, "${qty.toLowerCase()}"`);
+      if (/^[a-z]/.test(name)) notes.push(`"${name}": start the name with a capital, "${name[0].toUpperCase()}${name.slice(1)}"`);
+      if (/\d\s*g\b/i.test(qty)) notes.push(`"${name}": put the grams in "${qty}" in "grams" (a number), not "qty"`);
+      if (/\d\s*ml\b/i.test(qty)) notes.push(`"${name}": put the ml in "${qty}" in "ml" (a number), not "qty"`);
+      if (qty.includes("~")) notes.push(`"${name}": write "about" instead of "~" in "${qty}"`);
+      const fraction = /[¼½¾⅐-⅞]/.exec(qty);
+      if (fraction) notes.push(`"${name}": write fractions with a slash, like "1 1/2", not "${fraction[0]}"`);
+      if (i.optional === true && /\boptional\b/i.test([qty, name, i.note].join(" ")))
+        notes.push(`"${name}" is marked "optional": true, which the page shows, so the text doesn't need to say "optional"`);
+      // Split at commas outside brackets: "garlic (or 2 cloves, minced)" is one part.
+      const parts = name.split(/,(?![^(]*\))/).map((p) => p.trim());
+      const prep = parts.findIndex((p, n) => n > 0 && PREP.test(p));
+      if (prep > 0) notes.push(`"${name}": move "${parts.slice(prep).join(", ")}" into "note"`);
+    }
+    return notes;
+  }
+
   // Everything about one recipe on its own. Links to other recipes need every
   // recipe at once, so checkLinks does those from the index.
   function checkRecipe(slug, r, vocab) {
@@ -162,6 +189,7 @@
     const planning = checkPlanning(r, steps, ings);
     errors.push(...planning.problems);
     warnings.push(...planning.notes);
+    errors.push(...checkFormat(ings));
     if (r.time?.total != null && !Number.isFinite(r.time.total)) errors.push(`"time.total" must be a number of minutes`);
     if (r.source?.url && !/^https?:\/\//i.test(r.source.url)) errors.push(`"source.url" must start with https:// or http://`);
     if (r.image && !/^(https:\/\/|images\/)/.test(r.image)) errors.push(`"image" must be an images/ path or an https:// URL`);

@@ -28,50 +28,51 @@
   "ingredients": [
     {
       "qty": "1/2 cup",
-      "item": "water"
+      "item": "Water"
     },
     {
       "qty": "2 tbsp",
-      "item": "lemon juice"
+      "item": "Lemon juice"
     },
     {
       "qty": "3 tbsp",
-      "item": "olive oil"
+      "item": "Olive oil"
     },
     {
       "qty": "2 large",
-      "item": "garlic cloves"
+      "item": "Garlic cloves"
     },
     {
       "qty": "3/4 cup",
-      "item": "fresh herbs: cilantro, parsley, mint, dill or basil"
+      "item": "Fresh herbs: cilantro, parsley, mint, dill or basil"
     },
     {
       "qty": "2 to 3 slices",
-      "item": "jalapeño (optional)",
+      "item": "Jalapeño",
       "optional": true
     },
     {
       "qty": "1/2 to 1 tsp",
-      "item": "salt, starting with 1/2 tsp"
+      "item": "Salt, starting with 1/2 tsp"
     },
     {
       "qty": "1/2 cup",
-      "item": "tahini, stirred"
+      "item": "Tahini",
+      "note": "stirred"
     }
   ],
   "steps": [
     {
       "do": "Blend everything except the tahini until combined but still a little rough.",
       "uses": [
-        "water",
-        "lemon juice",
-        "olive oil",
-        "garlic cloves",
-        "fresh herbs: cilantro, parsley, mint, dill or basil",
-        "jalapeño (optional)",
+        "Water",
+        "Lemon juice",
+        "Olive oil",
+        "Garlic cloves",
+        "Fresh herbs: cilantro, parsley, mint, dill or basil",
+        "Jalapeño",
         {
-          "item": "salt, starting with 1/2 tsp",
+          "item": "Salt, starting with 1/2 tsp",
           "amount": "1/2 tsp"
         }
       ],
@@ -80,7 +81,7 @@
     {
       "do": "It will look far too thin. Add the tahini and blend until creamy and it thickens, leaving flecks of herb.",
       "uses": [
-        "tahini, stirred"
+        "Tahini"
       ],
       "hands": "1 min"
     },
@@ -88,7 +89,7 @@
       "do": "Taste and adjust salt, lemon and chile. Loosen with a little more water if you want a pourable sauce.",
       "uses": [
         {
-          "item": "salt, starting with 1/2 tsp",
+          "item": "Salt, starting with 1/2 tsp",
           "amount": "up to 1/2 tsp more, to taste"
         }
       ],

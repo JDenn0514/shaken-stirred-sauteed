@@ -225,7 +225,7 @@ const PAGES = [
   }, null, editor],
   ["editor showing check errors", "edit.html?r=lemon-bars", async (page) => {
     // An ingredient with no name is an error (a rename isn't: it carries through to the steps).
-    await editorPreview(page).getByRole("button", { name: "8 Tbsp Butter melted" }).click();
+    await editorPreview(page).getByRole("button", { name: "8 tbsp Butter melted" }).click();
     await page.getByLabel("Ingredient", { exact: true }).fill("");
     await page.getByRole("button", { name: "Done" }).click();
     await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();

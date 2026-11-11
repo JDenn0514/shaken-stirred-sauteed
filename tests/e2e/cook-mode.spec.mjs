@@ -181,7 +181,7 @@ test.describe("a step's ingredients", () => {
   test("are listed with their amounts, grams first", async ({ page }) => {
     await toStep(page, 1);
     await expect(box(page, /^125 g 1 cup Flour$/)).toBeVisible();
-    await expect(box(page, /^115 g 8 Tbsp Butter melted$/)).toBeVisible();
+    await expect(box(page, /^115 g 8 tbsp Butter melted$/)).toBeVisible();
     await expect(cook(page).getByRole("checkbox")).toHaveCount(3);
   });
 

@@ -40,41 +40,45 @@
       "items": [
         {
           "qty": "1 1/2 lb",
-          "item": "chicken breasts or thighs, thinly sliced"
+          "item": "Chicken breasts or thighs",
+          "note": "thinly sliced"
         },
         {
           "qty": "1/3 cup",
-          "item": "full-fat plain Greek yogurt"
+          "item": "Full-fat plain Greek yogurt"
         },
         {
           "qty": "1/4 cup",
-          "item": "extra virgin olive oil"
+          "item": "Extra virgin olive oil"
         },
         {
           "qty": "6 cloves",
-          "item": "garlic, chopped"
+          "item": "Garlic",
+          "note": "chopped"
         },
         {
           "qty": "2",
-          "item": "shallots, chopped"
+          "item": "Shallots",
+          "note": "chopped"
         },
         {
           "qty": "1 tbsp",
-          "item": "smoked paprika"
+          "item": "Smoked paprika"
         },
         {
           "qty": "2 tsp",
-          "item": "dried oregano"
+          "item": "Dried oregano"
         },
         {
           "qty": "1/2 tsp",
-          "item": "turmeric"
+          "item": "Turmeric"
         },
         {
-          "item": "chili flakes, to taste"
+          "item": "Chili flakes",
+          "note": "to taste"
         },
         {
-          "item": "kosher salt"
+          "item": "Kosher salt"
         }
       ]
     },
@@ -83,35 +87,39 @@
       "items": [
         {
           "qty": "1/2 cup",
-          "item": "tahini"
+          "item": "Tahini"
         },
         {
           "qty": "1/2 cup",
-          "item": "mixed fresh herbs: parsley, dill, basil or cilantro"
+          "item": "Mixed fresh herbs: parsley, dill, basil or cilantro"
         },
         {
           "qty": "1/4 cup",
-          "item": "water, plus more to thin"
+          "item": "Water",
+          "note": "plus more to thin"
         },
         {
           "qty": "2 tbsp",
-          "item": "lemon juice"
+          "item": "Lemon juice"
         },
         {
           "qty": "1",
-          "item": "jalapeño, seeded if you want it milder"
+          "item": "Jalapeño",
+          "note": "seeded if you want it milder"
         },
         {
           "qty": "1 to 2",
-          "item": "garlic cloves, grated"
+          "item": "Garlic cloves",
+          "note": "grated"
         },
         {
           "qty": "1 tsp",
-          "item": "honey"
+          "item": "Honey"
         },
         {
           "qty": "1 tsp",
-          "item": "kosher salt, plus more to taste"
+          "item": "Kosher salt",
+          "note": "plus more to taste"
         }
       ]
     },
@@ -120,19 +128,21 @@
       "items": [
         {
           "qty": "4 pieces",
-          "item": "naan"
+          "item": "Naan"
         },
         {
           "qty": "1/2 cup",
-          "item": "green tahini, Caesar or mayo, plus extra to serve"
+          "item": "Green tahini, Caesar or mayo",
+          "note": "plus extra to serve"
         },
         {
           "qty": "1/2 cup",
-          "item": "oil-packed sun-dried tomatoes, sliced"
+          "item": "Oil-packed sun-dried tomatoes",
+          "note": "sliced"
         },
         {
           "qty": "1/2 cup",
-          "item": "sliced dill pickles and/or pepperoncini"
+          "item": "Sliced dill pickles and/or pepperoncini"
         },
         {
           "qty": "6 slices",
@@ -140,19 +150,20 @@
         },
         {
           "qty": "6 slices",
-          "item": "gouda"
+          "item": "Gouda"
         },
         {
           "qty": "2 cups",
-          "item": "sprouts or microgreens"
+          "item": "Sprouts or microgreens"
         },
         {
           "qty": "1/2 cup",
-          "item": "pickled red onions (optional)",
+          "item": "Pickled red onions",
           "optional": true
         },
         {
-          "item": "olive oil and sesame seeds, for the top"
+          "item": "Olive oil and sesame seeds",
+          "note": "for the top"
         }
       ]
     }
@@ -164,25 +175,25 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "chicken breasts or thighs, thinly sliced",
-        "garlic, chopped",
-        "shallots, chopped"
+        "Chicken breasts or thighs",
+        "Garlic",
+        "Shallots"
       ]
     },
     {
       "do": "Toss the chicken with the yogurt, oil, garlic, shallots, paprika, oregano, turmeric, chili flakes and a good pinch of salt. Let it sit 15 minutes while you prep; the yogurt tenderizes and helps the spices cling. Heat the oven to 425F (220C).",
       "wait": "15 min",
       "uses": [
-        "chicken breasts or thighs, thinly sliced",
-        "full-fat plain Greek yogurt",
-        "extra virgin olive oil",
-        "garlic, chopped",
-        "shallots, chopped",
-        "smoked paprika",
-        "dried oregano",
-        "turmeric",
-        "chili flakes, to taste",
-        "kosher salt"
+        "Chicken breasts or thighs",
+        "Full-fat plain Greek yogurt",
+        "Extra virgin olive oil",
+        "Garlic",
+        "Shallots",
+        "Smoked paprika",
+        "Dried oregano",
+        "Turmeric",
+        "Chili flakes",
+        { "item": "Kosher salt", "group": "Chicken" }
       ],
       "hands": "4 min",
       "preheat": "425F"
@@ -199,21 +210,21 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "jalapeño, seeded if you want it milder",
-        "garlic cloves, grated"
+        "Jalapeño",
+        "Garlic cloves"
       ]
     },
     {
       "do": "While the chicken roasts, blend all the tahini ingredients until smooth. Add water a spoonful at a time until it pours, then taste for salt; it needs some.",
       "uses": [
-        "tahini",
-        "mixed fresh herbs: parsley, dill, basil or cilantro",
-        "water, plus more to thin",
-        "lemon juice",
-        "jalapeño, seeded if you want it milder",
-        "garlic cloves, grated",
-        "honey",
-        "kosher salt, plus more to taste"
+        "Tahini",
+        "Mixed fresh herbs: parsley, dill, basil or cilantro",
+        "Water",
+        "Lemon juice",
+        "Jalapeño",
+        "Garlic cloves",
+        "Honey",
+        { "item": "Kosher salt", "group": "Green tahini (or see notes)" }
       ],
       "hands": "4 min",
       "prep": true
@@ -224,23 +235,23 @@
       "prep": true,
       "prepOnly": true,
       "uses": [
-        "oil-packed sun-dried tomatoes, sliced",
-        "sliced dill pickles and/or pepperoncini"
+        "Oil-packed sun-dried tomatoes",
+        "Sliced dill pickles and/or pepperoncini"
       ]
     },
     {
       "do": "Lay the naan flat on a sheet pan. Spread dressing over one half of each, then layer sun-dried tomatoes, pickles, both cheeses and the chicken. Cover with foil and bake 15 minutes, until the cheese melts; the foil keeps the naan soft while the filling heats.",
       "wait": "15 min",
       "uses": [
-        "naan",
+        "Naan",
         {
-          "item": "green tahini, Caesar or mayo, plus extra to serve",
+          "item": "Green tahini, Caesar or mayo",
           "amount": "some, to spread"
         },
-        "oil-packed sun-dried tomatoes, sliced",
-        "sliced dill pickles and/or pepperoncini",
+        "Oil-packed sun-dried tomatoes",
+        "Sliced dill pickles and/or pepperoncini",
         "Havarti",
-        "gouda"
+        "Gouda"
       ],
       "hands": "6 min",
       "oven": "425F"
@@ -249,13 +260,13 @@
       "do": "Uncover. Pile on the sprouts and onions, drizzle with more dressing, and fold the bare half of each naan over the top, pressing gently. Rub the tops with oil, sprinkle with sesame seeds, and bake uncovered 5 to 10 minutes until toasted. Check at 5 minutes: naan overbrowns quickly.",
       "wait": "5 to 10 min",
       "uses": [
-        "sprouts or microgreens",
-        "pickled red onions (optional)",
+        "Sprouts or microgreens",
+        "Pickled red onions",
         {
-          "item": "green tahini, Caesar or mayo, plus extra to serve",
+          "item": "Green tahini, Caesar or mayo",
           "amount": "more, to drizzle"
         },
-        "olive oil and sesame seeds, for the top"
+        "Olive oil and sesame seeds"
       ],
       "hands": "4 min",
       "oven": "425F"
@@ -264,7 +275,7 @@
       "do": "Slice and serve warm, with extra dressing on the side.",
       "uses": [
         {
-          "item": "green tahini, Caesar or mayo, plus extra to serve",
+          "item": "Green tahini, Caesar or mayo",
           "amount": "the extra, to serve"
         }
       ],

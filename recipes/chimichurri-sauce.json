@@ -28,36 +28,41 @@
   "serve": "keeps",
   "ingredients": [
     {
-      "qty": "¼ cup",
-      "item": "extra virgin olive oil"
+      "qty": "1/4 cup",
+      "item": "Extra virgin olive oil"
     },
     {
-      "qty": "¼ cup",
-      "item": "red wine vinegar"
+      "qty": "1/4 cup",
+      "item": "Red wine vinegar"
     },
     {
-      "qty": "¼ cup",
-      "item": "red onion, minced"
-    },
-    {
-      "qty": "2 tbsp",
-      "item": "bell pepper, minced"
+      "qty": "1/4 cup",
+      "item": "Red onion",
+      "note": "minced"
     },
     {
       "qty": "2 tbsp",
-      "item": "flat leaf parsley, minced"
+      "item": "Bell pepper",
+      "note": "minced"
+    },
+    {
+      "qty": "2 tbsp",
+      "item": "Flat leaf parsley",
+      "note": "minced"
     },
     {
       "qty": "2 tsp",
-      "item": "fresh oregano, minced"
+      "item": "Fresh oregano",
+      "note": "minced"
     },
     {
       "qty": "2 tsp",
-      "item": "fresh garlic, minced"
+      "item": "Fresh garlic",
+      "note": "minced"
     },
     {
-      "qty": "¼ tsp",
-      "item": "red pepper flakes"
+      "qty": "1/4 tsp",
+      "item": "Red pepper flakes"
     },
     {
       "item": "Salt and pepper to taste"
@@ -67,11 +72,11 @@
     {
       "do": "Mince the onion, bell pepper, parsley, oregano, and garlic fine, so no single piece dominates a bite.",
       "uses": [
-        "red onion, minced",
-        "bell pepper, minced",
-        "flat leaf parsley, minced",
-        "fresh oregano, minced",
-        "fresh garlic, minced"
+        "Red onion",
+        "Bell pepper",
+        "Flat leaf parsley",
+        "Fresh oregano",
+        "Fresh garlic"
       ],
       "hands": "6 min",
       "prep": true
@@ -79,9 +84,9 @@
     {
       "do": "Combine everything in a bowl — oil, vinegar, all the minced ingredients, pepper flakes — and whisk until it comes together.",
       "uses": [
-        "extra virgin olive oil",
-        "red wine vinegar",
-        "red pepper flakes"
+        "Extra virgin olive oil",
+        "Red wine vinegar",
+        "Red pepper flakes"
       ],
       "hands": "1 min"
     },

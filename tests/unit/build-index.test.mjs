@@ -284,12 +284,92 @@ describe("planning data", () => {
 
   describe("warns about optional ingredients not marked optional", () => {
     test("in the amount", () =>
-      warnsAbout({ "test-recipe": recipe({ ingredients: [{ qty: "Optional", item: "Lemon curd" }] }) }, /"Lemon curd" says it's optional/));
+      warnsAbout({ "test-recipe": recipe({ ingredients: [{ qty: "optional", item: "Lemon curd" }] }) }, /"Lemon curd" says it's optional/));
     test("in the note", () =>
       warnsAbout({ "test-recipe": recipe({ ingredients: [{ item: "Chili flakes", note: "optional" }] }) }, /"Chili flakes" says it's optional/));
     test("in a plain-text ingredient", () =>
       warnsAbout({ "test-recipe": recipe({ ingredients: ["Mint, to garnish (optional)"] }) }, /"Mint, to garnish \(optional\)" says it's optional/));
-    test("not when it's marked optional", () =>
-      quiet({ "test-recipe": recipe({ ingredients: [{ item: "Chili flakes", note: "optional", optional: true }] }) }, /says it's optional/));
+    // Saying it as well as marking it is refused by the format rules ("optional is said once").
+    test("not when it's marked optional", () => {
+      const res = buildIndex({ "test-recipe": recipe({ ingredients: [{ item: "Chili flakes", note: "optional", optional: true }] }) });
+      assert.ok(!res.warnings.some((w) => /says it's optional/.test(w)), res.output);
+    });
   });
 });
+
+// How a recipe is written, so every recipe reads the same way. A recipe that breaks one is refused.
+describe("format", () => {
+  const ingredient = (i) => buildIndex({ "test-recipe": recipe({ ingredients: [i] }) });
+  const refuses = (i, message) => {
+    const res = ingredient(i);
+    assert.equal(res.ok, false, `expected the build to fail, got:\n${res.output}`);
+    assert.ok(res.errors.includes(`recipes/test-recipe.json: ${message}`), `no error "${message}" in:\n${res.output}`);
+  };
+  const quiet = (i) => {
+    const res = ingredient(i);
+    assert.equal(res.ok, true, res.output);
+    assert.deepEqual(res.warnings.filter((w) => w.startsWith("recipes/")), [], res.output);
+  };
+
+  describe("units are lowercase", () => {
+    test("refuses a capital in the amount", () =>
+      refuses({ qty: "4 Tbsp", item: "Butter" }, '"Butter": write "4 Tbsp" in lowercase, "4 tbsp"'));
+    test("is happy with lowercase", () => quiet({ qty: "1 1/2 tbsp", item: "Butter" }));
+  });
+
+  describe("ingredient names start with a capital", () => {
+    test("refuses a lowercase name", () =>
+      refuses({ qty: "2 tbsp", item: "olive oil" }, '"olive oil": start the name with a capital, "Olive oil"'));
+    test("is happy with a capital, or a name that starts with a number", () => {
+      quiet({ qty: "2 tbsp", item: "Olive oil" });
+      quiet({ qty: "8", item: "10 in tortillas" });
+    });
+  });
+
+  describe("prep goes in the note", () => {
+    test("refuses prep after a comma in the name", () =>
+      refuses({ qty: "2", item: "Carrots, peeled and chopped" }, '"Carrots, peeled and chopped": move "peeled and chopped" into "note"'));
+    test("refuses how much to use after a comma", () =>
+      refuses({ qty: "1 tsp", item: "Salt, plus more to taste" }, '"Salt, plus more to taste": move "plus more to taste" into "note"'));
+    test("moves only the prep when the name has a comma of its own", () =>
+      refuses({ qty: "1 lb", item: "Boneless, skinless chicken thighs, thinly sliced" },
+        '"Boneless, skinless chicken thighs, thinly sliced": move "thinly sliced" into "note"'));
+    test("counts ground as prep", () =>
+      refuses({ qty: "1 tsp", item: "Black pepper, freshly ground, to taste" },
+        '"Black pepper, freshly ground, to taste": move "freshly ground, to taste" into "note"'));
+    test("leaves commas in brackets alone", () =>
+      quiet({ qty: "1 tsp", item: "Granulated garlic (or 2 cloves, finely minced)" }));
+    test("is happy with a comma that's part of the name", () => {
+      quiet({ qty: "1 lb", item: "Boneless, skinless chicken thighs" });
+      quiet({ qty: "1 cup", item: "Fresh herbs: parsley, mint or dill" });
+    });
+  });
+
+  describe("grams and ml go in their own fields", () => {
+    test("refuses grams in the amount", () =>
+      refuses({ qty: "300g/10.5oz", item: "Yellow noodles" }, '"Yellow noodles": put the grams in "300g/10.5oz" in "grams" (a number), not "qty"'));
+    test("refuses ml in the amount", () =>
+      refuses({ qty: "40 ml", item: "Soy sauce" }, '"Soy sauce": put the ml in "40 ml" in "ml" (a number), not "qty"'));
+    test("is happy with grams in their own field", () => quiet({ grams: 300, qty: "10.5 oz", item: "Yellow noodles" }));
+    test("is happy with a unit that ends in g", () => quiet({ qty: "2 large", item: "Eggs" }));
+  });
+
+  describe("amounts are written out", () => {
+    test("refuses ~ for about", () =>
+      refuses({ qty: "~2 cups", item: "Broth" }, '"Broth": write "about" instead of "~" in "~2 cups"'));
+    test("refuses a fraction character", () =>
+      refuses({ qty: "1 ½ cups", item: "Flour" }, '"Flour": write fractions with a slash, like "1 1/2", not "½"'));
+    test("is happy with about and slash fractions", () => quiet({ qty: "about 1 1/2 cups", item: "Flour" }));
+  });
+
+  describe("optional is said once, by \"optional\": true", () => {
+    test("refuses it when the amount says it too", () =>
+      refuses({ qty: "optional", item: "Lemon curd", optional: true },
+        '"Lemon curd" is marked "optional": true, which the page shows, so the text doesn\'t need to say "optional"'));
+    test("refuses it when the note says it too", () =>
+      refuses({ item: "Chili flakes", note: "optional, for heat", optional: true },
+        '"Chili flakes" is marked "optional": true, which the page shows, so the text doesn\'t need to say "optional"'));
+    test("is happy with just the flag", () => quiet({ qty: "to taste", item: "Whipped cream", optional: true }));
+  });
+});
+
