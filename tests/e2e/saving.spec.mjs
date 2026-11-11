@@ -85,6 +85,16 @@ test.describe("the editor's Save", () => {
     await expect(page.getByLabel("Step", { exact: true })).toHaveCount(0);
   });
 
+  test("after a save there's nothing to undo", async ({ page, baseURL }) => {
+    await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await expect(page.getByRole("button", { name: "Undo" })).toBeEnabled();
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Undo" })).toBeDisabled();
+  });
+
   test("Ctrl+S (Cmd+S on a Mac) saves, with a line still open, and does nothing when nothing changed", async ({ page, baseURL }) => {
     const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
     await openEditor(page, baseURL, "pork-carnitas");
