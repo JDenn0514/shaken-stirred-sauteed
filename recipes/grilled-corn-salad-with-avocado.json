@@ -17,18 +17,9 @@
   "added": "2026-09-02",
   "yield": "Serves 6 (about 6 cups)",
   "times": [
-    [
-      "Prep",
-      "15 min"
-    ],
-    [
-      "Grill",
-      "7 min"
-    ],
-    [
-      "Total",
-      "25 min"
-    ]
+    ["Prep", "15 min"],
+    ["Grill", "7 min"],
+    ["Total", "25 min"]
   ],
   "serve": "soon",
   "sits": "1 hr",
@@ -121,13 +112,10 @@
       "hands": "4 min",
       "prep": true,
       "prepOnly": true,
-      "uses": [
-        "fresh corn, husked, silks removed"
-      ]
+      "uses": ["fresh corn, husked, silks removed"]
     },
     {
-      "do": "Heat the grill to medium, about 400°F. Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper. Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
-      "wait": "7 min",
+      "do": "Heat the grill to medium, about 400°F.",
       "uses": [
         "fresh corn, husked, silks removed",
         {
@@ -143,7 +131,14 @@
           "group": "Salad"
         }
       ],
-      "hands": "3 min",
+      "hands": "3 min"
+    },
+    {
+      "do": "Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper."
+    },
+    {
+      "do": "Grill 7 minutes, turning every couple of minutes, until the kernels are lightly browned in spots. Pull the ears off and let them cool — hot corn is awkward to cut and will wilt the arugula the moment it hits the bowl.",
+      "wait": "7 min",
       "watch": true,
       "grill": true
     },
