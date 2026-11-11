@@ -85,7 +85,7 @@ const steak = () => ({
   title: "Seared Steak",
   category: "cooking",
   serve: "hot", sits: "10 min",
-  ingredients: [{ qty: "1", item: "ribeye" }],
+  ingredients: [{ qty: "1", item: "Ribeye" }],
   steps: [{ do: "Sear the steak 3 minutes a side.", wait: "6 min", watch: true, burner: true, hands: "1 min" }],
 });
 
@@ -306,7 +306,7 @@ describe("editing the draft", () => {
     let state = addIngredient(startReview(steak(), []));
     const id = flat(state.recipe.ingredients).at(-1).reviewId;
     state = updateIngredient(state, id, { qty: "1 tsp", item: "salt" });
-    assert.deepEqual(flat(state.recipe.ingredients).map((i) => i.item), ["ribeye", "salt"]);
+    assert.deepEqual(flat(state.recipe.ingredients).map((i) => i.item), ["Ribeye", "salt"]);
     state = removeIngredient(state, "i1");
     assert.deepEqual(flat(state.recipe.ingredients).map((i) => i.item), ["salt"]);
     state = setField(setField(state, "title", "  Steak for Two "), "yield", "Serves 2");

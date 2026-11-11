@@ -53,7 +53,7 @@ const RECIPES = {
       { group: "Crust", items: [
         { grams: 125, qty: "1 cup", item: "Flour" },
         { grams: 50, qty: "1/4 cup", item: "Sugar" },
-        { grams: 115, qty: "8 Tbsp", item: "Butter", note: "melted" },
+        { grams: 115, qty: "8 tbsp", item: "Butter", note: "melted" },
       ] },
       { group: "Filling", items: [
         { grams: 200, qty: "1 cup", item: "Sugar" },

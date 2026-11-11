@@ -57,7 +57,7 @@ test.describe("a recipe website", () => {
     await page.getByRole("region", { name: "Questions" }).getByRole("radio", { name: /^Hot/ }).check();
     await page.getByRole("button", { name: "Copy instead" }).click();
     const saved = JSON.parse(await page.getByLabel("Recipe file").inputValue());
-    expect(saved.ingredients.find((e) => e.group === "Sesame Sauce (Note 2)").items.map((i) => i.item)).toEqual(["soy sauce", "sugar"]);
+    expect(saved.ingredients.find((e) => e.group === "Sesame Sauce (Note 2)").items.map((i) => i.item)).toEqual(["Soy sauce", "Sugar"]);
     expect(saved.notes).toHaveLength(2);
   });
 

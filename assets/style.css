@@ -838,6 +838,12 @@ body.sheet-open { overflow: hidden; }
 .steps li:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 .muted { color: var(--muted); }
+/* "optional" after an ingredient marked "optional": true: a small label, like the tag chips. */
+.ing-optional {
+  display: inline-block; margin-left: .2em; padding: 0 .4em; border: 1px solid var(--rule-strong); border-radius: 3px;
+  color: var(--muted); font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; line-height: 1.5;
+  vertical-align: .1em; white-space: nowrap;
+}
 /* Quantities stay in the reading face (bold, lining figures), not mono:
    they are read mid-stir, so they must be as easy as the words beside them. */
 .qty { font-weight: 680; font-variant-numeric: lining-nums; word-spacing: .14em; }

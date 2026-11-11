@@ -145,7 +145,7 @@ describe("reading a web page's recipe data", () => {
   const { recipe } = draftFromSchemaOrg(data, { category: "cooking", url: "https://example.com/peanut" });
 
   test("ingredients, steps, yield and times come across", () => {
-    assert.deepEqual(flat(recipe.ingredients).map((i) => [i.qty, i.item]), [["1 cup", "smooth peanut butter"], ["2 tablespoons", "garlic"], ["3/4 cup", "water"]]);
+    assert.deepEqual(flat(recipe.ingredients).map((i) => [i.qty, i.item]), [["1 cup", "Smooth peanut butter"], ["2 tablespoons", "Garlic"], ["3/4 cup", "Water"]]);
     assert.equal(recipe.steps[0].group, "Sauce");
     assert.equal(recipe.yield, "2 cups");
     assert.deepEqual(recipe.times, [["Prep", "10 min"], ["Total", "1 hr 10 min"]]);
@@ -323,4 +323,22 @@ describe("checks for what a cook needs to plan ahead", () => {
     const d = draft("Pavlova\nINGREDIENTS\n4 egg whites\nFresh berries, to taste\nWhipped cream\nSalt and pepper\nButter, for the pan\nWater\nMETHOD\nTop and serve.");
     assert.deepEqual(kinds(d, "no-amount").map((f) => f.text), ["Fresh berries", "Whipped cream"]);
   });
+});
+
+// The README's "Writing ingredients": the checker refuses a recipe that breaks them.
+describe("ingredients are written the site's way", () => {
+  const items = (text) => flat(draftFromText(text, { category: "cooking" }).recipe.ingredients);
+  test("names start with a capital, amounts are lowercase, fractions use a slash", () =>
+    assert.deepEqual(items("Soup\nINGREDIENTS\n½ cup whole milk\nPinch of kosher salt\n1 ¼ cups broth\nMETHOD\nStir it all together."), [
+      { qty: "1/2 cup", item: "Whole milk" },
+      { qty: "pinch", item: "Kosher salt" },
+      { qty: "1 1/4 cups", item: "Broth" },
+    ]));
+  test("a recipe page's ingredients too", () =>
+    assert.deepEqual(flat(draftFromSchemaOrg({ "@type": "Recipe", name: "Soup", recipeIngredient: ["1 ½ cups water"], recipeInstructions: ["Boil it."] }, { category: "cooking" }).recipe.ingredients),
+      [{ qty: "1 1/2 cups", item: "Water" }]));
+  test("grams and ml in the amount move to their own fields", () =>
+    assert.deepEqual(flat(draftFromSchemaOrg({ "@type": "Recipe", name: "Noodles", recipeIngredient: [], recipeInstructions: ["Boil them."] },
+      { category: "cooking", ingredients: [{ qty: "200g/7oz", item: "egg noodles" }, { qty: "40 ml", item: "soy sauce" }] }).recipe.ingredients),
+      [{ grams: 200, qty: "7 oz", item: "Egg noodles" }, { ml: 40, item: "Soy sauce" }]));
 });

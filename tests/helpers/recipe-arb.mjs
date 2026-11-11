@@ -18,7 +18,8 @@ const time = fc.constantFrom("10 min", "45 sec", "1 1/2 hr", "7 to 8 min");
 const ingredientArb = fc.oneof(
   text,
   fc.record({
-    item: text,
+    // Names start with a capital (README, "Writing ingredients"), or the checker refuses them.
+    item: text.map((t) => t[0].toUpperCase() + t.slice(1)),
     qty: fc.constantFrom("1 cup", "2", "1/2 tsp", "3 lb"),
     grams: fc.integer({ min: 1, max: 2000 }),
     ml: fc.integer({ min: 1, max: 500 }),

@@ -73,6 +73,26 @@ A size choice at the top of the recipe page: **1x** (the default), **2x**, **3x*
 - **Where it goes:** whether cook mode and the lineup pick up the size from the recipe page, or have their own. A lineup cooking a double batch is the case that needs it.
 - **Remembered or not:** whether the size resets to 1x each time the recipe opens.
 
+## Metric and imperial amounts
+
+2026-11-11 · from Jacob, while choosing the recipe format rules
+
+Every ingredient carries both a metric and an imperial amount, and you choose which one the site shows. Today a recipe gives one measure, or both in two places: the metric number in `grams` or `ml`, and the US one as text in `qty` (`{ "grams": 300, "qty": "10.5 oz", "item": "Yellow noodles" }`, shown as "300 g · 10.5 oz").
+
+**A format Jacob suggested:** both amounts nested in `qty`, each a number with its unit:
+
+```json
+{ "qty": { "g": 300, "oz": 10.5 }, "item": "Yellow noodles" }
+```
+
+**Things to work out:**
+
+- **Amounts that aren't a unit pair:** "to taste", "2 cloves", "1 large", "1 can (28 oz)". Either `qty` stays text for those, or it becomes an object with fields such as `count` or `text`.
+- **Converting the recipes:** amounts already in `grams`/`ml` move over mechanically. The others need converting, and cups to grams depends on the ingredient (a cup of flour and a cup of sugar weigh different amounts), so those need a table per ingredient or a person to check them.
+- **What reads `qty` today:** the recipe page, cook mode, the editor, search, the recipe checker and the random recipes the recipe laws test with. Each would change.
+- **The choice itself:** a switch on the recipe page, or the "Units" setting on the settings page (below).
+- **Scaling** (above) wants the same thing, amounts as numbers, so the two could share a format.
+
 ## Your own notes on a recipe
 
 2026-11-10 · from Jacob
