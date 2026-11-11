@@ -131,7 +131,9 @@
           "group": "Salad"
         }
       ],
-      "hands": "3 min"
+      "hands": "3 min",
+      "holds": true,
+      "grill": true
     },
     {
       "do": "Rub the corn all over with the 1 ½ Tbsp oil and season with the 2 tsp salt and ¾ tsp pepper."
