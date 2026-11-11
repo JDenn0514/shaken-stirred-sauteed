@@ -366,6 +366,9 @@ function decorate(page, errors, showPrepFirst) {
     else li.innerHTML = part(`step:${n}`, `part-step-${n}`, stepText(steps[n]) ? li.innerHTML : "Empty step: add what to do")
       + editButton(`step:${n}`, `edit-step-${n}`, `Edit step ${shown + 1}`);
   });
+  // Numbering carries on across step groups, as on the recipe page (set here,
+  // not inline, so the Content-Security-Policy can forbid inline styles).
+  page.querySelectorAll("ol.steps[data-start]").forEach((ol) => { ol.style.counterReset = `step ${ol.dataset.start}`; });
   const stepSection = page.querySelector("#steps");
   // In prep-first order the headings are the order's own ("Prep", "Cooking"), not the recipe's groups.
   editableGroups(stepSection, "steps", !showPrepFirst);

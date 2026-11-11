@@ -167,6 +167,52 @@ test.describe("ingredients, by keyboard", () => {
   });
 });
 
+// The preview should look like the recipe page it previews. Step numbers,
+// lettering and capitals are drawn by CSS, so these read what the browser draws.
+test.describe("the preview looks like the recipe page", () => {
+  test("step numbers carry on across groups, as on the recipe page", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    // "To finish" starts after the two steps before it, so its first step is 3.
+    const lists = preview(page).locator("ol.steps");
+    await expect(lists).toHaveCount(2);
+    expect(await lists.nth(1).evaluate((ol) => getComputedStyle(ol).counterReset)).toBe("step 2");
+  });
+
+  test("group headings are in capitals, as on the recipe page", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const heading = preview(page).getByRole("button", { name: "For the braise" });
+    expect(await heading.evaluate((b) => getComputedStyle(b).textTransform)).toBe("uppercase");
+  });
+
+  test("ingredients keep their lettering, and an open ingredient's fields have none", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const lettered = (li) => li.evaluate((el) => getComputedStyle(el, "::before").content);
+    expect(await lettered(preview(page).locator("ul.ingredients > li").first())).toContain("counter(ing, lower-alpha)");
+    await preview(page).getByRole("button", { name: "Edit Kosher salt" }).click();
+    const labels = preview(page).locator(".edit-form label");
+    for (const label of await labels.all()) expect(await lettered(label)).toBe("none");
+  });
+
+  test("every field is at least 16px, so phones don't zoom in on it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).click();
+    await page.getByText("Details", { exact: true }).click();
+    const sizes = await page.locator(".edit input:not([type=checkbox]):not([type=radio]), .edit textarea, .edit select")
+      .evaluateAll((fields) => fields.map((f) => parseFloat(getComputedStyle(f).fontSize)));
+    expect(sizes.length).toBeGreaterThan(5);
+    expect(Math.min(...sizes)).toBeGreaterThanOrEqual(16);
+  });
+
+  test("on a laptop the sheet is as wide as on the recipe page, lined up with the editor's bar", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openEditor(page, baseURL, "pork-carnitas");
+    const sheet = await preview(page).boundingBox();
+    const bar = await page.locator(".edit-bar").boundingBox();
+    expect(sheet.width).toBeGreaterThan(1000);
+    expect(Math.abs(sheet.x - bar.x)).toBeLessThan(2);
+  });
+});
+
 test.describe("what you type is never lost", () => {
   test("opening another line keeps what you typed in the open one", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
