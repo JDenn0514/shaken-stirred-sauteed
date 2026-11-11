@@ -223,6 +223,14 @@ const PAGES = [
     await page.getByRole("button", { name: "Undo" }).click();
     await expect(page.getByRole("button", { name: "Redo" })).toBeEnabled();
   }, null, editor],
+  ["editor with a problem in an added prep step it isn't showing", "edit.html?r=veg-stir-fry", async (page) => {
+    await page.getByText("Details", { exact: true }).click();
+    const step = page.locator("details.edit-details").getByRole("group", { name: /Slice the peppers/ });
+    await step.getByLabel("Hands-on time").fill("soon");
+    await step.getByLabel("Hands-on time").press("Tab");
+    await editorPreview(page).getByRole("switch", { name: "Prep first" }).click();
+    await expect(page.getByRole("button", { name: "Show prep first" })).toBeVisible();
+  }, null, editor],
   ["editor showing check errors", "edit.html?r=lemon-bars", async (page) => {
     // An ingredient with no name is an error (a rename isn't: it carries through to the steps).
     await editorPreview(page).getByRole("button", { name: "8 tbsp Butter melted" }).click();

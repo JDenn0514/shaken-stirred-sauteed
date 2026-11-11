@@ -328,7 +328,7 @@ A step is marked **Done** once its pull request is merged.
    - Hide the site header while typing on a phone.
    - Update the tests that check the bar's text.
 8. **Done** (#52, 2026-11-11). **(S) Drafts remember which version they started from.** If the site's version changed since, say so before "Bring back my changes", and don't silently overwrite.
-9. **(M) Undo and Redo.**
+9. **Done** (#53, 2026-11-11). **(M) Undo and Redo.**
    - Snapshots of the recipe and, for imported recipes, the intake review.
    - Capped at 50 and cleared on Save.
    - Buttons in the bar; Cmd/Ctrl+Z outside text fields.

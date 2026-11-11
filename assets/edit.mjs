@@ -129,6 +129,30 @@ function checks() {
 
 // Which part of the page a message is about: a step (by its number), an
 // ingredient (by its name) or the title.
+// --- Step numbers as the sheet shows them --------------------------------------------
+// The checker counts steps in the file's order. The sheet numbers them in the
+// order it shows them: prep first moves prep up, and as written hides an added
+// prep step. Messages keep the checker's numbers inside (partOf places them by
+// it) and say the sheet's numbers to the reader.
+const showingPrepFirst = () => stepOrder(recipe, true).differs && prepFirst;
+function shownNumbers() {
+  return new Map(stepOrder(recipe, showingPrepFirst()).steps.map((x, k) => [x.i, k + 1]));
+}
+// "step 3" in a message, as the sheet numbers it; a step the sheet doesn't show
+// (an added prep step, as written) by its first words.
+function say(text) {
+  const shown = shownNumbers();
+  return text.replace(/\b([Ss])teps? (\d+)\b/g, (m, s, d) => {
+    const i = Number(d) - 1;
+    if (shown.has(i)) return `${s}tep ${shown.get(i)}`;
+    return `${s === "S" ? "The" : "the"} added prep step "${short(stepText(flat(recipe.steps)[i]), 50)}"`;
+  });
+}
+// Whether a message names a step the sheet isn't showing.
+const namesHidden = (text) => [...text.matchAll(/\bsteps? (\d+)\b/gi)].some(([, d]) => !shownNumbers().has(Number(d) - 1));
+const showPrepButton = (text) => (namesHidden(text)
+  ? ` <button class="btn" type="button" data-act="show-prep" data-key="show-prep-${esc(text.slice(0, 40))}">Show prep first</button>` : "");
+
 function partOf(message) {
   const step = /^step (\d+)\b/.exec(message);
   if (step) return { step: Number(step[1]) - 1 };
@@ -201,7 +225,7 @@ function draw() {
     </div>
     ${errors.length ? `<section class="edit-problems" aria-labelledby="problems-h">
       <h2 id="problems-h">Problems to fix</h2>
-      <ul>${errors.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>
+      <ul>${errors.map((e) => `<li>${esc(say(e))}${showPrepButton(e)}</li>`).join("")}</ul>
     </section>` : ""}
     ${unplaced.length ? `<section class="edit-todo" aria-labelledby="import-checks-h">
       <h2 id="import-checks-h">Things to check</h2>
@@ -263,10 +287,10 @@ function todoHTML(w) {
   const m = mentions(w);
   const optional = /^"(.+?)" says it's optional/.exec(w);
   const ing = optional && flat(recipe.ingredients).findIndex((i) => ingName(i) === optional[1]);
-  return `<li>${esc(w)}
+  return `<li>${esc(say(w))}${showPrepButton(w)}
     ${m ? `<span class="edit-row">
-      <button class="btn" type="button" data-act="no-equipment" data-step="${m.step}" data-field="${m.field}" data-key="todo-no-${m.step}">Step ${m.step + 1} doesn't use ${esc(m.what)}</button>
-      <button class="btn" type="button" data-act="set-equipment" data-step="${m.step}" data-field="${m.field}" data-key="todo-set-${m.step}">Set step ${m.step + 1}'s equipment</button>
+      <button class="btn" type="button" data-act="no-equipment" data-step="${m.step}" data-field="${m.field}" data-key="todo-no-${m.step}">${esc(say(`Step ${m.step + 1}`))} doesn't use ${esc(m.what)}</button>
+      <button class="btn" type="button" data-act="set-equipment" data-step="${m.step}" data-field="${m.field}" data-key="todo-set-${m.step}">${esc(say(`Set step ${m.step + 1}`))}'s equipment</button>
     </span>` : ""}
     ${optional && ing >= 0 ? `<span class="edit-row"><button class="btn" type="button" data-act="mark-optional" data-ing="${ing}" data-key="todo-opt-${ing}">Mark it optional</button></span>` : ""}
   </li>`;
@@ -406,8 +430,8 @@ function decorate(page, errors, showPrepFirst) {
       : p.title ? page.querySelector("h1, form[data-form=about]") : null;
     if (!at) return;
     const id = `error-${k}`;
-    if (at.matches("h1, form")) at.insertAdjacentHTML("afterend", `<p class="edit-error" id="${id}">${esc(e)}</p>`);
-    else at.insertAdjacentHTML("beforeend", `<p class="edit-error" id="${id}">${esc(e)}</p>`);
+    if (at.matches("h1, form")) at.insertAdjacentHTML("afterend", `<p class="edit-error" id="${id}">${esc(say(e))}</p>`);
+    else at.insertAdjacentHTML("beforeend", `<p class="edit-error" id="${id}">${esc(say(e))}</p>`);
     const button = at.querySelector(".edit-part") || at.querySelector(".edit-part, button");
     if (button) notes.set(button, [...(notes.get(button) || []), id]);
   });
@@ -544,8 +568,9 @@ function stepDetails(s, n) {
   const picked = new Map(picks.map((p) => [p.ing, p.amount]));
   const oven = o.oven === false ? "false" : o.oven === "broil" || o.oven === "off" ? o.oven : o.oven || ovenTemp === n ? "temp" : "";
   const sf = (attrs) => ` data-act="step-field" data-n="${n}"${attrs}`;
-  return `<fieldset class="edit-step"><legend>Step ${n + 1}: ${esc(short(o.do || "(empty)"))}${o.prepOnly ? " (added prep)" : ""}</legend>
-    <div class="edit-uses" role="group" aria-label="Ingredients step ${n + 1} uses">
+  const named = shownNumbers().has(n) ? `Step ${shownNumbers().get(n)}` : "Added prep step, shown in prep-first order";
+  return `<fieldset class="edit-step"><legend>${named}: ${esc(short(o.do || "(empty)"))}${o.prepOnly && shownNumbers().has(n) ? " (added prep)" : ""}</legend>
+    <div class="edit-uses" role="group" aria-label="Ingredients ${esc(named.charAt(0).toLowerCase() + named.slice(1))} uses">
       <p class="edit-subhead">Uses</p>
       ${ings.map((i, k) => `<div class="edit-use">
         ${check(ingName(i) || `Ingredient ${k + 1}`, ` data-act="use" data-n="${n}" data-ing="${k}" data-key="d-use-${n}-${k}"`, picked.has(k))}
@@ -880,7 +905,14 @@ function stepsTouched(a, b) {
   const was = flat(a.steps), now = flat(b.steps);
   const ns = now.map((s, n) => (JSON.stringify(s?.uses) !== JSON.stringify(was[n]?.uses) ? n + 1 : 0)).filter(Boolean);
   if (!ns.length) return null;
-  return ns.length === 1 ? `step ${ns[0]}` : `steps ${ns.slice(0, -1).join(", ")} and ${ns.at(-1)}`;
+  // Numbered as the sheet shows them, in that order.
+  const shown = shownNumbers();
+  const names = ns.map((n) => (shown.has(n - 1) ? { k: shown.get(n - 1), name: String(shown.get(n - 1)) } : { k: Infinity, name: say(`step ${n}`) }))
+    .sort((x, y) => x.k - y.k);
+  const allNumbers = names.every((x) => x.k !== Infinity);
+  const list = names.map((x) => (allNumbers || x.k === Infinity ? x.name : `step ${x.name}`));
+  const joined = list.length === 1 ? list[0] : `${list.slice(0, -1).join(", ")} and ${list.at(-1)}`;
+  return allNumbers ? `step${list.length > 1 ? "s" : ""} ${joined}` : joined;
 }
 let problemCount = 0; // the checker's errors at the last draw
 // Typing doesn't redraw the page, so the bar's words and Save follow along here.
@@ -957,6 +989,7 @@ root.addEventListener("click", (e) => {
   }
   if (a === "cancel") return cancel();
   if (a === "undo") return undo();
+  if (a === "show-prep") { prepFirst = true; focusKey = "prep-first"; return draw(); }
   if (a === "redo") return redo();
   if (a === "edit") {
     openLine(b.dataset.target);
