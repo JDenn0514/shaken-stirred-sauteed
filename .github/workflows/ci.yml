@@ -99,7 +99,41 @@ jobs:
         env:
           TRY_TIME: 2m
           TRIES: 4
+          CACHE_HIT: ${{ steps.webkit-debs.outputs.cache-hit }}
         run: |
+          # A full cache hit has every package this runner image needs, so they
+          # are installed with dpkg, which never touches Ubuntu's mirror. (Both
+          # 'playwright install-deps' and 'apt-get install' run 'apt-get update'
+          # first, and the mirror sometimes doesn't answer for hours.) A cache can
+          # hold two versions of a package; only the newest is installed.
+          if [ "$CACHE_HIT" = true ]; then
+            declare -A newest
+            for deb in ~/webkit-debs/*.deb; do
+              name="$(dpkg-deb -f "$deb" Package):$(dpkg-deb -f "$deb" Architecture)"
+              if [ -z "${newest[$name]:-}" ] || dpkg --compare-versions "$(dpkg-deb -f "$deb" Version)" gt "$(dpkg-deb -f "${newest[$name]}" Version)"; then
+                newest[$name]=$deb
+              fi
+            done
+            # Playwright's dry run lists what's still missing, from what's
+            # installed, without apt.
+            if sudo env DEBIAN_FRONTEND=noninteractive dpkg -i "${newest[@]}" > "$RUNNER_TEMP/dpkg.log" 2>&1 &&
+              missing="$(npx playwright install-deps --dry-run webkit 2>&1)" &&
+              [[ "$missing" == *'All system dependencies are installed'* ]]; then
+              echo "Installed ${#newest[@]} cached packages without Ubuntu's mirror"
+              npx playwright install webkit
+              exit 0
+            fi
+            cat "$RUNNER_TEMP/dpkg.log"
+            echo "${missing:-}"
+            echo "::warning::The cached packages didn't install everything WebKit needs; downloading from Ubuntu's mirror instead"
+            sudo env DEBIAN_FRONTEND=noninteractive dpkg --configure -a || true
+          fi
+          # If Azure's copy of the mirror doesn't answer, apt can try Ubuntu's own.
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            cat /etc/apt/apt-mirrors.txt
+            grep -q '://archive\.ubuntu\.com/' /etc/apt/apt-mirrors.txt ||
+              echo 'http://archive.ubuntu.com/ubuntu/' | sudo tee -a /etc/apt/apt-mirrors.txt > /dev/null
+          fi
           # Start from the cached packages, if there are any.
           if [ -d ~/webkit-debs ]; then sudo cp ~/webkit-debs/*.deb /var/cache/apt/archives/ 2> /dev/null || true; fi
           # apt gives up on a download that has stalled after 30 seconds.
