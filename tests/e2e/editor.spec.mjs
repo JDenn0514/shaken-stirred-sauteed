@@ -167,6 +167,83 @@ test.describe("ingredients, by keyboard", () => {
   });
 });
 
+test.describe("the editor's bar", () => {
+  const bar = (page) => page.getByRole("region", { name: "Editing" });
+
+  test("names the recipe and its section, and says whether anything has changed", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await expect(bar(page)).toContainText("Pork Carnitas");
+    await expect(bar(page)).toContainText("Editing · Cooking");
+    await expect(bar(page)).toContainText("No changes");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await expect(bar(page)).toContainText("Unsaved changes");
+  });
+
+  test("Save is off until something changes, and says so", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const save = page.getByRole("button", { name: "Save" });
+    await expect(save).toBeDisabled();
+    await expect(save).toHaveAccessibleDescription("No changes");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Season the pork well.");
+    await expect(save).toBeEnabled();
+  });
+
+  test("says which steps a rename or a removal also changed", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    const said = bar(page).getByRole("status");
+    await preview(page).getByRole("button", { name: "Edit Butter" }).press("Enter");
+    await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(said).toHaveText("Also updated step 1, which uses it.");
+    await preview(page).getByRole("button", { name: "Edit Lemon juice" }).press("Enter");
+    await page.getByRole("button", { name: "Remove" }).press("Enter");
+    await expect(said).toHaveText("Also updated steps 3 and 4, which used it.");
+  });
+
+  for (const [width, height] of [[390, 844], [1280, 900]]) {
+    test(`stays in view under the site header as you scroll, ${width}px wide`, async ({ page, baseURL }) => {
+      await page.setViewportSize({ width, height });
+      await openEditor(page, baseURL, "lemon-bars");
+      await page.getByRole("button", { name: "Delete this recipe" }).scrollIntoViewIfNeeded();
+      const header = await page.locator(".site-header").boundingBox();
+      const box = await bar(page).boundingBox();
+      expect(box.y).toBeGreaterThanOrEqual(header.y + header.height - 1);
+      expect(box.y).toBeLessThan(header.y + header.height + 4);
+      await expect(page.getByRole("button", { name: "Save" })).toBeInViewport();
+    });
+  }
+
+  test("on a phone, the site header steps aside while you type in a line, leaving the bar at the top", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openEditor(page, baseURL, "lemon-bars");
+    const header = page.locator(".site-header");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).press("Enter");
+    await expect(page.getByLabel("Step", { exact: true })).toBeFocused();
+    await expect(header).toBeHidden();
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(header).toBeVisible();
+  });
+
+  test("on a laptop, the site header stays while you type", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openEditor(page, baseURL, "lemon-bars");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).press("Enter");
+    await expect(page.getByLabel("Step", { exact: true })).toBeFocused();
+    await expect(page.locator(".site-header")).toBeVisible();
+  });
+
+  test("its status line stays the same line as the page changes, so it's read out", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    await bar(page).getByRole("status").evaluate((el) => { el.dataset.seen = "yes"; });
+    await preview(page).getByRole("button", { name: "Edit Butter" }).press("Enter");
+    await page.getByLabel("Ingredient", { exact: true }).fill("Ghee");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(bar(page).getByRole("status")).toHaveAttribute("data-seen", "yes");
+  });
+});
+
 // The preview should look like the recipe page it previews. Step numbers,
 // lettering and capitals are drawn by CSS, so these read what the browser draws.
 test.describe("the preview looks like the recipe page", () => {
