@@ -217,6 +217,10 @@ const PAGES = [
     await editorPreview(page).getByRole("button", { name: "Edit note 1" }).click();
     await expect(page.getByRole("button", { name: "Add a note after this" })).toBeVisible();
   }, null, editor],
+  ["editor with a step open in prep-first order, which can't be moved there", "edit.html?r=veg-stir-fry", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Heat the wok until it smokes." }).click();
+    await expect(page.getByRole("button", { name: "Switch to As written to reorder" })).toBeVisible();
+  }, null, editor],
   ["editor asking where to split a step", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
     await page.getByRole("button", { name: "Split here" }).click();

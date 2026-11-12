@@ -152,6 +152,49 @@ test.describe("steps, by keyboard", () => {
     expect((await stepTexts(page))[0]).toMatch(/^Braise until tender/);
   });
 
+  test("Move up is off on the first line, and both are off on a list of one", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await openStep(page, "Season the pork.");
+    await expect(page.getByRole("button", { name: "Move up" })).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Move down" })).toBeEnabled();
+    await preview(page).getByRole("button", { name: "Edit note 1" }).press("Enter");
+    await expect(page.getByRole("button", { name: "Move up" })).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Move down" })).toBeDisabled();
+  });
+
+  test("moving down to the end leaves focus on Move up", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "salsa-verde");
+    await preview(page).getByRole("button", { name: "1 lb tomatillos", exact: true }).press("Enter");
+    await page.getByRole("button", { name: "Move down" }).press("Enter");
+    await expect(page.getByRole("button", { name: "Move down" })).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Move up" })).toBeFocused();
+  });
+
+  test("Move to puts a line anywhere, listed under the group names", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await openStep(page, "Season the pork.");
+    const moveTo = page.getByLabel("Move to");
+    await expect(moveTo).toHaveValue(/.+/);
+    const groups = await moveTo.locator("optgroup").evaluateAll((gs) => gs.map((g) => g.label));
+    expect(groups).toEqual(["Not in a group", "To finish"]);
+    await moveTo.selectOption({ label: 'Before "Crisp it in a hot pan."' });
+    await page.getByRole("button", { name: "Move", exact: true }).press("Enter");
+    expect(await stepTexts(page)).toEqual(["Braise until tender.⏱ 2 1/2 hours✓ Falls apart with a fork", "Shred the pork.", "Season the pork.", "Crisp it in a hot pan."]);
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Season the pork.");
+    expect((await draftOf(page, "pork-carnitas")).steps.at(-1)).toEqual({ group: "To finish", items: ["Shred the pork.", "Season the pork.", "Crisp it in a hot pan."] });
+  });
+
+  test("in prep-first order a step can't be moved, but can switch to as written to move it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "veg-stir-fry");
+    await openStep(page, "Heat the wok until it smokes.");
+    await expect(page.getByRole("button", { name: "Move up" })).toHaveCount(0);
+    await expect(page.getByLabel("Move to")).toHaveCount(0);
+    await page.getByRole("button", { name: "Switch to As written to reorder" }).press("Enter");
+    await expect(preview(page).getByRole("switch", { name: "Prep first" })).not.toBeChecked();
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Heat the wok until it smokes.");
+    await expect(page.getByRole("button", { name: "Move up" })).toBeFocused();
+  });
+
   test("moving a step down and back up", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     await openStep(page, "Season the pork.");

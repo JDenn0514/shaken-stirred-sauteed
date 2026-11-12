@@ -368,6 +368,67 @@ export function movedTo(recipe, key, n, dir) {
   return at.top === -1 && isGroup(at.arr[j]) ? n : n + dir;
 }
 
+// Whether a move up (-1) or down (1) changes anything: Move up is off on the
+// first line, Move down on the last.
+export const canMove = (recipe, key, n, dir) => JSON.stringify(move(recipe, key, n, dir)) !== JSON.stringify(recipe);
+
+// A list cut into runs, as the page shows them: each named section, and each
+// run of entries outside a section. Entries are their places in the list.
+function runs(list = []) {
+  const out = [];
+  let k = 0;
+  list.forEach((e) => {
+    if (isGroup(e)) out.push({ group: e.group || "", ns: e.items.map(() => k++) });
+    else if (out.at(-1)?.plain) out.at(-1).ns.push(k++);
+    else out.push({ group: "", plain: true, ns: [k++] });
+  });
+  return out;
+}
+
+// Every place entry n can be moved to ("Move to…"), run by run: before each
+// other entry (by its place now), or at the end of the run (before: null).
+// `here` is where it is now; `value` is what moveTo takes.
+export function moveSlots(recipe, key, n) {
+  return runs(recipe[key]).flatMap((run, r) => {
+    const others = run.ns.filter((k) => k !== n);
+    const now = run.ns.includes(n) ? run.ns.indexOf(n) : -1;
+    return [...others, null].map((before, i) => ({ group: run.group, before, here: i === now, value: `${r}:${i}` }));
+  });
+}
+
+// Moves entry n to a place from moveSlots. Returns the recipe and where it is.
+// An ingredient's steps keep pointing at it.
+export function moveTo(recipe, key, n, value) {
+  const [r, i] = String(value).split(":").map(Number);
+  const run = runs(recipe[key])[r];
+  const from = locate(recipe[key] || [], n);
+  if (!run || !from || !(i >= 0)) return { recipe, at: n };
+  const others = run.ns.filter((k) => k !== n);
+  if (run.ns.indexOf(n) === i && run.ns.includes(n)) return { recipe, at: n };
+  const out = structuredClone(recipe);
+  const list = out[key];
+  const GONE = {}, MOVED = {};
+  const at0 = locate(list, n);
+  const entry = at0.arr[at0.i];
+  at0.arr[at0.i] = GONE;
+  // Put a marker where it goes, before the entry now there, or after the run's
+  // last entry (or into its section, if it's empty but for this one).
+  if (i < others.length) { const to = locate(list, others[i]); to.arr.splice(to.i, 0, MOVED); }
+  else if (others.length) { const to = locate(list, others.at(-1)); to.arr.splice(to.i + 1, 0, MOVED); }
+  else if (!run.plain) list.find((e, t) => isGroup(e) && runs(list.slice(0, t + 1)).length - 1 === r).items.push(MOVED);
+  else { const gone = locate(list, n); gone.arr.splice(gone.i, 0, MOVED); }
+  // Take the old place out, and put the entry in the marker's.
+  const strip = (arr) => { const g = arr.indexOf(GONE); if (g >= 0) arr.splice(g, 1); arr.forEach((e) => isGroup(e) && strip(e.items)); };
+  strip(list);
+  const where = flat(list).indexOf(MOVED);
+  const m = locate(list, where);
+  m.arr[m.i] = entry;
+  dropEmptyGroups(out, key);
+  if (key !== "ingredients") return { recipe: out, at: where };
+  const place = (k) => (k === n ? where : n < where ? (k > n && k <= where ? k - 1 : k) : (k >= where && k < n ? k + 1 : k));
+  return { recipe: carryUses(recipe, out, place), at: where };
+}
+
 export function moveIngredient(recipe, n, dir) {
   const to = movedTo(recipe, "ingredients", n, dir);
   return carryUses(recipe, move(recipe, "ingredients", n, dir), (k) => (k === n ? to : k === to ? n : k));
