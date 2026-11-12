@@ -398,6 +398,41 @@ test.describe("the editor's bar", () => {
     await expect(header).toBeVisible();
   });
 
+  // Pressing on Done takes focus out of the field, so the header comes back
+  // and the page shifts down: the release must still land as a click.
+  test("on a phone, clicking Done straight after typing closes the line", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await openEditor(page, baseURL, "lemon-bars");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).click();
+    await page.getByLabel("Wait", { exact: true }).fill("a while");
+    await page.getByRole("button", { name: "Done" }).click();
+    await expect(page.getByLabel("Wait", { exact: true })).toHaveCount(0);
+    await expect(page.locator(".site-header")).toBeVisible();
+  });
+
+  test("on a phone, the site header comes back when you click away from the line", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await openEditor(page, baseURL, "lemon-bars");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).click();
+    await page.getByLabel("Wait", { exact: true }).fill("a while");
+    await expect(page.locator(".site-header")).toBeHidden();
+    await page.mouse.click(2, 890);
+    await expect(page.locator(".site-header")).toBeVisible();
+  });
+
+  test.describe("with a touch screen", () => {
+    test.use({ hasTouch: true });
+    test("on a phone, tapping Done straight after typing closes the line", async ({ page, baseURL }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await openEditor(page, baseURL, "lemon-bars");
+      await preview(page).getByRole("button", { name: "Edit step 2" }).tap();
+      await page.getByLabel("Wait", { exact: true }).fill("a while");
+      await page.getByRole("button", { name: "Done" }).tap();
+      await expect(page.getByLabel("Wait", { exact: true })).toHaveCount(0);
+      await expect(page.locator(".site-header")).toBeVisible();
+    });
+  });
+
   test("on a laptop, the site header stays while you type", async ({ page, baseURL }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openEditor(page, baseURL, "lemon-bars");
