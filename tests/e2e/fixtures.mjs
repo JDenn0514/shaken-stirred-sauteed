@@ -187,7 +187,7 @@ Object.assign(PAGE_ONLY, {
   }),
   // A dessert that keeps once baked and cooled, so it's worth making ahead.
   "slow-cake": recipe({
-    title: "Slow Cake", category: "baking",
+    title: "Slow Cake", category: "baking", pan: "8 in round cake pan", heatLabel: "Oven", heat: "150C",
     ingredients: [{ qty: "2 cups", item: "Flour" }, { qty: "1 cup", item: "Cream" }],
     steps: [
       { do: "Mix the batter.", hands: "10 min", uses: ["Flour"] },

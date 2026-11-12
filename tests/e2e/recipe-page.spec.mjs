@@ -55,6 +55,12 @@ test.describe("shows", () => {
   });
 });
 
+test("a baking recipe's pan is shown as its equipment, and its heat by its label", async ({ page }) => {
+  await open(page, "slow-cake");
+  await expect(fact(page, "Equipment")).toHaveText("8 in round cake pan");
+  await expect(fact(page, "Oven")).toHaveText("150C");
+});
+
 test("an optional ingredient says so", async ({ page }) => {
   await open(page, "old-fashioned");
   await expect(page.locator(".ingredients li", { hasText: "Bitters" })).toHaveText("2 dashes Bitters optional");

@@ -158,3 +158,15 @@ A way for people using the site to send feedback or report a bug, without leavin
 - **Who can send one:** signed-in people only keeps out spam. Anyone, with a limit per day, is easier for visitors.
 - **Hearing back:** whether the sender can see when a report is fixed, and whether Jacob gets told when one comes in.
 - **Privacy:** don't send recipe notes, settings or anything else personal unless the person adds it.
+
+## An equipment list
+
+2026-11-12 · from Jacob, while the editor's facts form was built (build step 18 in `docs/specs/editor-redesign.md`)
+
+A recipe's facts box has one line for what it's cooked in: the `pan` field, shown as "Equipment" ("Medium saucepan", "9 in tart pan"). Some recipes need more than one thing: a stand mixer, a tart pan and a thermometer.
+
+**What it could change:**
+
+- **A list of equipment** in the recipe format, shown as its own short list on the recipe page (perhaps beside Before you start), editable in place like notes.
+- **Its name needs care:** the lineup planner already calls a step's oven, burner, grill and microwave its "equipment" (`docs/specs/meal-planner-design.md`), and the checker's warning says "no equipment field". The new list would need another name in the file, or those would need rewording.
+- **The `pan` line** could become the list's first entry, so nothing is said twice.

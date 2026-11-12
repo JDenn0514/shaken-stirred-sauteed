@@ -111,7 +111,7 @@ test.describe("the facts box", () => {
     await openEditor(page, baseURL, "lemon-bars");
     await preview(page).locator("dl").first().getByRole("button").first().press("Enter");
     const baking = facts(page).getByRole("group", { name: "Baking" });
-    await baking.getByLabel("Pan").fill("8 x 8 in, metal");
+    await baking.getByLabel("Equipment").fill("8 x 8 in, metal");
     await baking.getByLabel("Heat", { exact: true }).fill("350F");
     await baking.getByLabel("Shown as").selectOption("Oven");
     await facts(page).getByRole("button", { name: "Done" }).press("Enter");

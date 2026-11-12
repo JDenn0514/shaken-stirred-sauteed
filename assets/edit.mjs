@@ -432,7 +432,7 @@ function factsForm() {
 
 // The section's own facts: a baking recipe's pan and heat, a cocktail's
 // glass, ice and the rest. Two say what else they change.
-const FACT_LABELS = { pan: "Pan", heat: "Heat", glass: "Glass", ice: "Ice", garnish: "Garnish", method: "Method", keeps: "Keeps", abv: "ABV", standardDrinks: "Standard drinks" };
+const FACT_LABELS = { pan: "Equipment", heat: "Heat", glass: "Glass", ice: "Ice", garnish: "Garnish", method: "Method", keeps: "Keeps", abv: "ABV", standardDrinks: "Standard drinks" };
 const FACT_HINTS = { glass: "Sets the drawing", standardDrinks: "Sets the strength filter" };
 function moreFacts() {
   const keys = M.factFields(recipe);
@@ -443,7 +443,7 @@ function moreFacts() {
       return select("Shown as", `x-${k}`, options, recipe.heatLabel || "", ` data-key="edit-x-${k}"`);
     }
     const hint = FACT_HINTS[k];
-    const extra = k === "standardDrinks" ? ` type="number" min="0" step="0.1" inputmode="decimal"` : "";
+    const extra = k === "standardDrinks" ? ` type="number" min="0" step="0.1" inputmode="decimal"` : k === "pan" ? ` placeholder="e.g. 9 in tart pan, medium saucepan"` : "";
     const input = `<input name="x-${k}" value="${esc(recipe[k] ?? "")}"${extra}${hint ? ` aria-describedby="hint-${k}"` : ""} data-key="edit-x-${k}">`;
     return hint ? `<div class="edit-field-wrap">${labelled(FACT_LABELS[k], input)}<p class="muted edit-field-hint" id="hint-${k}">${hint}</p></div>` : labelled(FACT_LABELS[k], input);
   };
