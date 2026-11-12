@@ -257,6 +257,7 @@ When nothing needs you yet, the next screen is a wait step, laid out like any ot
 - **The plan makes the follow-up your next step** (planner rule 14), and Up next changes to show it.
 - **Two timers at once** stack, each with its own Stop, and one sound plays until all are stopped.
 - "+2 min" on a ringing timer, or cancelling one early, re-plans.
+- **Already done** on a step that waits (a marinade started before you began cooking) marks it done with its wait over now and starts no timer. Finishing early, this way or by cancelling a timer, brings serving forward instead of leaving you idle until the first plan's time.
 
 ## Recipe data changes
 

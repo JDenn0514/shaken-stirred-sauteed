@@ -127,7 +127,9 @@ const PAGES = [
     await expect(cook(page).getByRole("timer", { name: "Roast Chicken" })).toContainText("Time's up.");
   }, ["roast-chicken", "green-beans"]],
   ["menu cook mode, plating up and all done", "menu.html", async (page) => {
-    await startMenu(page, 14);
+    // 13: Next moves on from each wait early, so the beans follow the chicken
+    // straight away, with no wait for a serve time planned at the start.
+    await startMenu(page, 13);
     await expect(cook(page).getByRole("heading", { name: "Plate up the main" })).toBeVisible();
     await cookButton(page, "Finish").click();
     await expect(cook(page).getByRole("heading", { name: "All done" })).toBeVisible();
