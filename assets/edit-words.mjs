@@ -8,11 +8,12 @@
 // A step keeps its number as the checker counts it ("step 3"), so the editor
 // can say it as the sheet numbers it. go is where the fix is:
 //   { open: "step" | "ing" | "about", n | name, field }  a line, opened at that field
-//   { field: "d-hands-2" }  a field in Details, by its data-key; a key ending in
+//   { field: "d-kind" }  a field in Details (or on a step, with open), by its data-key; a key ending in
 //                            "*" is the first one that starts so; `or` is the key
 //                            to try when the first isn't there
 //   { ingField: "recipe", name }  an ingredient's field in Details ("d-recipe-<n>")
 //   { empty: "ing" | "step" }  the first ingredient or step left empty
+//   { holds: true }  the first step the dish keeps after
 //   label  what a button to that place says, when it's a fix of its own
 //
 // tests/unit/edit-words.test.mjs makes every message with the real checker:
@@ -20,6 +21,8 @@
 // there fails until it's here too.
 
 const step = (d) => Number(d) - 1;
+// A step's lineup settings are on the step itself, under "For the lineup".
+const onStep = (d, field, more = {}) => ({ open: "step", n: step(d), field, ...more });
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const FLAG_NAMES = { watch: "needs you there", burner: "burner", grill: "grill", microwave: "microwave", prepOnly: "added prep", holds: "keeps after this", during: "happens during" };
 const FLAG_FIELDS = ["watch", "burner", "grill", "microwave", "holds"];
@@ -27,17 +30,17 @@ const FLAG_FIELDS = ["watch", "burner", "grill", "microwave", "holds"];
 export const RULES = [
   // What a step uses.
   { match: /^step (\d+): "uses" must be a list$/,
-    words: ([, d]) => `Step ${d}'s ingredients can't be read. Tick them again under Details.`, go: ([, d]) => ({ field: `d-use-${step(d)}-*` }) },
+    words: ([, d]) => `Step ${d}'s ingredients can't be read. Tick them again on the step.`, go: ([, d]) => onStep(d, `d-use-${step(d)}-*`) },
   { match: /^step (\d+): every entry in "uses" needs an "item"$/,
-    words: ([, d]) => `Step ${d} uses an ingredient with no name. Take it off the step under Details.`, go: ([, d]) => ({ field: `d-use-${step(d)}-*` }) },
+    words: ([, d]) => `Step ${d} uses an ingredient with no name. Untick it on the step.`, go: ([, d]) => onStep(d, `d-use-${step(d)}-*`) },
   { match: /^step (\d+): "amount" must be text, like "100 g" or "the rest"$/,
-    words: ([, d]) => `Step ${d}'s share of an ingredient needs to be words, like 100 g or the rest.`, go: ([, d]) => ({ field: `d-use-${step(d)}-*` }) },
+    words: ([, d]) => `Step ${d}'s share of an ingredient needs to be words, like 100 g or the rest.`, go: ([, d]) => onStep(d, `d-use-${step(d)}-*`) },
   { match: /^step (\d+) uses "(.+?)"(?: from "(.+?)")?, which isn't one of the ingredients$/,
-    words: ([, d, item, g]) => `Step ${d} uses ${item}${g ? ` from ${g}` : ""}, which isn't in the ingredients. Add it, or take it off the step under Details.`,
-    go: ([, d, item]) => ({ field: `d-use-drop-${step(d)}-${item}`, or: `d-use-${step(d)}-*` }) },
+    words: ([, d, item, g]) => `Step ${d} uses ${item}${g ? ` from ${g}` : ""}, which isn't in the ingredients. Add it, or untick it on the step.`,
+    go: ([, d, item]) => onStep(d, `d-use-drop-${step(d)}-${item}`, { or: `d-use-${step(d)}-*` }) },
   { match: /^step (\d+) uses "(.+?)"(?: from "(.+?)")?, which matches (\d+) ingredients: add its "group"$/,
-    words: ([, d, item, , k]) => `Step ${d} uses ${item}, but ${k} ingredients are called that. Tick the right one under Details.`,
-    go: ([, d]) => ({ field: `d-use-${step(d)}-*` }) },
+    words: ([, d, item, , k]) => `Step ${d} uses ${item}, but ${k} ingredients are called that. Tick the right one on the step.`,
+    go: ([, d]) => onStep(d, `d-use-${step(d)}-*`) },
 
   // The lineup's planning fields.
   { match: /^"serve" must be one of .+$/,
@@ -45,16 +48,16 @@ export const RULES = [
   { match: /^"sits" must be a time, like "10 min"$/,
     words: () => "How long it can sit needs to be a time, like 10 min.", go: () => ({ field: "d-sits" }) },
   { match: /^step (\d+): "hands" must be a time, like "10 min"$/,
-    words: ([, d]) => `Step ${d}'s hands-on time needs to be a time, like 10 min.`, go: ([, d]) => ({ field: `d-hands-${step(d)}` }) },
+    words: ([, d]) => `Step ${d}'s hands-on time needs to be a time, like 10 min.`, go: ([, d]) => onStep(d, `d-hands-${step(d)}`) },
   { match: /^step (\d+): "wait" must be a time, like "10 min", or false$/,
     words: ([, d]) => `Step ${d}'s wait needs to be a time, like 10 min. Leave it empty if the step doesn't wait.`,
     go: ([, d]) => ({ open: "step", n: step(d), field: "edit-wait" }) },
   { match: /^step (\d+): oven setting "(.*)" isn't one of "200C", "400F", "broil" or "off"$/,
     words: ([, d, s]) => `Step ${d}'s oven setting, ${s}, isn't one the lineup knows. Use a temperature like 200C or 400F, or broil, or off.`,
-    go: ([, d]) => ({ field: `d-oven-${step(d)}` }) },
+    go: ([, d]) => onStep(d, `d-oven-${step(d)}`) },
   { match: /^step (\d+): "preheat" can't be "off"; use "oven": "off" to turn it off$/,
-    words: ([, d]) => `Step ${d} heats the oven to off. To turn the oven off, set the step's oven to Off under Details.`,
-    go: ([, d]) => ({ field: `d-preheat-${step(d)}` }) },
+    words: ([, d]) => `Step ${d} heats the oven to off. To turn the oven off, set the step's oven to Off instead.`,
+    go: ([, d]) => onStep(d, `d-preheat-${step(d)}`) },
   { match: /^step (\d+): "watch" needs a "wait" to watch$/,
     words: ([, d]) => `Step ${d} needs you there the whole wait, but it doesn't wait. Add a wait, or untick "Needs you there the whole wait".`,
     go: ([, d]) => ({ open: "step", n: step(d), field: "edit-wait" }) },
@@ -63,14 +66,14 @@ export const RULES = [
   { match: /^step (\d+): "during" can't run alongside a watched wait, which needs your hands$/,
     words: ([, d]) => `Step ${d} happens during a wait that needs you there the whole time, so it can't.`, go: ([, d]) => ({ open: "step", n: step(d) }) },
   { match: /^step (\d+): "prep" must be true or "just before"$/,
-    words: ([, d]) => `Step ${d}'s prep setting can't be read. Choose it again under Details.`, go: ([, d]) => ({ field: `d-prep-${step(d)}` }) },
+    words: ([, d]) => `Step ${d}'s prep setting can't be read. Choose it again on the step.`, go: ([, d]) => onStep(d, `d-prep-${step(d)}`) },
   { match: /^step (\d+): "(\w+)" must be true or false$/,
-    words: ([, d, k]) => `Step ${d}'s ${FLAG_NAMES[k] || k} setting can't be read. Choose it again under Details.`,
-    go: ([, d, k]) => (FLAG_FIELDS.includes(k) ? { field: `d-${k}-${step(d)}` } : { open: "step", n: step(d) }) },
+    words: ([, d, k]) => `Step ${d}'s ${FLAG_NAMES[k] || k} setting can't be read. Choose it again on the step.`,
+    go: ([, d, k]) => (FLAG_FIELDS.includes(k) ? onStep(d, `d-${k}-${step(d)}`) : { open: "step", n: step(d) }) },
   { match: /^step (\d+) mentions "(.+?)" but has no equipment field \(oven, preheat, burner, grill or microwave\)$/,
     words: ([, d, what]) => `Step ${d} mentions "${what}". Say whether it uses the burner, oven, grill or microwave.` },
   { match: /^more than one step with "holds"; only the last one counts$/,
-    words: () => "More than one step says the dish keeps after it, and only the last one counts. Choose one under Details.", go: () => ({ field: "d-holds-none" }) },
+    words: () => "More than one step says the dish keeps after it, and only the last one counts. Untick the others.", go: () => ({ holds: true }) },
   { match: /^"(.+?)": "optional" must be true or false$/,
     words: ([, name]) => `${name}'s optional setting can't be read. Tick or untick it under Details.`, go: ([, name]) => ({ ingField: "optional", name }) },
   { match: /^"(.+?)": "alreadyMade" must be true or false$/,
@@ -82,8 +85,8 @@ export const RULES = [
   { match: /^"(.+?)": "recipe" must be one recipe's file name, like "garlic-paste" \(the planner takes one for now\)$/,
     words: ([, name]) => `${name} links to more than one recipe. Pick one under Details.`, go: ([, name]) => ({ ingField: "recipe", name }) },
   { match: /^"(.+?)" links to a recipe but no step uses it, so the lineup has it ready before step 1$/,
-    words: ([, name]) => `${name} is made by another recipe, but no step uses it, so a lineup makes it before the first step. Tick it on the step that needs it, under Details.`,
-    go: () => ({ field: "d-use-0-*" }) },
+    words: ([, name]) => `${name} is made by another recipe, but no step uses it, so a lineup makes it before the first step. Tick it on the step that needs it.`,
+    go: () => ({ open: "step", n: 0, field: "d-use-0-*" }) },
   { match: /^"(.+?)" says it's optional but isn't marked "optional": true$/,
     words: ([, name]) => `${name} says it's optional. Mark it optional, so the page shows it.` },
 

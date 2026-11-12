@@ -1444,6 +1444,14 @@ body.cooking > .site-footer { display: none; }
 .edit-todo li .edit-row { margin-top: 6px; }
 /* To-dos and the intake's things to check, folded into one strip: they don't
    stop a save, so they wait behind "3 things to check" until you want them. */
+/* A step's lineup settings, folded under the open step's fields. */
+.edit-lineup { margin-top: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.edit-lineup > summary { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; cursor: pointer; font-size: .92rem; font-weight: 600; }
+.edit-lineup > summary::-webkit-details-marker { display: none; }
+.edit-lineup > summary::after { content: "▸" / ""; margin-left: auto; color: var(--muted); }
+.edit-lineup[open] > summary::after { content: "▾" / ""; }
+.edit-lineup > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.edit-lineup-body { display: grid; gap: 12px; padding: 4px 12px 12px; border-top: 1px solid var(--border); }
 .edit-checks { margin-top: 16px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
 .edit-checks > summary { display: flex; align-items: center; min-height: 44px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
 .edit-checks > summary::-webkit-details-marker { display: none; }

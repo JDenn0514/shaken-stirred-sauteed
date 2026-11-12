@@ -349,7 +349,7 @@ A step is marked **Done** once its pull request is merged.
     - A wording table with a unit test that runs every checker message through it, so a wording change in the checker fails loudly.
     - Fix buttons for "no key ingredients tagged" and "no total time".
     - To-dos fold into the strip; Problems stay visible.
-15. **(M) Moving lines.** Move up and down are off at the ends, plus "Move to…", and the prep-first rule ("Switch to As written to reorder").
+15. **Done** (#67, 2026-11-12). **(M) Moving lines.** Move up and down are off at the ends, plus "Move to…", and the prep-first rule ("Switch to As written to reorder").
 16. **(L, after your OK) A step's lineup settings inside the step.**
     - Move the Details tests to the step form with the same labels.
     - Re-point the "Set step N's equipment" to-do to open the step.
