@@ -971,8 +971,14 @@ function typingInLine(on) {
   document.body.classList.toggle("edit-typing", on);
   measureBars();
 }
-document.addEventListener("focusin", (e) => typingInLine(inLineField(e.target)));
-document.addEventListener("focusout", (e) => { if (!inLineField(e.relatedTarget)) typingInLine(false); });
+// Leaving the line brings the header back, but not under a press: pressing on
+// Done takes focus from the field before the release, and the page shifting
+// down then would move Done out from under the pointer and lose the click. So
+// the header waits for the release, and for the click that follows it (a tap
+// moves focus only after the release, and clicks in the same task).
+const settleTyping = () => setTimeout(() => { if (!pressing) typingInLine(inLineField(document.activeElement)); });
+document.addEventListener("focusin", (e) => { if (inLineField(e.target)) typingInLine(true); else settleTyping(); });
+document.addEventListener("focusout", (e) => { if (!inLineField(e.relatedTarget)) settleTyping(); });
 
 // Whether there's anything to save: a new recipe always has, until it's saved.
 let typing = false; // a typed Details field changed, but saves only when you leave it
@@ -1213,8 +1219,8 @@ function finishPending() {
 }
 const finishLater = () => setTimeout(() => { if (!pressing) finishPending(); });
 document.addEventListener("pointerdown", () => { pressing = true; }, true);
-document.addEventListener("pointerup", () => { pressing = false; if (pending) pending.timer = finishLater(); }, true);
-document.addEventListener("pointercancel", () => { pressing = false; if (pending) pending.timer = finishLater(); }, true);
+document.addEventListener("pointerup", () => { pressing = false; settleTyping(); if (pending) pending.timer = finishLater(); }, true);
+document.addEventListener("pointercancel", () => { pressing = false; settleTyping(); if (pending) pending.timer = finishLater(); }, true);
 const typed = (t) => (t.tagName === "INPUT" && !["checkbox", "radio"].includes(t.type)) || t.tagName === "TEXTAREA";
 
 root.addEventListener("change", (e) => {
