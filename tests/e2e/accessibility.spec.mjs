@@ -209,6 +209,12 @@ const PAGES = [
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
     await expect(page.getByRole("button", { name: "Split at each time" })).toBeVisible();
   }, null, editor],
+  ["editor with no notes or Before you start, inviting you in", "edit.html?r=old-fashioned",
+    (page) => expect(editorPreview(page).getByRole("button", { name: "No notes yet. Add one" })).toBeVisible(), null, editor],
+  ["editor with a note open for editing", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit note 1" }).click();
+    await expect(page.getByRole("button", { name: "Add a note after this" })).toBeVisible();
+  }, null, editor],
   ["editor asking where to split a step", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
     await page.getByRole("button", { name: "Split here" }).click();

@@ -335,7 +335,7 @@ A step is marked **Done** once its pull request is merged.
    - Undo closes any open form and focuses the restored line.
    - No timed pop-ups.
 10. **Done** (#58, 2026-11-11). **(S) One step number in every message.** Rewrite "step N" in errors, to-dos and Details to the number shown on the sheet. For an added prep step while "As written" is showing, name it by its first words, with a button to show prep first.
-11. **(M) Split done right.**
+11. **Done** (#60, 2026-11-12). **(M) Split done right.**
     - The cursor starts at the end.
     - "Split here" says "Put the cursor where the new step starts" instead of failing silently.
     - The wait, cue and "needs you" go with the half whose text contains that time.

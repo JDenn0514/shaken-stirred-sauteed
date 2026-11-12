@@ -1452,10 +1452,10 @@ body.cooking > .site-footer { display: none; }
 .edit-preview ol.steps > li { cursor: default; }
 .edit :is(.edit-preview, .edit-card) a[aria-disabled="true"] { cursor: default; }
 /* A line that can be edited: its text, then an Edit button at the right. */
-.edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 10px; }
-.edit-preview :is(ol.steps, ul.ingredients) > li > .edit-part { flex: 1 1 0; min-width: 0; }
+.edit-preview :is(ol.steps, ul.ingredients, ul.notes) > li:has(> .edit-open) { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 10px; }
+.edit-preview :is(ol.steps, ul.ingredients, ul.notes) > li > .edit-part { flex: 1 1 0; min-width: 0; }
 /* Errors and the intake's notes go on their own line, under the text. */
-.edit-preview :is(ol.steps, ul.ingredients) > li:has(> .edit-open) > :not(.edit-part, .edit-open) { flex: 1 1 100%; }
+.edit-preview :is(ol.steps, ul.ingredients, ul.notes) > li:has(> .edit-open) > :not(.edit-part, .edit-open) { flex: 1 1 100%; }
 .edit-open {
   flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
   min-width: 44px; min-height: 44px; margin: -6px -4px -6px 0; padding: 0 10px;
@@ -1490,6 +1490,18 @@ body.cooking > .site-footer { display: none; }
 /* No hover box round a whole step: the step's own Edit button and text show what can be tapped. */
 @media (hover: hover) { .edit-preview .steps li:not(.current):hover { background: none; border-color: transparent; } }
 .edit-add-line { margin: 10px 0 0; }
+/* Notes and Before you start: the page's bullet, drawn on the line (a flex
+   line has no list marker), and a ghost row inviting the first one in. */
+.edit-preview ul.notes { list-style: none; padding-left: 0; }
+.edit-preview ul.notes > li:has(> .edit-open)::before { content: "•" / ""; flex: none; width: 1em; color: var(--section); }
+.edit-preview ul.notes > li { margin-bottom: 4px; }
+.edit-ghost {
+  display: block; width: 100%; min-height: 44px; margin-top: 12px; padding: 10px 14px;
+  font: inherit; text-align: left; color: var(--muted); background: none; cursor: pointer;
+  border: 1.5px dashed var(--section); border-radius: var(--radius);
+}
+.edit-ghost:hover { background: var(--section-wash); }
+.edit-ghost:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--baking); }
 /* Saving and deleting: why a save didn't happen, Delete, and its confirmation. */
 .edit-save-error { flex: 1 1 100%; font-size: .95rem; color: var(--baking); font-weight: 600; }
