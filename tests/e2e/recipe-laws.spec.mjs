@@ -80,20 +80,19 @@ test.describe(`laws for recipe files (seed ${SEED})`, () => {
         await page.getByRole("button", { name: /^Start (baking|cooking|mixing)$/ }).click();
         await expect(cook).toBeVisible();
         if (r.beforeYouStart?.length) await next.click();
-        // Steps may come prep first, so each one shown is found in the recipe by
-        // its text, and every step must be shown exactly once.
-        const all = flat(r.steps), seen = [];
-        for (let n = 0; n < all.length; n++) {
+        // Cook mode shows the steps prep first (the default): the prep steps
+        // (prep: true, or added with prepOnly), then the rest, each as written.
+        // Steps can read the same ("Stir."), so each one shown is checked
+        // against the step in that place, not looked up by its text.
+        const all = flat(r.steps), early = (s) => s.prep === true || s.prepOnly === true;
+        const order = [...all.filter(early), ...all.filter((s) => !early(s))];
+        for (const [n, s] of order.entries()) {
           await expect(cook.getByTestId("step-label")).toHaveText(new RegExp(`Step ${n + 1} of ${all.length}$`));
-          const shown = await cook.getByTestId("instruction").textContent();
-          const k = all.findIndex((s, i) => !seen.includes(i) && (typeof s === "string" ? s : s.do) === shown);
-          expect(k, `step ${n + 1}: "${shown}"`).toBeGreaterThanOrEqual(0);
-          seen.push(k);
-          await expect(cook.getByRole("checkbox"), `step ${n + 1}`).toHaveCount(all[k].uses?.length ?? 0);
+          expect(await cook.getByTestId("instruction").textContent(), `step ${n + 1}`).toBe(typeof s === "string" ? s : s.do);
+          await expect(cook.getByRole("checkbox"), `step ${n + 1}`).toHaveCount(s.uses?.length ?? 0);
           await next.click();
         }
         await expect(cook.getByRole("heading", { name: "All done" })).toBeVisible();
-        expect(seen.toSorted((a, b) => a - b)).toEqual(all.map((_, i) => i));
         expect(errors).toEqual([]);
       });
     });
