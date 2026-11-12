@@ -100,6 +100,19 @@ test.describe("the reader's guesses, in the editor", () => {
     expect(sent[0].recipe.steps.find((s) => s.do.includes("knead")).watch).toBeUndefined();
   });
 
+  test("in an open step, the intake's guess stands in for the editor's own setting, so it shows once", async ({ page, baseURL }) => {
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await stepRow(page, "knead until smooth").getByRole("button").first().click();
+    const fold = page.getByRole("group", { name: "For the lineup" });
+    await fold.getByText(/^For the lineup/).click();
+    await expect(fold.getByRole("checkbox", { name: "Needs you there" })).toBeChecked();
+    await expect(fold.getByRole("checkbox", { name: "Needs you there the whole wait" })).toHaveCount(0);
+    await fold.getByRole("checkbox", { name: "Needs you there" }).uncheck();
+    await page.getByRole("button", { name: "Done" }).click();
+    await expect(stepRow(page, "knead until smooth").getByRole("checkbox", { name: "Needs you there" })).not.toBeChecked();
+  });
+
   test("an added prep step shows in prep-first order, with its guess to confirm", async ({ page, baseURL }) => {
     await signIn(page, baseURL);
     await readRecipe(page, NOODLES, "Cooking");

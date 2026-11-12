@@ -245,10 +245,12 @@ const PAGES = [
     await expect(page.getByRole("button", { name: "Redo" })).toBeEnabled();
   }, null, editor],
   ["editor with a problem in an added prep step it isn't showing", "edit.html?r=veg-stir-fry", async (page) => {
-    await page.getByText("Details", { exact: true }).click();
-    const step = page.locator("details.edit-details").getByRole("group", { name: /Slice the peppers/ });
-    await step.getByLabel("Hands-on time").fill("soon");
-    await step.getByLabel("Hands-on time").press("Tab");
+    await editorPreview(page).getByRole("button", { name: "Slice the peppers and mince the garlic." }).click();
+    const fold = page.getByRole("group", { name: "For the lineup" });
+    await fold.getByText(/^For the lineup/).click();
+    await fold.getByLabel("Hands-on time").fill("soon");
+    await fold.getByLabel("Hands-on time").press("Tab");
+    await page.getByRole("button", { name: "Done" }).click();
     await editorPreview(page).getByRole("switch", { name: "Prep first" }).click();
     await expect(page.getByRole("button", { name: "Show prep first" })).toBeVisible();
   }, null, editor],
@@ -259,10 +261,15 @@ const PAGES = [
     await page.getByRole("button", { name: "Done" }).click();
     await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
   }, null, editor],
-  ["editor with Details open, lineup fields included", "edit.html?r=garlic-bread", async (page) => {
+  ["editor with Details open", "edit.html?r=garlic-bread", async (page) => {
     await page.getByText("Details", { exact: true }).click();
-    await page.getByRole("group", { name: /^Step 2:/ }).getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
-    await expect(page.getByLabel("Oven temperature")).toBeVisible();
+    await expect(page.getByLabel("Made by another recipe").first()).toBeVisible();
+  }, null, editor],
+  ["editor with a step's lineup settings open", "edit.html?r=garlic-bread", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
+    const fold = page.getByRole("group", { name: "For the lineup" });
+    await fold.getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
+    await expect(fold.getByLabel("Oven temperature")).toBeVisible();
   }, null, editor],
   ["editor with its things to check folded", "edit.html?r=garlic-bread", (page) => expect(page.getByText("1 thing to check")).toBeVisible(), null, editor],
   ["editor with its to-do list open", "edit.html?r=garlic-bread", async (page) => {

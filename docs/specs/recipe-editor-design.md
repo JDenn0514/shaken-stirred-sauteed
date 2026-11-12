@@ -149,7 +149,7 @@ The rules that turn plain text into a draft:
 
 - **The review screen is the recipe as it will appear**: the card from the recipe list, then the full recipe page, in the section's colours and the Field Guide style, light or dark.
 - **Tap any part to edit it in place**: the title, an ingredient, a step, the yield. Ingredients and steps can be added, removed, reordered, split and merged. Groups can be added and renamed.
-- **"Details"**, below the preview, holds what the page doesn't show: tags (picked from `recipes/vocabulary.json`, so a tag that doesn't exist can't be added), `source`, `added`, `kind`, `icon`, and each step's `uses` and their amounts.
+- **"Details"**, below the preview, holds what the page doesn't show: tags (picked from `recipes/vocabulary.json`, so a tag that doesn't exist can't be added), `source`, `added`, `kind` and `icon`. Each step's `uses` and their amounts are on the step itself, with its lineup settings (below).
 - **The original sits next to the preview while importing**, so you can check the draft against it. On a phone, where there's no room alongside, it's one tap away.
 - **New from scratch** opens the same screen with an empty recipe in the category you pick.
 - **Edit existing** opens the recipe as it is on the site.
@@ -160,7 +160,7 @@ The rules that turn plain text into a draft:
 
 The lineup (meal planner, `docs/specs/meal-planner-design.md`, being built on the `lineup-recipe-data` branch) adds optional fields that the editor has to handle. Their meaning and checks are in that spec and the README's "Planning a lineup"; this section is only about editing them.
 
-- **In Details, per step:** `hands` (a time), `watch` (only offered when the step has a `wait`), the oven (a setting the step needs, or a `preheat`), burner, grill and microwave, `prep` (ahead or "just before"), and `holds` (one per recipe, so choosing it on one step clears it from another). A step that mentions equipment but doesn't use it can say so (`false`), which clears the checker's warning.
+- **On each step, folded under "For the lineup" when the step is open:** `uses` and their amounts, `hands` (a time), `watch` (only offered when the step has a `wait`), the oven (a setting the step needs, or a `preheat`), burner, grill and microwave, `prep` (ahead or "just before"), and `holds` (one per recipe, so ticking it on one step clears it from another). The fold says what's set, and opens by itself when the step has a lineup problem or to-do. A step that mentions equipment but doesn't use it can say so (`false`), which clears the checker's warning. On a new recipe, the intake's own guesses ("Needs you there", "Done while an earlier step waits") stand in for these while they're still to confirm, so nothing shows twice. (Moved from Details in the editor redesign, build step 16.)
 - **In Details, for the recipe:** `serve` (hot, soon or keeps) and `sits`, with the fallback shown when they're blank ("Cooking dishes are hot, 10 min unless you say").
 - **On each ingredient:** "Made by another recipe", a picker of the site's recipes (never typed, so a link can't point nowhere), then `optional` and `alreadyMade` (only offered for a required, linked ingredient).
 - **Added prep steps** (`prep` and `prepOnly`): the editor has "Add a prep step", for prep hidden in ingredient lines ("Mince the garlic"). They show in the preview only in prep-first order, so the preview has a switch between "as written" and "prep first", like the lineup's.

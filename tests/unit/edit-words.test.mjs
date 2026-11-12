@@ -127,14 +127,14 @@ describe("what a message says, and where its fix is", () => {
   test("a step's wait", () => assert.deepEqual(explain('step 2: "wait" must be a time, like "10 min", or false'),
     { text: "Step 2's wait needs to be a time, like 10 min. Leave it empty if the step doesn't wait.", go: { open: "step", n: 1, field: "edit-wait" } }));
 
-  test("a step's hands-on time is fixed in Details", () => assert.deepEqual(explain('step 3: "hands" must be a time, like "10 min"'),
-    { text: "Step 3's hands-on time needs to be a time, like 10 min.", go: { field: "d-hands-2" } }));
+  test("a step's hands-on time is fixed in the step, under For the lineup", () => assert.deepEqual(explain('step 3: "hands" must be a time, like "10 min"'),
+    { text: "Step 3's hands-on time needs to be a time, like 10 min.", go: { open: "step", n: 2, field: "d-hands-2" } }));
 
   test("an ingredient's amount", () => assert.deepEqual(explain('"Butter": write "8 Tbsp" in lowercase, "8 tbsp"'),
     { text: 'Butter: write the amount in lowercase, "8 tbsp".', go: { open: "ing", name: "Butter", field: "edit-qty" } }));
 
   test("a step using an ingredient that isn't there", () => assert.deepEqual(explain('step 1 uses "Leek", which isn\'t one of the ingredients'),
-    { text: "Step 1 uses Leek, which isn't in the ingredients. Add it, or take it off the step under Details.", go: { field: "d-use-drop-0-Leek", or: "d-use-0-*" } }));
+    { text: "Step 1 uses Leek, which isn't in the ingredients. Add it, or untick it on the step.", go: { open: "step", n: 0, field: "d-use-drop-0-Leek", or: "d-use-0-*" } }));
 
   test("no key ingredients, and no total time, go to where they're set", () => {
     assert.deepEqual(explain("no key ingredients tagged").go, { field: "d-tag-ingredients-*", label: "Tag key ingredients" });

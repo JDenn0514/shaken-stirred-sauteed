@@ -26,6 +26,11 @@ export function originalHTML(original, open) {
   </section>`;
 }
 
+// A planning guess to confirm on a step: whether its wait needs you there, or
+// whether it's done while an earlier step waits. The editor shows these in an
+// open step's "For the lineup" too, in place of its own control.
+export const guessHTML = (kind, id, on) => `<label class="import-guess"><input type="checkbox" data-act="r-${kind}" data-id="${esc(id)}" data-key="r-${kind}-${esc(id)}"${on ? " checked" : ""}> ${kind === "watch" ? "Needs you there" : "Done while an earlier step waits"}</label>`;
+
 // The guesses and checks on a step (`review` is reviewOf(state)).
 export function stepNotesHTML(s, review) {
   const id = s?.reviewId;
@@ -41,8 +46,8 @@ export function stepNotesHTML(s, review) {
       <button class="btn" type="button" data-act="r-join" data-id="${esc(split.id)}" data-key="r-join-${esc(id)}">Join back</button></p>` : ""}
     ${joined ? `<p class="import-guess">Joined: another way to do it, from the next line of the recipe.
       <button class="btn" type="button" data-act="r-split" data-id="${esc(joined.id)}" data-key="r-split-${esc(id)}">Split back out</button></p>` : ""}
-    ${watch ? `<label class="import-guess"><input type="checkbox" data-act="r-watch" data-id="${esc(id)}" data-key="r-watch-${esc(id)}"${watch.value ? " checked" : ""}> Needs you there</label>` : ""}
-    ${during ? `<label class="import-guess"><input type="checkbox" data-act="r-during" data-id="${esc(id)}" data-key="r-during-${esc(id)}"${during.value ? " checked" : ""}> Done while an earlier step waits</label>` : ""}
+    ${watch ? guessHTML("watch", id, watch.value) : ""}
+    ${during ? guessHTML("during", id, during.value) : ""}
     ${prep ? `<label class="import-guess">Prep <select data-act="r-prep" data-id="${esc(id)}" data-key="r-prep-${esc(id)}">
       <option value="ahead"${prep.value === true ? " selected" : ""}>Can be done ahead</option>
       <option value="just before"${prep.value === "just before" ? " selected" : ""}>Just before</option>

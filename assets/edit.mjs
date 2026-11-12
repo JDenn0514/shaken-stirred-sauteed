@@ -24,7 +24,7 @@
 // recipe's name, and is off while another recipe links to it.
 import * as M from "./edit-model.mjs";
 import { explain } from "./edit-words.mjs";
-import { originalHTML, stepNotesHTML, ingredientNotesHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
+import { originalHTML, stepNotesHTML, ingredientNotesHTML, guessHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
 import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
 const { CATEGORIES, esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
@@ -50,6 +50,7 @@ let prepFirst = true;  // which order the preview shows steps in, when the recip
 let ovenTemp = null;   // a step whose oven was just set to "At a temperature", before a temperature is typed
 let detailsOpen = false;
 let checksOpen = false; // the strip of to-dos and things to check
+let lineupOpen = false; // the open step's "For the lineup" fold
 let offer = null;      // an unsaved draft from before, offered back
 let focusKey = null;   // what to focus after the next draw
 let status = null;     // how the last save went: { saving }, { published }, or { error, problems, signIn }
@@ -179,27 +180,35 @@ function goButton(message) {
 }
 function goTo(go) {
   const ings = flat(recipe.ingredients), steps = flat(recipe.steps);
+  const held = steps.findIndex((x) => x?.holds);
   const line = go.open === "step" ? `step:${go.n}`
+    : go.holds ? `step:${held}`
     : go.open === "ing" ? `ing:${ings.findIndex((i) => ingName(i) === go.name)}`
     : go.open === "about" ? "about"
     : go.empty === "ing" ? `ing:${ings.findIndex((i) => !ingName(i))}`
     : go.empty === "step" ? `step:${steps.findIndex((x) => !stepText(x))}` : null;
+  const keys = go.holds ? [`d-holds-${held}`] : go.ingField ? [`d-${go.ingField}-${ings.findIndex((i) => ingName(i) === go.name)}`] : [go.field, go.or].filter(Boolean);
   if (line && !line.endsWith(":-1")) {
+    const [kind, n] = line.split(":");
+    // A step the sheet isn't showing (an added prep step, as written) is shown first.
+    if (kind === "step" && !shownNumbers().has(Number(n))) prepFirst = true;
     openLine(line);
-    const kind = line.split(":")[0];
-    focusKey = go.field || (kind === "about" ? "edit-title" : FIRST_FIELD[kind]);
-    if (kind === "ing" && typeof ings[Number(line.slice(4))] === "string") focusKey = "edit-text";
-    return draw();
+    // A step's lineup settings are in its fold.
+    if (keys.some((k) => k.startsWith("d-"))) lineupOpen = true;
+    if (!keys.length) {
+      focusKey = kind === "about" ? "edit-title" : FIRST_FIELD[kind];
+      if (kind === "ing" && typeof ings[Number(n)] === "string") focusKey = "edit-text";
+      return draw();
+    }
+  } else {
+    if (keys.some((k) => k.startsWith("d-")) || go.ingField) detailsOpen = true;
+    editing = null;
   }
-  // A field in Details (or on the page): by its key, the first whose key
-  // starts so for a key ending in "*", or else the fallback, or else Details.
-  const n = go.ingField ? ings.findIndex((i) => ingName(i) === go.name) : -1;
-  const keys = go.ingField ? [`d-${go.ingField}-${n}`] : [go.field, go.or].filter(Boolean);
-  if (keys.some((k) => k.startsWith("d-")) || go.ingField) detailsOpen = true;
-  editing = null;
   draw();
+  // By its key, the first whose key starts so for a key ending in "*", or
+  // else the fallback, or else Details.
   const find = (k) => root.querySelector(k.endsWith("*") ? `[data-key^="${CSS.escape(k.slice(0, -1))}"]` : `[data-key="${CSS.escape(k)}"]`);
-  const el = keys.map(find).find(Boolean) || root.querySelector('[data-key="details"]');
+  const el = keys.map(find).find(Boolean) || (editing ? null : root.querySelector('[data-key="details"]'));
   el?.focus();
   el?.scrollIntoView({ block: "center" });
 }
@@ -445,6 +454,7 @@ function stepForm(n) {
       ${o.wait === false ? field("Wait", "wait", "", ` placeholder="Doesn't wait"`) : field("Wait", "wait", o.wait, ` placeholder="e.g. 20 min"`)}
       ${field("Cue", "cue", o.cue, ` placeholder="e.g. Golden at the edges"`)}
     </div>
+    ${lineupFold(n)}
     ${formButtons(act("add-after", "Add a step after this") + moveControls("step", n) + act("split", "Split here")
       + (M.timedParts(o.do) > 1 ? act("split-times", "Split at each time") : "") + act("join", "Join with the next step") + act("remove", "Remove"))}
   </form>`;
@@ -661,8 +671,7 @@ function detailsHTML() {
       ${flat(r.ingredients).map(ingredientDetails).join("")}
     </fieldset>
     <fieldset class="edit-set"><legend>Steps</legend>
-      ${flat(r.steps).map(stepDetails).join("")}
-      <label class="edit-check"><input type="radio" name="holds" value=""${flat(r.steps).some((s) => s?.holds) ? "" : " checked"} data-act="holds" data-key="d-holds-none"> Doesn't keep: it's made in one go</label>
+      <p class="muted">Each step's settings for the lineup are on the step: open it, then "For the lineup".</p>
       <div class="edit-row"><button class="btn" type="button" data-act="add-prep" data-key="d-add-prep">Add a prep step</button></div>
       <p class="muted">A prep step is prep hidden in an ingredient line ("minced garlic"). It shows only when steps are in prep-first order.</p>
     </fieldset>
@@ -714,16 +723,50 @@ function ingredientDetails(i, n) {
 const TRI = [["", "Not set"], ["true", "Uses it"], ["false", "Doesn't use it"]];
 const tri = (v) => (v === true ? "true" : v === false ? "false" : "");
 
-function stepDetails(s, n) {
+// A step's settings for the lineup, folded under the open step: what it uses
+// and how much, hands-on time and prep, needing you through its wait, the
+// equipment, and whether the dish keeps after it. The fold says what's set,
+// and opens by itself when one of them has a problem or a to-do. On a new
+// recipe, the intake's own guesses ("Needs you there", "Done while an earlier
+// step waits") stand in for the editor's while they're still to confirm.
+function lineupSummary(o, uses) {
+  const said = [];
+  if (typeof o.oven === "string") said.push(o.oven === "off" ? "Oven off" : o.oven === "broil" ? "Broil" : `Oven ${o.oven}`);
+  if (typeof o.preheat === "string") said.push(`Heats the oven to ${o.preheat}`);
+  for (const [k, word] of [["burner", "Burner"], ["grill", "Grill"], ["microwave", "Microwave"]]) if (o[k] === true) said.push(word);
+  if (o.hands) said.push(`${o.hands} hands-on`);
+  if (o.prep) said.push(o.prep === true ? "Prep, ahead" : "Prep, just before");
+  if (o.watch) said.push("Needs you");
+  if (o.holds) said.push("Keeps after this");
+  if (uses) said.push(`uses ${uses}`);
+  return said.join(" · ") || "nothing set";
+}
+function lineupFold(n) {
+  const s = flat(recipe.steps)[n];
+  const o = typeof s === "string" ? { do: s } : s || {};
+  const { errors, warnings } = checks();
+  const flagged = [...errors, ...warnings].some((m) => partOf(m).step === n && (mentions(m) || (explain(m)?.go?.field || "").startsWith("d-")));
+  return `<details class="edit-lineup" aria-label="For the lineup"${lineupOpen || flagged ? " open" : ""}>
+    <summary data-key="edit-lineup">For the lineup: ${esc(lineupSummary(o, M.usesOf(recipe, n).picks.length))}</summary>
+    ${stepLineup(n)}
+  </details>`;
+}
+
+function stepLineup(n) {
+  const s = flat(recipe.steps)[n];
   const o = typeof s === "string" ? { do: s } : s || {};
   const ings = flat(recipe.ingredients);
   const { picks, unmatched } = M.usesOf(recipe, n);
   const picked = new Map(picks.map((p) => [p.ing, p.amount]));
   const oven = o.oven === false ? "false" : o.oven === "broil" || o.oven === "off" ? o.oven : o.oven || ovenTemp === n ? "temp" : "";
   const sf = (attrs) => ` data-act="step-field" data-n="${n}"${attrs}`;
-  const named = shownNumbers().has(n) ? `Step ${shownNumbers().get(n)}` : "Added prep step, shown in prep-first order";
-  return `<fieldset class="edit-step"><legend>${named}: ${esc(short(o.do || "(empty)"))}${o.prepOnly && shownNumbers().has(n) ? " (added prep)" : ""}</legend>
-    <div class="edit-uses" role="group" aria-label="Ingredients ${esc(named.charAt(0).toLowerCase() + named.slice(1))} uses">
+  const named = shownNumbers().has(n) ? `step ${shownNumbers().get(n)}` : "the added prep step";
+  // The intake's guesses on a new recipe, while they're still to confirm.
+  const imported = fresh && review && o.reviewId ? reviewOf(withReview()) : null;
+  const guess = (kind) => imported?.confirms.find((c) => c.kind === kind && c.step === o.reviewId);
+  const watch = guess("watch"), during = guess("during");
+  return `<div class="edit-lineup-body">
+    <div class="edit-uses" role="group" aria-label="Ingredients ${esc(named)} uses">
       <p class="edit-subhead">Uses</p>
       ${ings.map((i, k) => `<div class="edit-use">
         ${check(ingName(i) || `Ingredient ${k + 1}`, ` data-act="use" data-n="${n}" data-ing="${k}" data-key="d-use-${n}-${k}"`, picked.has(k))}
@@ -736,7 +779,8 @@ function stepDetails(s, n) {
       ${labelled("Hands-on time", `<input value="${esc(o.hands || "")}" placeholder="e.g. 5 min"${sf(` data-field="hands" data-key="d-hands-${n}"`)}>`)}
       ${select("Prep", "prep", [["", "Not prep"], ["true", "Can be done ahead"], ["just before", "Just before"]], o.prep === true ? "true" : o.prep || "", sf(` data-field="prep" data-key="d-prep-${n}"`))}
     </div>
-    ${o.wait ? check("Needs you there the whole wait", sf(` data-field="watch" data-key="d-watch-${n}"`), o.watch === true) : ""}
+    ${watch ? guessHTML("watch", o.reviewId, watch.value) : o.wait ? check("Needs you there the whole wait", sf(` data-field="watch" data-key="d-watch-${n}"`), o.watch === true) : ""}
+    ${during ? guessHTML("during", o.reviewId, during.value) : ""}
     <div class="edit-fields">
       ${select("Oven", "oven", [["", "Not set"], ["false", "Doesn't use the oven"], ["temp", "At a temperature"], ["broil", "Broil"], ["off", "Turn it off"]], oven, sf(` data-field="oven" data-key="d-oven-${n}"`))}
       ${oven === "temp" ? labelled("Oven temperature", `<input value="${esc(typeof o.oven === "string" ? o.oven : "")}" placeholder="200C or 400F"${sf(` data-field="oven-temp" data-key="d-oven-temp-${n}"`)}>`) : ""}
@@ -745,8 +789,8 @@ function stepDetails(s, n) {
       ${select("Grill", "grill", TRI, tri(o.grill), sf(` data-field="grill" data-key="d-grill-${n}"`))}
       ${select("Microwave", "microwave", TRI, tri(o.microwave), sf(` data-field="microwave" data-key="d-microwave-${n}"`))}
     </div>
-    <label class="edit-check"><input type="radio" name="holds" value="${n}"${o.holds ? " checked" : ""} data-act="holds" data-key="d-holds-${n}"> Keeps as long as you like after this step</label>
-  </fieldset>`;
+    ${check("Keeps as long as you like after this step", ` value="${n}" data-act="holds" data-key="d-holds-${n}"`, !!o.holds)}
+  </div>`;
 }
 
 // --- Deleting --------------------------------------------------------------------------------
@@ -904,6 +948,7 @@ function partKey(target) {
 // to focus after Cancel (the part's own line, unless it was just added).
 function openLine(target, { added = false, back = partKey(target), before = recipe } = {}) {
   commit(); // what was typed in the line being left is one step
+  if (target !== editing) lineupOpen = false;
   editing = target;
   opened = { before, added, back };
 }
@@ -1124,7 +1169,7 @@ function showChanges() {
 root.addEventListener("input", (e) => {
   // A typed field in Details is saved when you leave it, but it's a change
   // now: Save has to be on for a click that comes straight after.
-  if (!e.target.closest(".edit-form") && e.target.dataset?.act && typed(e.target)) { typing = true; return showChanges(); }
+  if (e.target.dataset?.act && typed(e.target)) { typing = true; return showChanges(); }
   const form = e.target.closest(".edit-form");
   if (!form || !["about", "ing", "step", "note", "start"].includes(form.dataset.form)) return;
   recipe = applyForm(form);
@@ -1215,12 +1260,7 @@ root.addEventListener("click", (e) => {
   if (a === "no-equipment") {
     return update(M.setStepField(recipe, Number(b.dataset.step), b.dataset.field, false), () => { focusKey = "save"; });
   }
-  if (a === "set-equipment") {
-    detailsOpen = true;
-    focusKey = `d-${b.dataset.field}-${b.dataset.step}`;
-    draw();
-    return root.querySelector(`[data-key="${focusKey}"]`)?.scrollIntoView({ block: "center" });
-  }
+  if (a === "set-equipment") return goTo({ open: "step", n: Number(b.dataset.step), field: `d-${b.dataset.field}-${b.dataset.step}` });
   if (a === "mark-optional") return update(M.setIngredientField(recipe, Number(b.dataset.ing), "optional", true));
   if (a === "add-prep") {
     const { recipe: next, at } = M.addPrepStep(recipe);
@@ -1351,7 +1391,7 @@ function onChange(t) {
   }
   if (a === "ing-field") return update(M.setIngredientField(recipe, n, t.dataset.field, t.value));
   if (a === "ing-check") return update(M.setIngredientField(recipe, n, t.dataset.field, t.checked));
-  if (a === "holds") return update(M.setHolds(recipe, t.value === "" ? null : Number(t.value)));
+  if (a === "holds") return update(M.setHolds(recipe, t.checked ? Number(t.value) : null));
   if (a === "use" || a === "use-amount") {
     const { picks, unmatched } = M.usesOf(recipe, n);
     const k = Number(t.dataset.ing);
@@ -1386,6 +1426,7 @@ function onChange(t) {
 root.addEventListener("toggle", (e) => {
   if (e.target.matches?.("details.edit-details")) detailsOpen = e.target.open;
   if (e.target.matches?.("details.edit-checks")) checksOpen = e.target.open;
+  if (e.target.matches?.("details.edit-lineup")) lineupOpen = e.target.open;
 }, true);
 
 // --- Start --------------------------------------------------------------------------------------
