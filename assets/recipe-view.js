@@ -90,7 +90,8 @@ window.SSSView = (() => {
     const facts = [
       ...yieldFacts,
       ...timeFacts,
-      ["Pan", r.pan],
+      // `pan` is any equipment the recipe needs: a tart pan, a saucepan, a skillet.
+      ["Equipment", r.pan],
       [r.heatLabel || "Heat", r.heat],
       ["ABV", r.abv],
       ["Std drinks", r.standardDrinks],

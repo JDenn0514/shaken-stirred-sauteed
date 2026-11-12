@@ -187,7 +187,7 @@ Object.assign(PAGE_ONLY, {
   }),
   // A dessert that keeps once baked and cooled, so it's worth making ahead.
   "slow-cake": recipe({
-    title: "Slow Cake", category: "baking",
+    title: "Slow Cake", category: "baking", pan: "8 in round cake pan", heatLabel: "Oven", heat: "150C",
     ingredients: [{ qty: "2 cups", item: "Flour" }, { qty: "1 cup", item: "Cream" }],
     steps: [
       { do: "Mix the batter.", hands: "10 min", uses: ["Flour"] },
@@ -224,7 +224,7 @@ Object.assign(PAGE_ONLY, {
 // editor tests see them in EDITOR_INDEX (below), which the linked-recipe
 // picker and the link checks read.
 export const EDITOR_RECIPES = {
-  // Fields the editor has no control for (abv, nutrition, origin, an unknown
+  // Fields the editor has no control for (nutrition, origin, an unknown
   // field), and lineup data (`wait: false` too), which must come out of an edit unchanged.
   "old-fashioned": {
     title: "Old Fashioned", category: "cocktails", wobble: { kept: ["as", "is"] },

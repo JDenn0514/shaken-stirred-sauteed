@@ -56,7 +56,7 @@ export function putBack(recipe, before, target) {
   if (target === "about") return ["title", "description", "yield"].reduce((r, k) => setField(r, k, before[k]), recipe);
   if (target === "facts") {
     const r = setField(recipe, "yield", before.yield);
-    for (const k of ["times", "time"]) {
+    for (const k of ["times", "time", ...ALL_FACTS]) {
       if (before[k] === undefined) delete r[k];
       else r[k] = structuredClone(before[k]);
     }
@@ -105,15 +105,37 @@ export function setTime(recipe, key, value) {
 // ([["Active", "15 min"], ["Rise", "1 to 2 hr"]]), and the minutes the time
 // filter, the card and the lineup use. Rows are kept as typed (an empty one
 // may be being written); none at all takes "times" out.
-export function setFacts(recipe, { yield: y, times, time = {} }) {
-  let r = setField(recipe, "yield", y);
+// Given only what's to change: the yield, the printed times (rows), the
+// minutes, and `more`, the section's own facts (factFields).
+export function setFacts(recipe, given) {
+  let r = "yield" in given ? setField(recipe, "yield", given.yield) : recipe;
   r = structuredClone(r);
-  const rows = (times || []).map(([label, value]) => [clean(label ?? ""), clean(value ?? "")]);
-  if (rows.length) r.times = rows;
-  else delete r.times;
-  for (const k of TIMES) if (k in time) r = setTime(r, k, time[k]);
+  if ("times" in given) {
+    const rows = (given.times || []).map(([label, value]) => [clean(label ?? ""), clean(value ?? "")]);
+    if (rows.length) r.times = rows;
+    else delete r.times;
+  }
+  for (const k of TIMES) if (given.time && k in given.time) r = setTime(r, k, given.time[k]);
+  for (const [k, v] of Object.entries(given.more || {})) {
+    if (!ALL_FACTS.includes(k)) continue;
+    if (k === "standardDrinks") {
+      const n = String(v ?? "").trim() === "" ? NaN : Number(v);
+      put(r, k, Number.isFinite(n) ? n : undefined);
+    } else put(r, k, clean(v ?? ""));
+  }
   return r;
 }
+
+// The facts each section prints in its facts box (the README's "Category-
+// specific display fields"). The form offers its section's, and any other
+// a recipe already has (a cooking recipe's pan).
+const FACTS = { baking: ["pan", "heatLabel", "heat"], cocktails: ["glass", "ice", "garnish", "method", "keeps", "abv", "standardDrinks"] };
+const ALL_FACTS = [...FACTS.baking, ...FACTS.cocktails];
+export function factFields(recipe) {
+  const own = FACTS[recipe.category] || [];
+  return [...own, ...ALL_FACTS.filter((k) => !own.includes(k) && !empty(recipe[k]))];
+}
+
 export function addTime(recipe) {
   const r = structuredClone(recipe);
   r.times = [...(r.times || []), ["", ""]];

@@ -107,6 +107,34 @@ test.describe("the facts box", () => {
     await expect(page.locator("details.edit-details").getByRole("group", { name: "Times, in minutes" })).toHaveCount(0);
   });
 
+  test("a baking recipe's pan and heat are set in the facts", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    await preview(page).locator("dl").first().getByRole("button").first().press("Enter");
+    const baking = facts(page).getByRole("group", { name: "Baking" });
+    await baking.getByLabel("Equipment").fill("8 x 8 in, metal");
+    await baking.getByLabel("Heat", { exact: true }).fill("350F");
+    await baking.getByLabel("Shown as").selectOption("Oven");
+    await facts(page).getByRole("button", { name: "Done" }).press("Enter");
+    const draft = await draftOf(page, "lemon-bars");
+    expect([draft.pan, draft.heatLabel, draft.heat]).toEqual(["8 x 8 in, metal", "Oven", "350F"]);
+    await expect(preview(page).locator("dl").first()).toContainText("Oven350F");
+  });
+
+  test("a cocktail's facts: tapping the glass opens it, and what sets the drawing and the strength filter says so", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "old-fashioned");
+    await preview(page).getByRole("button", { name: "Rocks" }).press("Enter");
+    const drink = facts(page).getByRole("group", { name: "The drink" });
+    await expect(drink.getByLabel("Glass")).toBeFocused();
+    await expect(drink.getByLabel("Glass")).toHaveAccessibleDescription("Sets the drawing");
+    await expect(drink.getByLabel("Standard drinks")).toHaveAccessibleDescription("Sets the strength filter");
+    await drink.getByLabel("Glass").fill("Coupe");
+    await drink.getByLabel("Standard drinks").fill("2.5");
+    await drink.getByLabel("Garnish").fill("Orange twist");
+    await facts(page).getByRole("button", { name: "Done" }).press("Enter");
+    const draft = await draftOf(page, "old-fashioned");
+    expect([draft.glass, draft.standardDrinks, draft.garnish]).toEqual(["Coupe", 2.5, "Orange twist"]);
+  });
+
   test("Cancel puts the facts back as they were", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-soup");
     await preview(page).getByRole("button", { name: "45 min" }).press("Enter");

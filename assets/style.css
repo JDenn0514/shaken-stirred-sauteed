@@ -1453,6 +1453,7 @@ body.cooking > .site-footer { display: none; }
 .edit-lineup > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-lineup-body { display: grid; gap: 12px; padding: 4px 12px 12px; border-top: 1px solid var(--border); }
 .edit-hint { margin: 8px 0 0; font-weight: 600; }
+.edit-field-hint { margin: 4px 0 0; font-size: .88rem; }
 .edit-hint:empty { display: none; }
 .edit-time-row { display: grid; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .edit-checks { margin-top: 16px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
@@ -1567,7 +1568,9 @@ body.cooking > .site-footer { display: none; }
 .edit-dialog input:focus-visible, .edit-dialog button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-form { display: grid; gap: 10px; padding: 10px 12px; margin: 6px 0; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
 .edit-fields { display: flex; flex-wrap: wrap; gap: 10px; }
-.edit-fields > .edit-field { flex: 1 1 140px; }
+.edit-fields > .edit-field, .edit-fields > .edit-field-wrap { flex: 1 1 140px; min-width: 0; }
+/* A field with a line under it is taller: the others in its row keep their own height. */
+.edit-fields:has(> .edit-field-wrap) { align-items: flex-start; }
 .edit-field { display: grid; gap: 5px; font-weight: 600; font-size: .95rem; min-width: 0; }
 .edit-field.inline { display: inline-grid; margin: 4px 0 4px 26px; }
 .edit-field input, .edit-field textarea, .edit-field select {

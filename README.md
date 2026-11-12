@@ -70,7 +70,7 @@ Category-specific display fields:
 | Category | Fields |
 |---|---|
 | Any | `origin` (e.g. `Milan, Italy`), `nutrition` |
-| Baking | `pan`, `heat` with `heatLabel` (`Oven` or `Heat`) |
+| Baking | `pan` (shown as "Equipment": a tart pan, a saucepan, whatever it needs), `heat` with `heatLabel` (`Oven` or `Heat`) |
 | Cocktails | `glass`, `ice`, `garnish`, `method`, `keeps`, `abv`, `standardDrinks` |
 
 ### Writing ingredients

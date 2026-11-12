@@ -227,6 +227,10 @@ const PAGES = [
     await page.getByRole("form", { name: "Facts" }).getByLabel("Total").fill("5");
     await expect(page.getByRole("form", { name: "Facts" })).toContainText("is less than");
   }, null, editor],
+  ["editor with a cocktail's facts open", "edit.html?r=old-fashioned", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Rocks" }).click();
+    await expect(page.getByRole("form", { name: "Facts" }).getByRole("group", { name: "The drink" })).toBeVisible();
+  }, null, editor],
   ["editor asking where to split a step", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
     await page.getByRole("button", { name: "Split here" }).click();
