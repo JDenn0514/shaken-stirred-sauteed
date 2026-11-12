@@ -121,6 +121,16 @@ test("Next step moves on from a wait early", async ({ page }) => {
   await expect(instruction(page)).toHaveText("Roast until golden.");
 });
 
+// Like a marinade started before cooking: its wait is over already.
+test("Already done on a step that waits skips its wait and its timer", async ({ page }) => {
+  await toOvenWait(page);
+  await next(page);
+  await expect(instruction(page)).toHaveText("Roast until golden.");
+  await button(page, "Already done").click();
+  await expect(instruction(page)).toHaveText("Take it out, rest it, carve.");
+  await expect(cook(page).getByRole("timer", { name: /Roast Chicken/ })).toHaveCount(0);
+});
+
 test("a step's own wait: its timer starts on Next step, at the short end, and says what comes after it", async ({ page }) => {
   await toOvenWait(page);
   await next(page);

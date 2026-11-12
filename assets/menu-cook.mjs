@@ -84,15 +84,24 @@ export function openCook({ planMenu, onClose }) {
   const gather = () => [...new Set(plan.steps.map((s) => s.slug))].filter((slug) => (recipes[slug]?.beforeYouStart || []).length);
 
   // ===== Moving through it =====
-  function goNext() {
+  // "Already done" on a step that waits (a marinade started before cooking):
+  // done, with its wait over now and no timer.
+  function alreadyDone() {
+    if (view() !== "step") return;
+    const s = steps[curIndex()];
+    C.saveTimers(C.loadTimers().filter((t) => !(t.menu && t.slug === s.slug && t.step === s.step)));
+    goNext({ waitOver: true });
+  }
+  function goNext({ waitOver = false } = {}) {
     const v = view(), i = curIndex(), s = steps[i];
     if (v === "intro") change((c) => { c.intro = true; c.log = [...(c.log || []), "intro"]; });
     else if (v === "wait") change((c) => { c.current = { slug: s.slug, step: s.step, at: now() }; c.waitTimer = null; });
     else if (v === "plate") change((c) => { c.plated = [...(c.plated || []), s.plate]; c.log = [...(c.log || []), "plate"]; });
     else if (v === "step") {
-      const timer = s.wait > 0 && !s.watch && s.timer ? startTimer(s) : null;
+      const timer = !waitOver && s.wait > 0 && !s.watch && s.timer ? startTimer(s) : null;
       change((c) => {
-        c.done.push({ slug: s.slug, step: s.step, at: now(), ...(timer && { timer }) });
+        const at = now();
+        c.done.push({ slug: s.slug, step: s.step, at, ...(timer && { timer }), ...(waitOver && { waitUntil: at }) });
         c.current = null; c.waitTimer = null;
         c.log = [...(c.log || []), "done"];
       });
@@ -252,7 +261,8 @@ export function openCook({ planMenu, onClose }) {
         ${s.wait > 0 && o.wait ? `<p class="cook-wait" data-testid="wait"><span>⏱ ${esc(o.wait)}<span class="menu-range">${s.watch
             ? "Stay with it."
             : `The timer starts when you press Next step${range ? `, set to ${esc(C.fmtLength(s.timer.short - s.timer.from))} so you check early` : ""}.`}</span></span>
-          ${s.watch && !running ? `<button class="btn cook-timer-start" type="button" data-own-timer>Start ${esc(C.fmtLength(s.timer.short - s.timer.from))} timer</button>` : ""}</p>` : ""}
+          ${s.watch && !running ? `<button class="btn cook-timer-start" type="button" data-own-timer>Start ${esc(C.fmtLength(s.timer.short - s.timer.from))} timer</button>` : ""}
+          <button class="btn cook-already" type="button" data-already>Already done</button></p>` : ""}
         ${o.cue ? `<p class="cook-cue" data-testid="cue">✓ ${esc(o.cue)}</p>` : ""}`;
       after = steps[i + 1];
     }
@@ -405,6 +415,7 @@ export function openCook({ planMenu, onClose }) {
     else if (b.matches(".cook-upnext")) b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true"));
     else if (b.dataset.wait) changeWait(b.dataset.wait);
     else if (b.hasAttribute("data-own-timer")) { startTimer(steps[curIndex()]); paint(); }
+    else if (b.hasAttribute("data-already")) alreadyDone();
     else if (b.dataset.timer) { C.unlockAudio(); changeTimer(b.dataset.timer, b.dataset.how); }
   });
   C.onSwipe(el, () => ready && goNext(), () => ready && goBack());

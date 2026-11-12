@@ -447,7 +447,16 @@ function planFor(dishes, serve, progress) {
 
 // The earliest serve time one cook can get everything ready for.
 function search(dishes, progress = {}) {
-  const shortest = Math.max(progress.now || 0, ...dishes.map((d) => -latestStarts(d, 0)[0] || 0));
+  // No sooner than each dish's steps still to do, back to back from now (or
+  // from when the step on screen was started). Steps already done don't count:
+  // a wait stopped early brings serving forward.
+  const done = new Set((progress.done || []).map((x) => `${x.slug}:${x.step}`));
+  const from = Math.min(progress.now || 0, progress.current?.at ?? Infinity);
+  const left = (d) => {
+    const i = d.steps.findIndex((s) => !done.has(`${s.slug}:${s.n}`));
+    return i < 0 ? 0 : -latestStarts({ ...d, steps: d.steps.slice(i) }, 0)[0] || 0;
+  };
+  const shortest = Math.max(progress.now || 0, ...dishes.map((d) => from + left(d)));
   // Serving later than doing every step back to back never helps.
   const horizon = shortest + Math.min(24 * 60, dishes.reduce((a, d) => a + d.steps.reduce((b, s) => b + s.hands + s.wait, 0), 60));
   // When no serve time gets every hot dish there within its sitting time

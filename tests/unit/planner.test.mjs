@@ -521,6 +521,18 @@ describe("re-planning as you cook", () => {
     assert.equal(next(plan).text, "Scatter with parsley");
     assert.equal(next(plan).at, 30);
   });
+
+  // The carne asada menu: the steak went into its marinade before cooking
+  // started, so its 4-hour wait was stopped straight away.
+  test("a long wait stopped early brings serving forward instead of leaving you idle", () => {
+    const marinated = {
+      steak: recipe("Steak", [["Marinate the steak", { hands: "2 min", wait: "4 hr" }], ["Grill the steak", { hands: "5 min" }]], { serve: "hot", sits: "10 min" }),
+    };
+    const plan = planLineup({ dishes: [{ slug: "steak" }] }, marinated, { now: 3, done: [{ slug: "steak", step: 0, at: 2, waitUntil: 3 }] });
+    assert.equal(plan.upNow.text, "Grill the steak");
+    assert.equal(plan.wait, 0);
+    assert.equal(plan.minutes, 8);
+  });
 });
 
 describe("a timer ringing in the middle of a step", () => {
