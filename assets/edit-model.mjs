@@ -9,6 +9,8 @@
 // does change keep their place in the file. A field emptied is taken out; a
 // new one goes at the end.
 
+import { minutes, timesIn } from "./planner.mjs";
+
 const isGroup = (e) => !!e && Array.isArray(e.items);
 const flat = (list = []) => list.flatMap((e) => (isGroup(e) ? e.items : [e]));
 const lower = (s) => String(s ?? "").trim().toLowerCase();
@@ -177,21 +179,82 @@ export function setHolds(recipe, n) {
   return r;
 }
 
-// Steps are split at a place in their text: the first part keeps what the step
-// uses and its hands-on time; the second takes the wait, the cue and the
-// equipment, which belong to the end of a step.
-const SECOND = ["wait", "cue", "watch", "oven", "preheat", "burner", "grill", "microwave", "holds"];
+// Times in a step's text that say how long it takes: not a checkpoint ("check
+// it at 10 minutes"), how long it keeps ("up to 2 hours") or how often.
+const stepTimes = (text) => timesIn(text).filter((t) => !/\b(at|up to|within|keeps?|every|after)\s*$/i.test(text.slice(Math.max(0, t.start - 14), t.start)));
+const OVEN = /\b(oven|preheat|broil)/i;
+
+// A step cut into parts, one per text. The first keeps what it uses, its
+// hands-on time and the rest of what the step has. The wait goes with the part
+// whose text says that time, or else the last; its cue, "needs you" and
+// equipment go with it. Preheat goes with the part about the oven, or else
+// the wait's; holds (the dish keeps after this) with the last.
+const WITH_WAIT = ["wait", "cue", "watch", "oven", "burner", "grill", "microwave"];
+function divide(s, texts) {
+  const parts = texts.map((t) => ({ do: t }));
+  parts[0] = { ...s, do: texts[0] };
+  for (const k of [...WITH_WAIT, "preheat", "holds"]) delete parts[0][k];
+  const last = parts.length - 1;
+  const has = (k) => k in s && s[k] !== undefined;
+  const said = typeof s.wait === "string" && minutes(s.wait)
+    ? texts.flatMap((t, k) => (stepTimes(t).some((x) => Math.abs(x.minutes - minutes(s.wait)) < 0.5) ? [k] : [])) : [];
+  const w = said.length === 1 ? said[0] : last;
+  for (const k of WITH_WAIT) if (has(k)) parts[w][k] = s[k];
+  if (has("preheat")) {
+    const about = texts.flatMap((t, k) => (OVEN.test(t) ? [k] : []));
+    parts[about.length === 1 ? about[0] : w].preheat = s.preheat;
+  }
+  if (has("holds")) parts[last].holds = s.holds;
+  return parts;
+}
+
+// Splits step n at a place in its text. Nothing happens when either side
+// would be empty.
 export function splitStep(recipe, n, at) {
   const r = structuredClone(recipe);
   const where = locate(r.steps || [], n);
   if (!where) return r;
   const s = asStep(where.arr[where.i]);
   const text = s.do || "";
-  const first = { ...s, do: text.slice(0, at).trim() };
-  const second = { do: text.slice(at).trim() };
-  for (const k of SECOND) if (k in s) { second[k] = s[k]; delete first[k]; }
-  if (!first.do || !second.do) return r;
-  where.arr.splice(where.i, 1, first, second);
+  const texts = [text.slice(0, at).trim(), text.slice(at).trim()];
+  if (!texts[0] || !texts[1]) return r;
+  where.arr.splice(where.i, 1, ...divide(s, texts));
+  return r;
+}
+
+// Where a step's text splits at each time it says: after each time but the
+// last, at the end of its sentence or clause, or else just after the time.
+function timedTexts(text) {
+  const times = stepTimes(text);
+  const cuts = times.slice(0, -1).map((t, k) => {
+    const end = /[.!?,;](?=\s)/.exec(text.slice(t.end, times[k + 1].start));
+    return end ? t.end + end.index + 1 : t.end;
+  });
+  const texts = [0, ...cuts].map((from, k) => text.slice(from, cuts[k] ?? text.length).trim());
+  // Each part reads as a sentence of its own.
+  return texts.map((t, k) => {
+    let out = k ? t.replace(/^\p{Ll}/u, (c) => c.toUpperCase()) : t;
+    if (k < texts.length - 1) out = out.replace(/[\s,;]+$/, "").replace(/([^.!?…])$/, "$1.");
+    return out;
+  });
+}
+// How many parts "Split at each time" would make of a step's text: 0 or 1
+// when it says fewer than two times.
+export const timedParts = (text) => stepTimes(String(text || "")).length;
+
+// Splits step n at each time its text says. Each part waits the time it says
+// (the step's own wait, written as the step wrote it, goes where divide puts it).
+const short = (time) => time.replace(/\bminutes?\b/i, "min").replace(/\bseconds?\b/i, "sec").replace(/\bhours?\b/i, "hr");
+export function splitAtTimes(recipe, n) {
+  const r = structuredClone(recipe);
+  const where = locate(r.steps || [], n);
+  if (!where) return r;
+  const s = asStep(where.arr[where.i]);
+  if (timedParts(s.do) < 2) return r;
+  const texts = timedTexts(s.do);
+  const parts = divide(s, texts);
+  parts.forEach((p, k) => { if (!("wait" in p)) p.wait = short(stepTimes(texts[k])[0].text); });
+  where.arr.splice(where.i, 1, ...parts);
   return r;
 }
 

@@ -268,6 +268,9 @@ function draw() {
   // A redraw can drop focus without a focusout, so check where it is now.
   typingInLine(inLineField(document.activeElement));
   measureBars();
+  // A step's text opens with the cursor at the end, ready to add to it, and
+  // so "Split here" splits nothing until the cursor is put somewhere.
+  if (back && !live && back.matches("textarea[name=do]")) back.setSelectionRange(back.value.length, back.value.length);
   if (back && live && "value" in back) {
     back.value = live.value;
     // Some fields (type="url") have no cursor position to set.
@@ -353,7 +356,7 @@ function stepForm(n) {
       ${field("Cue", "cue", o.cue, ` placeholder="e.g. Golden at the edges"`)}
     </div>
     ${formButtons(act("add-after", "Add a step after this") + act("move-up", "Move up") + act("move-down", "Move down") + act("split", "Split here")
-      + act("join", "Join with the next step") + act("remove", "Remove"))}
+      + (M.timedParts(o.do) > 1 ? act("split-times", "Split at each time") : "") + act("join", "Join with the next step") + act("remove", "Remove"))}
   </form>`;
 }
 
@@ -904,7 +907,11 @@ let note = null; // what the last change also did, said on the status line until
 function stepsTouched(a, b) {
   const was = flat(a.steps), now = flat(b.steps);
   const ns = now.map((s, n) => (JSON.stringify(s?.uses) !== JSON.stringify(was[n]?.uses) ? n + 1 : 0)).filter(Boolean);
-  if (!ns.length) return null;
+  return ns.length ? stepNames(ns) : null;
+}
+// Steps by their numbers in the file (from 1), as "step 1" or "steps 3 and 4",
+// numbered as the sheet shows them.
+function stepNames(ns) {
   // Numbered as the sheet shows them, in that order.
   const shown = shownNumbers();
   const names = ns.map((n) => (shown.has(n - 1) ? { k: shown.get(n - 1), name: String(shown.get(n - 1)) } : { k: Infinity, name: say(`step ${n}`) }))
@@ -913,6 +920,14 @@ function stepsTouched(a, b) {
   const list = names.map((x) => (allNumbers || x.k === Infinity ? x.name : `step ${x.name}`));
   const joined = list.length === 1 ? list[0] : `${list.slice(0, -1).join(", ")} and ${list.at(-1)}`;
   return allNumbers ? `step${list.length > 1 ? "s" : ""} ${joined}` : joined;
+}
+// After step n (from 0) was split into `parts` steps: what it used all stayed
+// with the first part, so the parts' ingredients need a look. Null when it
+// used nothing.
+function usesNote(before, n, parts) {
+  if (!flat(before.steps)[n]?.uses?.length) return null;
+  const ns = Array.from({ length: parts }, (_, k) => n + 1 + k);
+  return `Check what ${stepNames(ns)} use: the ingredients all stayed with ${stepNames([n + 1])}.`;
 }
 let problemCount = 0; // the checker's errors at the last draw
 // Typing doesn't redraw the page, so the bar's words and Save follow along here.
@@ -1004,7 +1019,7 @@ root.addEventListener("click", (e) => {
     const { recipe: next, at } = list === "ingredients" ? M.addIngredient(recipe) : M.addStep(recipe);
     return update(next, () => { openLine(`${list === "ingredients" ? "ing" : "step"}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = list === "ingredients" ? "edit-item" : "edit-do"; });
   }
-  if (form && ["add-after", "move-up", "move-down", "split", "join", "remove"].includes(a)) return formAction(a, form);
+  if (form && ["add-after", "move-up", "move-down", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
     const draft = offer;
     // A draft made on an older version saves against that version, so the
@@ -1085,8 +1100,17 @@ function formAction(a, form) {
   if (a === "split") {
     const area = form.querySelector("textarea[name=do]");
     const at = area.selectionStart - (area.value.length - area.value.trimStart().length);
+    const split = M.splitStep(next, n, at);
+    // At either end of the text there's nothing to split off: say so, and go
+    // back to the text to put the cursor somewhere.
+    if (same(split, next)) { note = "Put the cursor where the new step starts."; focusKey = "edit-do"; return draw(); }
     editing = null;
-    return update(M.splitStep(next, n, at), () => { focusKey = `part-step-${n}`; });
+    return update(split, () => { focusKey = `part-step-${n}`; note = usesNote(next, n, 2); });
+  }
+  if (a === "split-times") {
+    const parts = M.timedParts(flat(next.steps)[n]?.do);
+    editing = null;
+    return update(M.splitAtTimes(next, n), () => { focusKey = `part-step-${n}`; note = usesNote(next, n, parts); });
   }
   if (a === "join") {
     editing = null;

@@ -334,7 +334,7 @@ A step is marked **Done** once its pull request is merged.
    - Buttons in the bar; Cmd/Ctrl+Z outside text fields.
    - Undo closes any open form and focuses the restored line.
    - No timed pop-ups.
-10. **(S) One step number in every message.** Rewrite "step N" in errors, to-dos and Details to the number shown on the sheet. For an added prep step while "As written" is showing, name it by its first words, with a button to show prep first.
+10. **Done** (#58, 2026-11-11). **(S) One step number in every message.** Rewrite "step N" in errors, to-dos and Details to the number shown on the sheet. For an added prep step while "As written" is showing, name it by its first words, with a button to show prep first.
 11. **(M) Split done right.**
     - The cursor starts at the end.
     - "Split here" says "Put the cursor where the new step starts" instead of failing silently.

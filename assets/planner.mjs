@@ -7,12 +7,17 @@
 const NUM = String.raw`\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+`;
 const TIME = new RegExp(`(${NUM})\\s*(?:(?:to|-|–)\\s*(${NUM})\\s*)?(sec(?:ond)?s?|min(?:ute)?s?|hrs?|hours?)\\b(?:\\s*(\\d+)\\s*min)?`, "i");
 const num = (x) => x.split(/\s+/).reduce((t, p) => t + (p.includes("/") ? p.split("/")[0] / p.split("/")[1] : +p), 0);
-function minutes(text) {
+export function minutes(text) {
   const m = TIME.exec(text || "");
   if (!m) return 0;
   const per = { s: 1 / 60, m: 1, h: 60 }[m[3][0].toLowerCase()];
   const low = num(m[1]), high = m[2] ? num(m[2]) : low;
   return ((low + high) / 2) * per + (m[4] ? +m[4] : 0);
+}
+// Every time written in a text, with where it is and its minutes, read as above.
+export function timesIn(text) {
+  return [...String(text || "").matchAll(new RegExp(TIME.source, "gi"))]
+    .map((m) => ({ start: m.index, end: m.index + m[0].length, text: m[0], minutes: minutes(m[0]) }));
 }
 // The short end of a range, where cook mode's timer starts: "35 to 45 min" is 35.
 function shortEnd(text) {

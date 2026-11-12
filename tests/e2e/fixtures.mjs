@@ -245,6 +245,18 @@ export const EDITOR_RECIPES = {
     ],
     tags: { course: ["side"], ingredients: ["garlic"] },
   }),
+  // A step with three times in it, as the intake read the garlic soup's
+  // (docs/ideas.md): its wait is the first time, not the last.
+  "garlic-soup": recipe({
+    title: "Garlic Soup", serve: "hot", sits: "10 min",
+    ingredients: [{ qty: "40 cloves", item: "Garlic" }, { qty: "2 tbsp", item: "Butter" }, { qty: "1", item: "Onion" }, { qty: "1", item: "Potato" }, { qty: "4 cups", item: "Stock" }],
+    steps: [
+      { do: "Peel the garlic.", prep: true, hands: "10 min", uses: ["Garlic"] },
+      { do: "Cook garlic 5 minutes in butter. Onion 2 minutes, potato 1 minute then add stock and simmer.", hands: "2 min",
+        uses: ["Garlic", "Butter", "Onion", "Potato", "Stock"], wait: "5 min", cue: "Soft but not brown", burner: true },
+    ],
+    tags: { course: ["soup"], ingredients: ["garlic"] },
+  }),
   "garlic-butter": recipe({
     title: "Garlic Butter", kind: "component", serve: "keeps",
     ingredients: [{ grams: 115, qty: "8 tbsp", item: "Butter", note: "soft" }, { qty: "4 cloves", item: "Garlic", note: "grated" }],
