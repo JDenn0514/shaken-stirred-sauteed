@@ -11,6 +11,9 @@
 
 import { minutes, timesIn } from "./planner.mjs";
 
+// The lists a line belongs to, by the kind of line, as the editor names them.
+export const LISTS = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
+
 const isGroup = (e) => !!e && Array.isArray(e.items);
 const flat = (list = []) => list.flatMap((e) => (isGroup(e) ? e.items : [e]));
 const lower = (s) => String(s ?? "").trim().toLowerCase();

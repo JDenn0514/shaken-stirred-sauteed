@@ -445,6 +445,21 @@ test.describe("undo and redo", () => {
     expect((await stepTexts(page))[0]).toBe("Season the pork.");
   });
 
+  // A typed Details field lands when focus leaves it, which a click on Undo
+  // does: Undo then takes back that field, not the edit before it.
+  test("Undo clicked straight after typing in Details takes back the typing, and Redo puts it back", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await editStep1(page, "Season the pork well.");
+    const d = await details(page);
+    await expect(d.getByLabel("Source", { exact: true })).toHaveValue("Grandma");
+    await d.getByLabel("Source", { exact: true }).fill("Aunt May");
+    await undo(page).click();
+    await expect(d.getByLabel("Source", { exact: true })).toHaveValue("Grandma");
+    expect((await stepTexts(page))[0]).toBe("Season the pork well.");
+    await redo(page).click();
+    await expect(d.getByLabel("Source", { exact: true })).toHaveValue("Aunt May");
+  });
+
   test("Ctrl+Z undoes and Shift+Ctrl+Z redoes, but inside a text field they're the field's own", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     await editStep1(page, "Season the pork well.");
@@ -876,7 +891,7 @@ test.describe("a step's lineup settings", () => {
     await giveBadHands(page, "Slice the peppers and mince the garlic.");
     await preview(page).getByRole("switch", { name: "Prep first" }).click();
     const problems = page.getByRole("region", { name: "Problems to fix" });
-    await expect(problems).toContainText(`The added prep step "Slice the peppers and mince the garlic."'s hands-on time needs to be a time`);
+    await expect(problems).toContainText(`Hands-on time for the added prep step "Slice the peppers and mince the garlic." needs to be a time`);
     await problems.getByRole("button", { name: "Show prep first" }).click();
     await expect(preview(page).getByRole("switch", { name: "Prep first" })).toBeChecked();
     await expect(problems).toContainText("Step 1's hands-on time needs to be a time");
