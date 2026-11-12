@@ -248,6 +248,7 @@ The screenshots named below (`vis-*.png`, `walk-*.png`) were taken during the re
   - Starting values to judge: a deep raspberry, `#a8123f` on `#fbeff2` in light mode and `#ff8fae` on `#33191f` in dark.
 - **Errors also get a small flag glyph**, drawn the same way as the clock and tick, so colour isn't the only sign.
 - **A step with an error gets a 3px raspberry bar down its left edge,** so you can spot it while scrolling.
+- **Chosen (2026-11-12):** Jacob found the bar too easy to miss, so a line with an error is boxed instead: a pale raspberry fill and a 2px raspberry border round the whole step or ingredient (a step uses its own border, as cook mode's "Now" does). The message keeps the flag. Contrast: raspberry text is 6.6–7.3:1 on every light background and 7.2–8.7:1 on every dark one.
 
 ---
 
@@ -342,8 +343,8 @@ A step is marked **Done** once its pull request is merged.
     - Equipment goes with the wait; holds and preheat stay on one half.
     - Uses stay on the first half, with a "Check what step 3 uses" note. No guessing.
     - Unit test with the garlic soup step.
-12. **(M) Notes and Before you start, editable in place.** Notes allow groups; Before you start never does. Ghost "Add a note" rows.
-13. **(S, after you choose colours) The error colour and flag.**
+12. **Done** (#61, 2026-11-12). **(M) Notes and Before you start, editable in place.** Notes allow groups; Before you start never does. Ghost "Add a note" rows.
+13. **(S, after you choose colours) The error colour and flag.** Errors are raspberry, with the flag, and a line with an error is boxed (section 4, "Colour for problems").
 14. **(M) Problems and to-dos in a cook's words, with "Go to" buttons.**
     - A wording table with a unit test that runs every checker message through it, so a wording change in the checker fails loudly.
     - Fix buttons for "no key ingredients tagged" and "no total time".
@@ -387,7 +388,7 @@ Deferred: the hero image control, "Tidy up with AI" (slice 8), and the intake's 
 Jacob answered the open questions on 2026-11-10.
 
 1. **A step's lineup settings move into the step,** in a folded "For the lineup" panel (build step 16). The spec's "in Details, per step" (design.md:152, 162) is updated in that change.
-2. **Errors get the raspberry colour and the flag** (build step 13). The contrast numbers are shown before the colours change.
+2. **Errors get the raspberry colour and the flag** (build step 13). The contrast numbers are shown before the colours change. On seeing them (2026-11-12), Jacob chose a box round the whole line over the left bar.
 3. **The card preview is compact on a phone,** not full size and not folded away.
 4. **The Edit button shows the pencil and the word "Edit"** where there's room, and only the pencil where there isn't (a narrow screen, or a narrow ingredient column). Screen readers hear "Edit step 3" either way.
 5. **The side rail on wide screens (1440px and up) is a yes, but later** (build step 29). For an imported recipe, the original keeps the rail.

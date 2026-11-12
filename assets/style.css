@@ -94,6 +94,9 @@
 
   /* The three families: ink (text-safe), wash (tint behind ink), paper (page tint),
      fill (solid "chosen" state) and the text that sits on that fill. */
+  /* Problems the editor finds: raspberry, outside the three family inks, so an
+     error never looks like a baking cue. */
+  --error: #a8123f; --error-wash: #fbeff2;
   --baking: #bf440f;    --baking-wash: #fdf4ef;    --baking-paper: #f7f4f2;    --baking-fill: #bf440f;
   --cooking: #00512f;   --cooking-wash: #eef7f2;   --cooking-paper: #f2f5f3;   --cooking-fill: #00512f;
   --cocktails: #0056bd; --cocktails-wash: #f2f5fd; --cocktails-paper: #f3f4f7; --cocktails-fill: #0056bd;
@@ -133,6 +136,7 @@
   /* Glyphs (data URIs are allowed by img-src data:) */
   --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --ico-clock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cg fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='9' r='5.6'/%3E%3Cpath d='M8 6v3.2l2 1.3M6.4 1.8h3.2'/%3E%3C/g%3E%3C/svg%3E");
+  --ico-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 14.5V2M4 2.6h8l-2 3.2 2 3.2H4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --ico-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
   color-scheme: light dark;
@@ -163,6 +167,7 @@
     --focus: #c9da7c;
     --scrim: rgba(8, 6, 4, .62);
 
+    --error: #ff8fae; --error-wash: #33191f;
     --baking: #f6a466;    --baking-wash: #2f2219;    --baking-paper: #181410;    --baking-fill: #4a2616;
     --cooking: #4fbd88;   --cooking-wash: #1a271f;   --cooking-paper: #121512;   --cooking-fill: #0e3222;
     --cocktails: #5f97ea; --cocktails-wash: #1d2331; --cocktails-paper: #121318; --cocktails-fill: #0d2448;
@@ -1374,7 +1379,7 @@ body.cooking > .site-footer { display: none; }
 .intake-option { display: flex; gap: 8px; align-items: baseline; }
 .intake-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
 .intake-primary:disabled { opacity: .5; cursor: not-allowed; }
-.intake-problem { color: var(--baking); font-weight: 600; margin: 4px 0; }
+.intake-problem { color: var(--error); font-weight: 600; margin: 4px 0; }
 .intake-done { color: var(--cooking); font-weight: 600; margin: 2px 0 0; }
 .intake-preview { border-top: 0; }
 /* The recipe as read (assets/recipe-view.js), to look at: it's fixed in the editor. */
@@ -1434,7 +1439,7 @@ body.cooking > .site-footer { display: none; }
 .edit-primary:disabled { opacity: .5; cursor: not-allowed; }
 .edit-note, .edit-problems, .edit-todo { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
 .edit-note h2, .edit-problems h2, .edit-todo h2 { font-size: 1.15rem; margin: 0 0 6px; }
-.edit-problems { border-color: var(--baking); }
+.edit-problems { border-color: var(--error); }
 .edit-problems ul, .edit-todo ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 8px; }
 .edit-todo li .edit-row { margin-top: 6px; }
 .edit-card { margin-top: 20px; }
@@ -1502,16 +1507,29 @@ body.cooking > .site-footer { display: none; }
 }
 .edit-ghost:hover { background: var(--section-wash); }
 .edit-ghost:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-.edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--baking); }
+.edit-error { margin: 6px 0 0; font-size: .92rem; font-weight: 600; color: var(--error); }
+/* The message carries a flag, drawn like the clock and tick, so colour isn't
+   the only sign; a line with a problem is filled and outlined, to spot it
+   while scrolling. A step uses its own border, as cook mode's "Now" does. */
+.edit-error { position: relative; padding-left: 22px; }
+.edit-error::before {
+  content: ""; position: absolute; left: 0; top: .2em; width: 15px; height: 15px; background: currentColor;
+  -webkit-mask: var(--ico-flag) center / contain no-repeat; mask: var(--ico-flag) center / contain no-repeat;
+}
+.edit-preview ol.steps > li:has(> .edit-error) { background: var(--error-wash); border: 2px solid var(--error); }
+.edit-preview ul.ingredients > li:has(> .edit-error) {
+  background: var(--error-wash); border: 2px solid var(--error); border-radius: var(--radius-ctl);
+  padding: 6px 8px; margin: 6px 0;
+}
 /* Saving and deleting: why a save didn't happen, Delete, and its confirmation. */
-.edit-save-error { flex: 1 1 100%; font-size: .95rem; color: var(--baking); font-weight: 600; }
+.edit-save-error { flex: 1 1 100%; font-size: .95rem; color: var(--error); font-weight: 600; }
 .edit-save-error:empty { display: none; }
 .edit-save-error p { margin: 0 0 4px; }
 .edit-save-error ul { margin: 4px 0; padding-left: 1.2em; font-weight: 400; color: var(--text); }
 .edit-save-error a, .edit-status a { color: inherit; font-weight: 600; }
 .edit-delete { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
 .edit-delete .muted { margin: 8px 0 0; }
-.edit-danger { color: var(--baking); border-color: var(--baking); }
+.edit-danger { color: var(--error); border-color: var(--error); }
 .edit-danger:disabled { opacity: .55; cursor: not-allowed; }
 .edit-dialog { max-width: min(460px, calc(100vw - 32px)); padding: 18px 20px; color: var(--text); background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--radius); }
 .edit-dialog::backdrop { background: var(--scrim); }
