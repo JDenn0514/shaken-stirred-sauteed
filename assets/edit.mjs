@@ -386,7 +386,7 @@ function aboutForm() {
 
 function ingredientForm(n) {
   const i = flat(recipe.ingredients)[n];
-  const moves = act("add-after", "Add an ingredient after this") + act("move-up", "Move up") + act("move-down", "Move down") + act("remove", "Remove");
+  const moves = act("add-after", "Add an ingredient after this") + moveControls("ing", n) + act("remove", "Remove");
   if (typeof i === "string") {
     return `<form class="edit-form" data-form="ing" data-n="${n}">${field("Ingredient", "text", i)}${formButtons(moves)}</form>`;
   }
@@ -402,6 +402,40 @@ function ingredientForm(n) {
   </form>`;
 }
 
+// Moving the open line: Move up and Move down (off where there's nowhere to
+// go), and Move to, a list of every place under the group names. In
+// prep-first order the sheet doesn't show the file's order, so a step can't be
+// moved there: a button switches to As written instead.
+const lineText = (kind, e) => (kind === "ing" ? ingName(e) || (typeof e === "string" ? e : "") : kind === "step" ? stepText(e) : e) || "";
+function moveControls(kind, n) {
+  if (kind === "step" && showingPrepFirst()) return act("as-written", "Switch to As written to reorder");
+  const key = LIST[kind], items = flat(recipe[key]);
+  const button = (name, label, on) => act(name, label).replace("<button ", `<button${on ? "" : " disabled"} `);
+  const slots = M.moveSlots(recipe, key, n);
+  if (slots.length < 2) return button("move-up", "Move up", false) + button("move-down", "Move down", false);
+  const label = (s, k) => {
+    if (s.here) return "Where it is now";
+    if (s.before !== null) return `Before "${short(lineText(kind, items[s.before]), 40)}"`;
+    if (s.group) return `At the end of ${s.group}`;
+    const prev = slots[k - 1];
+    return prev && prev.value.split(":")[0] === s.value.split(":")[0] && prev.before !== null ? `After "${short(lineText(kind, items[prev.before]), 40)}"` : "Here";
+  };
+  const option = (s, k) => `<option value="${s.value}"${s.here ? " selected" : ""}>${esc(label(s, k))}</option>`;
+  const grouped = slots.some((s) => s.group);
+  let options = "";
+  if (!grouped) options = slots.map(option).join("");
+  else {
+    slots.forEach((s, k) => {
+      const run = s.value.split(":")[0];
+      if (!k || slots[k - 1].value.split(":")[0] !== run) options += `${k ? "</optgroup>" : ""}<optgroup label="${esc(s.group || "Not in a group")}">`;
+      options += option(s, k);
+    });
+    options += "</optgroup>";
+  }
+  return button("move-up", "Move up", M.canMove(recipe, key, n, -1)) + button("move-down", "Move down", M.canMove(recipe, key, n, 1))
+    + `<span class="edit-move-to">${labelled("Move to", `<select data-key="edit-move-to">${options}</select>`)}${act("move-to", "Move")}</span>`;
+}
+
 function stepForm(n) {
   const s = flat(recipe.steps)[n];
   const o = typeof s === "string" ? { do: s } : s || {};
@@ -411,7 +445,7 @@ function stepForm(n) {
       ${o.wait === false ? field("Wait", "wait", "", ` placeholder="Doesn't wait"`) : field("Wait", "wait", o.wait, ` placeholder="e.g. 20 min"`)}
       ${field("Cue", "cue", o.cue, ` placeholder="e.g. Golden at the edges"`)}
     </div>
-    ${formButtons(act("add-after", "Add a step after this") + act("move-up", "Move up") + act("move-down", "Move down") + act("split", "Split here")
+    ${formButtons(act("add-after", "Add a step after this") + moveControls("step", n) + act("split", "Split here")
       + (M.timedParts(o.do) > 1 ? act("split-times", "Split at each time") : "") + act("join", "Join with the next step") + act("remove", "Remove"))}
   </form>`;
 }
@@ -440,7 +474,7 @@ function lineForm(kind, n) {
   const L = LINES[kind];
   return `<form class="edit-form" data-form="${kind}" data-n="${n}">
     ${labelled(L.label, `<textarea name="line" rows="2" data-key="edit-line">${esc(flat(recipe[LIST[kind]])[n] ?? "")}</textarea>`)}
-    ${formButtons(act("add-after", L.after) + act("move-up", "Move up") + act("move-down", "Move down") + act("remove", "Remove"))}
+    ${formButtons(act("add-after", L.after) + moveControls(kind, n) + act("remove", "Remove"))}
   </form>`;
 }
 function linesSection(kind) {
@@ -1161,7 +1195,7 @@ root.addEventListener("click", (e) => {
     const { recipe: next, at } = ops(kind).add(recipe);
     return update(next, () => { openLine(`${kind}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = FIRST_FIELD[kind]; });
   }
-  if (form && ["add-after", "move-up", "move-down", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
+  if (form && ["add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
     const draft = offer;
     // A draft made on an older version saves against that version, so the
@@ -1222,7 +1256,18 @@ function formAction(a, form) {
     const dir = a === "move-up" ? -1 : 1;
     const to = M.movedTo(next, list, n, dir);
     next = ops(kind).move(next, n, dir);
-    return update(next, () => { openLine(`${kind}:${to}`, { before: next }); focusKey = `edit-act-${a}`; });
+    // At the end, the button goes off: focus moves to the other one.
+    const more = M.canMove(next, list, to, dir);
+    return update(next, () => { openLine(`${kind}:${to}`, { before: next }); focusKey = more ? `edit-act-${a}` : `edit-act-${a === "move-up" ? "move-down" : "move-up"}`; });
+  }
+  if (a === "move-to") {
+    const { recipe: moved, at } = M.moveTo(next, list, n, form.querySelector('[data-key="edit-move-to"]').value);
+    return update(moved, () => { openLine(`${kind}:${at}`, { before: moved }); focusKey = "edit-act-move-to"; });
+  }
+  if (a === "as-written") {
+    prepFirst = false;
+    focusKey = "edit-act-move-up";
+    return draw();
   }
   if (a === "add-after") {
     const { recipe: added, at } = ops(kind).add(next, { after: n });

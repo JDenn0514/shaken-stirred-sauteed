@@ -518,3 +518,63 @@ describe("notes and before you start", () => {
     assert.equal(M.withoutEmptyLines(tips()).notes.length, 2, "nothing to leave out");
   });
 });
+
+describe("moving a line anywhere", () => {
+  // In order: A, then G1: B, C, then D, then G2: E.
+  const mixed = () => ({ title: "A", steps: ["A", { group: "G1", items: ["B", "C"] }, "D", { group: "G2", items: ["E"] }] });
+  const flatSteps = (r) => r.steps.flatMap((e) => (e.items ? e.items.map((i) => `${e.group}:${i}`) : [e]));
+
+  test("Move up and Move down are off at the ends, and on where a move crosses into or out of a group", () => {
+    assert.equal(M.canMove(mixed(), "steps", 0, -1), false, "the first can't go up");
+    assert.equal(M.canMove({ steps: ["A", "B"] }, "steps", 1, 1), false, "the last can't go down");
+    assert.equal(M.canMove(mixed(), "steps", 4, 1), true, "the last, in a group, can still leave it");
+    assert.equal(M.canMove(mixed(), "steps", 1, -1), true, "out of its group");
+    assert.equal(M.canMove(mixed(), "steps", 4, -1), true, "out of the last group");
+    assert.equal(M.canMove({ notes: ["Only one."] }, "notes", 0, 1), false);
+  });
+
+  test("the places a line can go, under their group names, with the one it's in now", () => {
+    assert.deepEqual(M.moveSlots(mixed(), "steps", 2).map(({ group, before, here }) => [group, before, here]), [
+      ["", 0, false], ["", null, false],
+      ["G1", 1, false], ["G1", null, true],
+      ["", 3, false], ["", null, false],
+      ["G2", 4, false], ["G2", null, false],
+    ]);
+  });
+
+  test("moving into another group, before a line or at its end", () => {
+    const slots = M.moveSlots(mixed(), "steps", 0);
+    const intoG2 = slots.find((s) => s.group === "G2" && s.before === 4);
+    const { recipe, at } = M.moveTo(mixed(), "steps", 0, intoG2.value);
+    assert.deepEqual(flatSteps(recipe), ["G1:B", "G1:C", "D", "G2:A", "G2:E"]);
+    assert.equal(at, 3);
+    const endG1 = slots.find((s) => s.group === "G1" && s.before === null);
+    assert.deepEqual(flatSteps(M.moveTo(mixed(), "steps", 0, endG1.value).recipe), ["G1:B", "G1:C", "G1:A", "D", "G2:E"]);
+  });
+
+  test("moving out of a group, and its group goes when it's left empty", () => {
+    const slots = M.moveSlots(mixed(), "steps", 4);
+    const { recipe, at } = M.moveTo(mixed(), "steps", 4, slots.find((s) => s.group === "" && s.before === 0).value);
+    assert.deepEqual(recipe.steps, ["E", "A", { group: "G1", items: ["B", "C"] }, "D"]);
+    assert.equal(at, 0);
+  });
+
+  test("moving to where it is changes nothing", () => {
+    const here = M.moveSlots(mixed(), "steps", 2).find((s) => s.here);
+    assert.deepEqual(M.moveTo(mixed(), "steps", 2, here.value), { recipe: mixed(), at: 2 });
+  });
+
+  test("an ingredient moved anywhere keeps the steps that use it pointing at it", () => {
+    const r = {
+      title: "A",
+      ingredients: [{ group: "Crust", items: [{ item: "Flour" }, { item: "Sugar" }] }, { group: "Filling", items: [{ item: "Sugar" }, { item: "Eggs" }] }],
+      steps: [{ do: "Mix.", uses: ["Flour", { group: "Crust", item: "Sugar" }] }, { do: "Whisk.", uses: [{ group: "Filling", item: "Sugar" }, "Eggs"] }],
+    };
+    const to = M.moveSlots(r, "ingredients", 0).find((s) => s.group === "Filling" && s.before === null);
+    const { recipe, at } = M.moveTo(r, "ingredients", 0, to.value);
+    assert.equal(at, 3);
+    assert.deepEqual(recipe.ingredients[1].items.map((i) => i.item), ["Sugar", "Eggs", "Flour"]);
+    assert.deepEqual(M.usesOf(recipe, 0).picks.map((p) => p.ing), [3, 0], "the flour, now last, and the crust's sugar, now first");
+    assert.deepEqual(M.usesOf(recipe, 1).picks.map((p) => p.ing), [1, 2]);
+  });
+});

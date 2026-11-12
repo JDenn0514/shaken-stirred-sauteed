@@ -345,7 +345,7 @@ A step is marked **Done** once its pull request is merged.
     - Unit test with the garlic soup step.
 12. **Done** (#61, 2026-11-12). **(M) Notes and Before you start, editable in place.** Notes allow groups; Before you start never does. Ghost "Add a note" rows.
 13. **Done** (#63, 2026-11-12). **(S, after you choose colours) The error colour and flag.** Errors are raspberry, with the flag, and a line with an error is boxed (section 4, "Colour for problems").
-14. **(M) Problems and to-dos in a cook's words, with "Go to" buttons.**
+14. **Done** (#66, 2026-11-12). **(M) Problems and to-dos in a cook's words, with "Go to" buttons.**
     - A wording table with a unit test that runs every checker message through it, so a wording change in the checker fails loudly.
     - Fix buttons for "no key ingredients tagged" and "no total time".
     - To-dos fold into the strip; Problems stay visible.

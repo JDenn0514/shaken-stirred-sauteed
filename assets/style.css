@@ -1505,6 +1505,13 @@ body.cooking > .site-footer { display: none; }
 /* No hover box round a whole step: the step's own Edit button and text show what can be tapped. */
 @media (hover: hover) { .edit-preview .steps li:not(.current):hover { background: none; border-color: transparent; } }
 .edit-add-line { margin: 10px 0 0; }
+/* Move to: its label, the list of places and the Move button, kept together. */
+.edit-move-to { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.edit-move-to .edit-field { display: inline-flex; align-items: center; gap: 8px; margin: 0; }
+.edit-move-to select { max-width: 16rem; min-height: 44px; }
+.edit-move-to label { white-space: nowrap; }
+/* A move with nowhere to go: dashed and quiet, like the bar's buttons when off. */
+.edit-form .btn:disabled { background: transparent; color: var(--muted); border: var(--rule) dashed var(--rule-strong); cursor: default; }
 /* Notes and Before you start: the page's bullet, drawn on the line (a flex
    line has no list marker), and a ghost row inviting the first one in. */
 .edit-preview ul.notes { list-style: none; padding-left: 0; }
