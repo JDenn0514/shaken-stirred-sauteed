@@ -51,10 +51,11 @@ function change(recipe, key, n, fn) {
 
 // One line put back as it was in `before` ("about", "ing:3" or "step:2"),
 // keeping every other change: what Cancel does to the line that was open.
+const KEYS = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
 export function putBack(recipe, before, target) {
   if (target === "about") return ["title", "description", "yield"].reduce((r, k) => setField(r, k, before[k]), recipe);
   const [kind, n] = target.split(":");
-  const key = kind === "ing" ? "ingredients" : "steps";
+  const key = KEYS[kind];
   const back = change(recipe, key, Number(n), () => structuredClone(flat(before[key] || [])[Number(n)]));
   // An ingredient's old name goes back to the steps that use it, too.
   return key === "ingredients" ? carryUses(recipe, back, (k) => k) : back;
@@ -292,10 +293,13 @@ export function addPrepStep(recipe) {
 
 // --- Lists: add, remove, move, groups ---------------------------------------------
 
-const BLANK = { ingredients: () => ({ item: "" }), steps: () => ({ do: "" }) };
+const BLANK = { ingredients: () => ({ item: "" }), steps: () => ({ do: "" }), notes: () => "", beforeYouStart: () => "" };
 
+// Sections left empty go, and so do notes and Before you start when nothing
+// is left in them (a recipe without them leaves them out).
 function dropEmptyGroups(r, key) {
   r[key] = r[key].filter((e) => !isGroup(e) || e.items.length);
+  if (!r[key].length && (key === "notes" || key === "beforeYouStart")) delete r[key];
 }
 
 // A new, empty entry: right after entry `after`, in the same group, or else at
@@ -369,6 +373,26 @@ export function moveIngredient(recipe, n, dir) {
   return carryUses(recipe, move(recipe, "ingredients", n, dir), (k) => (k === n ? to : k === to ? n : k));
 }
 export const moveStep = (recipe, n, dir) => move(recipe, "steps", n, dir);
+
+// Notes and Before you start: lists of plain lines. Notes may have groups;
+// Before you start never does.
+export const setLine = (recipe, key, n, text) => change(recipe, key, n, () => clean(text ?? ""));
+export const addLine = (recipe, key, where) => add(recipe, key, where);
+export const removeLine = (recipe, key, n) => remove(recipe, key, n);
+export const moveLine = (recipe, key, n, dir) => move(recipe, key, n, dir);
+
+// The recipe as it's saved: a note or Before you start line left empty is
+// left out (an empty ingredient or step is a problem the checker names).
+export function withoutEmptyLines(recipe) {
+  const r = structuredClone(recipe);
+  for (const key of ["notes", "beforeYouStart"]) {
+    if (!Array.isArray(r[key])) continue;
+    const kept = (e) => (isGroup(e) ? true : typeof e !== "string" || e.trim() !== "");
+    r[key] = r[key].filter(kept).map((e) => (isGroup(e) ? { ...e, items: e.items.filter(kept) } : e));
+    dropEmptyGroups(r, key);
+  }
+  return r;
+}
 
 // A new named section at the end, holding one empty entry. Returns where that is.
 export function addGroup(recipe, key, name) {

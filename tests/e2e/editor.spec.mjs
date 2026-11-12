@@ -66,6 +66,71 @@ test.describe("the preview", () => {
   });
 });
 
+test.describe("notes and before you start", () => {
+  const section = (page, name) => preview(page).getByRole("region", { name });
+  const bar = (page) => page.getByRole("region", { name: "Editing" });
+
+  test("a note is edited in place", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await section(page, "Notes").getByRole("button", { name: "Edit note 1" }).press("Enter");
+    await expect(page.getByLabel("Note", { exact: true })).toBeFocused();
+    await page.keyboard.type(" Thaw it overnight.");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(section(page, "Notes").getByRole("button", { name: "Freezes well. Thaw it overnight." })).toBeFocused();
+    expect((await draftOf(page, "pork-carnitas")).notes).toEqual(["Freezes well. Thaw it overnight."]);
+  });
+
+  test("a Before you start line is edited in place, and can be taken out", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await section(page, "Before you start").getByRole("button", { name: "Take the pork out of the fridge an hour ahead." }).press("Enter");
+    await page.getByRole("textbox", { name: "Before you start", exact: true }).fill("Take the pork out two hours ahead.");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(section(page, "Before you start").getByRole("button", { name: "Take the pork out two hours ahead." })).toBeVisible();
+
+    await section(page, "Before you start").getByRole("button", { name: "Edit Before you start, line 1" }).press("Enter");
+    await page.getByRole("button", { name: "Remove" }).press("Enter");
+    await expect(section(page, "Before you start").getByRole("button", { name: "Nothing to do before you start. Add one" })).toBeFocused();
+    expect((await draftOf(page, "pork-carnitas")).beforeYouStart).toBeUndefined();
+  });
+
+  test("an empty section invites you in, and writes nothing until you type", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "old-fashioned");
+    await section(page, "Notes").getByRole("button", { name: "No notes yet. Add one" }).press("Enter");
+    await expect(page.getByLabel("Note", { exact: true })).toBeFocused();
+    await page.getByRole("button", { name: "Cancel" }).press("Enter");
+    await expect(bar(page)).toContainText("No changes");
+    await expect(section(page, "Notes").getByRole("button", { name: "No notes yet. Add one" })).toBeFocused();
+
+    await section(page, "Before you start").getByRole("button", { name: "Nothing to do before you start. Add one" }).press("Enter");
+    await page.keyboard.type("Chill the glass.");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(section(page, "Before you start").getByRole("button", { name: "Chill the glass." })).toBeVisible();
+    expect((await draftOf(page, "old-fashioned")).beforeYouStart).toEqual(["Chill the glass."]);
+  });
+
+  test("Done on a line left empty takes it out", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await section(page, "Notes").getByRole("button", { name: "Edit note 1" }).press("Enter");
+    await page.getByRole("button", { name: "Add a note after this" }).press("Enter");
+    await expect(page.getByLabel("Note", { exact: true })).toHaveValue("");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(section(page, "Notes").getByRole("listitem")).toHaveCount(1);
+    await expect(bar(page)).toContainText("No changes");
+  });
+
+  test("notes can have groups; Before you start can't", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await expect(section(page, "Before you start").getByRole("button", { name: /group/ })).toHaveCount(0);
+    await section(page, "Notes").getByRole("button", { name: "Add a group of notes" }).press("Enter");
+    await page.getByLabel("Group name").fill("Storing");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await page.keyboard.type("Keeps 3 days.");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(section(page, "Notes").getByRole("heading", { name: "Storing" })).toBeVisible();
+    expect((await draftOf(page, "pork-carnitas")).notes).toEqual(["Freezes well.", { group: "Storing", items: ["Keeps 3 days."] }]);
+  });
+});
+
 test.describe("steps, by keyboard", () => {
   // Opens step n's editing form by keyboard.
   const openStep = (page, name) => preview(page).getByRole("button", { name }).press("Enter");

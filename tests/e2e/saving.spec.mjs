@@ -85,6 +85,18 @@ test.describe("the editor's Save", () => {
     await expect(page.getByLabel("Step", { exact: true })).toHaveCount(0);
   });
 
+  test("a note still open and empty when you press Save is left out", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await preview(page).getByRole("button", { name: "Add a note" }).click();
+    await expect(page.getByLabel("Note", { exact: true })).toHaveValue("");
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent[0].body.recipe.notes).toEqual(["Freezes well."]);
+    await expect(page.getByLabel("Note", { exact: true })).toHaveCount(0);
+  });
+
   test("after a save there's nothing to undo", async ({ page, baseURL }) => {
     await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
     await openEditor(page, baseURL, "pork-carnitas");

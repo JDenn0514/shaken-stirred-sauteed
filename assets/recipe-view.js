@@ -146,7 +146,7 @@ window.SSSView = (() => {
         ${stepOrder(r, true).differs ? `<label class="menu-switch prep-switch"><input type="checkbox" role="switch" id="prep-first"${prepFirst ? " checked" : ""}> Prep first</label>` : ""}
         ${stepsHTML(r, prepFirst)}
       </section>
-      ${notesHTML ? `<section class="section"><h2>Notes</h2>${notesHTML}</section>` : ""}
+      ${notesHTML ? `<section class="section" id="notes"><h2>Notes</h2>${notesHTML}</section>` : ""}
       ${tagGroupsHTML(r, vocab)}
       ${r.source && (r.source.name || r.source.url) ? `<p class="source">Source: ${safeURL(r.source.url)
         ? `<a href="${esc(safeURL(r.source.url))}" rel="noopener noreferrer" target="_blank">${esc(r.source.name || r.source.url)}</a>`

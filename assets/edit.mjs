@@ -270,7 +270,7 @@ function draw() {
   measureBars();
   // A step's text opens with the cursor at the end, ready to add to it, and
   // so "Split here" splits nothing until the cursor is put somewhere.
-  if (back && !live && back.matches("textarea[name=do]")) back.setSelectionRange(back.value.length, back.value.length);
+  if (back && !live && back.matches("textarea[name=do], textarea[name=line]")) back.setSelectionRange(back.value.length, back.value.length);
   if (back && live && "value" in back) {
     back.value = live.value;
     // Some fields (type="url") have no cursor position to set.
@@ -360,6 +360,58 @@ function stepForm(n) {
   </form>`;
 }
 
+// The lists a line belongs to, by the kind of line, and how each is changed.
+const LIST = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
+const KIND = Object.fromEntries(Object.entries(LIST).map(([k, v]) => [v, k]));
+const FIRST_FIELD = { ing: "edit-item", step: "edit-do", note: "edit-line", start: "edit-line" };
+function ops(kind) {
+  if (kind === "ing") return { add: M.addIngredient, remove: M.removeIngredient, move: M.moveIngredient };
+  if (kind === "step") return { add: M.addStep, remove: M.removeStep, move: M.moveStep };
+  const key = LIST[kind];
+  return { add: (r, where) => M.addLine(r, key, where), remove: (r, n) => M.removeLine(r, key, n), move: (r, n, dir) => M.moveLine(r, key, n, dir) };
+}
+
+// Notes and Before you start: plain lines, each opening in place. A section
+// with nothing in it shows a ghost row that adds the first line. Notes may
+// have groups; Before you start never does.
+const LINES = {
+  note: { heading: "Notes", label: "Note", one: "Add a note", group: "Add a group of notes", ghost: "No notes yet. Add one",
+    after: "Add a note after this", empty: "Empty note: add what it says", name: (k) => `Edit note ${k + 1}` },
+  start: { heading: "Before you start", label: "Before you start", one: "Add a line", ghost: "Nothing to do before you start. Add one",
+    after: "Add a line after this", empty: "Empty line: add what to do first", name: (k) => `Edit Before you start, line ${k + 1}` },
+};
+function lineForm(kind, n) {
+  const L = LINES[kind];
+  return `<form class="edit-form" data-form="${kind}" data-n="${n}">
+    ${labelled(L.label, `<textarea name="line" rows="2" data-key="edit-line">${esc(flat(recipe[LIST[kind]])[n] ?? "")}</textarea>`)}
+    ${formButtons(act("add-after", L.after) + act("move-up", "Move up") + act("move-down", "Move down") + act("remove", "Remove"))}
+  </form>`;
+}
+function linesSection(kind) {
+  const L = LINES[kind], list = LIST[kind];
+  let n = 0;
+  const line = (text) => {
+    const k = n++;
+    return `<li>${editing === `${kind}:${k}` ? lineForm(kind, k)
+      : part(`${kind}:${k}`, `part-${kind}-${k}`, text ? esc(text) : L.empty) + editButton(`${kind}:${k}`, `edit-${kind}-${k}`, L.name(k))}</li>`;
+  };
+  // As the page groups them (toGroups), but keeping a line left empty, which is being written.
+  const runs = [];
+  for (const e of recipe[list] || []) {
+    if (e && Array.isArray(e.items)) runs.push({ group: e.group || "", items: e.items });
+    else if (runs.at(-1)?.plain) runs.at(-1).items.push(e);
+    else runs.push({ group: "", items: [e], plain: true });
+  }
+  const body = runs.map((g) => `${g.group ? `<h3>${esc(g.group)}</h3>` : ""}<ul class="notes">${g.items.map(line).join("")}</ul>`).join("");
+  const empty = !n;
+  const ghost = empty ? `<button class="edit-ghost" type="button" data-act="add" data-list="${list}" data-key="add-${list}">${esc(L.ghost)}</button>` : "";
+  const adds = [empty ? "" : `<button class="btn" type="button" data-act="add" data-list="${list}" data-key="add-${list}">${L.one}</button>`,
+    !L.group ? "" : editing === `new-group:${list}` ? groupForm("new-group", "", list)
+      : `<button class="btn" type="button" data-act="edit" data-target="new-group:${list}" data-key="add-group-${list}">${L.group}</button>`].join("");
+  return `<section class="section${kind === "start" ? " before" : ""}"${kind === "note" ? ` id="notes"` : ""} aria-labelledby="${kind}-lines-h">
+    <h2 id="${kind}-lines-h">${L.heading}</h2>${body}${ghost}${adds ? `<div class="edit-row edit-adds">${adds}</div>` : ""}</section>`;
+}
+
 const groupForm = (form, value, list, g = "") => `<form class="edit-form" data-form="${form}" data-list="${list}" data-g="${g}">
   ${field("Group name", "group", value)}${formButtons()}</form>`;
 
@@ -423,6 +475,14 @@ function decorate(page, errors, showPrepFirst) {
   editableGroups(stepSection, "steps", !showPrepFirst);
   stepSection.insertAdjacentHTML("beforeend", addButtons("steps", "Add step", "Add a group of steps"));
   stepSection.querySelector("#prep-first")?.setAttribute("data-key", "prep-first");
+
+  // Before you start, then Notes, drawn here with every line, empty ones too.
+  const before = page.querySelector("section.before");
+  if (before) before.outerHTML = linesSection("start");
+  else ingSection.insertAdjacentHTML("beforebegin", linesSection("start"));
+  page.querySelector("#notes")?.remove();
+  stepSection.insertAdjacentHTML("afterend", linesSection("note"));
+  editableGroups(page.querySelector("#notes"), "notes", true);
 
   // Errors beside what they're about.
   const notes = new Map();
@@ -686,7 +746,17 @@ async function send(path, body) {
   return { error: answer.error || `Something went wrong (${res.status}). ${KEPT}`, problems: answer.problems };
 }
 
+// What's saved leaves out note and Before you start lines left empty; an open
+// one that's taken out closes.
+function tidyLines() {
+  const tidy = M.withoutEmptyLines(recipe);
+  if (same(tidy, recipe)) return;
+  recipe = tidy;
+  editing = null;
+  opened = null;
+}
 async function save() {
+  tidyLines();
   if (fresh) return saveNew();
   status = { saving: true };
   draw();
@@ -757,10 +827,8 @@ function cancel() {
   opened = null;
   focusKey = back;
   const [kind, n] = was.split(":");
-  if (added && (kind === "ing" || kind === "step")) {
-    return update(kind === "ing" ? M.removeIngredient(recipe, Number(n)) : M.removeStep(recipe, Number(n)), () => { focusKey = back; });
-  }
-  if (before && (was === "about" || kind === "ing" || kind === "step")) return update(M.putBack(recipe, before, was), () => { focusKey = back; });
+  if (added && kind in LIST) return update(ops(kind).remove(recipe, Number(n)), () => { focusKey = back; });
+  if (before && (was === "about" || kind in LIST)) return update(M.putBack(recipe, before, was), () => { focusKey = back; });
   draw();
 }
 
@@ -791,7 +859,7 @@ function forgetHistory() {
 // The first line that differs between two versions, to focus after an undo.
 function changedLine(a, b) {
   if (["title", "description", "yield"].some((k) => a[k] !== b[k])) return "part-title";
-  for (const [list, kind] of [["ingredients", "ing"], ["steps", "step"]]) {
+  for (const [kind, list] of Object.entries(LIST)) {
     const was = flat(a[list]), now = flat(b[list]);
     const i = Math.max(was.length, now.length);
     for (let k = 0; k < i; k++) {
@@ -846,6 +914,7 @@ function applyForm(form) {
   }
   if (form.dataset.form === "ing") return M.updateIngredient(recipe, n, data);
   if (form.dataset.form === "step") return M.updateStep(recipe, n, data);
+  if (form.dataset.form === "note" || form.dataset.form === "start") return M.setLine(recipe, LIST[form.dataset.form], n, data.line);
   return recipe;
 }
 
@@ -862,8 +931,18 @@ root.addEventListener("submit", (e) => {
     const name = String(new FormData(f).get("group") || "").trim();
     if (!name) { editing = null; focusKey = `add-group-${f.dataset.list}`; return draw(); }
     const { recipe: made, at } = M.addGroup(next, f.dataset.list, name);
-    const kind = f.dataset.list === "ingredients" ? "ing" : "step";
-    return update(made, () => { openLine(`${kind}:${at}`, { added: true, back: `add-group-${f.dataset.list}`, before: made }); focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
+    const kind = KIND[f.dataset.list];
+    return update(made, () => { openLine(`${kind}:${at}`, { added: true, back: `add-group-${f.dataset.list}`, before: made }); focusKey = FIRST_FIELD[kind]; });
+  }
+  // A note or Before you start line left empty comes out: nothing is written until you type.
+  if ((f.dataset.form === "note" || f.dataset.form === "start") && !String(new FormData(f).get("line") || "").trim()) {
+    const kind = f.dataset.form, n = Number(f.dataset.n), list = LIST[kind];
+    const back = opened?.added ? opened.back : null;
+    editing = null;
+    opened = null;
+    next = ops(kind).remove(next, n);
+    const left = flat(next[list]).length;
+    return update(next, () => { focusKey = back || (left ? `part-${kind}-${Math.min(n, left - 1)}` : `add-${list}`); });
   }
   editing = null;
   opened = null;
@@ -951,7 +1030,7 @@ root.addEventListener("input", (e) => {
   // now: Save has to be on for a click that comes straight after.
   if (!e.target.closest(".edit-form") && e.target.dataset?.act && typed(e.target)) { typing = true; return showChanges(); }
   const form = e.target.closest(".edit-form");
-  if (!form || !["about", "ing", "step"].includes(form.dataset.form)) return;
+  if (!form || !["about", "ing", "step", "note", "start"].includes(form.dataset.form)) return;
   recipe = applyForm(form);
   offer = null;
   keepDraft();
@@ -1011,13 +1090,13 @@ root.addEventListener("click", (e) => {
     focusKey = editing === "about" ? (b.dataset.key === "part-description" ? "edit-description" : b.dataset.key.startsWith("part-yield") ? "edit-yield" : "edit-title")
       : editing.startsWith("ing:") ? (typeof flat(recipe.ingredients)[Number(editing.slice(4))] === "string" ? "edit-text"
         : e.target.closest(".qty") ? "edit-qty" : "edit-item")
-      : editing.startsWith("step:") ? "edit-do" : "edit-group";
+      : editing.startsWith("step:") ? "edit-do" : /^(note|start):/.test(editing) ? "edit-line" : "edit-group";
     return draw();
   }
   if (a === "add") {
-    const list = b.dataset.list;
-    const { recipe: next, at } = list === "ingredients" ? M.addIngredient(recipe) : M.addStep(recipe);
-    return update(next, () => { openLine(`${list === "ingredients" ? "ing" : "step"}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = list === "ingredients" ? "edit-item" : "edit-do"; });
+    const list = b.dataset.list, kind = KIND[list];
+    const { recipe: next, at } = ops(kind).add(recipe);
+    return update(next, () => { openLine(`${kind}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = FIRST_FIELD[kind]; });
   }
   if (form && ["add-after", "move-up", "move-down", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
@@ -1074,21 +1153,21 @@ function fromReview(el) {
 function formAction(a, form) {
   const kind = form.dataset.form;
   const n = Number(form.dataset.n);
-  const list = kind === "ing" ? "ingredients" : "steps";
+  const list = LIST[kind];
   let next = applyForm(form);
   if (a === "move-up" || a === "move-down") {
     const dir = a === "move-up" ? -1 : 1;
     const to = M.movedTo(next, list, n, dir);
-    next = kind === "ing" ? M.moveIngredient(next, n, dir) : M.moveStep(next, n, dir);
+    next = ops(kind).move(next, n, dir);
     return update(next, () => { openLine(`${kind}:${to}`, { before: next }); focusKey = `edit-act-${a}`; });
   }
   if (a === "add-after") {
-    const { recipe: added, at } = kind === "ing" ? M.addIngredient(next, { after: n }) : M.addStep(next, { after: n });
-    return update(added, () => { openLine(`${kind}:${at}`, { added: true, back: `part-${kind}-${n}`, before: added }); focusKey = kind === "ing" ? "edit-item" : "edit-do"; });
+    const { recipe: added, at } = ops(kind).add(next, { after: n });
+    return update(added, () => { openLine(`${kind}:${at}`, { added: true, back: `part-${kind}-${n}`, before: added }); focusKey = FIRST_FIELD[kind]; });
   }
   if (a === "remove") {
     const kept = next;
-    next = kind === "ing" ? M.removeIngredient(next, n) : M.removeStep(next, n);
+    next = ops(kind).remove(next, n);
     editing = null;
     const left = flat(next[list]).length;
     const touched = kind === "ing" ? stepsTouched(kept, next) : null;

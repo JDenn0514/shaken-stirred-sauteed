@@ -465,3 +465,56 @@ describe("changing an ingredient carries through to the steps that use it", () =
     assert.equal(M.usesOf(r, 2).unmatched.length, 0);
   });
 });
+
+describe("notes and before you start", () => {
+  const tips = () => ({ title: "A", notes: ["Keeps a week.", { group: "Swaps", items: ["Lime for lemon.", "Honey for sugar."] }], beforeYouStart: ["Soften the butter."] });
+
+  test("changing a line's text", () => {
+    assert.deepEqual(M.setLine(tips(), "notes", 2, " Maple for sugar. ").notes, ["Keeps a week.", { group: "Swaps", items: ["Lime for lemon.", "Maple for sugar."] }]);
+    assert.deepEqual(M.setLine(tips(), "beforeYouStart", 0, "Chill the bowl.").beforeYouStart, ["Chill the bowl."]);
+  });
+
+  test("adding one after another puts it next, in the same group, and says where", () => {
+    const { recipe, at } = M.addLine(tips(), "notes", { after: 1 });
+    assert.equal(at, 2);
+    assert.deepEqual(recipe.notes, ["Keeps a week.", { group: "Swaps", items: ["Lime for lemon.", "", "Honey for sugar."] }]);
+  });
+
+  test("adding the first one to a recipe without any", () => {
+    const { recipe, at } = M.addLine({ title: "A" }, "beforeYouStart");
+    assert.equal(at, 0);
+    assert.deepEqual(recipe, { title: "A", beforeYouStart: [""] });
+  });
+
+  test("removing the last one takes the field out", () => {
+    assert.deepEqual(M.removeLine(tips(), "beforeYouStart", 0), { title: "A", notes: tips().notes });
+    const r = M.removeLine(M.removeLine(M.removeLine(tips(), "notes", 0), "notes", 0), "notes", 0);
+    assert.deepEqual(r, { title: "A", beforeYouStart: ["Soften the butter."] });
+  });
+
+  test("moving a note into a group and out again", () => {
+    const into = M.moveLine(tips(), "notes", 0, 1);
+    assert.deepEqual(into.notes, [{ group: "Swaps", items: ["Keeps a week.", "Lime for lemon.", "Honey for sugar."] }]);
+    assert.deepEqual(M.moveLine(into, "notes", 0, -1).notes, tips().notes);
+    assert.equal(M.movedTo(tips(), "notes", 0, 1), 0);
+  });
+
+  test("a new group of notes", () => {
+    const { recipe, at } = M.addGroup(tips(), "notes", "Storing");
+    assert.equal(at, 3);
+    assert.deepEqual(recipe.notes.at(-1), { group: "Storing", items: [""] });
+  });
+
+  test("putting a note back as it was", () => {
+    const now = M.setLine(M.setLine(tips(), "notes", 1, "Lemon for lime."), "beforeYouStart", 0, "Chill the bowl.");
+    assert.deepEqual(M.putBack(now, tips(), "note:1").notes, tips().notes);
+    assert.deepEqual(M.putBack(now, tips(), "note:1").beforeYouStart, ["Chill the bowl."]);
+    assert.deepEqual(M.putBack(now, tips(), "start:0"), M.setLine(tips(), "notes", 1, "Lemon for lime."));
+  });
+
+  test("empty lines are left out of what's saved", () => {
+    const r = { title: "A", notes: ["", { group: "Swaps", items: [" "] }, "Keeps."], beforeYouStart: [""], steps: [{ do: "" }] };
+    assert.deepEqual(M.withoutEmptyLines(r), { title: "A", notes: ["Keeps."], steps: [{ do: "" }] });
+    assert.equal(M.withoutEmptyLines(tips()).notes.length, 2, "nothing to leave out");
+  });
+});
