@@ -356,7 +356,7 @@ A step is marked **Done** once its pull request is merged.
     - Update design.md:152/162 in the same change.
     - On an imported recipe, the intake's own "Needs you there" and "Done while an earlier step waits" checks win while they're live, so nothing shows twice.
 17. **Done** (#69, 2026-11-12). **(M) The Facts form**, part 1: yield, printed times and the minutes, with the mismatch hint.
-18. **(M) The Facts form**, part 2: baking and cocktail facts.
+18. **Done** (#70, 2026-11-12). **(M) The Facts form**, part 2: baking and cocktail facts.
 19. **(M) Small step fields.** "It doesn't wait", "During", oven temperatures in any common form, and "Add ml" on any ingredient.
 20. **(M) Category and Kind.**
     - Category goes in the About form. Before switching, it lists the tags that will be dropped. Undo works. The page recolours live.
@@ -399,3 +399,48 @@ Jacob answered the open questions on 2026-11-10.
 10. **When splitting, the wait goes with the half whose text has that time,** else the second half. Steps with several times also offer **"Split at each time"** (build step 11).
 11. **`"kind": "dish"` stays as each file has it.** Saving never removes it (build step 20).
 12. **No photo control yet.** It waits for the step-images project.
+13. **A recipe's `pan` is shown as "Equipment"** on the page and in the editor (2026-11-12, build step 18). The file keeps `pan`, so no recipe changed. A fuller equipment list is in `docs/ideas.md`.
+
+---
+
+## 8. Handoff after step 18 (2026-11-12)
+
+Steps 1–18 are merged. Before building 19–29, re-read them against the editor as it is now: the plan was written on 2026-11-10, and the editor has moved under it. This section says what changed, what's still open, and what to re-check.
+
+### What the editor has now that the plan didn't expect
+
+- **The wording table**, `assets/edit-words.mjs` (step 14). Every checker message in a cook's words, with where its fix is (`go`: a line to open at a field, a Details field, or a fix button). Its test makes every message with the real checker and keeps one rule per `.push(` in `assets/recipe-checks.js`, so a new or reworded check fails until it's added. Any step that adds a check or a fix button goes through it.
+- **A step's lineup settings fold under the open step** ("For the lineup", step 16), not in Details. Details now holds only About, Serving, Tags, each ingredient's link and optional settings, and "Add a prep step". The fold is plain: one control per row, uses as a flat list of checkboxes.
+- **The Facts form** (steps 17 and 18) holds the yield, the printed times as rows, the minutes (moved out of Details) with the short-total hint, and the section's own facts. The title form holds only the title and description.
+- **Problems are boxed:** a line with an error has a raspberry fill and border, and its message a flag (step 13, decision 2). To-dos and Things to check fold into one strip, "N things to check ▸" (step 14).
+- **Moving:** Move up and Move down turn off at the ends, "Move to" lists every place under its group, and every kind of line (steps, ingredients, notes, Before you start) shares the same controls (`moveControls`, `ops` in `assets/edit.mjs`).
+- **Fixes made in other sessions on the way:** #62 (Done on a phone after typing: the hidden header came back mid-click) and #64 (the recipe law mixed up steps with the same text).
+
+### Still to answer (Jacob)
+
+- **"Split at each time" gives each part its own wait** (the time its text says). Keep that, or start those parts with no wait? (Step 11, #60.)
+- **After a split, the note reads "Check what steps 2 and 3 use: the ingredients all stayed with step 2."** The plan had "Check what step 3 uses". Keep the longer one?
+- **A problem on a hidden added prep step reads** `The added prep step "Slice the peppers…"'s hands-on time needs to be a time`: right, but clumsy. Reword around it?
+
+### Re-check before building
+
+- **19, small step fields:** "It doesn't wait" and "During" now belong in the step's fold, beside "Needs you there the whole wait". The intake's "Done while an earlier step waits" already stands in there on an imported recipe, so the editor's own control must give way to it the same way.
+- **23, Details restyled:** Details is short now, so this may be small. The layout work that's left is the fold's: uses as chips under the ingredient group names, a compact equipment grid, hands-on and prep side by side (section 4, "While editing a line"). Consider making 23 about the fold.
+- **26, keyboard and screen reader polish:** some is done (focus after every action, 44px targets, off buttons that look off, live hints). Re-list what's left before starting.
+- **`assets/edit.mjs` is about 1,580 lines.** Before the bigger steps (21 Start from scratch, 24 What's changed), consider a tidy-up step: the facts form, the step fold and the move controls could each be a module with its own tests, the way `edit-words.mjs` was.
+- **WebKit:** these sessions couldn't run WebKit locally, so Safari has only been checked by CI. A local `npm run test:all` would be worth one run.
+
+### How the work has been done
+
+- **One PR per build step,** test first (`mattpocock-skills:tdd`), the full `npm test` before committing, and each PR marks the step before it Done.
+- **Rules about what the editor shows go in a module with unit tests** (`edit-model.mjs`, `edit-words.mjs`); browser tests check one thing per control, by role, label and visible text.
+- **Every new page state goes into `PAGES`** in `tests/e2e/accessibility.spec.mjs`. Screenshots at 390px and 1280px, light and dark, for anything visual.
+- **When behaviour changes on purpose,** the PR lists which tests changed and why.
+- **Things learned the hard way:**
+  - typing in an open line is applied as you type (`applyForm`), so Cancel uses `putBack`;
+  - a typed Details field saves only after focus has moved (`pending`);
+  - anything that changes the recipe goes through `update()`;
+  - step numbers shown to people go through `say()`;
+  - Playwright's `getByRole` name matches substrings, so use `exact: true` when one button's name is inside another's ("Move" and "Move up", "1 lb tomatillos" and "Edit 1 lb tomatillos");
+  - block margins collapse, so a box drawn with a shadow can't be spaced with margins (use the line's own border, as steps do);
+  - the page's Content-Security-Policy blocks injected styles, so a throwaway screenshot spec that injects CSS needs `test.use({ bypassCSP: true })`.
