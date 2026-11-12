@@ -224,7 +224,7 @@ Object.assign(PAGE_ONLY, {
 // editor tests see them in EDITOR_INDEX (below), which the linked-recipe
 // picker and the link checks read.
 export const EDITOR_RECIPES = {
-  // Fields the editor has no control for (abv, nutrition, origin, an unknown
+  // Fields the editor has no control for (nutrition, origin, an unknown
   // field), and lineup data (`wait: false` too), which must come out of an edit unchanged.
   "old-fashioned": {
     title: "Old Fashioned", category: "cocktails", wobble: { kept: ["as", "is"] },

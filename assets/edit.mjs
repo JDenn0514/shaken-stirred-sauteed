@@ -425,8 +425,30 @@ function factsForm() {
       <p class="edit-hint" data-hint aria-live="polite">${hintText(t)}</p>
       <p class="muted">Leave Total empty to add up the others.</p>
     </fieldset>
+    ${moreFacts()}
     ${formButtons()}
   </form>`;
+}
+
+// The section's own facts: a baking recipe's pan and heat, a cocktail's
+// glass, ice and the rest. Two say what else they change.
+const FACT_LABELS = { pan: "Pan", heat: "Heat", glass: "Glass", ice: "Ice", garnish: "Garnish", method: "Method", keeps: "Keeps", abv: "ABV", standardDrinks: "Standard drinks" };
+const FACT_HINTS = { glass: "Sets the drawing", standardDrinks: "Sets the strength filter" };
+function moreFacts() {
+  const keys = M.factFields(recipe);
+  if (!keys.length) return "";
+  const one = (k) => {
+    if (k === "heatLabel") {
+      const options = recipe.heatLabel === "Heat" ? [["Heat", "Heat"], ["Oven", "Oven"]] : [["", "Heat"], ["Oven", "Oven"]];
+      return select("Shown as", `x-${k}`, options, recipe.heatLabel || "", ` data-key="edit-x-${k}"`);
+    }
+    const hint = FACT_HINTS[k];
+    const extra = k === "standardDrinks" ? ` type="number" min="0" step="0.1" inputmode="decimal"` : "";
+    const input = `<input name="x-${k}" value="${esc(recipe[k] ?? "")}"${extra}${hint ? ` aria-describedby="hint-${k}"` : ""} data-key="edit-x-${k}">`;
+    return hint ? `<div class="edit-field-wrap">${labelled(FACT_LABELS[k], input)}<p class="muted edit-field-hint" id="hint-${k}">${hint}</p></div>` : labelled(FACT_LABELS[k], input);
+  };
+  const legend = { baking: "Baking", cocktails: "The drink" }[recipe.category] || "More facts";
+  return `<fieldset class="edit-set"><legend>${legend}</legend><div class="edit-fields">${keys.map(one).join("")}</div></fieldset>`;
 }
 
 function ingredientForm(n) {
@@ -581,7 +603,10 @@ function decorate(page, errors, showPrepFirst) {
     const t = recipe.time || {};
     const timed = recipe.times ? recipe.times.flatMap(([, v], i) => (v != null && v !== "" ? [`edit-tv-${i}`] : []))
       : ["prep", "cook", "chill"].filter((k) => t[k] != null).map((k) => `edit-time-${k}`).concat(totalMinutes(t) != null ? ["edit-time-total"] : []);
-    const fields = [...Array(yields).fill("edit-yield"), ...timed];
+    // Then the section's own facts, in the order the page prints them.
+    const more = ["pan", "heat", "abv", "standardDrinks", "keeps", "glass", "ice", "method", "garnish"]
+      .filter((k) => recipe[k] != null && recipe[k] !== false && recipe[k] !== "").map((k) => `edit-x-${k}`);
+    const fields = [...Array(yields).fill("edit-yield"), ...timed, ...more];
     [...factsBox.querySelectorAll(".fact dd")].slice(0, fields.length).forEach((dd, k) => { dd.innerHTML = part("facts", `part-facts-${k}-f-${fields[k]}`, dd.innerHTML); });
   }
   if (editing !== "about" && editing !== "facts") {
@@ -1086,7 +1111,8 @@ function applyForm(form) {
   if (form.dataset.form === "facts") {
     const times = [];
     for (let k = 0; `tl-${k}` in data; k++) times.push([data[`tl-${k}`], data[`tv-${k}`]]);
-    return M.setFacts(recipe, { yield: data.yield, times, time: Object.fromEntries(MINUTES.map(([k]) => [k, data[`m-${k}`]])) });
+    const more = Object.fromEntries(M.factFields(recipe).filter((k) => `x-${k}` in data).map((k) => [k, data[`x-${k}`]]));
+    return M.setFacts(recipe, { yield: data.yield, times, time: Object.fromEntries(MINUTES.map(([k]) => [k, data[`m-${k}`]])), more });
   }
   if (form.dataset.form === "ing") return M.updateIngredient(recipe, n, data);
   if (form.dataset.form === "step") return M.updateStep(recipe, n, data);

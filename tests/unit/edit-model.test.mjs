@@ -621,3 +621,36 @@ describe("the facts: yield, the times as printed, and the minutes", () => {
     assert.deepEqual(M.putBack(now, bread(), "facts"), { ...bread(), title: "Bread 2" });
   });
 });
+
+describe("the baking and cocktail facts", () => {
+  test("the form offers its section's facts, and any other the recipe already has", () => {
+    assert.deepEqual(M.factFields({ category: "baking" }), ["pan", "heatLabel", "heat"]);
+    assert.deepEqual(M.factFields({ category: "cocktails" }), ["glass", "ice", "garnish", "method", "keeps", "abv", "standardDrinks"]);
+    assert.deepEqual(M.factFields({ category: "cooking" }), []);
+    assert.deepEqual(M.factFields({ category: "cooking", pan: "Heavy skillet" }), ["pan"]);
+  });
+
+  test("a fact is set as typed, trimmed, and an empty one is taken out", () => {
+    const r = { title: "Bars", category: "baking", pan: "8 x 8 in", heatLabel: "Oven", heat: "350F" };
+    assert.deepEqual(M.setFacts(r, { more: { pan: " 9 x 9 in ", heatLabel: "", heat: "" } }), { title: "Bars", category: "baking", pan: "9 x 9 in" });
+    assert.deepEqual(M.setFacts(r, { more: { heatLabel: "Oven", heat: "325F" } }).heat, "325F");
+  });
+
+  test("standard drinks is a number, or nothing", () => {
+    const r = { title: "Sour", category: "cocktails", standardDrinks: 1.2 };
+    assert.equal(M.setFacts(r, { more: { standardDrinks: "1.5" } }).standardDrinks, 1.5);
+    assert.equal("standardDrinks" in M.setFacts(r, { more: { standardDrinks: "" } }), false);
+    assert.equal("standardDrinks" in M.setFacts(r, { more: { standardDrinks: "lots" } }), false);
+  });
+
+  test("the facts form leaves the yield, times and minutes alone when it isn't given them", () => {
+    const r = { title: "Sour", yield: "Makes 1", times: [["Total", "5 min"]], time: { total: 5 }, glass: "Coupe" };
+    assert.deepEqual(M.setFacts(r, { more: { glass: "Rocks" } }), { ...r, glass: "Rocks" });
+  });
+
+  test("Cancel puts the baking and cocktail facts back too", () => {
+    const before = { title: "Sour", glass: "Coupe", abv: "20%" };
+    const now = M.setFacts(before, { more: { glass: "Rocks", abv: "" } });
+    assert.deepEqual(M.putBack(now, before, "facts"), before);
+  });
+});

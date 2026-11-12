@@ -355,7 +355,7 @@ A step is marked **Done** once its pull request is merged.
     - Re-point the "Set step N's equipment" to-do to open the step.
     - Update design.md:152/162 in the same change.
     - On an imported recipe, the intake's own "Needs you there" and "Done while an earlier step waits" checks win while they're live, so nothing shows twice.
-17. **(M) The Facts form**, part 1: yield, printed times and the minutes, with the mismatch hint.
+17. **Done** (#69, 2026-11-12). **(M) The Facts form**, part 1: yield, printed times and the minutes, with the mismatch hint.
 18. **(M) The Facts form**, part 2: baking and cocktail facts.
 19. **(M) Small step fields.** "It doesn't wait", "During", oven temperatures in any common form, and "Add ml" on any ingredient.
 20. **(M) Category and Kind.**
