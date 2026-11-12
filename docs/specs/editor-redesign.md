@@ -17,7 +17,7 @@ The screenshots named below (`vis-*.png`, `walk-*.png`) were taken during the re
 - **Details is a wall.** For Babkallah it is 17,000px of checkboxes, mostly one checkbox per ingredient per step. Each step's lineup settings should open inside the step instead.
 - **There's no safety net.** There's no Undo, no "unsaved" sign, Save scrolls out of sight, and nothing shows what changed. One sticky bar should fix all four: recipe name, "Unsaved changes", Undo, Save.
 - **On the looks side,** the editor should look like the sheet with a pencil layer on top, not an admin panel stuck under it. Fix the four places where it visibly breaks the sheet. Use the full sheet width on a laptop. Make the open line look like cook mode's "Now" step. Give errors their own colour, so they stop looking like a baking cue.
-- **Build it in small pieces.** There are about 20 small pull requests, smallest and safest first. Section 6 has the order.
+- **Build it in small pieces.** There are about 30 small pull requests, smallest and safest first. Section 6 has the order.
 
 ---
 
@@ -357,27 +357,47 @@ A step is marked **Done** once its pull request is merged.
     - On an imported recipe, the intake's own "Needs you there" and "Done while an earlier step waits" checks win while they're live, so nothing shows twice.
 17. **Done** (#69, 2026-11-12). **(M) The Facts form**, part 1: yield, printed times and the minutes, with the mismatch hint.
 18. **Done** (#70, 2026-11-12). **(M) The Facts form**, part 2: baking and cocktail facts.
-19. **(M) Small step fields.** "It doesn't wait", "During", oven temperatures in any common form, and "Add ml" on any ingredient.
-20. **(M) Category and Kind.**
-    - Category goes in the About form. Before switching, it lists the tags that will be dropped. Undo works. The page recolours live.
-    - Kind no longer deletes an explicit `"kind": "dish"`, so 27 files don't change for nothing.
-21. **(M) Start from scratch.**
+
+Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor as it was then (section 8). They're numbered in the order they'll be built. The old numbers are in brackets.
+
+19. **(S–M) Tidy up `assets/edit.mjs`.** It's about 1,580 lines. Move out the parts the next steps change, with no change in behaviour: the browser tests stay as they are, and each part that doesn't draw anything gets its own unit tests.
+    - `edit-numbers.mjs`: step numbers as the sheet shows them (`shownNumbers`, `say`, `namesHidden`, `stepNames`). Steps 20, 23 and 25 use them.
+    - `edit-history.mjs`: Undo and Redo (`commit`, `travel`, `changedLine`). Step 23 builds on it.
+    - `edit-fold.mjs`: a step's "For the lineup" fold (`lineupSummary`, `stepLineup`). Steps 20 and 21 change it.
+    - `edit-facts.mjs`: the Facts form (`factsForm`, `moreFacts`, `hintText`).
+    - The move controls stay: their rules are already in `edit-model.mjs`.
+    - Reword the problem on a hidden added prep step in the wording table (decision 16), with a test.
+20. **(M) Small step fields** (was 19).
+    - "It doesn't wait" (`wait: false`) and "During" go in the step's fold, beside "Needs you there the whole wait". On an imported recipe, the intake's "Done while an earlier step waits" stands in for "During" while it's still to check, as it does for "Needs you there".
+    - Oven temperatures in any common form ("400°F", "400 F", "200 degrees C") are turned into `400F` or `200C` by a model function with unit tests.
+    - "Add ml" on any ingredient. Today the Millilitres field only shows when the ingredient already has one, or on a cocktail.
+21. **(M) Lay out the lineup fold** (was 23, re-aimed). Details is short now, so the layout work left is the fold's: uses as chips under the ingredient group names, a compact equipment grid, and hands-on time and prep side by side (section 4, "While editing a line"). Mostly CSS.
+22. **(M) Category and Kind** (was 20).
+    - Category goes in the About form. Before switching, it lists the tags that will be dropped. A model function returns those tags, built so it can later become picking several sections (decision 6). Undo works. The page recolours live.
+    - Kind keeps an explicit `"kind": "dish"` (decision 11). Today only switching the menu from Component back to Dish removes it, so this is a small fix with a test.
+23. **(M) "What's changed"** (was 24).
+    - The model first: `changes(original, recipe)` in its own module with unit tests, naming steps through `edit-numbers.mjs`.
+    - A read-only list: "Butter: 100 g → 115 g", "Removed: Thyme", "Tags: + lemon", with numbers that changed first.
+    - Shown before Save only when an amount, time or temperature changed (decision 7), and in the draft offer.
+24. **(M) Start from scratch** (was 21). It needs the category choice from 22.
     - `edit.html?new=cooking|baking|cocktails` opens a blank sheet with its own draft key (never `sss:intake`, which would clash with an import in progress).
     - Empty fields are left out of the JSON.
-    - Bare `?new` with nothing waiting offers "Bring one in" or the three sections, with the family drawing.
-22. **(M) Pickers.** The tag filter with the "1–4" counter, and the drawing grid with plain names.
-23. **(M) Details restyled** as specimen labels (CSS only, after 16).
-24. **(M) "What's changed".**
-    - A read-only list from the bar's change state: "Butter: 100 g → 115 g", "Removed: Thyme", "Tags: + lemon", with numbers that changed first.
-    - Also shown in the draft offer.
-    - It never blocks Save unless you choose that in section 7.
-25. **(M) Checking imports on a phone.**
+    - Bare `?new` with nothing waiting offers "Bring one in" or the three sections, with the family drawing. This replaces today's "Nothing to finish" page.
+25. **(M) Checking imports on a phone** (number unchanged).
     - The original opens over the page from the bar.
     - A "Checked" tick next to each amount on an imported recipe, cleared when the amount is edited.
-26. **(M) Keyboard and screen reader polish.** Skip links, shortcut help, 44px targets, and the WCAG 2.2 checks for editor pages.
-27. **(S) Motion.** The open-line fade and the moved-line flash.
-28. **(M) Extras.** Wait chips on phones, "Paste lines" on Ingredients, Steps and Notes, and turning a plain-text ingredient into amount plus name.
-29. **(M–L, after your OK) The wide-laptop side rail.**
+    - On the first Save of an import, a gentle reminder names the amounts not yet ticked. It never blocks (decision 8).
+26. **(M) Pickers and Details** (was 22, with what was left of 23). The tag filter with the "1–4" counter, and the drawing grid with plain names. Details (About, Serving, Tags, each ingredient's link) restyled as specimen labels in the same change.
+27. **(S–M) Keyboard and screen reader polish** (was 26). Focus after every action, 44px targets, off buttons that look off and live hints are done already. What's left:
+    - skip links;
+    - shortcut help (Cmd/Ctrl+S, Cmd/Ctrl+Z and the rest);
+    - the WCAG 2.2 rules turned on in the accessibility scan for editor pages, and what they find fixed.
+28. **(S) Motion** (was 27). The open-line fade and the moved-line flash, both off with reduced motion.
+29. **(M) Paste lines** (was part of 28). "Paste lines" on Ingredients, Steps and Notes, and turning a plain-text ingredient into amount plus name. Both use the intake's own reading (`tidyIngredient`).
+30. **(S) Wait chips on phones** (was part of 28).
+31. **(M–L, after your OK) The wide-laptop side rail** (was 29).
+
+WebKit: the cloud sessions can't run WebKit, so Safari is only checked by CI. A local `npm run test:all` on the Mac is still worth one run.
 
 Deferred: the hero image control, "Tidy up with AI" (slice 8), and the intake's "Couldn't place" list. That last one needs the intake to keep its stray lines first.
 
@@ -391,21 +411,24 @@ Jacob answered the open questions on 2026-11-10.
 2. **Errors get the raspberry colour and the flag** (build step 13). The contrast numbers are shown before the colours change. On seeing them (2026-11-12), Jacob chose a box round the whole line over the left bar.
 3. **The card preview is compact on a phone,** not full size and not folded away.
 4. **The Edit button shows the pencil and the word "Edit"** where there's room, and only the pencil where there isn't (a narrow screen, or a narrow ingredient column). Screen readers hear "Edit step 3" either way.
-5. **The side rail on wide screens (1440px and up) is a yes, but later** (build step 29). For an imported recipe, the original keeps the rail.
-6. **A saved recipe can move to another section,** with a warning that lists the tags it would lose (build step 20). Jacob also asked whether a recipe should be able to be in **more than one section** (blueberry syrup in Cooking, Baking and Cocktails). That's a bigger change to the recipe format, the index and the section pages, so it's in `docs/ideas.md` as its own idea. Moving between sections should be built so it can later become picking several.
-7. **"What's changed" shows before Save only when an amount, time or temperature changed.** Other edits save in one tap, with the list one tap away (build step 24).
+5. **The side rail on wide screens (1440px and up) is a yes, but later** (build step 31). For an imported recipe, the original keeps the rail.
+6. **A saved recipe can move to another section,** with a warning that lists the tags it would lose (build step 22). Jacob also asked whether a recipe should be able to be in **more than one section** (blueberry syrup in Cooking, Baking and Cocktails). That's a bigger change to the recipe format, the index and the section pages, so it's in `docs/ideas.md` as its own idea. Moving between sections should be built so it can later become picking several.
+7. **"What's changed" shows before Save only when an amount, time or temperature changed.** Other edits save in one tap, with the list one tap away (build step 23).
 8. **On the first Save of an import, a gentle reminder** names the amounts not yet ticked "Checked". It never blocks (build step 25).
 9. **The site header hides on a phone while you type** in an open form (build step 7).
 10. **When splitting, the wait goes with the half whose text has that time,** else the second half. Steps with several times also offer **"Split at each time"** (build step 11).
-11. **`"kind": "dish"` stays as each file has it.** Saving never removes it (build step 20).
+11. **`"kind": "dish"` stays as each file has it.** Saving never removes it (build step 22).
 12. **No photo control yet.** It waits for the step-images project.
 13. **A recipe's `pan` is shown as "Equipment"** on the page and in the editor (2026-11-12, build step 18). The file keeps `pan`, so no recipe changed. A fuller equipment list is in `docs/ideas.md`.
+14. **"Split at each time" gives each part its own wait,** the time its own text says (2026-11-12, build step 11). It stays as built.
+15. **After a split, the note stays the longer one:** "Check what steps 2 and 3 use: the ingredients all stayed with step 2." It says why (2026-11-12).
+16. **A problem on a hidden added prep step leads with the field:** "Hands-on time for the added prep step "Slice the peppers…" needs to be a time", not "…'s hands-on time" (2026-11-12, build step 19).
 
 ---
 
 ## 8. Handoff after step 18 (2026-11-12)
 
-Steps 1–18 are merged. Before building 19–29, re-read them against the editor as it is now: the plan was written on 2026-11-10, and the editor has moved under it. This section says what changed, what's still open, and what to re-check.
+Steps 1–18 are merged. The step numbers in this section are the ones from before the re-plan; section 6 now has the new order, and decisions 14–16 answer the questions below. Before building 19–29, re-read them against the editor as it is now: the plan was written on 2026-11-10, and the editor has moved under it. This section says what changed, what's still open, and what to re-check.
 
 ### What the editor has now that the plan didn't expect
 
@@ -416,7 +439,7 @@ Steps 1–18 are merged. Before building 19–29, re-read them against the edito
 - **Moving:** Move up and Move down turn off at the ends, "Move to" lists every place under its group, and every kind of line (steps, ingredients, notes, Before you start) shares the same controls (`moveControls`, `ops` in `assets/edit.mjs`).
 - **Fixes made in other sessions on the way:** #62 (Done on a phone after typing: the hidden header came back mid-click) and #64 (the recipe law mixed up steps with the same text).
 
-### Still to answer (Jacob)
+### Still to answer (Jacob): answered 2026-11-12, decisions 14–16
 
 - **"Split at each time" gives each part its own wait** (the time its text says). Keep that, or start those parts with no wait? (Step 11, #60.)
 - **After a split, the note reads "Check what steps 2 and 3 use: the ingredients all stayed with step 2."** The plan had "Check what step 3 uses". Keep the longer one?
