@@ -205,6 +205,16 @@ test.describe("a step's ingredients", () => {
     await expect(box(page, "Powdered sugar, for dusting")).toBeVisible();
   });
 
+  test("go with their own step when two steps read the same", async ({ page }) => {
+    await start(page, "twin-steps");
+    await expect(stepLabel(page)).toHaveText("Prep · Step 1 of 3");
+    await expect(instruction(page)).toHaveText("Stir.");
+    await expect(box(page, /Lemon juice/)).toBeVisible();
+    await next(page).click();
+    await expect(instruction(page)).toHaveText("Stir.");
+    await expect(cook(page).getByRole("checkbox")).toHaveCount(0);
+  });
+
   test("aren't listed for a step that uses none", async ({ page }) => {
     await toStep(page, 2);
     await expect(cook(page).getByRole("checkbox")).toHaveCount(0);

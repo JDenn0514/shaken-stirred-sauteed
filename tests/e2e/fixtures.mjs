@@ -163,6 +163,16 @@ Object.assign(PAGE_ONLY, {
       { do: "Pour in the sauce, toss and serve.", uses: ["Soy sauce"] },
     ],
   }),
+  // Two steps with the same text: a plain one first, then, in a group, a prep
+  // step that uses an ingredient. Prep first, the prep "Stir." comes first.
+  "twin-steps": recipe({
+    title: "Twin Steps",
+    ingredients: [{ qty: "1 cup", item: "Lemon juice" }],
+    steps: [
+      "Stir.",
+      { group: "Sauce", items: [{ do: "Stir.", prep: true, uses: ["Lemon juice"] }, "Serve."] },
+    ],
+  }),
   // Two hot dishes that each end with 15 minutes at the stove and can wait
   // only 2: one cook can't get both there on time, so one comes out early.
   "fried-rice": recipe({
