@@ -258,7 +258,7 @@ export const EDITOR_RECIPES = {
   // A step with three times in it, as the intake read the garlic soup's
   // (docs/ideas.md): its wait is the first time, not the last.
   "garlic-soup": recipe({
-    title: "Garlic Soup", serve: "hot", sits: "10 min",
+    title: "Garlic Soup", serve: "hot", sits: "10 min", times: [["Active", "20 min"], ["Total", "45 min"]],
     ingredients: [{ qty: "40 cloves", item: "Garlic" }, { qty: "2 tbsp", item: "Butter" }, { qty: "1", item: "Onion" }, { qty: "1", item: "Potato" }, { qty: "4 cups", item: "Stock" }],
     steps: [
       { do: "Peel the garlic.", prep: true, hands: "10 min", uses: ["Garlic"] },

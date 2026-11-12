@@ -578,3 +578,46 @@ describe("moving a line anywhere", () => {
     assert.deepEqual(M.usesOf(recipe, 1).picks.map((p) => p.ing), [1, 2]);
   });
 });
+
+describe("the facts: yield, the times as printed, and the minutes", () => {
+  const bread = () => ({ title: "Bread", yield: "Makes 1 loaf", times: [["Active", "20 min"], ["Rise", "1 to 2 hr"]], time: { prep: 20, total: 150 }, kept: true });
+
+  test("the facts form sets the yield, the printed times and the minutes together", () => {
+    const r = M.setFacts(bread(), { yield: " Makes 2 loaves ", times: [["Active", "25 min "], ["Rise", "2 hr"]], time: { prep: "25", cook: "", total: "160" } });
+    assert.deepEqual(r, { title: "Bread", yield: "Makes 2 loaves", times: [["Active", "25 min"], ["Rise", "2 hr"]], time: { prep: 25, total: 160 }, kept: true });
+  });
+
+  test("no printed times and no minutes take the fields out", () => {
+    const r = M.setFacts(bread(), { yield: "", times: [], time: { prep: "", total: "" } });
+    assert.deepEqual(r, { title: "Bread", kept: true });
+  });
+
+  test("a time row is added at the end, removed, and moved", () => {
+    const { recipe, at } = M.addTime(bread());
+    assert.equal(at, 2);
+    assert.deepEqual(recipe.times.at(-1), ["", ""]);
+    assert.deepEqual(M.removeTime(bread(), 0).times, [["Rise", "1 to 2 hr"]]);
+    assert.equal(M.removeTime(M.removeTime(bread(), 0), 0).times, undefined, "none left takes the field out");
+    assert.deepEqual(M.moveTime(bread(), 1, -1).times, [["Rise", "1 to 2 hr"], ["Active", "20 min"]]);
+    assert.deepEqual(M.moveTime(bread(), 0, -1), bread(), "the first can't go up");
+  });
+
+  test("a time row left empty is left out of what's saved", () => {
+    const r = { ...bread(), times: [["Active", "20 min"], ["", " "]] };
+    assert.deepEqual(M.withoutEmptyLines(r).times, [["Active", "20 min"]]);
+    assert.equal(M.withoutEmptyLines({ title: "A", times: [["", ""]] }).times, undefined);
+  });
+
+  test("a total shorter than its parts gets a hint; one that isn't, or isn't given, doesn't", () => {
+    assert.deepEqual(M.minutesHint({ prep: 20, cook: 30, chill: 60, total: 40 }), { total: 40, parts: 110 });
+    assert.equal(M.minutesHint({ prep: 20, cook: 30, total: 50 }), null);
+    assert.equal(M.minutesHint({ prep: 20, cook: 30, total: 90 }), null, "a total can include time the parts don't name");
+    assert.equal(M.minutesHint({ prep: 20, cook: 30 }), null, "no total: it's added up");
+    assert.equal(M.minutesHint(undefined), null);
+  });
+
+  test("putting the facts back as they were", () => {
+    const now = M.setField(M.setFacts(bread(), { yield: "Makes 3", times: [], time: {} }), "title", "Bread 2");
+    assert.deepEqual(M.putBack(now, bread(), "facts"), { ...bread(), title: "Bread 2" });
+  });
+});

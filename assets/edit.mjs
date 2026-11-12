@@ -27,7 +27,7 @@ import { explain } from "./edit-words.mjs";
 import { originalHTML, stepNotesHTML, ingredientNotesHTML, guessHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
 import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
-const { CATEGORIES, esc, getJSON, stepOrder, signedIn: hinted } = window.SSS;
+const { CATEGORIES, esc, getJSON, stepOrder, totalMinutes, signedIn: hinted } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
 const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.SSSChecks;
 const ICONS = window.SSSIcons.KEYS;
@@ -168,6 +168,7 @@ function goLabel(go) {
   if (go.open === "step") return say(`Go to step ${go.n + 1}`);
   if (go.open === "ing") return `Go to ${go.name}`;
   if (go.open === "about") return "Go to the title";
+  if (go.open === "facts") return "Go to the times";
   if (go.empty) return go.empty === "ing" ? "Go to the empty ingredient" : "Go to the empty step";
   if (go.field === "add-ingredients") return "Go to Ingredients";
   if (go.field === "add-steps") return "Go to Steps";
@@ -185,6 +186,7 @@ function goTo(go) {
     : go.holds ? `step:${held}`
     : go.open === "ing" ? `ing:${ings.findIndex((i) => ingName(i) === go.name)}`
     : go.open === "about" ? "about"
+    : go.open === "facts" ? "facts"
     : go.empty === "ing" ? `ing:${ings.findIndex((i) => !ingName(i))}`
     : go.empty === "step" ? `step:${steps.findIndex((x) => !stepText(x))}` : null;
   const keys = go.holds ? [`d-holds-${held}`] : go.ingField ? [`d-${go.ingField}-${ings.findIndex((i) => ingName(i) === go.name)}`] : [go.field, go.or].filter(Boolean);
@@ -388,7 +390,41 @@ function aboutForm() {
   return `<form class="edit-form" data-form="about">
     ${field("Title", "title", recipe.title)}
     ${labelled("Description", `<textarea name="description" rows="3" data-key="edit-description">${esc(recipe.description || "")}</textarea>`)}
+    ${formButtons()}
+  </form>`;
+}
+
+// The facts box: the yield, the times as the page prints them (a row each:
+// its name and how long, to move or remove), and the minutes the time filter,
+// the card and the lineup use, with a word when Total is less than its parts.
+const MINUTES = [["prep", "Prep"], ["cook", "Cook"], ["chill", "Chill"], ["rest", "Rest"], ["total", "Total"]];
+const hintText = (time) => {
+  const hint = M.minutesHint(time);
+  return hint ? `Total, ${hint.total} min, is less than prep, cook, chill and rest add up to, ${hint.parts} min.` : "";
+};
+function factsForm() {
+  const t = recipe.time || {}, rows = recipe.times || [];
+  const rowButton = (name, label, k, on = true) =>
+    `<button class="btn" type="button" data-act="time-${name}" data-k="${k}" data-key="edit-time-${name}-${k}"${on ? "" : " disabled"}>${label}</button>`;
+  return `<form class="edit-form" data-form="facts" aria-label="Facts">
     ${field("Yield", "yield", recipe.yield, ` placeholder="Serves 4 · Makes 12 cups"`)}
+    <fieldset class="edit-set"><legend>Times as printed</legend>
+      ${rows.map(([name, long], k) => `<div class="edit-time-row" role="group" aria-label="Time ${k + 1}">
+        <div class="edit-fields">
+          ${labelled("Name", `<input name="tl-${k}" value="${esc(name ?? "")}" placeholder="e.g. Rise" data-key="edit-tl-${k}">`)}
+          ${labelled("How long", `<input name="tv-${k}" value="${esc(long ?? "")}" placeholder="e.g. 1 to 2 hr" data-key="edit-tv-${k}">`)}
+        </div>
+        <div class="edit-row">${rowButton("up", "Move up", k, k > 0)}${rowButton("down", "Move down", k, k < rows.length - 1)}${rowButton("remove", "Remove", k)}</div>
+      </div>`).join("")}
+      <div class="edit-row">${act("time-add", "Add a time")}</div>
+    </fieldset>
+    <fieldset class="edit-set"><legend>For filters and the lineup, in minutes</legend>
+      <div class="edit-fields">
+        ${MINUTES.map(([k, label]) => labelled(label, `<input name="m-${k}" type="number" min="0" inputmode="numeric" value="${esc(t[k] ?? "")}" data-key="edit-time-${k}">`)).join("")}
+      </div>
+      <p class="edit-hint" data-hint aria-live="polite">${hintText(t)}</p>
+      <p class="muted">Leave Total empty to add up the others.</p>
+    </fieldset>
     ${formButtons()}
   </form>`;
 }
@@ -524,8 +560,9 @@ function decorate(page, errors, showPrepFirst) {
   page.querySelectorAll("a[href]").forEach((a) => { a.tabIndex = -1; a.setAttribute("aria-disabled", "true"); });
   page.querySelectorAll(".start-row, .toolbar").forEach((n) => n.remove());
 
-  // The title, description and yield: one form for all three.
+  // The title and description: one form for both.
   const h1 = page.querySelector("h1"), lede = page.querySelector(".lede");
+  const factsBox = page.querySelector("dl.facts");
   if (editing === "about") {
     h1.insertAdjacentHTML("beforebegin", aboutForm());
     h1.remove();
@@ -533,12 +570,24 @@ function decorate(page, errors, showPrepFirst) {
   } else {
     h1.innerHTML = part("about", "part-title", esc(recipe.title || "Add a title"));
     if (lede) lede.innerHTML = part("about", "part-description", esc(recipe.description));
+  }
+  // The facts box: its yield and times open the facts form, at the field
+  // that was tapped (its key, after "-f-").
+  if (editing === "facts") {
+    if (factsBox) factsBox.outerHTML = factsForm();
+    else (lede || page.querySelector("h1, form[data-form=about]")).insertAdjacentHTML("afterend", factsForm());
+  } else if (factsBox) {
     const yields = (recipe.yield || "").split(" · ").filter(Boolean).length;
-    [...page.querySelectorAll(".facts .fact dd")].slice(0, yields).forEach((dd, k) => { dd.innerHTML = part("about", `part-yield-${k}`, dd.innerHTML); });
-    const missing = [!recipe.description && "a description", !recipe.yield && "a yield"].filter(Boolean);
-    if (missing.length) {
-      (lede || h1).insertAdjacentHTML("afterend", `<p class="edit-add-line">${part("about", "part-add-about", `Add ${missing.join(" and ")}`)}</p>`);
-    }
+    const t = recipe.time || {};
+    const timed = recipe.times ? recipe.times.flatMap(([, v], i) => (v != null && v !== "" ? [`edit-tv-${i}`] : []))
+      : ["prep", "cook", "chill"].filter((k) => t[k] != null).map((k) => `edit-time-${k}`).concat(totalMinutes(t) != null ? ["edit-time-total"] : []);
+    const fields = [...Array(yields).fill("edit-yield"), ...timed];
+    [...factsBox.querySelectorAll(".fact dd")].slice(0, fields.length).forEach((dd, k) => { dd.innerHTML = part("facts", `part-facts-${k}-f-${fields[k]}`, dd.innerHTML); });
+  }
+  if (editing !== "about" && editing !== "facts") {
+    const adds = [!recipe.description && part("about", "part-add-description", "Add a description"),
+      !recipe.yield && part("facts", "part-facts-add-f-edit-yield", "Add a yield")].filter(Boolean);
+    if (adds.length) (lede || h1).insertAdjacentHTML("afterend", `<p class="edit-add-line">${adds.join(" ")}</p>`);
   }
 
   // Ingredients.
@@ -665,7 +714,6 @@ function detailsHTML() {
       ${select("How it's served", "serve", [["", `Not set: ${SERVE[fallback.serve].split(":")[0].toLowerCase()}${fallback.sits ? `, up to ${fallback.sits}` : ""}`], ...Object.entries(SERVE)], r.serve || "", ` data-act="field" data-field="serve" data-key="d-serve"`)}
       ${(r.serve || fallback.serve) !== "keeps" ? `${labelled("Can sit for", `<input value="${esc(r.sits || "")}" placeholder="${esc(fallback.sits)}" data-act="field" data-field="sits" data-key="d-sits">`)}` : ""}
     </fieldset>
-    ${timesHTML()}
     ${tagsHTML()}
     <fieldset class="edit-set"><legend>Ingredients</legend>
       ${flat(r.ingredients).map(ingredientDetails).join("")}
@@ -676,19 +724,6 @@ function detailsHTML() {
       <p class="muted">A prep step is prep hidden in an ingredient line ("minced garlic"). It shows only when steps are in prep-first order.</p>
     </fieldset>
   </div>`;
-}
-
-// The recipe's times in minutes: what the time filter and the card use.
-// A recipe with "times" (as printed) shows those on its page instead.
-const TIMES = [["prep", "Prep"], ["cook", "Cook"], ["chill", "Chill"], ["rest", "Rest"], ["total", "Total"]];
-function timesHTML() {
-  const t = recipe.time || {};
-  return `<fieldset class="edit-set"><legend>Times, in minutes</legend>
-    <div class="edit-fields">
-      ${TIMES.map(([k, label]) => labelled(label, `<input type="number" min="0" inputmode="numeric" value="${esc(t[k] ?? "")}" data-act="time" data-field="${k}" data-key="d-time-${k}">`)).join("")}
-    </div>
-    <p class="muted">Leave Total empty to add up the others.${recipe.times ? " The recipe page shows its times as written; these are for the time filter and the card." : ""}</p>
-  </fieldset>`;
 }
 
 function tagsHTML() {
@@ -939,6 +974,7 @@ async function saveNew() {
 // What to focus for a part once its form closes: its line on the page.
 function partKey(target) {
   if (target === "about") return "part-title";
+  if (target === "facts") return "part-facts-0-f-edit-yield";
   const [kind, a, b] = target.split(":");
   return kind === "group" ? `part-group-${a}-${b}` : kind === "new-group" ? `add-group-${a}` : `part-${kind}-${a}`;
 }
@@ -963,7 +999,7 @@ function cancel() {
   focusKey = back;
   const [kind, n] = was.split(":");
   if (added && kind in LIST) return update(ops(kind).remove(recipe, Number(n)), () => { focusKey = back; });
-  if (before && (was === "about" || kind in LIST)) return update(M.putBack(recipe, before, was), () => { focusKey = back; });
+  if (before && (was === "about" || was === "facts" || kind in LIST)) return update(M.putBack(recipe, before, was), () => { focusKey = back; });
   draw();
 }
 
@@ -1045,7 +1081,12 @@ function applyForm(form) {
   const data = Object.fromEntries(new FormData(form));
   const n = Number(form.dataset.n);
   if (form.dataset.form === "about") {
-    return ["title", "description", "yield"].reduce((r, k) => M.setField(r, k, data[k]), recipe);
+    return ["title", "description"].reduce((r, k) => M.setField(r, k, data[k]), recipe);
+  }
+  if (form.dataset.form === "facts") {
+    const times = [];
+    for (let k = 0; `tl-${k}` in data; k++) times.push([data[`tl-${k}`], data[`tv-${k}`]]);
+    return M.setFacts(recipe, { yield: data.yield, times, time: Object.fromEntries(MINUTES.map(([k]) => [k, data[`m-${k}`]])) });
   }
   if (form.dataset.form === "ing") return M.updateIngredient(recipe, n, data);
   if (form.dataset.form === "step") return M.updateStep(recipe, n, data);
@@ -1079,10 +1120,12 @@ root.addEventListener("submit", (e) => {
     const left = flat(next[list]).length;
     return update(next, () => { focusKey = back || (left ? `part-${kind}-${Math.min(n, left - 1)}` : `add-${list}`); });
   }
+  const back = opened?.back;
+  if (was === "facts") next = M.withoutEmptyLines(next);
   editing = null;
   opened = null;
   update(next, () => {
-    focusKey = was ? partKey(was) : null;
+    focusKey = was === "facts" ? back : was ? partKey(was) : null;
     if (touched) note = `Also updated ${touched}, which ${touched.startsWith("steps") ? "use" : "uses"} ${f.dataset.form === "group" ? "that group" : "it"}.`;
   });
 });
@@ -1171,8 +1214,11 @@ root.addEventListener("input", (e) => {
   // now: Save has to be on for a click that comes straight after.
   if (e.target.dataset?.act && typed(e.target)) { typing = true; return showChanges(); }
   const form = e.target.closest(".edit-form");
-  if (!form || !["about", "ing", "step", "note", "start"].includes(form.dataset.form)) return;
+  if (!form || !["about", "facts", "ing", "step", "note", "start"].includes(form.dataset.form)) return;
   recipe = applyForm(form);
+  // The facts' hint follows the minutes as they're typed.
+  const hint = form.querySelector("[data-hint]");
+  if (hint) hint.textContent = hintText(recipe.time);
   offer = null;
   keepDraft();
   showChanges();
@@ -1224,12 +1270,18 @@ root.addEventListener("click", (e) => {
   }
   if (a === "cancel") return cancel();
   if (a === "go") return goTo(JSON.parse(b.dataset.go));
+  if (form?.dataset.form === "facts" && a.startsWith("time-")) return factsAction(a, form, Number(b.dataset.k));
   if (a === "undo") return undo();
   if (a === "show-prep") { prepFirst = true; focusKey = "prep-first"; return draw(); }
   if (a === "redo") return redo();
   if (a === "edit") {
+    if (b.dataset.target === "facts") {
+      openLine("facts", { back: b.dataset.key });
+      focusKey = b.dataset.key.split("-f-")[1] || "edit-yield";
+      return draw();
+    }
     openLine(b.dataset.target);
-    focusKey = editing === "about" ? (b.dataset.key === "part-description" ? "edit-description" : b.dataset.key.startsWith("part-yield") ? "edit-yield" : "edit-title")
+    focusKey = editing === "about" ? (b.dataset.key === "part-add-description" || b.dataset.key === "part-description" ? "edit-description" : "edit-title")
       : editing.startsWith("ing:") ? (typeof flat(recipe.ingredients)[Number(editing.slice(4))] === "string" ? "edit-text"
         : e.target.closest(".qty") ? "edit-qty" : "edit-item")
       : editing.startsWith("step:") ? "edit-do" : /^(note|start):/.test(editing) ? "edit-line" : "edit-group";
@@ -1342,6 +1394,25 @@ function formAction(a, form) {
   if (a === "join") {
     editing = null;
     return update(M.mergeSteps(next, n), () => { focusKey = `part-step-${n}`; });
+  }
+}
+
+// The facts form's time rows: add one, move one, take one out. The form stays
+// open, and Cancel still puts the whole box back as it was when it opened.
+function factsAction(a, form, k) {
+  const next = applyForm(form);
+  if (a === "time-add") {
+    const { recipe: added, at } = M.addTime(next);
+    return update(added, () => { focusKey = `edit-tl-${at}`; });
+  }
+  if (a === "time-up" || a === "time-down") {
+    const dir = a === "time-up" ? -1 : 1, to = k + dir, rows = (next.times || []).length;
+    const more = dir < 0 ? to > 0 : to < rows - 1;
+    return update(M.moveTime(next, k, dir), () => { focusKey = more ? `edit-time-${a.slice(5)}-${to}` : `edit-time-${dir < 0 ? "down" : "up"}-${to}`; });
+  }
+  if (a === "time-remove") {
+    const left = (next.times || []).length - 1;
+    return update(M.removeTime(next, k), () => { focusKey = left ? `edit-tl-${Math.min(k, left - 1)}` : "edit-act-time-add"; });
   }
 }
 
