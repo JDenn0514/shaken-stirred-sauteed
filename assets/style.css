@@ -1442,6 +1442,16 @@ body.cooking > .site-footer { display: none; }
 .edit-problems { border-color: var(--error); }
 .edit-problems ul, .edit-todo ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 8px; }
 .edit-todo li .edit-row { margin-top: 6px; }
+/* To-dos and the intake's things to check, folded into one strip: they don't
+   stop a save, so they wait behind "3 things to check" until you want them. */
+.edit-checks { margin-top: 16px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+.edit-checks > summary { display: flex; align-items: center; min-height: 44px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+.edit-checks > summary::-webkit-details-marker { display: none; }
+.edit-checks > summary::after { content: "▸" / ""; margin-left: 8px; color: var(--muted); }
+.edit-checks[open] > summary::after { content: "▾" / ""; }
+.edit-checks > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.edit-checks > .edit-todo { margin: 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; background: none; }
+.edit-problems li > .btn { margin-left: 6px; }
 .edit-card { margin-top: 20px; }
 .edit-card .grid { margin: 0; }
 .edit-preview { margin-top: 20px; padding-top: 0; }

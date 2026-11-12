@@ -667,21 +667,23 @@ test.describe("lineup fields in Details", () => {
 
   test("a step mentioning the oven is a to-do until an oven choice is made", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
+    await page.getByText("1 thing to check").click();
     const todo = page.getByRole("region", { name: "To do" });
-    await expect(todo).toContainText('step 2 mentions "oven" but has no equipment field');
+    await expect(todo).toContainText('Step 2 mentions "oven".');
     const d = await details(page);
     await stepBox(d, 2).getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
     await stepBox(d, 2).getByLabel("Oven temperature").fill("220C");
     await stepBox(d, 2).getByLabel("Oven temperature").blur();
-    await expect(page.getByText(/step 2 mentions "oven"/)).toHaveCount(0);
+    await expect(page.getByText(/Step 2 mentions "oven"/)).toHaveCount(0);
     expect((await draftOf(page, "garlic-bread")).steps[1].oven).toBe("220C");
   });
 
   test("a to-do's quick choice: the step doesn't use the oven", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
+    await page.getByText("1 thing to check").click();
     const todo = page.getByRole("region", { name: "To do" });
     await todo.getByRole("button", { name: "Step 2 doesn't use the oven" }).click();
-    await expect(page.getByText(/step 2 mentions "oven"/)).toHaveCount(0);
+    await expect(page.getByText(/Step 2 mentions "oven"/)).toHaveCount(0);
     expect((await draftOf(page, "garlic-bread")).steps[1].oven).toBe(false);
   });
 
@@ -698,11 +700,11 @@ test.describe("lineup fields in Details", () => {
     const d = await details(page);
     await expect(d.getByRole("group", { name: /^Step 3: Heat the wok/ })).toBeVisible();
     await giveBadHands(page, d, /Heat the wok/);
-    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText('step 3: "hands" must be a time');
-    await expect(page.getByRole("region", { name: "Problems to fix" })).not.toContainText("step 2:");
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText("Step 3's hands-on time needs to be a time");
+    await expect(page.getByRole("region", { name: "Problems to fix" })).not.toContainText("Step 2");
 
     await preview(page).getByRole("switch", { name: "Prep first" }).click();
-    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText('step 1: "hands" must be a time');
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText("Step 1's hands-on time needs to be a time");
   });
 
   test("a hidden added prep step is named by its words, with a way to show it", async ({ page, baseURL }) => {
@@ -711,10 +713,10 @@ test.describe("lineup fields in Details", () => {
     await giveBadHands(page, d, /Slice the peppers/);
     await preview(page).getByRole("switch", { name: "Prep first" }).click();
     const problems = page.getByRole("region", { name: "Problems to fix" });
-    await expect(problems).toContainText('the added prep step "Slice the peppers and mince the garlic.": "hands" must be a time');
+    await expect(problems).toContainText(`The added prep step "Slice the peppers and mince the garlic."'s hands-on time needs to be a time`);
     await problems.getByRole("button", { name: "Show prep first" }).click();
     await expect(preview(page).getByRole("switch", { name: "Prep first" })).toBeChecked();
-    await expect(problems).toContainText('step 1: "hands" must be a time');
+    await expect(problems).toContainText("Step 1's hands-on time needs to be a time");
   });
 
   test("an added prep step shows only in the prep-first preview", async ({ page, baseURL }) => {
@@ -734,7 +736,62 @@ test.describe("lineup fields in Details", () => {
   });
 });
 
-test("a step using an ingredient that isn't there shows the checker's message and turns Save off", async ({ page, baseURL }) => {
+test.describe("problems and to-dos", () => {
+  const problems = (page) => page.getByRole("region", { name: "Problems to fix" });
+  const strip = (page) => page.getByRole("group", { name: /things? to check/ });
+
+  test("a problem is in a cook's words, and Go to opens the line at the field that fixes it", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    await preview(page).getByRole("button", { name: "Edit step 2" }).press("Enter");
+    await page.getByLabel("Wait", { exact: true }).fill("a while");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(problems(page)).toContainText("Step 2's wait needs to be a time, like 10 min. Leave it empty if the step doesn't wait.");
+    await expect(preview(page).locator("ol.steps > li").nth(1)).toContainText("Step 2's wait needs to be a time");
+    await problems(page).getByRole("button", { name: "Go to step 2" }).press("Enter");
+    await expect(page.getByLabel("Wait", { exact: true })).toBeFocused();
+    await expect(page.getByLabel("Wait", { exact: true })).toHaveValue("a while");
+  });
+
+  test("Go to on a problem fixed in Details opens Details at that field", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    const d = await details(page);
+    await stepBox(d, 1).getByLabel("Hands-on time").fill("soon");
+    await stepBox(d, 1).getByLabel("Hands-on time").press("Tab");
+    await page.getByText("Details", { exact: true }).click();
+    await expect(problems(page)).toContainText("Step 1's hands-on time needs to be a time, like 10 min.");
+    await problems(page).getByRole("button", { name: "Show in Details" }).press("Enter");
+    await expect(stepBox(d, 1).getByLabel("Hands-on time")).toBeFocused();
+  });
+
+  test("to-dos fold into one strip under the bar, and problems stay in view", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    await expect(strip(page)).toContainText("1 thing to check");
+    await expect(page.getByRole("region", { name: "To do" })).toHaveCount(0);
+    await strip(page).getByText("1 thing to check").click();
+    await expect(page.getByRole("region", { name: "To do" })).toContainText('Step 2 mentions "oven". Say whether it uses the burner, oven, grill or microwave.');
+    // It stays open as the page changes.
+    await page.getByRole("region", { name: "To do" }).getByRole("button", { name: "Set step 2's equipment" }).click();
+    await page.getByText("Details", { exact: true }).click();
+    await expect(page.getByRole("region", { name: "To do" })).toBeVisible();
+  });
+
+  test("no total time, and no key ingredients, each have a button to where they're set", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "salsa-verde");
+    await strip(page).getByText(/things? to check/).click();
+    const todo = page.getByRole("region", { name: "To do" });
+    await expect(todo).toContainText("There's no total time, so it won't show when someone filters by time.");
+    await todo.getByRole("button", { name: "Add the total time" }).press("Enter");
+    const d = page.locator("details.edit-details");
+    await expect(d.getByRole("group", { name: "Times, in minutes" }).getByLabel("Total")).toBeFocused();
+
+    await d.getByRole("group", { name: "Tags" }).getByRole("checkbox", { name: "Fresh herbs" }).uncheck();
+    await expect(todo).toContainText("No key ingredients are tagged");
+    await todo.getByRole("button", { name: "Tag key ingredients" }).press("Enter");
+    await expect(d.getByRole("group", { name: "Ingredients", exact: true }).getByRole("checkbox").first()).toBeFocused();
+  });
+});
+
+test("a step using an ingredient that isn't there says so, on the step too, and turns Save off", async ({ page, baseURL }) => {
   // Renaming in the editor carries through to the steps, so the broken use
   // comes from a draft, as an older draft or file could have it.
   await openEditor(page, baseURL, "lemon-bars");
@@ -744,7 +801,7 @@ test("a step using an ingredient that isn't there shows the checker's message an
   await page.reload();
   await page.getByRole("button", { name: "Bring back my changes" }).click();
   const save = page.getByRole("button", { name: "Save" });
-  const message = `step 1 uses "Butter", which isn't one of the ingredients`;
+  const message = "Step 1 uses Butter, which isn't in the ingredients. Add it, or take it off the step under Details.";
   await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText(message);
   await expect(preview(page).locator("ol.steps > li").first()).toContainText(message);
   await expect(save).toBeDisabled();
@@ -799,13 +856,14 @@ test("signed in, Add recipe is in the site bar and on the welcome page", async (
 
 test("a recipe with no total time is a to-do until one is given", async ({ page, baseURL }) => {
   await openEditor(page, baseURL, "salsa-verde");
-  await expect(page.getByRole("region", { name: "To do" })).toContainText("no total time");
+  await page.getByText(/things? to check/).click();
+  await expect(page.getByRole("region", { name: "To do" })).toContainText("There's no total time");
   const times = (await details(page)).getByRole("group", { name: "Times, in minutes" });
   await times.getByLabel("Prep").fill("10");
   await times.getByLabel("Prep").blur();
   await times.getByLabel("Total").fill("15");
   await times.getByLabel("Total").blur();
-  await expect(page.getByText("no total time")).toHaveCount(0);
+  await expect(page.getByText("There's no total time")).toHaveCount(0);
   expect((await draftOf(page, "salsa-verde")).time).toEqual({ prep: 10, total: 15 });
   await expect(page.getByRole("region", { name: "Card preview" })).toContainText("15 min");
 });
