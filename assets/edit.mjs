@@ -24,6 +24,11 @@
 // recipe's name, and is off while another recipe links to it.
 import * as M from "./edit-model.mjs";
 import { explain } from "./edit-words.mjs";
+import { numbering } from "./edit-numbers.mjs";
+import { createHistory, changedLine } from "./edit-history.mjs";
+import { factsForm, hintText, MINUTES } from "./edit-facts.mjs";
+import { lineupFold as foldHTML } from "./edit-fold.mjs";
+import { labelled, field, select, check, act, formButtons } from "./edit-html.mjs";
 import { originalHTML, stepNotesHTML, ingredientNotesHTML, guessHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
 import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
@@ -138,21 +143,11 @@ function checks() {
 // prep step. Messages keep the checker's numbers inside (partOf places them by
 // it) and say the sheet's numbers to the reader.
 const showingPrepFirst = () => stepOrder(recipe, true).differs && prepFirst;
-function shownNumbers() {
-  return new Map(stepOrder(recipe, showingPrepFirst()).steps.map((x, k) => [x.i, k + 1]));
-}
-// "step 3" in a message, as the sheet numbers it; a step the sheet doesn't show
-// (an added prep step, as written) by its first words.
-function say(text) {
-  const shown = shownNumbers();
-  return text.replace(/\b([Ss])teps? (\d+)\b/g, (m, s, d) => {
-    const i = Number(d) - 1;
-    if (shown.has(i)) return `${s}tep ${shown.get(i)}`;
-    return `${s === "S" ? "The" : "the"} added prep step "${short(stepText(flat(recipe.steps)[i]), 50)}"`;
-  });
-}
-// Whether a message names a step the sheet isn't showing.
-const namesHidden = (text) => [...text.matchAll(/\bsteps? (\d+)\b/gi)].some(([, d]) => !shownNumbers().has(Number(d) - 1));
+// Step numbers and names as the sheet shows them now (assets/edit-numbers.mjs).
+const numbers = () => numbering(recipe, stepOrder(recipe, showingPrepFirst()).steps);
+const shownNumbers = () => numbers().shown;
+const say = (text) => numbers().say(text);
+const namesHidden = (text) => numbers().namesHidden(text);
 const showPrepButton = (text) => (namesHidden(text)
   ? ` <button class="btn" type="button" data-act="show-prep" data-key="show-prep-${esc(text.slice(0, 40))}">Show prep first</button>` : "");
 
@@ -233,8 +228,8 @@ const EQUIPMENT = [[/^(oven|broil)/i, "oven", "the oven"], [/grill/i, "grill", "
 const mentions = (w) => {
   const m = /^step (\d+) mentions "(.+?)"/.exec(w);
   if (!m) return null;
-  const [, field, what] = EQUIPMENT.find(([re]) => re.test(m[2])) || [null, "oven", "the oven"];
-  return { step: Number(m[1]) - 1, field, what };
+  const [, fieldName, what] = EQUIPMENT.find(([re]) => re.test(m[2])) || [null, "oven", "the oven"];
+  return { step: Number(m[1]) - 1, field: fieldName, what };
 };
 
 // --- Drawing -------------------------------------------------------------------------------
@@ -279,7 +274,7 @@ function draw() {
       <p class="edit-changes" id="edit-changes">${changesText()}</p>
       <div class="edit-row edit-history">
         <button class="btn" type="button" data-act="undo" data-key="undo"${canUndo() ? "" : " disabled"}>Undo</button>
-        <button class="btn" type="button" data-act="redo" data-key="redo"${future.length ? "" : " disabled"}>Redo</button>
+        <button class="btn" type="button" data-act="redo" data-key="redo"${undoHistory.canRedo() ? "" : " disabled"}>Redo</button>
       </div>
       <button class="btn edit-primary" type="button" data-act="save" data-key="save"${errors.length || status?.saving ? ` disabled aria-describedby="save-why"` : !unsaved() ? ` disabled aria-describedby="edit-changes"` : ""}>Save</button>
       <p data-status-slot></p>
@@ -374,81 +369,12 @@ const part = (target, key, inner) =>
 // (only the pencil where space is tight). Its name says which line it opens.
 const editButton = (target, key, name) =>
   `<button class="edit-open" type="button" data-act="edit" data-target="${target}" data-key="${key}" aria-label="${esc(name)}"><span class="edit-pencil" aria-hidden="true">✎</span><span class="edit-word" aria-hidden="true">Edit</span></button>`;
-// A field with its label beside it, joined by id. (A label wrapped round a
-// field would make the field's own text part of its name.)
-function labelled(label, control, cls = "") {
-  const id = `f-${/data-key="([^"]+)"/.exec(control)[1]}`;
-  return `<div class="edit-field${cls}"><label for="${esc(id)}">${esc(label)}</label>${control.replace(/^<(\w+)/, `<$1 id="${esc(id)}"`)}</div>`;
-}
-const field = (label, name, value, extra = "") =>
-  labelled(label, `<input name="${name}" value="${esc(value ?? "")}" data-key="edit-${name}"${extra}>`);
-const formButtons = (more = "") => `<div class="edit-row">
-  <button class="btn edit-primary" type="submit" data-key="edit-done">Done</button>${act("cancel", "Cancel")}${more}</div>`;
-const act = (name, label) => `<button class="btn" type="button" data-act="${name}" data-key="edit-act-${name}">${label}</button>`;
-
 function aboutForm() {
   return `<form class="edit-form" data-form="about">
     ${field("Title", "title", recipe.title)}
     ${labelled("Description", `<textarea name="description" rows="3" data-key="edit-description">${esc(recipe.description || "")}</textarea>`)}
     ${formButtons()}
   </form>`;
-}
-
-// The facts box: the yield, the times as the page prints them (a row each:
-// its name and how long, to move or remove), and the minutes the time filter,
-// the card and the lineup use, with a word when Total is less than its parts.
-const MINUTES = [["prep", "Prep"], ["cook", "Cook"], ["chill", "Chill"], ["rest", "Rest"], ["total", "Total"]];
-const hintText = (time) => {
-  const hint = M.minutesHint(time);
-  return hint ? `Total, ${hint.total} min, is less than prep, cook, chill and rest add up to, ${hint.parts} min.` : "";
-};
-function factsForm() {
-  const t = recipe.time || {}, rows = recipe.times || [];
-  const rowButton = (name, label, k, on = true) =>
-    `<button class="btn" type="button" data-act="time-${name}" data-k="${k}" data-key="edit-time-${name}-${k}"${on ? "" : " disabled"}>${label}</button>`;
-  return `<form class="edit-form" data-form="facts" aria-label="Facts">
-    ${field("Yield", "yield", recipe.yield, ` placeholder="Serves 4 · Makes 12 cups"`)}
-    <fieldset class="edit-set"><legend>Times as printed</legend>
-      ${rows.map(([name, long], k) => `<div class="edit-time-row" role="group" aria-label="Time ${k + 1}">
-        <div class="edit-fields">
-          ${labelled("Name", `<input name="tl-${k}" value="${esc(name ?? "")}" placeholder="e.g. Rise" data-key="edit-tl-${k}">`)}
-          ${labelled("How long", `<input name="tv-${k}" value="${esc(long ?? "")}" placeholder="e.g. 1 to 2 hr" data-key="edit-tv-${k}">`)}
-        </div>
-        <div class="edit-row">${rowButton("up", "Move up", k, k > 0)}${rowButton("down", "Move down", k, k < rows.length - 1)}${rowButton("remove", "Remove", k)}</div>
-      </div>`).join("")}
-      <div class="edit-row">${act("time-add", "Add a time")}</div>
-    </fieldset>
-    <fieldset class="edit-set"><legend>For filters and the lineup, in minutes</legend>
-      <div class="edit-fields">
-        ${MINUTES.map(([k, label]) => labelled(label, `<input name="m-${k}" type="number" min="0" inputmode="numeric" value="${esc(t[k] ?? "")}" data-key="edit-time-${k}">`)).join("")}
-      </div>
-      <p class="edit-hint" data-hint aria-live="polite">${hintText(t)}</p>
-      <p class="muted">Leave Total empty to add up the others.</p>
-    </fieldset>
-    ${moreFacts()}
-    ${formButtons()}
-  </form>`;
-}
-
-// The section's own facts: a baking recipe's pan and heat, a cocktail's
-// glass, ice and the rest. Two say what else they change.
-const FACT_LABELS = { pan: "Equipment", heat: "Heat", glass: "Glass", ice: "Ice", garnish: "Garnish", method: "Method", keeps: "Keeps", abv: "ABV", standardDrinks: "Standard drinks" };
-const FACT_HINTS = { glass: "Sets the drawing", standardDrinks: "Sets the strength filter" };
-function moreFacts() {
-  const keys = M.factFields(recipe);
-  if (!keys.length) return "";
-  const one = (k) => {
-    if (k === "heatLabel") {
-      const options = recipe.heatLabel === "Heat" ? [["Heat", "Heat"], ["Oven", "Oven"]] : [["", "Heat"], ["Oven", "Oven"]];
-      return select("Shown as", `x-${k}`, options, recipe.heatLabel || "", ` data-key="edit-x-${k}"`);
-    }
-    const hint = FACT_HINTS[k];
-    const extra = k === "standardDrinks" ? ` type="number" min="0" step="0.1" inputmode="decimal"` : k === "pan" ? ` placeholder="e.g. 9 in tart pan, medium saucepan"` : "";
-    const input = `<input name="x-${k}" value="${esc(recipe[k] ?? "")}"${extra}${hint ? ` aria-describedby="hint-${k}"` : ""} data-key="edit-x-${k}">`;
-    return hint ? `<div class="edit-field-wrap">${labelled(FACT_LABELS[k], input)}<p class="muted edit-field-hint" id="hint-${k}">${hint}</p></div>` : labelled(FACT_LABELS[k], input);
-  };
-  const legend = { baking: "Baking", cocktails: "The drink" }[recipe.category] || "More facts";
-  return `<fieldset class="edit-set"><legend>${legend}</legend><div class="edit-fields">${keys.map(one).join("")}</div></fieldset>`;
 }
 
 function ingredientForm(n) {
@@ -519,7 +445,7 @@ function stepForm(n) {
 }
 
 // The lists a line belongs to, by the kind of line, and how each is changed.
-const LIST = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
+const LIST = M.LISTS;
 const KIND = Object.fromEntries(Object.entries(LIST).map(([k, v]) => [v, k]));
 const FIRST_FIELD = { ing: "edit-item", step: "edit-do", note: "edit-line", start: "edit-line" };
 function ops(kind) {
@@ -596,8 +522,8 @@ function decorate(page, errors, showPrepFirst) {
   // The facts box: its yield and times open the facts form, at the field
   // that was tapped (its key, after "-f-").
   if (editing === "facts") {
-    if (factsBox) factsBox.outerHTML = factsForm();
-    else (lede || page.querySelector("h1, form[data-form=about]")).insertAdjacentHTML("afterend", factsForm());
+    if (factsBox) factsBox.outerHTML = factsForm(recipe);
+    else (lede || page.querySelector("h1, form[data-form=about]")).insertAdjacentHTML("afterend", factsForm(recipe));
   } else if (factsBox) {
     const yields = (recipe.yield || "").split(" · ").filter(Boolean).length;
     const t = recipe.time || {};
@@ -718,9 +644,6 @@ function addButtons(list, one, group) {
 
 // --- Details --------------------------------------------------------------------------------
 
-const select = (label, name, options, value, attrs = "") => labelled(label,
-  `<select name="${name}"${attrs}>${options.map(([v, t]) => `<option value="${esc(v)}"${String(value) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>`);
-const check = (label, attrs, on) => `<label class="edit-check"><input type="checkbox"${attrs}${on ? " checked" : ""}> ${esc(label)}</label>`;
 const SERVE = { hot: "Hot: eat within a few minutes", soon: "Soon: fine for half an hour", keeps: "Keeps: made ahead, or eaten at room temperature" };
 
 function detailsHTML() {
@@ -780,77 +703,26 @@ function ingredientDetails(i, n) {
   </fieldset>`;
 }
 
-const TRI = [["", "Not set"], ["true", "Uses it"], ["false", "Doesn't use it"]];
-const tri = (v) => (v === true ? "true" : v === false ? "false" : "");
-
-// A step's settings for the lineup, folded under the open step: what it uses
-// and how much, hands-on time and prep, needing you through its wait, the
-// equipment, and whether the dish keeps after it. The fold says what's set,
-// and opens by itself when one of them has a problem or a to-do. On a new
-// recipe, the intake's own guesses ("Needs you there", "Done while an earlier
-// step waits") stand in for the editor's while they're still to confirm.
-function lineupSummary(o, uses) {
-  const said = [];
-  if (typeof o.oven === "string") said.push(o.oven === "off" ? "Oven off" : o.oven === "broil" ? "Broil" : `Oven ${o.oven}`);
-  if (typeof o.preheat === "string") said.push(`Heats the oven to ${o.preheat}`);
-  for (const [k, word] of [["burner", "Burner"], ["grill", "Grill"], ["microwave", "Microwave"]]) if (o[k] === true) said.push(word);
-  if (o.hands) said.push(`${o.hands} hands-on`);
-  if (o.prep) said.push(o.prep === true ? "Prep, ahead" : "Prep, just before");
-  if (o.watch) said.push("Needs you");
-  if (o.holds) said.push("Keeps after this");
-  if (uses) said.push(`uses ${uses}`);
-  return said.join(" · ") || "nothing set";
-}
+// A step's settings for the lineup, folded under the open step
+// (assets/edit-fold.mjs). It opens by itself when one of them has a problem or
+// a to-do. On a new recipe, the intake's own guesses ("Needs you there",
+// "Done while an earlier step waits") stand in for the editor's while they're
+// still to confirm.
 function lineupFold(n) {
   const s = flat(recipe.steps)[n];
   const o = typeof s === "string" ? { do: s } : s || {};
   const { errors, warnings } = checks();
   const flagged = [...errors, ...warnings].some((m) => partOf(m).step === n && (mentions(m) || (explain(m)?.go?.field || "").startsWith("d-")));
-  return `<details class="edit-lineup" aria-label="For the lineup"${lineupOpen || flagged ? " open" : ""}>
-    <summary data-key="edit-lineup">For the lineup: ${esc(lineupSummary(o, M.usesOf(recipe, n).picks.length))}</summary>
-    ${stepLineup(n)}
-  </details>`;
-}
-
-function stepLineup(n) {
-  const s = flat(recipe.steps)[n];
-  const o = typeof s === "string" ? { do: s } : s || {};
-  const ings = flat(recipe.ingredients);
-  const { picks, unmatched } = M.usesOf(recipe, n);
-  const picked = new Map(picks.map((p) => [p.ing, p.amount]));
-  const oven = o.oven === false ? "false" : o.oven === "broil" || o.oven === "off" ? o.oven : o.oven || ovenTemp === n ? "temp" : "";
-  const sf = (attrs) => ` data-act="step-field" data-n="${n}"${attrs}`;
-  const named = shownNumbers().has(n) ? `step ${shownNumbers().get(n)}` : "the added prep step";
-  // The intake's guesses on a new recipe, while they're still to confirm.
   const imported = fresh && review && o.reviewId ? reviewOf(withReview()) : null;
   const guess = (kind) => imported?.confirms.find((c) => c.kind === kind && c.step === o.reviewId);
   const watch = guess("watch"), during = guess("during");
-  return `<div class="edit-lineup-body">
-    <div class="edit-uses" role="group" aria-label="Ingredients ${esc(named)} uses">
-      <p class="edit-subhead">Uses</p>
-      ${ings.map((i, k) => `<div class="edit-use">
-        ${check(ingName(i) || `Ingredient ${k + 1}`, ` data-act="use" data-n="${n}" data-ing="${k}" data-key="d-use-${n}-${k}"`, picked.has(k))}
-        ${picked.has(k) ? `${labelled("Amount for this step", `<input value="${esc(picked.get(k))}" placeholder="all of it" data-act="use-amount" data-n="${n}" data-ing="${k}" data-key="d-use-amt-${n}-${k}">`, " inline")}` : ""}
-      </div>`).join("")}
-      ${unmatched.map((u) => `<p class="edit-error">"${esc(u)}" isn't one of the ingredients.
-        <button class="btn" type="button" data-act="use-drop" data-n="${n}" data-name="${esc(u)}" data-key="d-use-drop-${n}-${esc(u)}">Take out "${esc(u)}"</button></p>`).join("")}
-    </div>
-    <div class="edit-fields">
-      ${labelled("Hands-on time", `<input value="${esc(o.hands || "")}" placeholder="e.g. 5 min"${sf(` data-field="hands" data-key="d-hands-${n}"`)}>`)}
-      ${select("Prep", "prep", [["", "Not prep"], ["true", "Can be done ahead"], ["just before", "Just before"]], o.prep === true ? "true" : o.prep || "", sf(` data-field="prep" data-key="d-prep-${n}"`))}
-    </div>
-    ${watch ? guessHTML("watch", o.reviewId, watch.value) : o.wait ? check("Needs you there the whole wait", sf(` data-field="watch" data-key="d-watch-${n}"`), o.watch === true) : ""}
-    ${during ? guessHTML("during", o.reviewId, during.value) : ""}
-    <div class="edit-fields">
-      ${select("Oven", "oven", [["", "Not set"], ["false", "Doesn't use the oven"], ["temp", "At a temperature"], ["broil", "Broil"], ["off", "Turn it off"]], oven, sf(` data-field="oven" data-key="d-oven-${n}"`))}
-      ${oven === "temp" ? labelled("Oven temperature", `<input value="${esc(typeof o.oven === "string" ? o.oven : "")}" placeholder="200C or 400F"${sf(` data-field="oven-temp" data-key="d-oven-temp-${n}"`)}>`) : ""}
-      ${labelled("Heats the oven to", `<input value="${esc(typeof o.preheat === "string" ? o.preheat : "")}" placeholder="200C or 400F"${sf(` data-field="preheat" data-key="d-preheat-${n}"`)}>`)}
-      ${select("Burner", "burner", TRI, tri(o.burner), sf(` data-field="burner" data-key="d-burner-${n}"`))}
-      ${select("Grill", "grill", TRI, tri(o.grill), sf(` data-field="grill" data-key="d-grill-${n}"`))}
-      ${select("Microwave", "microwave", TRI, tri(o.microwave), sf(` data-field="microwave" data-key="d-microwave-${n}"`))}
-    </div>
-    ${check("Keeps as long as you like after this step", ` value="${n}" data-act="holds" data-key="d-holds-${n}"`, !!o.holds)}
-  </div>`;
+  return foldHTML(recipe, n, {
+    open: lineupOpen || flagged,
+    named: shownNumbers().has(n) ? `step ${shownNumbers().get(n)}` : "the added prep step",
+    ovenTemp,
+    watchGuess: watch ? guessHTML("watch", o.reviewId, watch.value) : "",
+    duringGuess: during ? guessHTML("during", o.reviewId, during.value) : "",
+  });
 }
 
 // --- Deleting --------------------------------------------------------------------------------
@@ -1029,52 +901,25 @@ function cancel() {
 }
 
 // --- Undo and redo ----------------------------------------------------------------------------
-// Each change that lands (Done, Remove, a Details choice...) is a step back.
-// What's typed in an open line becomes one step when the line closes or
-// another opens, so Undo takes back a whole edit, not a letter. A new
-// recipe's steps keep its review too. Up to 50, cleared on Save.
-const UNDO_LIMIT = 50;
-let past = [], future = [];
-let committed = null; // the recipe (and review) as of the last step
+// Each change that lands is a step back; what's typed in an open line becomes
+// one step when the line closes or another opens (assets/edit-history.mjs).
+// A new recipe's steps keep its review too. Up to 50, cleared on Save.
+const undoHistory = createHistory();
 const snapshot = () => ({ recipe: structuredClone(recipe), review: review && structuredClone(review) });
-// Anything changed since the last step: the recipe, or a new recipe's review.
-const typedSince = () => committed && (!same(committed.recipe, recipe) || !same(committed.review ?? null, review ?? null));
-function commit() {
-  if (typedSince()) {
-    past.push(committed);
-    if (past.length > UNDO_LIMIT) past.shift();
-    future = [];
-  }
-  committed = snapshot();
-}
-function forgetHistory() {
-  past = [];
-  future = [];
-  committed = snapshot();
-}
-// The first line that differs between two versions, to focus after an undo.
-function changedLine(a, b) {
-  if (["title", "description", "yield"].some((k) => a[k] !== b[k])) return "part-title";
-  for (const [kind, list] of Object.entries(LIST)) {
-    const was = flat(a[list]), now = flat(b[list]);
-    const i = Math.max(was.length, now.length);
-    for (let k = 0; k < i; k++) {
-      if (JSON.stringify(was[k]) !== JSON.stringify(now[k])) return now.length ? `part-${kind}-${Math.min(k, now.length - 1)}` : `add-${list}`;
-    }
-  }
-  return "undo";
-}
-function travel(from, to, said) {
-  const target = from.pop();
-  if (!target) return;
+const commit = () => undoHistory.commit(snapshot());
+const forgetHistory = () => undoHistory.reset(snapshot());
+const canUndo = () => undoHistory.canUndo(snapshot());
+function travel(go, said) {
+  // A typed Details field still waiting to land lands first, so it's what
+  // Undo takes back.
   finishPending();
+  const target = go(snapshot());
+  if (!target) return;
   editing = null;
   opened = null;
   const was = recipe;
-  to.push(typedSince() ? snapshot() : committed);
-  recipe = structuredClone(target.recipe);
-  review = target.review && structuredClone(target.review);
-  committed = snapshot();
+  recipe = target.recipe;
+  review = target.review;
   offer = null;
   status = null;
   note = said;
@@ -1082,13 +927,8 @@ function travel(from, to, said) {
   focusKey = changedLine(was, recipe);
   draw();
 }
-function undo() {
-  // What's typed in an open line, not yet a step, is taken back first.
-  if (typedSince()) { past.push(committed); committed = snapshot(); }
-  travel(past, future, "Undone.");
-}
-const redo = () => travel(future, past, "Redone.");
-const canUndo = () => past.length > 0 || !!typedSince();
+const undo = () => travel(undoHistory.undo, "Undone.");
+const redo = () => travel(undoHistory.redo, "Redone.");
 
 function update(next, after) {
   recipe = next;
@@ -1191,33 +1031,10 @@ const changesText = () => (fresh ? "Not saved yet" : unsaved() ? "Unsaved change
 const statusLine = Object.assign(document.createElement("p"), { className: "edit-status", id: "save-why" });
 statusLine.setAttribute("role", "status");
 let note = null; // what the last change also did, said on the status line until the next one
-// The steps whose uses differ between two versions of the recipe, as "step 1"
-// or "steps 3 and 4" (numbered as on the recipe page), or null for none.
-function stepsTouched(a, b) {
-  const was = flat(a.steps), now = flat(b.steps);
-  const ns = now.map((s, n) => (JSON.stringify(s?.uses) !== JSON.stringify(was[n]?.uses) ? n + 1 : 0)).filter(Boolean);
-  return ns.length ? stepNames(ns) : null;
-}
-// Steps by their numbers in the file (from 1), as "step 1" or "steps 3 and 4",
-// numbered as the sheet shows them.
-function stepNames(ns) {
-  // Numbered as the sheet shows them, in that order.
-  const shown = shownNumbers();
-  const names = ns.map((n) => (shown.has(n - 1) ? { k: shown.get(n - 1), name: String(shown.get(n - 1)) } : { k: Infinity, name: say(`step ${n}`) }))
-    .sort((x, y) => x.k - y.k);
-  const allNumbers = names.every((x) => x.k !== Infinity);
-  const list = names.map((x) => (allNumbers || x.k === Infinity ? x.name : `step ${x.name}`));
-  const joined = list.length === 1 ? list[0] : `${list.slice(0, -1).join(", ")} and ${list.at(-1)}`;
-  return allNumbers ? `step${list.length > 1 ? "s" : ""} ${joined}` : joined;
-}
-// After step n (from 0) was split into `parts` steps: what it used all stayed
-// with the first part, so the parts' ingredients need a look. Null when it
-// used nothing.
-function usesNote(before, n, parts) {
-  if (!flat(before.steps)[n]?.uses?.length) return null;
-  const ns = Array.from({ length: parts }, (_, k) => n + 1 + k);
-  return `Check what ${stepNames(ns)} use: the ingredients all stayed with ${stepNames([n + 1])}.`;
-}
+// What changed steps' uses, and what to check after a split, with steps
+// named as the sheet shows them (assets/edit-numbers.mjs).
+const stepsTouched = (a, b) => numbers().stepsTouched(a, b);
+const usesNote = (before, n, parts) => numbers().usesNote(before, n, parts);
 let problemCount = 0; // the checker's errors at the last draw
 // Typing doesn't redraw the page, so the bar's words and Save follow along here.
 function showChanges() {
@@ -1549,7 +1366,7 @@ root.addEventListener("toggle", (e) => {
   ({ recipe: original, sha: version } = loaded);
   // (A new recipe starts in startNew, below.)
   recipe = structuredClone(original);
-  committed = snapshot();
+  forgetHistory();
   const draft = readDraft();
   if (draft?.recipe && !same(draft.recipe, original)) offer = draft;
   draw();
@@ -1573,6 +1390,6 @@ async function startNew() {
   recipe = r;
   review = rest;
   source = kept.original;
-  committed = snapshot();
+  forgetHistory();
   draw();
 }

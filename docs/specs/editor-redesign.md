@@ -366,6 +366,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - `edit-fold.mjs`: a step's "For the lineup" fold (`lineupSummary`, `stepLineup`). Steps 20 and 21 change it.
     - `edit-facts.mjs`: the Facts form (`factsForm`, `moreFacts`, `hintText`).
     - The move controls stay: their rules are already in `edit-model.mjs`.
+    - `edit-html.mjs`: the form pieces those modules share (`labelled`, `field`, `select`, `check`, `act`, `formButtons`).
     - Reword the problem on a hidden added prep step in the wording table (decision 16), with a test.
 20. **(M) Small step fields** (was 19).
     - "It doesn't wait" (`wait: false`) and "During" go in the step's fold, beside "Needs you there the whole wait". On an imported recipe, the intake's "Done while an earlier step waits" stands in for "During" while it's still to check, as it does for "Needs you there".
