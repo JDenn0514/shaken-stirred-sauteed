@@ -260,7 +260,11 @@ const PAGES = [
     await page.getByRole("group", { name: /^Step 2:/ }).getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
     await expect(page.getByLabel("Oven temperature")).toBeVisible();
   }, null, editor],
-  ["editor with its to-do list", "edit.html?r=garlic-bread", (page) => expect(page.getByRole("region", { name: "To do" })).toBeVisible(), null, editor],
+  ["editor with its things to check folded", "edit.html?r=garlic-bread", (page) => expect(page.getByText("1 thing to check")).toBeVisible(), null, editor],
+  ["editor with its to-do list open", "edit.html?r=garlic-bread", async (page) => {
+    await page.getByText("1 thing to check").click();
+    await expect(page.getByRole("region", { name: "To do" })).toBeVisible();
+  }, null, editor],
   ["editor in prep-first order", "edit.html?r=veg-stir-fry", (page) => expect(editorPreview(page).getByRole("switch", { name: "Prep first" })).toBeChecked(), null, editor],
   ["editor after publishing", "edit.html?r=pork-carnitas", async (page) => {
     await changeThenSave(page);

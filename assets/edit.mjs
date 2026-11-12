@@ -23,6 +23,7 @@
 // (docs/specs/recipe-editor-plan.md, slice 6). Delete asks you to type the
 // recipe's name, and is off while another recipe links to it.
 import * as M from "./edit-model.mjs";
+import { explain } from "./edit-words.mjs";
 import { originalHTML, stepNotesHTML, ingredientNotesHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
 import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
@@ -48,6 +49,7 @@ let opened = null;     // how it was when it opened, for Cancel: { before, added
 let prepFirst = true;  // which order the preview shows steps in, when the recipe has both
 let ovenTemp = null;   // a step whose oven was just set to "At a temperature", before a temperature is typed
 let detailsOpen = false;
+let checksOpen = false; // the strip of to-dos and things to check
 let offer = null;      // an unsaved draft from before, offered back
 let focusKey = null;   // what to focus after the next draw
 let status = null;     // how the last save went: { saving }, { published }, or { error, problems, signIn }
@@ -153,6 +155,55 @@ const namesHidden = (text) => [...text.matchAll(/\bsteps? (\d+)\b/gi)].some(([, 
 const showPrepButton = (text) => (namesHidden(text)
   ? ` <button class="btn" type="button" data-act="show-prep" data-key="show-prep-${esc(text.slice(0, 40))}">Show prep first</button>` : "");
 
+// A checker message in a cook's words (assets/edit-words.mjs), its steps
+// numbered as the sheet shows them. A message the table doesn't know is said
+// as the checker wrote it.
+const words = (message) => say(explain(message)?.text ?? message);
+
+// A button to where a message's fix is: its line, opened at the field, or the
+// field in Details.
+function goLabel(go) {
+  if (go.label) return go.label;
+  if (go.open === "step") return say(`Go to step ${go.n + 1}`);
+  if (go.open === "ing") return `Go to ${go.name}`;
+  if (go.open === "about") return "Go to the title";
+  if (go.empty) return go.empty === "ing" ? "Go to the empty ingredient" : "Go to the empty step";
+  if (go.field === "add-ingredients") return "Go to Ingredients";
+  if (go.field === "add-steps") return "Go to Steps";
+  return "Show in Details";
+}
+function goButton(message) {
+  const go = explain(message)?.go;
+  if (!go) return "";
+  return ` <button class="btn" type="button" data-act="go" data-go="${esc(JSON.stringify(go))}" data-key="go-${esc(message.slice(0, 60))}">${esc(goLabel(go))}</button>`;
+}
+function goTo(go) {
+  const ings = flat(recipe.ingredients), steps = flat(recipe.steps);
+  const line = go.open === "step" ? `step:${go.n}`
+    : go.open === "ing" ? `ing:${ings.findIndex((i) => ingName(i) === go.name)}`
+    : go.open === "about" ? "about"
+    : go.empty === "ing" ? `ing:${ings.findIndex((i) => !ingName(i))}`
+    : go.empty === "step" ? `step:${steps.findIndex((x) => !stepText(x))}` : null;
+  if (line && !line.endsWith(":-1")) {
+    openLine(line);
+    const kind = line.split(":")[0];
+    focusKey = go.field || (kind === "about" ? "edit-title" : FIRST_FIELD[kind]);
+    if (kind === "ing" && typeof ings[Number(line.slice(4))] === "string") focusKey = "edit-text";
+    return draw();
+  }
+  // A field in Details (or on the page): by its key, the first whose key
+  // starts so for a key ending in "*", or else the fallback, or else Details.
+  const n = go.ingField ? ings.findIndex((i) => ingName(i) === go.name) : -1;
+  const keys = go.ingField ? [`d-${go.ingField}-${n}`] : [go.field, go.or].filter(Boolean);
+  if (keys.some((k) => k.startsWith("d-")) || go.ingField) detailsOpen = true;
+  editing = null;
+  draw();
+  const find = (k) => root.querySelector(k.endsWith("*") ? `[data-key^="${CSS.escape(k.slice(0, -1))}"]` : `[data-key="${CSS.escape(k)}"]`);
+  const el = keys.map(find).find(Boolean) || root.querySelector('[data-key="details"]');
+  el?.focus();
+  el?.scrollIntoView({ block: "center" });
+}
+
 function partOf(message) {
   const step = /^step (\d+)\b/.exec(message);
   if (step) return { step: Number(step[1]) - 1 };
@@ -225,8 +276,10 @@ function draw() {
     </div>
     ${errors.length ? `<section class="edit-problems" aria-labelledby="problems-h">
       <h2 id="problems-h">Problems to fix</h2>
-      <ul>${errors.map((e) => `<li>${esc(say(e))}${showPrepButton(e)}</li>`).join("")}</ul>
+      <ul>${errors.map((e) => `<li>${esc(words(e))}${showPrepButton(e)}${goButton(e)}</li>`).join("")}</ul>
     </section>` : ""}
+    ${warnings.length + unplaced.length ? `<details class="edit-checks"${checksOpen ? " open" : ""} aria-label="${checkCount(warnings.length + unplaced.length)}">
+    <summary data-key="checks">${checkCount(warnings.length + unplaced.length)}</summary>
     ${unplaced.length ? `<section class="edit-todo" aria-labelledby="import-checks-h">
       <h2 id="import-checks-h">Things to check</h2>
       <p class="muted">From reading the recipe in. The rest sit beside the step or ingredient they're about.</p>
@@ -237,6 +290,7 @@ function draw() {
       <p class="muted">These help the lineup plan a meal. They don't stop you saving.</p>
       <ul>${warnings.map(todoHTML).join("")}</ul>
     </section>` : ""}
+    </details>` : ""}
     <section class="edit-card" aria-label="Card preview">
       <ul class="grid">${cardHTML(entry)}</ul>
     </section>
@@ -286,11 +340,13 @@ function failureHTML({ error, problems, signIn }) {
     ${signIn ? `<p><a href="${esc(signInHere())}">Sign in again</a></p>` : ""}`;
 }
 
+const checkCount = (n) => `${n} thing${n === 1 ? "" : "s"} to check`;
+
 function todoHTML(w) {
   const m = mentions(w);
   const optional = /^"(.+?)" says it's optional/.exec(w);
   const ing = optional && flat(recipe.ingredients).findIndex((i) => ingName(i) === optional[1]);
-  return `<li>${esc(say(w))}${showPrepButton(w)}
+  return `<li>${esc(words(w))}${showPrepButton(w)}${m || optional ? "" : goButton(w)}
     ${m ? `<span class="edit-row">
       <button class="btn" type="button" data-act="no-equipment" data-step="${m.step}" data-field="${m.field}" data-key="todo-no-${m.step}">${esc(say(`Step ${m.step + 1}`))} doesn't use ${esc(m.what)}</button>
       <button class="btn" type="button" data-act="set-equipment" data-step="${m.step}" data-field="${m.field}" data-key="todo-set-${m.step}">${esc(say(`Set step ${m.step + 1}`))}'s equipment</button>
@@ -493,8 +549,8 @@ function decorate(page, errors, showPrepFirst) {
       : p.title ? page.querySelector("h1, form[data-form=about]") : null;
     if (!at) return;
     const id = `error-${k}`;
-    if (at.matches("h1, form")) at.insertAdjacentHTML("afterend", `<p class="edit-error" id="${id}">${esc(say(e))}</p>`);
-    else at.insertAdjacentHTML("beforeend", `<p class="edit-error" id="${id}">${esc(say(e))}</p>`);
+    if (at.matches("h1, form")) at.insertAdjacentHTML("afterend", `<p class="edit-error" id="${id}">${esc(words(e))}</p>`);
+    else at.insertAdjacentHTML("beforeend", `<p class="edit-error" id="${id}">${esc(words(e))}</p>`);
     const button = at.querySelector(".edit-part") || at.querySelector(".edit-part, button");
     if (button) notes.set(button, [...(notes.get(button) || []), id]);
   });
@@ -1088,6 +1144,7 @@ root.addEventListener("click", (e) => {
     return draw();
   }
   if (a === "cancel") return cancel();
+  if (a === "go") return goTo(JSON.parse(b.dataset.go));
   if (a === "undo") return undo();
   if (a === "show-prep") { prepFirst = true; focusKey = "prep-first"; return draw(); }
   if (a === "redo") return redo();
@@ -1283,6 +1340,7 @@ function onChange(t) {
 
 root.addEventListener("toggle", (e) => {
   if (e.target.matches?.("details.edit-details")) detailsOpen = e.target.open;
+  if (e.target.matches?.("details.edit-checks")) checksOpen = e.target.open;
 }, true);
 
 // --- Start --------------------------------------------------------------------------------------
