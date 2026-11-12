@@ -45,14 +45,14 @@ test.describe("the preview", () => {
     await expect(preview(page).getByRole("button", { name: "2 oranges", exact: true })).toBeFocused();
   });
 
-  test("the title, description and yield are edited in place", async ({ page, baseURL }) => {
+  test("the title and description are edited in place", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     await preview(page).getByRole("button", { name: "Pork Carnitas" }).click();
     await page.getByLabel("Title").fill("Crispy Carnitas");
-    await page.getByLabel("Yield").fill("Serves 8");
+    await page.getByLabel("Description").fill("Braised, then crisped.");
     await page.getByRole("button", { name: "Done" }).click();
     await expect(preview(page).getByRole("heading", { level: 1 })).toHaveText("Crispy Carnitas");
-    await expect(preview(page).locator(".facts")).toContainText("8");
+    await expect(preview(page).getByRole("button", { name: "Braised, then crisped." })).toBeVisible();
     await expect(page.getByRole("region", { name: "Card preview" }).getByRole("heading", { name: "Crispy Carnitas" })).toBeVisible();
   });
 
@@ -62,6 +62,57 @@ test.describe("the preview", () => {
     await page.getByLabel("Group name").fill("Braise");
     await page.getByRole("button", { name: "Done" }).click();
     await expect(preview(page).getByRole("heading", { name: "Braise", exact: true })).toBeVisible();
+  });
+});
+
+test.describe("the facts box", () => {
+  const facts = (page) => page.getByRole("form", { name: "Facts" });
+
+  test("tapping the yield opens the facts at the yield", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "6", exact: true }).press("Enter");
+    await expect(facts(page).getByLabel("Yield")).toBeFocused();
+    await facts(page).getByLabel("Yield").fill("Serves 8");
+    await facts(page).getByRole("button", { name: "Done" }).press("Enter");
+    await expect(preview(page).getByRole("button", { name: "8", exact: true })).toBeFocused();
+    expect((await draftOf(page, "pork-carnitas")).yield).toBe("Serves 8");
+  });
+
+  test("the times as printed are rows to change, add, move and remove", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-soup");
+    await preview(page).getByRole("button", { name: "45 min" }).press("Enter");
+    const row = (n) => facts(page).getByRole("group", { name: `Time ${n}` });
+    await expect(row(2).getByLabel("How long")).toBeFocused();
+    await expect(row(1).getByLabel("Name")).toHaveValue("Active");
+    await facts(page).getByRole("button", { name: "Add a time" }).press("Enter");
+    await expect(row(3).getByLabel("Name")).toBeFocused();
+    await page.keyboard.type("Rest");
+    await row(3).getByLabel("How long").fill("10 min");
+    await row(3).getByRole("button", { name: "Move up" }).press("Enter");
+    await row(1).getByRole("button", { name: "Remove" }).press("Enter");
+    await facts(page).getByRole("button", { name: "Done" }).press("Enter");
+    expect((await draftOf(page, "garlic-soup")).times).toEqual([["Rest", "10 min"], ["Total", "45 min"]]);
+    await expect(preview(page).locator("dl").first()).toContainText("Rest10 min");
+  });
+
+  test("the minutes for filters and the lineup are here, with a word when the total is short", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "6", exact: true }).press("Enter");
+    const minutes = facts(page).getByRole("group", { name: "For filters and the lineup, in minutes" });
+    await expect(minutes.getByLabel("Prep")).toHaveValue("20");
+    await minutes.getByLabel("Total").fill("60");
+    await expect(facts(page)).toContainText("Total, 60 min, is less than prep, cook, chill and rest add up to, 180 min.");
+    await facts(page).getByRole("button", { name: "Done" }).press("Enter");
+    expect((await draftOf(page, "pork-carnitas")).time).toEqual({ prep: 20, cook: 160, total: 60 });
+    await expect(page.locator("details.edit-details").getByRole("group", { name: "Times, in minutes" })).toHaveCount(0);
+  });
+
+  test("Cancel puts the facts back as they were", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-soup");
+    await preview(page).getByRole("button", { name: "45 min" }).press("Enter");
+    await facts(page).getByRole("group", { name: "Time 1" }).getByLabel("How long").fill("25 min");
+    await facts(page).getByRole("button", { name: "Cancel" }).press("Enter");
+    await expect(page.getByRole("region", { name: "Editing" })).toContainText("No changes");
   });
 });
 
@@ -865,8 +916,9 @@ test.describe("problems and to-dos", () => {
     const todo = page.getByRole("region", { name: "To do" });
     await expect(todo).toContainText("There's no total time, so it won't show when someone filters by time.");
     await todo.getByRole("button", { name: "Add the total time" }).press("Enter");
-    const d = page.locator("details.edit-details");
-    await expect(d.getByRole("group", { name: "Times, in minutes" }).getByLabel("Total")).toBeFocused();
+    await expect(page.getByRole("form", { name: "Facts" }).getByLabel("Total")).toBeFocused();
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    const d = await details(page);
 
     await d.getByRole("group", { name: "Tags" }).getByRole("checkbox", { name: "Fresh herbs" }).uncheck();
     await expect(todo).toContainText("No key ingredients are tagged");
@@ -942,11 +994,11 @@ test("a recipe with no total time is a to-do until one is given", async ({ page,
   await openEditor(page, baseURL, "salsa-verde");
   await page.getByText(/things? to check/).click();
   await expect(page.getByRole("region", { name: "To do" })).toContainText("There's no total time");
-  const times = (await details(page)).getByRole("group", { name: "Times, in minutes" });
+  await page.getByRole("button", { name: "Add the total time" }).click();
+  const times = page.getByRole("group", { name: "For filters and the lineup, in minutes" });
   await times.getByLabel("Prep").fill("10");
-  await times.getByLabel("Prep").blur();
   await times.getByLabel("Total").fill("15");
-  await times.getByLabel("Total").blur();
+  await page.getByRole("button", { name: "Done" }).click();
   await expect(page.getByText("There's no total time")).toHaveCount(0);
   expect((await draftOf(page, "salsa-verde")).time).toEqual({ prep: 10, total: 15 });
   await expect(page.getByRole("region", { name: "Card preview" })).toContainText("15 min");

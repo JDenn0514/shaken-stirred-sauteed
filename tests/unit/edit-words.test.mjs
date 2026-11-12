@@ -138,7 +138,7 @@ describe("what a message says, and where its fix is", () => {
 
   test("no key ingredients, and no total time, go to where they're set", () => {
     assert.deepEqual(explain("no key ingredients tagged").go, { field: "d-tag-ingredients-*", label: "Tag key ingredients" });
-    assert.deepEqual(explain("no total time, so it can't be filtered by time").go, { field: "d-time-total", label: "Add the total time" });
+    assert.deepEqual(explain("no total time, so it can't be filtered by time").go, { open: "facts", field: "edit-time-total", label: "Add the total time" });
   });
 
   test("an empty ingredient goes to the first one without a name", () =>

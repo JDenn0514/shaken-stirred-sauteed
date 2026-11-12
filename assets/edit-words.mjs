@@ -7,7 +7,7 @@
 //
 // A step keeps its number as the checker counts it ("step 3"), so the editor
 // can say it as the sheet numbers it. go is where the fix is:
-//   { open: "step" | "ing" | "about", n | name, field }  a line, opened at that field
+//   { open: "step" | "ing" | "about" | "facts", n | name, field }  a line or box, opened at that field
 //   { field: "d-kind" }  a field in Details (or on a step, with open), by its data-key; a key ending in
 //                            "*" is the first one that starts so; `or` is the key
 //                            to try when the first isn't there
@@ -121,7 +121,7 @@ export const RULES = [
     words: () => "An ingredient has no name. Add one, or remove the ingredient.", go: () => ({ empty: "ing" }) },
   { match: /^every step needs text or a "do"$/,
     words: () => "A step doesn't say what to do. Add it, or remove the step.", go: () => ({ empty: "step" }) },
-  { match: /^"time\.total" must be a number of minutes$/, words: () => "The total time needs to be a number of minutes.", go: () => ({ field: "d-time-total" }) },
+  { match: /^"time\.total" must be a number of minutes$/, words: () => "The total time needs to be a number of minutes.", go: () => ({ open: "facts", field: "edit-time-total" }) },
   { match: /^"source\.url" must start with https:\/\/ or http:\/\/$/,
     words: () => "The source's link needs to start with https:// or http://.", go: () => ({ field: "d-source-url" }) },
   { match: /^"image" must be an images\/ path or an https:\/\/ URL$/, words: () => "The picture's address needs to start with https:// or images/." },
@@ -143,7 +143,7 @@ export const RULES = [
     go: () => ({ field: "d-tag-ingredients-*", label: "Tag key ingredients" }) },
   { match: /^no total time, so it can't be filtered by time$/,
     words: () => "There's no total time, so it won't show when someone filters by time.",
-    go: () => ({ field: "d-time-total", label: "Add the total time" }) },
+    go: () => ({ open: "facts", field: "edit-time-total", label: "Add the total time" }) },
 
   // Links between recipes (the editor takes the file name off these).
   { match: /^"(.+?)" links to recipe "(.+?)", which doesn't exist$/,

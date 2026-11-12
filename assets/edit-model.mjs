@@ -54,6 +54,14 @@ function change(recipe, key, n, fn) {
 const KEYS = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
 export function putBack(recipe, before, target) {
   if (target === "about") return ["title", "description", "yield"].reduce((r, k) => setField(r, k, before[k]), recipe);
+  if (target === "facts") {
+    const r = setField(recipe, "yield", before.yield);
+    for (const k of ["times", "time"]) {
+      if (before[k] === undefined) delete r[k];
+      else r[k] = structuredClone(before[k]);
+    }
+    return r;
+  }
   const [kind, n] = target.split(":");
   const key = KEYS[kind];
   const back = change(recipe, key, Number(n), () => structuredClone(flat(before[key] || [])[Number(n)]));
@@ -91,6 +99,45 @@ export function setTime(recipe, key, value) {
   if (Object.keys(t).length) r.time = t;
   else delete r.time;
   return r;
+}
+
+// The facts box: the yield, the times as the page prints them
+// ([["Active", "15 min"], ["Rise", "1 to 2 hr"]]), and the minutes the time
+// filter, the card and the lineup use. Rows are kept as typed (an empty one
+// may be being written); none at all takes "times" out.
+export function setFacts(recipe, { yield: y, times, time = {} }) {
+  let r = setField(recipe, "yield", y);
+  r = structuredClone(r);
+  const rows = (times || []).map(([label, value]) => [clean(label ?? ""), clean(value ?? "")]);
+  if (rows.length) r.times = rows;
+  else delete r.times;
+  for (const k of TIMES) if (k in time) r = setTime(r, k, time[k]);
+  return r;
+}
+export function addTime(recipe) {
+  const r = structuredClone(recipe);
+  r.times = [...(r.times || []), ["", ""]];
+  return { recipe: r, at: r.times.length - 1 };
+}
+export function removeTime(recipe, k) {
+  const r = structuredClone(recipe);
+  r.times = (r.times || []).filter((_, i) => i !== k);
+  if (!r.times.length) delete r.times;
+  return r;
+}
+export function moveTime(recipe, k, dir) {
+  const j = k + dir, rows = recipe.times || [];
+  if (j < 0 || j >= rows.length) return recipe;
+  const r = structuredClone(recipe);
+  [r.times[k], r.times[j]] = [r.times[j], r.times[k]];
+  return r;
+}
+// A total shorter than prep, cook, chill and rest add up to, worth a word:
+// { total, parts }, or null. (A longer one may count time the parts don't.)
+export function minutesHint(time) {
+  if (!time || time.total == null) return null;
+  const parts = ["prep", "cook", "chill", "rest"].reduce((sum, k) => sum + (Number(time[k]) || 0), 0);
+  return time.total < parts ? { total: time.total, parts } : null;
 }
 
 // tags: { dimension: [values] }. No values takes the dimension out.
@@ -446,6 +493,11 @@ export const moveLine = (recipe, key, n, dir) => move(recipe, key, n, dir);
 // left out (an empty ingredient or step is a problem the checker names).
 export function withoutEmptyLines(recipe) {
   const r = structuredClone(recipe);
+  // A printed time with neither a label nor a time.
+  if (Array.isArray(r.times)) {
+    r.times = r.times.filter((row) => !Array.isArray(row) || row.some((x) => String(x ?? "").trim()));
+    if (!r.times.length) delete r.times;
+  }
   for (const key of ["notes", "beforeYouStart"]) {
     if (!Array.isArray(r[key])) continue;
     const kept = (e) => (isGroup(e) ? true : typeof e !== "string" || e.trim() !== "");

@@ -148,7 +148,7 @@ The rules that turn plain text into a draft:
 ## The editor
 
 - **The review screen is the recipe as it will appear**: the card from the recipe list, then the full recipe page, in the section's colours and the Field Guide style, light or dark.
-- **Tap any part to edit it in place**: the title, an ingredient, a step, the yield. Ingredients and steps can be added, removed, reordered, split and merged. Groups can be added and renamed.
+- **Tap any part to edit it in place**: the title, an ingredient, a step, the facts box (the yield, the times as printed, and the minutes the time filter and the lineup use). Ingredients and steps can be added, removed, reordered, split and merged. Groups can be added and renamed.
 - **"Details"**, below the preview, holds what the page doesn't show: tags (picked from `recipes/vocabulary.json`, so a tag that doesn't exist can't be added), `source`, `added`, `kind` and `icon`. Each step's `uses` and their amounts are on the step itself, with its lineup settings (below).
 - **The original sits next to the preview while importing**, so you can check the draft against it. On a phone, where there's no room alongside, it's one tap away.
 - **New from scratch** opens the same screen with an empty recipe in the category you pick.
