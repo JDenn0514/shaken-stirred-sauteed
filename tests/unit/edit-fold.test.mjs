@@ -2,7 +2,10 @@
 // summary line says what's set, so the fold can stay shut.
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { lineupSummary, lineupFold } from "../../assets/edit-fold.mjs";
+import fc from "fast-check";
+import { lineupSummary, lineupFold, usesByGroup, mentions } from "../../assets/edit-fold.mjs";
+import * as M from "../../assets/edit-model.mjs";
+import { recipeArb, flat as flatList } from "../helpers/recipe-arb.mjs";
 
 describe("lineupSummary", () => {
   test("nothing set", () => assert.equal(lineupSummary({ do: "Stir." }, 0), "nothing set"));
@@ -61,4 +64,92 @@ describe("lineupFold: done during an earlier step's wait", () => {
     assert.equal(got.find(([l]) => l === DURING), undefined);
     assert.deepEqual(got.find(([l]) => l === "Done while an earlier step waits"), ["Done while an earlier step waits", true]);
   });
+});
+
+// The Uses chips: grouped under the ingredient group names, so two "Sugar"s
+// can be told apart. In each group, ticked ones first, then ones the step's
+// text mentions, then the rest, each in the recipe's order. Nothing is
+// ticked or hidden for you.
+describe("usesByGroup", () => {
+  const bars = () => ({
+    ingredients: [
+      { group: "Crust", items: [{ qty: "1 cup", item: "Flour" }, { qty: "1/4 cup", item: "Sugar" }, { qty: "8 tbsp", item: "Butter" }] },
+      { group: "Filling", items: [{ qty: "1 cup", item: "Sugar" }, { qty: "3 large", item: "Eggs" }, { qty: "1/2 cup", item: "Lemon juice" }, "Powdered sugar, for dusting"] },
+    ],
+    steps: [
+      { do: "Mix the flour, sugar and butter.", uses: ["Flour", { group: "Crust", item: "Sugar" }, "Butter"] },
+      { do: "Whisk the eggs and half the lemon juice.", uses: [{ item: "Lemon juice", amount: "1/4 cup" }] },
+      "Chill.",
+    ],
+  });
+  const shape = (groups) => groups.map((g) => [g.group, g.items.map((i) => `${i.name}${i.ticked ? "✓" : ""}${i.mentioned ? "~" : ""}${i.amount ? `(${i.amount})` : ""}`)]);
+
+  test("under the group names, in the recipe's order, with their places in the file", () => {
+    const got = usesByGroup(bars(), 2);
+    assert.deepEqual(shape(got), [["Crust", ["Flour", "Sugar", "Butter"]], ["Filling", ["Sugar", "Eggs", "Lemon juice", "Powdered sugar, for dusting"]]]);
+    assert.deepEqual(got.flatMap((g) => g.items.map((i) => i.ing)), [0, 1, 2, 3, 4, 5, 6]);
+  });
+  test("ticked first, then mentioned, then the rest, in each group", () =>
+    assert.deepEqual(shape(usesByGroup(bars(), 1)), [
+      ["Crust", ["Flour", "Sugar", "Butter"]],
+      ["Filling", ["Lemon juice✓(1/4 cup)", "Eggs~", "Sugar", "Powdered sugar, for dusting"]],
+    ]));
+  test("the right Sugar is ticked, and the other only mentioned", () =>
+    assert.deepEqual(shape(usesByGroup(bars(), 0)), [
+      ["Crust", ["Flour✓", "Sugar✓", "Butter✓"]],
+      ["Filling", ["Sugar~", "Powdered sugar, for dusting~", "Eggs", "Lemon juice"]],
+    ]));
+  test("ungrouped ingredients are one group with no name", () =>
+    assert.deepEqual(shape(usesByGroup({ ingredients: ["1 orange", { qty: "2 tsp", item: "Kosher salt" }], steps: ["Salt the pork."] }, 0)),
+      [["", ["Kosher salt~", "1 orange"]]]));
+  test("ungrouped ingredients before a group stay before it", () =>
+    assert.deepEqual(usesByGroup({ ingredients: [{ item: "Salt" }, { group: "Sauce", items: [{ item: "Soy" }] }, { item: "Rice" }], steps: ["Go."] }, 0).map((g) => g.group),
+      ["", "Sauce", ""]));
+  test("no ingredients, no groups", () => assert.deepEqual(usesByGroup({ steps: ["Stir."] }, 0), []));
+});
+
+describe("mentions: whether a step's text names an ingredient", () => {
+  for (const [text, name, want] of [
+    ["Mix the flour and sugar.", "Sugar", true],
+    ["Mix the flour and sugar.", "Flour", true],
+    ["Crack the egg.", "Eggs", true],
+    ["Add the eggs.", "Egg", true],
+    ["Whisk in the lemon juice.", "Lemon juice", true],
+    ["Season with salt.", "Kosher salt", true],
+    ["Dust with powdered sugar.", "Powdered sugar, for dusting", true],
+    ["Toss with the noodles.", "8 oz noodles", true],
+    ["Add 4 cloves garlic.", "4 cloves garlic, minced", true],
+    ["SALT it well.", "Salt", true],
+    ["Add the saltwater.", "Salt", false],
+    ["Juice the lemons.", "Lemon juice", true],
+    ["Mix the flour.", "Sugar", false],
+    ["Stir.", "", false],
+    ["", "Sugar", false],
+  ]) test(`"${text}" ${want ? "names" : "doesn't name"} "${name}"`, () => assert.equal(mentions(text, name), want));
+});
+
+// Laws, on random recipes the checker accepts. The seed is in the group's
+// name; USES_SEED=<seed> runs the same ones again.
+const usesSeed = Number(process.env.USES_SEED) || Date.now() % 2 ** 31;
+describe(`usesByGroup laws (seed ${usesSeed})`, () => {
+  const withStep = recipeArb.chain((r) => fc.nat({ max: Math.max(0, flatList(r.steps).length - 1) }).map((n) => [r, n]));
+  const opts = { seed: usesSeed, numRuns: 200 };
+  test("every ingredient is shown exactly once, under its own group", () =>
+    fc.assert(fc.property(withStep, ([r, n]) => {
+      const groups = usesByGroup(r, n);
+      const seen = groups.flatMap((g) => g.items.map((i) => i.ing)).sort((a, b) => a - b);
+      assert.deepEqual(seen, flatList(r.ingredients).map((_, k) => k));
+      const groupOf = r.ingredients.flatMap((e) => (Array.isArray(e?.items) ? e.items.map(() => e.group) : [""]));
+      for (const g of groups) for (const i of g.items) assert.equal(groupOf[i.ing], g.group);
+    }), opts));
+  test("what's ticked is exactly what the step uses, and comes before anything unticked", () =>
+    fc.assert(fc.property(withStep, ([r, n]) => {
+      const groups = usesByGroup(r, n);
+      const ticked = groups.flatMap((g) => g.items.filter((i) => i.ticked).map((i) => i.ing)).sort((a, b) => a - b);
+      assert.deepEqual(ticked, M.usesOf(r, n).picks.map((p) => p.ing).sort((a, b) => a - b));
+      for (const g of groups) {
+        const rank = g.items.map((i) => (i.ticked ? 0 : i.mentioned ? 1 : 2));
+        assert.deepEqual(rank, [...rank].sort(), JSON.stringify(g));
+      }
+    }), opts));
 });

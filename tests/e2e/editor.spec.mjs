@@ -18,6 +18,7 @@ const details = async (page) => {
   return page.locator("details.edit-details");
 };
 const ingredientBox = (scope, name) => scope.getByRole("group", { name, exact: true });
+const flat = (l = []) => l.flatMap((e) => (Array.isArray(e?.items) ? e.items : [e]));
 const draftOf = (page, slug) => page.evaluate((s) => JSON.parse(localStorage.getItem(`sss:draft:${s}`))?.recipe, slug);
 // Each step as text, in the order shown (an open form shows its Step field's
 // text). A step's text is its first button; its Edit button comes after.
@@ -915,6 +916,47 @@ test.describe("a step's lineup settings", () => {
     await fold.getByLabel("Oven temperature").press("Tab");
     await expect(page.getByRole("group", { name: "For the lineup" }).getByLabel("Oven temperature")).toHaveValue("gas mark 6");
     await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText("gas mark 6");
+  });
+
+  test("Uses are chips under the ingredient group names, ticked ones first", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    const uses = (await lineup(page, 3)).getByRole("group", { name: "Ingredients step 3 uses" });
+    const chips = (group) => uses.getByRole("group", { name: group, exact: true }).getByRole("checkbox")
+      .evaluateAll((boxes) => boxes.map((b) => `${b.labels[0].textContent.trim()}${b.checked ? " ✓" : ""}`));
+    // "Whisk the sugar, eggs and half the lemon juice." uses the filling's sugar, not the crust's.
+    expect(await chips("Filling")).toEqual(["Sugar ✓", "Eggs ✓", "Lemon juice ✓", "Powdered sugar, for dusting"]);
+    expect(await chips("Crust")).toEqual(["Sugar", "Flour", "Butter"]);
+    await expect(uses.getByLabel("Amount for this step")).toHaveCount(3);
+
+    const butter = uses.getByRole("group", { name: "Crust", exact: true }).getByRole("checkbox", { name: "Butter" });
+    await butter.focus();
+    await page.keyboard.press("Space");
+    expect(await chips("Crust")).toEqual(["Butter ✓", "Sugar", "Flour"]);
+    await expect(uses.getByRole("group", { name: "Crust", exact: true }).getByRole("checkbox", { name: "Butter" })).toBeFocused();
+    expect(flat((await draftOf(page, "lemon-bars")).steps)[2].uses).toContain("Butter");
+  });
+
+  test("on a phone, the fold is compact: hands-on and prep side by side, the equipment in a grid, chips in rows", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openEditor(page, baseURL, "lemon-bars");
+    const fold = await lineup(page, 1);
+    // Two controls are side by side when their tops are within a few pixels
+    // (an input and a select differ in height by a pixel or so).
+    // Measured together, so a scroll in between can't move one of them.
+    const sideBySide = async (a, b) => {
+      const other = await b.elementHandle();
+      const gap = await a.evaluate((x, y) => Math.abs(x.getBoundingClientRect().top - y.getBoundingClientRect().top), other);
+      expect(gap).toBeLessThan(4);
+    };
+    await expect(fold.getByLabel("Prep", { exact: true })).toBeVisible();
+    await sideBySide(fold.getByLabel("Prep", { exact: true }), fold.getByLabel("Hands-on time"));
+    await sideBySide(fold.getByLabel("Burner"), fold.getByLabel("Oven", { exact: true }));
+    await sideBySide(fold.getByLabel("Microwave"), fold.getByLabel("Grill"));
+    // Unticked chips share a row; a ticked one has its row, for its amount.
+    const filling = fold.getByRole("group", { name: "Filling", exact: true });
+    await sideBySide(filling.getByRole("checkbox", { name: "Eggs" }), filling.getByRole("checkbox", { name: "Lemon juice" }));
+    // Nothing spills sideways.
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 
   test("keeping after one step clears it from another", async ({ page, baseURL }) => {

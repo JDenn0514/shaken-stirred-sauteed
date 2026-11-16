@@ -368,7 +368,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - The move controls stay: their rules are already in `edit-model.mjs`.
     - `edit-html.mjs`: the form pieces those modules share (`labelled`, `field`, `select`, `check`, `act`, `formButtons`).
     - Reword the problem on a hidden added prep step in the wording table (decision 16), with a test.
-20. **(M) Small step fields** (was 19).
+20. **Done** (#74, 2026-11-16). **(M) Small step fields** (was 19).
     - "It doesn't wait" (`wait: false`) and "During" go in the step's fold, beside "Needs you there the whole wait". On an imported recipe, the intake's "Done while an earlier step waits" stands in for "During" while it's still to check, as it does for "Needs you there".
     - Oven temperatures in any common form ("400°F", "400 F", "200 degrees C") are turned into `400F` or `200C` by a model function with unit tests.
     - "Add ml" on any ingredient. Today the Millilitres field only shows when the ingredient already has one, or on a cocktail.
