@@ -20,6 +20,12 @@ async function fakeSave(page, reply) {
   });
   return sent;
 }
+// Save on a new import: its first Save names the amounts not ticked Checked
+// (build step 25), and its Save goes ahead.
+async function saveImport(page) {
+  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByRole("dialog", { name: "Check the amounts?" }).getByRole("button", { name: "Save" }).click();
+}
 const published = (slug) => ({ json: { slug, title: "x", sha: "1".repeat(40), commit: "c".repeat(40) } });
 
 // Signed in to an account that can edit, Milk Rolls read and its question answered.
@@ -98,7 +104,7 @@ test.describe("the reader's guesses, in the editor", () => {
     await expect(knead.getByRole("checkbox", { name: "Needs you there" })).toBeChecked();
     await knead.getByRole("checkbox", { name: "Needs you there" }).uncheck();
     const sent = await fakeSave(page, published("milk-rolls"));
-    await page.getByRole("button", { name: "Save" }).click();
+    await saveImport(page);
     await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
     expect(sent[0].recipe.steps.find((s) => s.do.includes("knead")).watch).toBeUndefined();
   });
@@ -154,7 +160,7 @@ test.describe("saving a new recipe", () => {
     await page.getByText("Details").click();
     await page.getByRole("group", { name: "Type" }).getByRole("checkbox").first().check();
     const sent = await fakeSave(page, published("milk-rolls"));
-    await page.getByRole("button", { name: "Save" }).click();
+    await saveImport(page);
 
     const status = page.getByRole("status").filter({ hasText: "Published" });
     await expect(status.getByRole("link", { name: "See Milk Rolls on the site" })).toHaveAttribute("href", "recipe.html?r=milk-rolls");
@@ -182,7 +188,7 @@ test.describe("saving a new recipe", () => {
     await readRolls(page, baseURL);
     await continueInEditor(page);
     await fakeSave(page, published("milk-rolls"));
-    await page.getByRole("button", { name: "Save" }).click();
+    await saveImport(page);
     await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
     await page.goto("intake.html");
     await expect(page.getByRole("button", { name: "Read the recipe" })).toBeVisible();
@@ -203,7 +209,7 @@ test.describe("saving a new recipe", () => {
     await readRolls(page, baseURL);
     await continueInEditor(page);
     await fakeSave(page, { status: 409, json: { error: "There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it." } });
-    await page.getByRole("button", { name: "Save" }).click();
+    await saveImport(page);
     await expect(page.getByRole("alert")).toContainText("There's already a recipe called recipes/milk-rolls.json");
     await expect(page).toHaveURL(/edit\.html\?new$/);
     expect(await kept(page)).not.toBeNull();
@@ -218,13 +224,99 @@ test.describe("the original, in the editor", () => {
     expect(o.x).toBeGreaterThan(p.x + p.width - 1);
   });
 
-  test("on a phone, is one tap away", async ({ page, baseURL }) => {
+  test("on a phone, opens over the page from the bar, wherever you are on it", async ({ page, baseURL }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await readRolls(page, baseURL);
     await continueInEditor(page);
-    const text = original(page).getByText("2 1/4 teaspoons instant yeast");
-    await expect(text).toBeHidden();
-    await original(page).getByRole("button", { name: "Show the original" }).click();
-    await expect(text).toBeVisible();
+    await preview(page).getByRole("button", { name: "Edit step 3" }).press("Enter");
+    const step = page.getByLabel("Step", { exact: true });
+    await step.fill(`${await step.inputValue()} Brush with milk.`);
+    const typed = await step.inputValue();
+    const bar = page.getByRole("region", { name: "Editing" });
+    await bar.getByRole("button", { name: "Show the original" }).press("Enter");
+    const sheet = page.getByRole("dialog", { name: "The original" });
+    await expect(sheet.getByText("2 1/4 teaspoons instant yeast")).toBeVisible();
+    await expect(sheet.getByRole("button", { name: "Hide the original" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(sheet).toBeHidden();
+    await expect(bar.getByRole("button", { name: "Show the original" })).toBeFocused();
+    // The open step, and what was typed in it, are as they were.
+    await expect(step).toHaveValue(typed);
+  });
+
+  test("on a laptop, the bar has no button for it: it's beside the preview already", async ({ page, baseURL }) => {
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await expect(page.getByRole("region", { name: "Editing" }).getByRole("button", { name: "Show the original" })).toBeHidden();
+  });
+});
+
+// Each amount the reader read can be ticked "Checked" against the original
+// (docs/specs/editor-redesign.md, build step 25, decision 8).
+test.describe("checking the amounts", () => {
+  const tick = (page, name) => preview(page).locator("li[data-ing-row]").filter({ hasText: name }).getByRole("checkbox", { name: /^Checked/ });
+
+  test("each amount has a Checked tick, which changing the amount takes off", async ({ page, baseURL }) => {
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await expect(tick(page, "Whole milk")).toHaveAccessibleName("Checked 1 cup Whole milk");
+    await expect(tick(page, "Whole milk")).not.toBeChecked();
+    await tick(page, "Whole milk").focus();
+    await page.keyboard.press("Space");
+    await expect(tick(page, "Whole milk")).toBeChecked();
+    await expect(tick(page, "Whole milk")).toBeFocused();
+
+    await preview(page).getByRole("button", { name: "Edit Whole milk" }).press("Enter");
+    await page.getByLabel("Amount", { exact: true }).fill("1 1/4 cups");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(tick(page, "Whole milk")).not.toBeChecked();
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect(tick(page, "Whole milk")).toBeChecked();
+  });
+
+  test("a reload keeps the ticks", async ({ page, baseURL }) => {
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await tick(page, "Instant yeast").check();
+    await page.reload();
+    await expect(tick(page, "Instant yeast")).toBeChecked();
+  });
+
+  test("the first Save names the amounts not yet ticked, and saves anyway when you say", async ({ page, baseURL }) => {
+    const sent = await fakeSave(page, published("milk-rolls"));
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await tick(page, "Whole milk").check();
+    await tick(page, "Instant yeast").check();
+    await page.getByRole("button", { name: "Save" }).press("Enter");
+    const ask = page.getByRole("dialog", { name: "Check the amounts?" });
+    await expect(ask.getByRole("listitem")).toHaveText(["3 cups Bread flour"]);
+    expect(sent).toHaveLength(0);
+    await ask.getByRole("button", { name: "Save" }).press("Enter");
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent).toHaveLength(1);
+    expect(JSON.stringify(sent[0].recipe)).not.toContain("checked");
+  });
+
+  test("it reminds once: after Keep checking, Save saves", async ({ page, baseURL }) => {
+    const sent = await fakeSave(page, published("milk-rolls"));
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await page.getByRole("button", { name: "Save" }).press("Enter");
+    await page.getByRole("dialog", { name: "Check the amounts?" }).getByRole("button", { name: "Keep checking" }).press("Enter");
+    await expect(page.getByRole("button", { name: "Save" })).toBeFocused();
+    expect(sent).toHaveLength(0);
+    await page.getByRole("button", { name: "Save" }).press("Enter");
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+  });
+
+  test("with every amount ticked, Save saves at once", async ({ page, baseURL }) => {
+    const sent = await fakeSave(page, published("milk-rolls"));
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    for (const name of ["Whole milk", "Instant yeast", "Bread flour"]) await tick(page, name).check();
+    await page.getByRole("button", { name: "Save" }).press("Enter");
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent).toHaveLength(1);
   });
 });

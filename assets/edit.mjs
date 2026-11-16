@@ -30,8 +30,8 @@ import { createHistory, changedLine } from "./edit-history.mjs";
 import { factsForm, hintText, MINUTES } from "./edit-facts.mjs";
 import { lineupFold as foldHTML } from "./edit-fold.mjs";
 import { labelled, field, select, check, act, formButtons } from "./edit-html.mjs";
-import { originalHTML, stepNotesHTML, ingredientNotesHTML, guessHTML, reviewAction, AMOUNTS } from "./import-view.mjs";
-import { reviewOf, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
+import { originalHTML, stepNotesHTML, ingredientNotesHTML, guessHTML, reviewAction, tickHTML, AMOUNTS } from "./import-view.mjs";
+import { reviewOf, recipeToSave, slugOf, toKeep, fromKept, amountsToCheck } from "../tools/intake/review.mjs";
 
 const { CATEGORIES, esc, getJSON, stepOrder, totalMinutes, signedIn: hinted } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
@@ -68,6 +68,7 @@ let status = null;     // how the last save went: { saving }, { published }, or 
 let review = null;     // a new recipe's review from the intake (tools/intake/review.mjs), its recipe kept in `recipe`
 let source = null;     // what a new recipe was read from: the original, shown beside the preview
 let sourceOpen = false; // on a phone, whether the original is shown
+let reminded = false;   // a new import's first Save has named the amounts not ticked
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 const ingName = (i) => (typeof i === "string" ? i : i?.item || "");
@@ -286,6 +287,7 @@ function draw() {
       <div class="edit-state">
         <p class="edit-changes" id="edit-changes">${changesText()}</p>
         ${!fresh && unsaved() ? `<button class="edit-link" type="button" data-act="show-changes" data-key="show-changes">What's changed</button>` : ""}
+        ${fresh && source ? `<button class="edit-link edit-original-open" type="button" data-act="original-sheet" data-key="original-sheet">Show the original</button>` : ""}
       </div>
       <div class="edit-row edit-history">
         <button class="btn" type="button" data-act="undo" data-key="undo"${canUndo() ? "" : " disabled"}>Undo</button>
@@ -639,7 +641,7 @@ function importNotes(page, imported) {
   });
   page.querySelectorAll("li[data-ing-row]").forEach((li) => {
     const n = Number(li.dataset.ingRow);
-    if (editing !== `ing:${n}`) li.insertAdjacentHTML("beforeend", ingredientNotesHTML(ings[n], imported, titles));
+    if (editing !== `ing:${n}`) li.insertAdjacentHTML("beforeend", tickHTML(ings[n], withReview()) + ingredientNotesHTML(ings[n], imported, titles));
   });
   if (imported.checks.some((c) => c.kind === "amounts")) {
     const ingHead = (page.querySelector("ul.ingredients")?.closest("section") || page.querySelector("section.section"))?.querySelector("h2");
@@ -772,6 +774,33 @@ const dialog = document.createElement("dialog");
 dialog.className = "edit-dialog";
 document.body.append(dialog);
 let dialogBack = "delete"; // what has focus again when the dialog closes
+
+// The amounts on a new import not yet ticked "Checked", on its first Save.
+function openAmounts() {
+  dialogBack = "save";
+  dialog.setAttribute("aria-labelledby", "amounts-title");
+  dialog.innerHTML = `<div class="edit-dialog-body">
+    <h2 id="amounts-title">Check the amounts?</h2>
+    <p>These aren't ticked Checked yet. Reading goes wrong most often in amounts, so they're worth a look against the original.</p>
+    <ul class="edit-change-list">${amountsToCheck(withReview()).map((a) => `<li>${esc(a.text)}</li>`).join("")}</ul>
+    <div class="edit-row">
+      <button class="btn edit-primary" type="button" data-act="confirm-save">Save</button>
+      <button class="btn" type="button" data-act="close-dialog">Keep checking</button>
+    </div>
+  </div>`;
+  dialog.showModal();
+  dialog.querySelector("[data-act=confirm-save]").focus();
+}
+
+// On a phone, the original opens over the page from the bar, so it's there
+// wherever you are on the page. Closing it goes back to the bar.
+function openOriginal() {
+  dialogBack = "original-sheet";
+  dialog.setAttribute("aria-labelledby", "original-h");
+  dialog.innerHTML = originalHTML(source, true).replace('data-act="original"', 'data-act="close-dialog"');
+  dialog.showModal();
+  dialog.querySelector("[data-act=close-dialog]").focus();
+}
 
 // What's changed since the recipe on the site. Before a save (confirm), with
 // Save and Keep editing; from the bar, with Close.
@@ -1216,9 +1245,13 @@ root.addEventListener("click", (e) => {
     editing = null;
     // An amount, a time or a temperature changed: check the list first.
     if (!fresh && whatChanged(original).some((c) => c.number)) return openChanges(true);
+    // A new import's first Save names the amounts not ticked yet, once. It
+    // never stops the save (decision 8).
+    if (fresh && !scratch && review && !reminded && amountsToCheck(withReview()).length) { reminded = true; return openAmounts(); }
     return save();
   }
   if (a === "show-changes") return openChanges(false);
+  if (a === "original-sheet") return openOriginal();
   if (a === "delete") return openDelete();
   if (a === "no-equipment") {
     return update(M.setStepField(recipe, Number(b.dataset.step), b.dataset.field, false), () => { focusKey = "save"; });

@@ -366,14 +366,24 @@ const PAGES = [
     await page.getByRole("button", { name: "Done" }).click();
     await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
   }, null, editor],
+  ["editor with a new recipe, an amount ticked Checked, and the first Save's reminder", "intake.html", async (page) => {
+    await newRecipe(page);
+    await editorPreview(page).getByRole("checkbox", { name: /^Checked/ }).first().check();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("dialog", { name: "Check the amounts?" })).toBeVisible();
+  }, null, editor],
   ["editor with a new recipe, published", "intake.html", async (page) => {
     await newRecipe(page);
     await page.getByRole("button", { name: "Save", exact: true }).click();
+    // A new import's first Save names the amounts not ticked Checked.
+    await page.getByRole("dialog", { name: "Check the amounts?" }).getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("link", { name: "See Milk Rolls on the site" })).toBeVisible();
   }, null, editorSaving({ json: { slug: "milk-rolls", title: "Milk Rolls", sha: "1".repeat(40), commit: "c".repeat(40) } })],
   ["editor with a new recipe, a save refused", "intake.html", async (page) => {
     await newRecipe(page);
     await page.getByRole("button", { name: "Save", exact: true }).click();
+    // A new import's first Save names the amounts not ticked Checked.
+    await page.getByRole("dialog", { name: "Check the amounts?" }).getByRole("button", { name: "Save" }).click();
     await expect(page.getByRole("alert")).toBeVisible();
   }, null, editorSaving({ status: 409, json: { error: "There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it." } })],
   ["editor choosing how to start a new recipe", "edit.html?new", (page) => expect(page.getByRole("heading", { name: "Add a recipe" })).toBeVisible(), null, editor],

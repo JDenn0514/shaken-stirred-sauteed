@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { draftFromText } from "../../tools/intake/intake.mjs";
 import { startReview, reviewOf, answerWait, answerServe, joinBack, splitBack, setPlanning, setHolds, setLink, updateIngredient,
   updateStep, setField, addIngredient, removeIngredient, addStep, removeStep, recipeToSave, slugOf,
-  toKeep, fromKept } from "../../tools/intake/review.mjs";
+  toKeep, fromKept, tickAmount, amountChecked, amountsToCheck } from "../../tools/intake/review.mjs";
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 
@@ -391,5 +391,47 @@ METHOD
     assert.ok(review.asks.some((a) => a.kind === "serve"), JSON.stringify(review.asks));
     assert.ok(review.asks.some((a) => a.kind === "wait" && /rest/i.test(a.text)), JSON.stringify(review.asks));
     assert.equal(review.ready, false);
+  });
+});
+
+// Ticking an imported amount "Checked" against the original (the editor, build
+// step 25). A tick holds for the amount it was given to: change the amount and
+// it's no longer ticked; put it back and it is again.
+describe("ticking amounts checked", () => {
+  const ids = (state) => flat(state.recipe.ingredients).map((i) => i.reviewId);
+  const toCheck = (state) => amountsToCheck(state).map((a) => a.text);
+
+  test("nothing is ticked to start with, and every amount is to check", () => {
+    const state = startReview(bread(), []);
+    assert.deepEqual(ids(state).map((id) => amountChecked(state, id)), [false, false]);
+    assert.deepEqual(toCheck(state), ["500 g flour", "7 g yeast"]);
+  });
+  test("a tick, and taking it off", () => {
+    let state = tickAmount(startReview(bread(), []), ids(startReview(bread(), []))[1], true);
+    assert.equal(amountChecked(state, ids(state)[1]), true);
+    assert.deepEqual(toCheck(state), ["500 g flour"]);
+    state = tickAmount(state, ids(state)[1], false);
+    assert.deepEqual(toCheck(state), ["500 g flour", "7 g yeast"]);
+  });
+  test("changing a ticked amount takes the tick off; putting it back puts it back", () => {
+    let state = startReview(bread(), []);
+    const [flour] = ids(state);
+    state = tickAmount(state, flour, true);
+    const changed = updateIngredient(state, flour, { qty: "450 g" });
+    assert.equal(amountChecked(changed, flour), false);
+    assert.equal(amountChecked(updateIngredient(changed, flour, { qty: "500 g" }), flour), true);
+    assert.equal(amountChecked(updateIngredient(state, flour, { item: "bread flour" }), flour), true, "a new name isn't a new amount");
+  });
+  test("a plain-text line isn't one the reader split into an amount, so it isn't listed", () =>
+    assert.deepEqual(toCheck(startReview({ ...bread(), ingredients: ["Salt, to taste", { qty: "2", item: "eggs" }] }, [])), ["2 eggs"]));
+  test("weighed only: its grams are its amount", () =>
+    assert.deepEqual(toCheck(startReview({ ...bread(), ingredients: [{ grams: 500, item: "flour" }] }, [])), ["500 g flour"]));
+  test("an ingredient without an amount has nothing to check", () =>
+    assert.deepEqual(toCheck(startReview({ ...bread(), ingredients: [{ item: "Salt" }, { qty: "1 cup", item: "Milk" }] }, [])), ["1 cup Milk"]));
+  test("ticks are kept with the review, and never saved in the recipe", () => {
+    let state = startReview(bread(), []);
+    state = tickAmount(state, ids(state)[0], true);
+    assert.equal(amountChecked(fromKept(JSON.parse(JSON.stringify(toKeep(state)))).state, ids(state)[0]), true);
+    assert.equal(JSON.stringify(recipeToSave(state)).includes("checked"), false);
   });
 });
