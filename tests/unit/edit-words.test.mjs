@@ -127,6 +127,13 @@ describe("what a message says, and where its fix is", () => {
   test("a step's wait", () => assert.deepEqual(explain('step 2: "wait" must be a time, like "10 min", or false'),
     { text: "Step 2's wait needs to be a time, like 10 min. Leave it empty if the step doesn't wait.", go: { open: "step", n: 1, field: "edit-wait" } }));
 
+  test("a step done during a wait that doesn't fit goes to its During checkbox", () => {
+    assert.deepEqual(explain('step 3: "during" needs an earlier step with a wait to run alongside'),
+      { text: "Step 3 happens during an earlier step's wait, but no step before it waits.", go: { open: "step", n: 2, field: "d-during-2" } });
+    assert.deepEqual(explain('step 3: "during" can\'t run alongside a watched wait, which needs your hands'),
+      { text: "Step 3 happens during a wait that needs you there the whole time, so it can't.", go: { open: "step", n: 2, field: "d-during-2" } });
+  });
+
   test("a step's hands-on time is fixed in the step, under For the lineup", () => assert.deepEqual(explain('step 3: "hands" must be a time, like "10 min"'),
     { text: "Step 3's hands-on time needs to be a time, like 10 min.", go: { open: "step", n: 2, field: "d-hands-2" } }));
 

@@ -53,6 +53,7 @@ let editing = null;    // the part open for editing: "about", "ing:3", "step:2",
 let opened = null;     // how it was when it opened, for Cancel: { before, added, back } (see openLine)
 let prepFirst = true;  // which order the preview shows steps in, when the recipe has both
 let ovenTemp = null;   // a step whose oven was just set to "At a temperature", before a temperature is typed
+let mlFor = null;      // an open ingredient given a Millilitres field with "Add ml", before one is typed
 let detailsOpen = false;
 let checksOpen = false; // the strip of to-dos and things to check
 let lineupOpen = false; // the open step's "For the lineup" fold
@@ -387,8 +388,9 @@ function ingredientForm(n) {
     <div class="edit-fields">
       ${field("Amount", "qty", i.qty)}
       ${field("Grams", "grams", i.grams, ` inputmode="decimal"`)}
-      ${i.ml != null || recipe.category === "cocktails" ? field("Millilitres", "ml", i.ml, ` inputmode="decimal"`) : ""}
+      ${i.ml != null || recipe.category === "cocktails" || mlFor === n ? field("Millilitres", "ml", i.ml, ` inputmode="decimal"`) : ""}
     </div>
+    ${i.ml != null || recipe.category === "cocktails" || mlFor === n ? "" : `<div class="edit-row">${act("add-ml", "Add ml")}</div>`}
     ${field("Ingredient", "item", i.item)}
     ${field("Note", "note", i.note)}
     ${formButtons(moves)}
@@ -881,7 +883,7 @@ function partKey(target) {
 // to focus after Cancel (the part's own line, unless it was just added).
 function openLine(target, { added = false, back = partKey(target), before = recipe } = {}) {
   commit(); // what was typed in the line being left is one step
-  if (target !== editing) lineupOpen = false;
+  if (target !== editing) { lineupOpen = false; mlFor = null; }
   editing = target;
   opened = { before, added, back };
 }
@@ -1135,7 +1137,7 @@ root.addEventListener("click", (e) => {
     const { recipe: next, at } = ops(kind).add(recipe);
     return update(next, () => { openLine(`${kind}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = FIRST_FIELD[kind]; });
   }
-  if (form && ["add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
+  if (form && ["add-ml", "add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
     const draft = offer;
     // A draft made on an older version saves against that version, so the
@@ -1198,6 +1200,10 @@ function formAction(a, form) {
   if (a === "move-to") {
     const { recipe: moved, at } = M.moveTo(next, list, n, form.querySelector('[data-key="edit-move-to"]').value);
     return update(moved, () => { openLine(`${kind}:${at}`, { before: moved }); focusKey = "edit-act-move-to"; });
+  }
+  if (a === "add-ml") {
+    mlFor = n;
+    return update(next, () => { focusKey = "edit-ml"; });
   }
   if (a === "as-written") {
     prepFirst = false;
@@ -1330,7 +1336,8 @@ function onChange(t) {
       return update(M.setStepField(recipe, n, "oven", v));
     }
     if (f === "oven-temp") return update(M.setStepField(recipe, n, "oven", t.value), () => { ovenTemp = null; });
-    if (f === "watch") return update(M.setStepField(recipe, n, "watch", t.checked || undefined));
+    if (f === "watch" || f === "during") return update(M.setStepField(recipe, n, f, t.checked || undefined));
+    if (f === "wait") return update(M.setStepField(recipe, n, "wait", t.checked ? false : undefined));
     if (f === "prep") return update(M.setStepField(recipe, n, "prep", t.value === "true" ? true : t.value || undefined));
     if (["burner", "grill", "microwave"].includes(f)) return update(M.setStepField(recipe, n, f, t.value === "" ? undefined : t.value === "true"));
     return update(M.setStepField(recipe, n, f, t.value));
