@@ -373,7 +373,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - Oven temperatures in any common form ("400°F", "400 F", "200 degrees C") are turned into `400F` or `200C` by a model function with unit tests.
     - "Add ml" on any ingredient. Today the Millilitres field only shows when the ingredient already has one, or on a cocktail.
 21. **Done** (#75, 2026-11-16). **(M) Lay out the lineup fold** (was 23, re-aimed). Details is short now, so the layout work left is the fold's: uses as chips under the ingredient group names, a compact equipment grid, and hands-on time and prep side by side (section 4, "While editing a line"). Mostly CSS.
-22. **(M) Category and Kind** (was 20).
+22. **Done** (#76, 2026-11-16). **(M) Category and Kind** (was 20).
     - Category goes in the About form. Before switching, it lists the tags that will be dropped. A model function returns those tags, built so it can later become picking several sections (decision 6). Undo works. The page recolours live.
     - Kind keeps an explicit `"kind": "dish"` (decision 11). Today only switching the menu from Component back to Dish removes it, so this is a small fix with a test.
 23. **(M) "What's changed"** (was 24).
