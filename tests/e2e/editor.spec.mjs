@@ -142,6 +142,50 @@ test.describe("the section and the kind", () => {
   });
 });
 
+test.describe("the pickers in Details", () => {
+  test("key ingredients: found by typing, picked ones first, with a counter", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const d = await details(page);
+    const keys = d.getByRole("group", { name: "Key ingredients" });
+    const count = keys.getByText(/of 1–4 picked|picked yet|is plenty/);
+    await expect(count).toHaveText("1 of 1–4 picked");
+    await expect(keys.getByRole("checkbox").first()).toHaveAccessibleName("Pork");
+    await expect(keys.getByRole("checkbox").first()).toBeChecked();
+
+    await keys.getByRole("searchbox", { name: "Find an ingredient" }).fill("lim");
+    await expect(keys.getByRole("checkbox")).toHaveCount(2);
+    const lime = keys.getByRole("checkbox", { name: "Lime" });
+    await lime.focus();
+    await page.keyboard.press("Space");
+    await expect(count).toHaveText("2 of 1–4 picked");
+    await expect(keys.getByRole("checkbox", { name: "Lime" })).toBeFocused();
+    await expect(keys.getByRole("searchbox", { name: "Find an ingredient" })).toHaveValue("lim");
+    expect((await draftOf(page, "pork-carnitas")).tags.ingredients).toEqual(["pork", "lime"]);
+
+    await keys.getByRole("searchbox", { name: "Find an ingredient" }).fill("");
+    await expect(keys.getByRole("checkbox")).toHaveCount(46);
+    expect(await keys.getByRole("checkbox").evaluateAll((bs) => bs.slice(0, 3).map((b) => [b.labels[0].textContent.trim(), b.checked])))
+      .toEqual([["Pork", true], ["Lime", true], ["Chicken", false]]);
+  });
+
+  test("the drawing: a grid of every drawing by its plain name, Picked for you first", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "old-fashioned");
+    const d = await details(page);
+    const drawings = d.getByRole("group", { name: "Drawing" });
+    await expect(drawings.getByRole("radio")).toHaveCount(30);
+    await expect(drawings.getByRole("radio").first()).toHaveAccessibleName("Picked for you: Rocks");
+    await expect(drawings.getByRole("radio").first()).toBeChecked();
+    await drawings.getByRole("radio", { name: "Nick & Nora" }).focus();
+    await page.keyboard.press("Space");
+    await expect(drawings.getByRole("radio", { name: "Nick & Nora" })).toBeChecked();
+    expect((await draftOf(page, "old-fashioned")).icon).toBe("nick-nora");
+    await expect(page.getByRole("region", { name: "Recipe preview" })).toHaveAttribute("data-icon", "nick-nora");
+    await expect(drawings.getByRole("radio", { name: "Nick & Nora" })).toBeFocused();
+    await drawings.getByRole("radio", { name: "Picked for you: Rocks" }).check();
+    expect(await draftOf(page, "old-fashioned")).toBeUndefined();
+  });
+});
+
 test.describe("the facts box", () => {
   const facts = (page) => page.getByRole("form", { name: "Facts" });
 
@@ -1195,7 +1239,7 @@ test.describe("problems and to-dos", () => {
     await d.getByRole("group", { name: "Tags" }).getByRole("checkbox", { name: "Fresh herbs" }).uncheck();
     await expect(todo).toContainText("No key ingredients are tagged");
     await todo.getByRole("button", { name: "Tag key ingredients" }).press("Enter");
-    await expect(d.getByRole("group", { name: "Ingredients", exact: true }).getByRole("checkbox").first()).toBeFocused();
+    await expect(d.getByRole("group", { name: "Key ingredients" }).getByRole("checkbox").first()).toBeFocused();
   });
 });
 
@@ -1238,7 +1282,7 @@ test("only the section's tags are offered, and none can be typed", async ({ page
   await openEditor(page, baseURL, "lemon-bars");
   const tags = (await details(page)).getByRole("group", { name: "Tags" });
   const offered = await tags.getByRole("group").evaluateAll((sets) => sets.map((s) => s.querySelector("legend").textContent));
-  expect(offered).toEqual(["Type", "Flavor", "Uses up", "Ingredients", "Occasion", "Season", "Diet"]);
+  expect(offered).toEqual(["Type", "Flavor", "Uses up", "Key ingredients", "Occasion", "Season", "Diet"]);
   await expect(tags.getByRole("checkbox", { name: "Cookies & bars" })).toBeChecked();
   await expect(tags.getByRole("textbox")).toHaveCount(0);
   await tags.getByRole("checkbox", { name: "Make-ahead" }).check();

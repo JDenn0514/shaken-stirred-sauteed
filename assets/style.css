@@ -1614,15 +1614,50 @@ body.cooking > .site-footer { display: none; }
 .edit-adds { margin-top: 12px; }
 .edit-adds .edit-form { flex: 1 1 100%; }
 .edit-check { display: flex; gap: 8px; align-items: baseline; font-size: .95rem; }
+/* Details: what the page doesn't show. A section heading with a caption and a
+   chevron, and each group a specimen label like the facts box. */
 .edit-details { margin-top: 28px; border-top: var(--rule) solid var(--section); padding-top: 10px; }
-.edit-details > summary { cursor: pointer; font-family: var(--display, inherit); font-size: 1.5rem; font-weight: 600; padding: 6px 0; }
-.edit-details-body { display: grid; gap: 16px; margin-top: 8px; }
-.edit-set { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 0; display: grid; gap: 12px; min-width: 0; }
-.edit-set > legend { font-weight: 700; padding: 0 4px; }
+.edit-details > summary {
+  display: flex; align-items: baseline; gap: 10px; list-style: none; cursor: pointer; min-height: 44px; padding: 6px 0;
+  font-family: var(--display, inherit); font-size: 1.5rem; font-weight: 600;
+}
+.edit-details > summary::-webkit-details-marker { display: none; }
+.edit-details > summary::before { content: "▸" / ""; font-size: 1rem; color: var(--section); transition: transform .15s; }
+.edit-details[open] > summary::before { transform: rotate(90deg); }
+.edit-details > summary::after {
+  content: "Not on the page" / ""; margin-left: auto;
+  font-family: var(--mono); font-size: .64rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--section);
+}
+.edit-details > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.edit-details-body { display: grid; gap: 18px; margin-top: 8px; }
+.edit-details :is(input[type=checkbox], input[type=radio]) { accent-color: var(--section); }
+.edit-details .edit-field select { width: auto; min-width: min(14rem, 100%); }
+.edit-set { border: var(--rule) solid var(--section); border-radius: 2px; padding: 0 0 14px; margin: 0; min-width: 0; background: var(--surface); }
+.edit-set > legend {
+  float: left; width: 100%; margin: 0; padding: 9px 12px 8px;
+  background: var(--section-wash); border-bottom: 1px solid var(--section);
+  font-family: var(--mono); font-size: .64rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--section);
+}
+.edit-set > legend + * { clear: both; }
+.edit-set > :not(legend) { margin: 12px 14px 0; }
 .edit-tags, .edit-ing, .edit-step { border: 0; border-top: 1px solid var(--border); padding: 10px 0 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
 .edit-tags > legend, .edit-ing > legend, .edit-step > legend { font-weight: 600; padding: 0; float: left; width: 100%; margin-bottom: 4px; }
 .edit-subhead { margin: 4px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .edit-chips { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+/* A long tag list: a box to find one, the picked ones first, and a counter. */
+.edit-count { margin: 0 0 4px; font-family: var(--mono); font-size: .75rem; letter-spacing: .04em; color: var(--muted); }
+.edit-find input { max-width: 20rem; }
+/* The drawings: small pictures with plain names, the chosen one in the family wash. */
+.edit-drawing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.edit-drawing {
+  position: relative; display: grid; justify-items: center; align-content: start; gap: 4px; padding: 10px 4px 8px;
+  border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; text-align: center; font-size: .8rem; line-height: 1.25;
+}
+.edit-drawing input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; z-index: 1; }
+.edit-drawing .card-icon { width: 40px; height: 40px; }
+.edit-drawing:not([data-icon]) .card-icon { display: none; }
+.edit-drawing:has(input:checked) { border-color: var(--section); background: var(--section-wash); font-weight: 600; }
+.edit-drawing:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-uses { display: grid; gap: 8px; }
 /* Uses as chips, under the ingredient group names so two "Sugar"s can be told
    apart. Real checkboxes underneath; a ticked chip takes the family fill and

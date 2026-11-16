@@ -275,6 +275,17 @@ const PAGES = [
     await page.getByText("Details", { exact: true }).click();
     await expect(page.getByLabel("Made by another recipe").first()).toBeVisible();
   }, null, editor],
+  ["editor with key ingredients narrowed and a drawing chosen", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByText("Details", { exact: true }).click();
+    await page.getByRole("searchbox", { name: "Find an ingredient" }).fill("lim");
+    await expect(page.getByRole("group", { name: "Key ingredients" }).getByRole("checkbox")).toHaveCount(2);
+    await page.getByRole("group", { name: "Drawing" }).getByRole("radio", { name: "Soup" }).check();
+  }, null, editor],
+  ["editor with no key ingredient matching", "edit.html?r=pork-carnitas", async (page) => {
+    await page.getByText("Details", { exact: true }).click();
+    await page.getByRole("searchbox", { name: "Find an ingredient" }).fill("zzz");
+    await expect(page.getByRole("group", { name: "Key ingredients" })).toContainText("No");
+  }, null, editor],
   ["editor with a step's lineup settings open", "edit.html?r=garlic-bread", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
     const fold = page.getByRole("group", { name: "For the lineup" });

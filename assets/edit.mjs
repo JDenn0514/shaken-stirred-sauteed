@@ -26,6 +26,7 @@ import * as M from "./edit-model.mjs";
 import { explain } from "./edit-words.mjs";
 import { numbering } from "./edit-numbers.mjs";
 import { changes } from "./edit-changes.mjs";
+import { tagChoices, pickedSays, TAG_RANGES, drawingChoices } from "./edit-pickers.mjs";
 import { createHistory, changedLine } from "./edit-history.mjs";
 import { factsForm, hintText, MINUTES } from "./edit-facts.mjs";
 import { lineupFold as foldHTML } from "./edit-fold.mjs";
@@ -68,7 +69,8 @@ let status = null;     // how the last save went: { saving }, { published }, or 
 let review = null;     // a new recipe's review from the intake (tools/intake/review.mjs), its recipe kept in `recipe`
 let source = null;     // what a new recipe was read from: the original, shown beside the preview
 let sourceOpen = false; // on a phone, whether the original is shown
-let reminded = false;   // a new import's first Save has named the amounts not ticked
+let reminded = false;
+const tagQuery = {};     // what's typed in a tag dimension's filter box, by dimension   // a new import's first Save has named the amounts not ticked
 
 const flat = (l = []) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 const ingName = (i) => (typeof i === "string" ? i : i?.item || "");
@@ -678,11 +680,9 @@ const SERVE = { hot: "Hot: eat within a few minutes", soon: "Soon: fine for half
 function detailsHTML() {
   const r = recipe;
   const fallback = M.servingFallback(r);
-  const auto = window.SSSIcons.iconFor({ ...r, icon: undefined });
   return `<div class="edit-details-body">
     <fieldset class="edit-set"><legend>About</legend>
       ${select("Kind", "kind", [["dish", "Dish"], ["component", "Component (used in other recipes)"]], r.kind === "component" ? "component" : "dish", ` data-act="kind" data-key="d-kind"`)}
-      ${select("Drawing", "icon", [["", `Picked for you (${auto || "none"})`], ...ICONS.map((k) => [k, k])], r.icon || "", ` data-act="field" data-field="icon" data-key="d-icon"`)}
       ${labelled("Date added", `<input type="date" value="${esc(r.added || "")}" data-act="field" data-field="added" data-key="d-added">`)}
       ${labelled("Source", `<input value="${esc(r.source?.name || "")}" data-act="field" data-field="source.name" data-key="d-source-name" placeholder="A book, a site or a person">`)}
       ${labelled("Source link", `<input type="url" value="${esc(r.source?.url || "")}" data-act="field" data-field="source.url" data-key="d-source-url" placeholder="https://…">`)}
@@ -703,20 +703,59 @@ function detailsHTML() {
   </div>`;
 }
 
+// The tags, from the vocabulary for the recipe's section. A long dimension
+// (key ingredients) has a box to find one by typing, its picked ones first,
+// and a counter when the README gives a range (assets/edit-pickers.mjs).
+const FILTER_FROM = 15;
 function tagsHTML() {
   const cat = recipe.category;
   const tags = recipe.tags && typeof recipe.tags === "object" && !Array.isArray(recipe.tags) ? recipe.tags : {};
   const dims = vocab.dimensions.filter((d) => !d.computed && d.sections.includes(cat));
+  const box = (d, c) => check(c.label, ` data-act="tag" data-dim="${esc(d.key)}" value="${esc(c.key)}" data-key="d-tag-${esc(d.key)}-${esc(c.key)}"`, c.picked);
+  const chips = (d, list) => `<div class="edit-chips">${list.map((c) => box(d, c)).join("")}</div>`;
+  // "Key ingredients", as the README says: Details also lists the recipe's
+  // own ingredients, and two groups called "Ingredients" can't be told apart.
+  const named = (d) => (d.key === "ingredients" ? "Key ingredients" : d.label);
   return `<fieldset class="edit-set"><legend>Tags</legend>
     ${dims.map((d) => {
       const groups = d.valuesBySection ? [{ label: "", values: d.valuesBySection[cat] || [] }] : d.groups || [{ label: "", values: d.values || [] }];
-      const on = new Set(tags[d.key] || []);
-      return `<fieldset class="edit-tags"><legend>${esc(d.label)}</legend>
-        ${groups.map((g) => `${g.label ? `<p class="edit-subhead">${esc(g.label)}</p>` : ""}<div class="edit-chips">
-          ${g.values.map((v) => check(v.label, ` data-act="tag" data-dim="${esc(d.key)}" value="${esc(v.key)}" data-key="d-tag-${esc(d.key)}-${esc(v.key)}"`, on.has(v.key))).join("")}
-        </div>`).join("")}
+      const picked = Array.isArray(tags[d.key]) ? tags[d.key] : [];
+      const all = groups.flatMap((g) => g.values);
+      const range = TAG_RANGES[d.key];
+      const head = range ? `<p class="edit-count" aria-live="polite">${esc(pickedSays(picked.length, range))}</p>` : "";
+      if (all.length < FILTER_FROM) {
+        return `<fieldset class="edit-tags"><legend>${esc(named(d))}</legend>${head}
+          ${groups.map((g) => `${g.label ? `<p class="edit-subhead">${esc(g.label)}</p>` : ""}${chips(d, g.values.map((v) => ({ ...v, picked: picked.includes(v.key) })))}`).join("")}
+        </fieldset>`;
+      }
+      const q = tagQuery[d.key] || "";
+      const on = tagChoices(all, picked, q).filter((c) => c.picked);
+      const find = d.key === "ingredients" ? "Find an ingredient" : `Find a ${d.label.toLowerCase()} tag`;
+      return `<fieldset class="edit-tags"><legend>${esc(named(d))}</legend>${head}
+        ${labelled(find, `<input type="search" value="${esc(q)}" autocomplete="off" data-act="tag-filter" data-dim="${esc(d.key)}" data-key="d-find-${esc(d.key)}">`, " edit-find")}
+        ${on.length ? `<p class="edit-subhead">Picked</p>${chips(d, on)}` : ""}
+        ${groups.map((g) => {
+          const rest = tagChoices(g.values, [], q).filter((c) => !picked.includes(c.key));
+          return rest.length ? `${g.label ? `<p class="edit-subhead">${esc(g.label)}</p>` : ""}${chips(d, rest)}` : "";
+        }).join("")}
+        ${q && !tagChoices(all, [], q).length ? `<p class="muted">No ${esc(d.label.toLowerCase())} called "${esc(q.trim())}".</p>` : ""}
       </fieldset>`;
     }).join("")}
+  </fieldset>
+  ${drawingsHTML()}`;
+}
+
+// The drawing on the card and page: "Picked for you" first, then each drawing
+// as a small picture with its plain name.
+function drawingsHTML() {
+  const auto = window.SSSIcons.iconFor({ ...recipe, icon: undefined });
+  return `<fieldset class="edit-set edit-drawings"><legend>Drawing</legend>
+    <div class="edit-drawing-grid">
+      ${drawingChoices(ICONS, auto, recipe.icon || "").map((c) => `<label class="edit-drawing"${c.icon ? ` data-icon="${esc(c.icon)}"` : ""}>
+        <input type="radio" name="d-icon" value="${esc(c.key)}" data-act="icon" data-key="d-icon-${esc(c.key || "auto")}"${c.picked ? " checked" : ""}>
+        <span class="card-icon" aria-hidden="true"></span><span class="edit-drawing-name">${esc(c.name)}</span>
+      </label>`).join("")}
+    </div>
   </fieldset>`;
 }
 
@@ -1135,6 +1174,8 @@ function showChanges() {
 // typed, so opening another line, Save or a reload never loses it. Done only
 // closes the line; Cancel puts it back as it was.
 root.addEventListener("input", (e) => {
+  // A tag filter only narrows what's shown: it changes nothing in the recipe.
+  if (e.target.dataset?.act === "tag-filter") { tagQuery[e.target.dataset.dim] = e.target.value; return draw(); }
   // A typed field in Details is saved when you leave it, but it's a change
   // now: Save has to be on for a click that comes straight after.
   if (e.target.dataset?.act && typed(e.target)) { typing = true; return showChanges(); }
@@ -1404,6 +1445,8 @@ function onChange(t) {
   const n = Number(t.dataset.n);
   if (a === "field") return update(M.setField(recipe, t.dataset.field, t.value));
   if (a === "kind") return update(M.setKind(recipe, t.value, original || {}));
+  if (a === "icon") return update(M.setField(recipe, "icon", t.value));
+  if (a === "tag-filter") return;
   if (a === "category") {
     if (t.value === recipe.category) { moving = null; focusKey = "edit-category"; return draw(); }
     if (M.tagsLost(recipe, [t.value], vocab).length) { moving = t.value; focusKey = "edit-act-move-section"; return draw(); }
