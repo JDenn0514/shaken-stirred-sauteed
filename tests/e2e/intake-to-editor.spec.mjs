@@ -157,7 +157,7 @@ test.describe("saving a new recipe", () => {
     await readRolls(page, baseURL);
     await continueInEditor(page);
     // The editor's own tools, which the intake never had: a tag, from Details.
-    await page.getByText("Details").click();
+    await page.getByText("Details", { exact: true }).click();
     await page.getByRole("group", { name: "Type" }).getByRole("checkbox").first().check();
     const sent = await fakeSave(page, published("milk-rolls"));
     await saveImport(page);

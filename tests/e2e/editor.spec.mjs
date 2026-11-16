@@ -109,6 +109,19 @@ test.describe("the section and the kind", () => {
     expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
   });
 
+  test("moving a drink out of Cocktails lists its details with the tags, and takes both off", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "old-fashioned");
+    await preview(page).getByRole("button", { name: "Old Fashioned" }).first().press("Enter");
+    await page.getByLabel("Section", { exact: true }).selectOption({ label: "Cooking" });
+    const ask = page.getByRole("group", { name: "Move to Cooking?" });
+    await expect(ask).toContainText("Cooking doesn't have these tags or a drink's details, so they come off:");
+    await expect(ask.getByRole("listitem")).toHaveText(["Base spirit: Whiskey", "Glass: Rocks", "ABV: 32%", "Standard drinks: 1.6"]);
+    await ask.getByRole("button", { name: "Move to Cooking" }).press("Enter");
+    await expect(bar(page).getByRole("status")).toHaveText("Took off 1 tag and 3 drink details: Base spirit: Whiskey, Glass: Rocks, ABV: 32%, Standard drinks: 1.6.");
+    const moved = await draftOf(page, "old-fashioned");
+    expect([moved.category, moved.glass, moved.abv, moved.standardDrinks, moved.origin]).toEqual(["cooking", undefined, undefined, undefined, "Louisville, 1880s"]);
+  });
+
   test("Keep leaves it where it was", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     const section = await openAbout(page);
@@ -915,11 +928,11 @@ async function lineup(page, n) {
 }
 
 test.describe("a step's lineup settings", () => {
-  test("fold under the open step, and the fold says what's set", async ({ page, baseURL }) => {
+  test("fold under the open step, labelled For the lineup", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
     await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
     const fold = page.getByRole("group", { name: "For the lineup" });
-    await expect(fold.locator("summary")).toHaveText("For the lineup: 3 min hands-on · uses 2");
+    await expect(fold.locator("summary")).toHaveText("For the lineup");
     await expect(fold.getByLabel("Hands-on time")).toBeHidden();
     await fold.locator("summary").click();
     await expect(fold.getByLabel("Hands-on time")).toHaveValue("3 min");
@@ -969,7 +982,6 @@ test.describe("a step's lineup settings", () => {
     await expect.poll(async () => (await draftOf(page, "garlic-bread"))?.steps[2]).toEqual({ do: "Slice and serve.", hands: "2 min", wait: false });
     expect((await draftOf(page, "garlic-bread")).steps[2]).toEqual({ do: "Slice and serve.", hands: "2 min", wait: false });
     await expect(page.getByLabel("Wait", { exact: true })).toHaveAttribute("placeholder", "Doesn't wait");
-    await expect(fold.locator("summary")).toHaveText("For the lineup: 2 min hands-on · Doesn't wait");
     await expect(fold.getByRole("checkbox", { name: NO_WAIT })).toBeFocused();
 
     await fold.getByRole("checkbox", { name: NO_WAIT }).uncheck();
@@ -992,11 +1004,12 @@ test.describe("a step's lineup settings", () => {
   test("a step can be done during an earlier step's wait, and the checker's rule shows when it stops fitting", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
     const DURING = "Done during an earlier step's wait";
-    await expect((await lineup(page, 1)).getByRole("checkbox", { name: DURING })).toHaveCount(0);
+    const first = await lineup(page, 1);
+    await expect(first.getByRole("checkbox", { name: DURING })).toHaveCount(0);
+    await expect(first).toContainText("Done during an earlier step's wait isn't offered: no earlier step waits.");
     const fold = await lineup(page, 3);
     await fold.getByRole("checkbox", { name: DURING }).check();
     expect((await draftOf(page, "garlic-bread")).steps[2].during).toBe(true);
-    await expect(fold.locator("summary")).toContainText("During an earlier wait");
     await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
 
     // Step 2's wait now needs you there, so step 3 can't be done during it.
@@ -1007,6 +1020,7 @@ test.describe("a step's lineup settings", () => {
     await problems.getByRole("button", { name: "Go to step 3" }).press("Enter");
     const during = page.getByRole("group", { name: "For the lineup" }).getByRole("checkbox", { name: DURING });
     await expect(during).toBeFocused();
+    await expect(page.getByRole("group", { name: "For the lineup" }).locator("summary")).toHaveText("For the lineup: 1 to check");
     await expect(during).toBeChecked();
     await during.press("Space");
     await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
@@ -1079,6 +1093,31 @@ test.describe("a step's lineup settings", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 
+  // On a phone the open step drops the column its number sits in: the number
+  // heads it, and the form takes the width. On a laptop it stays beside it.
+  for (const [width, phone] of [[390, true], [1280, false]]) {
+    test(`on a ${phone ? "phone, the step being edited takes the full width, its number above it" : "laptop, the step being edited stays beside its number"}`, async ({ page, baseURL }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await openEditor(page, baseURL, "lemon-bars");
+      await preview(page).getByRole("button", { name: "Edit step 3" }).press("Enter");
+      const form = page.locator(".steps li > .edit-form");
+      await expect(form).toBeVisible();
+      const at = await form.evaluate((f) => {
+        const li = f.parentElement.getBoundingClientRect(), box = f.getBoundingClientRect();
+        return { indent: box.left - li.left, below: box.top - li.top };
+      });
+      if (phone) {
+        expect(at.indent).toBeLessThan(20);
+        expect(at.below).toBeGreaterThan(40);
+        await expect(form.locator("..")).toContainText("Step 3");
+      } else {
+        expect(at.indent).toBeGreaterThan(50);
+        expect(at.below).toBeLessThan(30);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    });
+  }
+
   test("keeping after one step clears it from another", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "garlic-bread");
     const keeps = "Keeps as long as you like after this step";
@@ -1096,6 +1135,9 @@ test.describe("a step's lineup settings", () => {
     const fold = await lineup(page, 1);
     await fold.getByLabel("Hands-on time").fill("soon");
     await fold.getByLabel("Hands-on time").press("Tab");
+    // The field saves just after focus moves on, and that redraws the form:
+    // wait for it, so Done isn't pressed on the form being replaced.
+    await expect.poll(async () => (await draftOf(page, "garlic-bread"))?.steps[0].hands).toBe("soon");
     await page.getByRole("button", { name: "Done" }).press("Enter");
     await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
     await expect(page.getByRole("group", { name: "For the lineup" }).getByLabel("Hands-on time")).toBeVisible();
@@ -1146,6 +1188,9 @@ test.describe("a step's lineup settings", () => {
     await fold.locator("summary").click();
     await fold.getByLabel("Hands-on time").fill("soon");
     await fold.getByLabel("Hands-on time").press("Tab");
+    // The field saves just after focus moves on, which redraws the form and
+    // shows the problem: wait for it, so Done isn't pressed mid-redraw.
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
     await page.getByRole("button", { name: "Done" }).press("Enter");
   };
 
@@ -1208,6 +1253,9 @@ test.describe("problems and to-dos", () => {
     const fold = await lineup(page, 1);
     await fold.getByLabel("Hands-on time").fill("soon");
     await fold.getByLabel("Hands-on time").press("Tab");
+    // The field saves just after focus moves on, which redraws the form and
+    // shows the problem: wait for it, so Done isn't pressed mid-redraw.
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible();
     await page.getByRole("button", { name: "Done" }).press("Enter");
     await expect(problems(page)).toContainText("Step 1's hands-on time needs to be a time, like 10 min.");
     await problems(page).getByRole("button", { name: "Go to step 1" }).press("Enter");
@@ -1361,4 +1409,72 @@ test.describe("signed out", () => {
       await expect(page.locator('a[href*="edit.html"]')).toHaveCount(0);
     });
   }
+});
+
+test.describe("skip links and keyboard shortcuts", () => {
+  const skip = (page) => page.getByRole("navigation", { name: "Skip links" });
+
+  test("the first Tab on the page reaches the skip links, shown only once focused", async ({ page, baseURL, browserName }) => {
+    // Safari's Tab skips links unless you turn that on, and Playwright's WebKit copies it.
+    test.skip(browserName === "webkit", "Tab passes over links in Safari");
+    await openEditor(page, baseURL, "lemon-bars");
+    const first = skip(page).getByRole("link", { name: "Skip to the recipe" });
+    await expect(first).not.toBeInViewport();
+    await page.locator("body").focus();
+    await page.keyboard.press("Tab");
+    await expect(first).toBeFocused();
+    await expect(first).toBeInViewport();
+  });
+
+  test("the skip links go to the recipe, the problems and Details", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    await expect(skip(page).getByRole("link")).toHaveText(["Skip to the recipe", "Skip to Details"]);
+    await skip(page).getByRole("link", { name: "Skip to the recipe" }).focus();
+    await page.keyboard.press("Enter");
+    await expect(preview(page)).toBeFocused();
+    await skip(page).getByRole("link", { name: "Skip to Details" }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("details.edit-details > summary")).toBeFocused();
+
+    // A problem adds a link to it, first.
+    await preview(page).getByRole("button", { name: "Edit Butter" }).press("Enter");
+    await page.getByLabel("Ingredient", { exact: true }).fill("");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    await expect(skip(page).getByRole("link")).toHaveText(["Skip to the problems", "Skip to the recipe", "Skip to Details"]);
+    await skip(page).getByRole("link", { name: "Skip to the problems" }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toBeFocused();
+  });
+
+  test("the shortcuts open from the skip links, and close back to where they were opened", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    const open = skip(page).getByRole("button", { name: "Keyboard shortcuts" });
+    await open.focus();
+    await page.keyboard.press("Enter");
+    const help = page.getByRole("dialog", { name: "Keyboard shortcuts" });
+    await expect(help).toBeVisible();
+    await expect(help.getByRole("row")).toHaveCount(6);
+    await expect(help.getByRole("row", { name: /Save$/ })).toContainText(/⌘S|Ctrl\+S/);
+    await help.getByRole("button", { name: "Close" }).press("Enter");
+    await expect(help).toBeHidden();
+    await expect(open).toBeFocused();
+  });
+
+  test("? shows the shortcuts, except while typing", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "lemon-bars");
+    const step = preview(page).getByRole("button", { name: "Edit step 2" });
+    await step.focus();
+    await page.keyboard.press("?");
+    const help = page.getByRole("dialog", { name: "Keyboard shortcuts" });
+    await expect(help).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(help).toBeHidden();
+    await expect(step).toBeFocused();
+
+    await step.press("Enter");
+    await page.getByLabel("Step", { exact: true }).press("End");
+    await page.keyboard.type("?");
+    await expect(help).toBeHidden();
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Bake the crust.?");
+  });
 });

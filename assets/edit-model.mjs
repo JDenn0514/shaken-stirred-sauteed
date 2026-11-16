@@ -127,8 +127,18 @@ export function tagsLost(recipe, sections, vocab) {
   return lost;
 }
 
+// A drink's own details (the README's cocktail display fields), which only
+// belong in Cocktails: [{ key, label, value }] a recipe would lose if it were
+// in these sections, in the facts box's order.
+const DRINK = [["glass", "Glass"], ["ice", "Ice"], ["garnish", "Garnish"], ["method", "Method"], ["keeps", "Keeps"], ["abv", "ABV"], ["standardDrinks", "Standard drinks"]];
+export function factsLost(recipe, sections) {
+  if (sections.includes("cocktails")) return [];
+  return DRINK.filter(([k]) => !empty(recipe[k])).map(([key, label]) => ({ key, label, value: String(recipe[key]) }));
+}
+
 // The recipe moved to another section, without the tags that section doesn't
-// have (tagsLost says which). Undo brings them back; moving back doesn't.
+// have (tagsLost says which), or a drink's details outside Cocktails
+// (factsLost). Undo brings them back; moving back doesn't.
 export function setCategory(recipe, category, vocab) {
   if (!SECTIONS.includes(category)) throw new Error(`"${category}" isn't one of the site's sections`);
   const r = structuredClone(recipe);
@@ -138,6 +148,8 @@ export function setCategory(recipe, category, vocab) {
     r.tags[dim] = r.tags[dim].filter((v) => v !== value);
     if (!r.tags[dim].length) delete r.tags[dim];
   }
+  if (lost.length && !Object.keys(r.tags).length) delete r.tags;
+  for (const { key } of factsLost(recipe, [category])) delete r[key];
   return r;
 }
 
@@ -365,7 +377,7 @@ export function ovenSetting(text) {
 export function canRunDuring(recipe, n) {
   const steps = flat(recipe.steps || []);
   if (steps[n]?.prepOnly) return false;
-  const alongside = steps.slice(0, n).findLast((x) => x && typeof x === "object" && !x.during && !x.prepOnly);
+  const alongside = steps.slice(0, n).findLast((x) => x && !x.during && !x.prepOnly);
   return !!alongside?.wait && !alongside.watch;
 }
 
