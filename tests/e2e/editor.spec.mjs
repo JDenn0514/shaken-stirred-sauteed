@@ -66,6 +66,82 @@ test.describe("the preview", () => {
   });
 });
 
+test.describe("the section and the kind", () => {
+  const bar = (page) => page.getByRole("region", { name: "Editing" });
+  const openAbout = async (page) => {
+    await preview(page).getByRole("button", { name: "Pork Carnitas" }).first().press("Enter");
+    return page.getByLabel("Section", { exact: true });
+  };
+  // The colour the page is drawn in, and a section's own colour.
+  const drawnIn = (page) => page.evaluate(() => getComputedStyle(document.querySelector(".edit-preview")).getPropertyValue("--section").trim());
+  const colourOf = (page, section) => page.evaluate((c) => getComputedStyle(document.documentElement).getPropertyValue(`--${c}`).trim(), section);
+
+  test("moving to another section lists the tags it takes off first, then moves and recolours the page", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    expect(await drawnIn(page)).toBe(await colourOf(page, "cooking"));
+    const section = await openAbout(page);
+    await expect(section).toHaveValue("cooking");
+    await section.selectOption({ label: "Cocktails" });
+    const ask = page.getByRole("group", { name: "Move to Cocktails?" });
+    await expect(ask).toContainText("Cocktails doesn't have these tags, so they come off:");
+    expect(await ask.getByRole("listitem").allInnerTexts()).toEqual(["Cuisine: Mexican", "Course: Main protein"]);
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+    await expect(ask.getByRole("button", { name: "Move to Cocktails" })).toBeFocused();
+
+    await page.keyboard.press("Enter");
+    await expect(ask).toHaveCount(0);
+    await expect(page.getByLabel("Section", { exact: true })).toBeFocused();
+    await expect(bar(page)).toContainText("Editing · Cocktails");
+    await expect(bar(page).getByRole("status")).toHaveText("Took off 2 tags: Cuisine: Mexican, Course: Main protein.");
+    expect(await drawnIn(page)).toBe(await colourOf(page, "cocktails"));
+    const moved = await draftOf(page, "pork-carnitas");
+    expect([moved.category, moved.tags]).toEqual(["cocktails", { ingredients: ["pork"] }]);
+
+    // Nothing more to take off, so the next move happens at once.
+    await page.getByLabel("Section", { exact: true }).selectOption({ label: "Baking" });
+    await expect(page.getByRole("group", { name: /^Move to/ })).toHaveCount(0);
+    await expect(bar(page)).toContainText("Editing · Baking");
+
+    await page.getByRole("button", { name: "Undo" }).click();
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect(bar(page)).toContainText("Editing · Cooking");
+    expect(await drawnIn(page)).toBe(await colourOf(page, "cooking"));
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+  });
+
+  test("Keep leaves it where it was", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const section = await openAbout(page);
+    await section.selectOption({ label: "Baking" });
+    await page.getByRole("group", { name: "Move to Baking?" }).getByRole("button", { name: "Keep in Cooking" }).press("Enter");
+    await expect(page.getByRole("group", { name: /^Move to/ })).toHaveCount(0);
+    await expect(page.getByLabel("Section", { exact: true })).toHaveValue("cooking");
+    await expect(page.getByLabel("Section", { exact: true })).toBeFocused();
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+  });
+
+  test("Cancel puts the section and its tags back, with what was typed", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const section = await openAbout(page);
+    await page.getByLabel("Title").fill("Carnitas");
+    await section.selectOption({ label: "Cocktails" });
+    await page.getByRole("button", { name: "Move to Cocktails" }).press("Enter");
+    expect((await draftOf(page, "pork-carnitas")).title).toBe("Carnitas");
+    await page.getByRole("button", { name: "Cancel" }).press("Enter");
+    await expect(bar(page)).toContainText("Editing · Cooking");
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+  });
+
+  test("a file that says it's a dish still says so after Component and back", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "old-fashioned");
+    const d = await details(page);
+    await d.getByLabel("Kind").selectOption({ label: "Component (used in other recipes)" });
+    expect((await draftOf(page, "old-fashioned")).kind).toBe("component");
+    await d.getByLabel("Kind").selectOption({ label: "Dish" });
+    expect(await draftOf(page, "old-fashioned")).toBeUndefined();
+  });
+});
+
 test.describe("the facts box", () => {
   const facts = (page) => page.getByRole("form", { name: "Facts" });
 

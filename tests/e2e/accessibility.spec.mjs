@@ -299,6 +299,11 @@ const PAGES = [
     await page.getByRole("button", { name: "Add ml" }).click();
     await expect(page.getByLabel("Millilitres")).toBeVisible();
   }, null, editor],
+  ["editor asking before a move to another section", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Pork Carnitas" }).first().click();
+    await page.getByLabel("Section", { exact: true }).selectOption({ label: "Cocktails" });
+    await expect(page.getByRole("group", { name: "Move to Cocktails?" })).toBeVisible();
+  }, null, editor],
   ["editor with its things to check folded", "edit.html?r=garlic-bread", (page) => expect(page.getByText("1 thing to check")).toBeVisible(), null, editor],
   ["editor with its to-do list open", "edit.html?r=garlic-bread", async (page) => {
     await page.getByText("1 thing to check").click();

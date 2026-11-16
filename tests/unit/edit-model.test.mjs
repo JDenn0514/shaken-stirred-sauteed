@@ -486,6 +486,96 @@ describe("oven temperatures in any common form", () => {
   });
 });
 
+// Moving a recipe to another section: its tags that section doesn't have
+// are dropped, and listed first so you know. Takes a list of sections, so it
+// can later become picking several (docs/specs/editor-redesign.md, decision 6).
+describe("moving to another section", () => {
+  const carnitas = () => ({
+    title: "Pork Carnitas",
+    category: "cooking",
+    glass: "coupe",
+    tags: { cuisine: ["mexican"], flavor: ["bright", "spicy"], ingredients: ["pork"], occasion: ["weeknight"] },
+    steps: ["Braise."],
+  });
+  const said = (lost) => lost.map((t) => `${t.dimLabel}: ${t.label}`);
+
+  test("the tags a move would drop, by their names on the site", () =>
+    assert.deepEqual(said(M.tagsLost(carnitas(), ["cocktails"], VOCAB)), ["Cuisine: Mexican", "Flavor: Bright & tangy", "Flavor: Spicy"]));
+  test("each says what it is in the file too", () =>
+    assert.deepEqual(M.tagsLost(carnitas(), ["cocktails"], VOCAB)[0], { dim: "cuisine", value: "mexican", dimLabel: "Cuisine", label: "Mexican" }));
+  test("staying in the same section drops nothing", () => assert.deepEqual(M.tagsLost(carnitas(), ["cooking"], VOCAB), []));
+  test("a tag any of the sections has is kept", () =>
+    assert.deepEqual(said(M.tagsLost(carnitas(), ["cocktails", "cooking"], VOCAB)), []));
+  test("a tag the vocabulary doesn't know is dropped, named as it's written", () =>
+    assert.deepEqual(said(M.tagsLost({ category: "cooking", tags: { colour: ["red"], course: ["side", "pudding"] } }, ["cooking"], VOCAB)), ["colour: red", "Course: pudding"]));
+  test("no tags, nothing to drop", () => {
+    assert.deepEqual(M.tagsLost({ category: "cooking" }, ["baking"], VOCAB), []);
+    assert.deepEqual(M.tagsLost({ category: "cooking", tags: ["old", "list"] }, ["baking"], VOCAB), []);
+  });
+
+  test("moving sets the section and drops those tags, keeping everything else where it was", () => {
+    const r = M.setCategory(carnitas(), "cocktails", VOCAB);
+    assert.deepEqual(r, { title: "Pork Carnitas", category: "cocktails", glass: "coupe", tags: { ingredients: ["pork"], occasion: ["weeknight"] }, steps: ["Braise."] });
+    assert.deepEqual(Object.keys(r), Object.keys(carnitas()));
+  });
+  test("moving back doesn't bring the dropped tags back: Undo does", () =>
+    assert.deepEqual(M.setCategory(M.setCategory(carnitas(), "cocktails", VOCAB), "cooking", VOCAB).tags, { ingredients: ["pork"], occasion: ["weeknight"] }));
+  test("only to a section the site has", () => assert.throws(() => M.setCategory(carnitas(), "drinks", VOCAB)));
+  test("Cancel on the About form puts the section and its tags back, where they were", () => {
+    const moved = M.setField(M.setCategory(carnitas(), "cocktails", VOCAB), "title", "Carnitas");
+    const back = M.putBack(moved, carnitas(), "about");
+    assert.deepEqual(back, carnitas());
+    assert.deepEqual(Object.keys(back), Object.keys(carnitas()));
+  });
+
+  // Laws, on random tags for one section moved to another. The seed is in
+  // the group's name; SECTION_SEED=<seed> runs the same ones again.
+  const seed = Number(process.env.SECTION_SEED) || Date.now() % 2 ** 31;
+  describe(`laws (seed ${seed})`, () => {
+    const SECTIONS = ["cooking", "baking", "cocktails"];
+    const valuesFor = (d, c) => (d.valuesBySection ? d.valuesBySection[c] || [] : d.values || (d.groups || []).flatMap((g) => g.values));
+    const tagsFor = (c) => fc.record(Object.fromEntries(VOCAB.dimensions.filter((d) => !d.computed && d.sections.includes(c) && valuesFor(d, c).length)
+      .map((d) => [d.key, fc.subarray(valuesFor(d, c).map((v) => v.key), { minLength: 1 })])), { requiredKeys: [] });
+    const move = fc.constantFrom(...SECTIONS).chain((from) => fc.tuple(fc.constant(from), fc.constantFrom(...SECTIONS), tagsFor(from)));
+    const opts = { seed, numRuns: 300 };
+    const tagErrors = (r) => checkRecipe("x", { ...BASE, category: r.category, tags: r.tags }, VOCAB).errors;
+
+    test("a recipe whose tags the checker accepts still has none it refuses after a move", () =>
+      fc.assert(fc.property(move, ([from, to, tags]) => {
+        assert.deepEqual(tagErrors({ category: from, tags }), [], "the starting tags are good");
+        assert.deepEqual(tagErrors(M.setCategory({ category: from, tags }, to, VOCAB)), []);
+      }), opts));
+    test("what's dropped is exactly what was listed, and nothing else", () =>
+      fc.assert(fc.property(move, ([from, to, tags]) => {
+        const lost = new Set(M.tagsLost({ category: from, tags }, [to], VOCAB).map((t) => `${t.dim}:${t.value}`));
+        const before = Object.entries(tags).flatMap(([d, vs]) => vs.map((v) => `${d}:${v}`));
+        const after = Object.entries(M.setCategory({ category: from, tags }, to, VOCAB).tags).flatMap(([d, vs]) => vs.map((v) => `${d}:${v}`));
+        assert.deepEqual(after, before.filter((t) => !lost.has(t)));
+      }), opts));
+    test("moving back drops nothing more", () =>
+      fc.assert(fc.property(move, ([from, to, tags]) => {
+        const there = M.setCategory({ category: from, tags }, to, VOCAB);
+        assert.deepEqual(M.tagsLost(there, [from], VOCAB).filter((t) => tags[t.dim]?.includes(t.value)), M.tagsLost(there, [from], VOCAB));
+      }), opts));
+  });
+});
+
+// "kind": "dish" stays as each file has it (decision 11).
+describe("kind", () => {
+  test("a file saying dish keeps saying it after Component and back", () => {
+    const r = M.setKind(M.setKind({ title: "T", kind: "dish", steps: [] }, "component"), "dish", { kind: "dish" });
+    assert.deepEqual(r, { title: "T", kind: "dish", steps: [] });
+    assert.deepEqual(Object.keys(r), ["title", "kind", "steps"]);
+  });
+  test("a file without kind has none after Component and back", () =>
+    assert.deepEqual(M.setKind(M.setKind({ title: "T" }, "component"), "dish", {}), { title: "T" }));
+  test("a component stays where it is in the file", () =>
+    assert.deepEqual(Object.keys(M.setKind({ title: "T", kind: "dish", steps: [] }, "component")), ["title", "kind", "steps"]));
+  test("a component made a dish, with no original, has no kind", () =>
+    assert.deepEqual(M.setKind({ kind: "component" }, "dish"), {}));
+  test("only dish or component", () => assert.throws(() => M.setKind({}, "side")));
+});
+
 describe("the ingredients a step uses", () => {
   // Two ingredients called Sugar, told apart by their group.
   const bars = () => ({
