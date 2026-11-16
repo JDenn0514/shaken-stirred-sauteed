@@ -53,6 +53,7 @@ let editing = null;    // the part open for editing: "about", "ing:3", "step:2",
 let opened = null;     // how it was when it opened, for Cancel: { before, added, back } (see openLine)
 let prepFirst = true;  // which order the preview shows steps in, when the recipe has both
 let ovenTemp = null;   // a step whose oven was just set to "At a temperature", before a temperature is typed
+let moving = null;     // a section picked in the About form, waiting on "Move to …?" because tags would come off
 let mlFor = null;      // an open ingredient given a Millilitres field with "Add ml", before one is typed
 let detailsOpen = false;
 let checksOpen = false; // the strip of to-dos and things to check
@@ -370,10 +371,20 @@ const part = (target, key, inner) =>
 // (only the pencil where space is tight). Its name says which line it opens.
 const editButton = (target, key, name) =>
   `<button class="edit-open" type="button" data-act="edit" data-target="${target}" data-key="${key}" aria-label="${esc(name)}"><span class="edit-pencil" aria-hidden="true">✎</span><span class="edit-word" aria-hidden="true">Edit</span></button>`;
+// The title, the description and the section. Moving to a section that
+// doesn't have some of the recipe's tags asks first, listing them.
 function aboutForm() {
+  const label = (c) => CATEGORIES[c]?.label || c;
+  const lost = moving ? M.tagsLost(recipe, [moving], vocab) : [];
   return `<form class="edit-form" data-form="about">
     ${field("Title", "title", recipe.title)}
     ${labelled("Description", `<textarea name="description" rows="3" data-key="edit-description">${esc(recipe.description || "")}</textarea>`)}
+    ${select("Section", "category", M.SECTIONS.map((c) => [c, label(c)]), moving || recipe.category, ` data-act="category" data-key="edit-category"`)}
+    ${moving ? `<div class="edit-ask" role="group" aria-label="Move to ${esc(label(moving))}?">
+      <p>${esc(label(moving))} doesn't have these tags, so they come off:</p>
+      <ul>${lost.map((t) => `<li>${esc(t.dimLabel)}: ${esc(t.label)}</li>`).join("")}</ul>
+      <div class="edit-row">${act("move-section", `Move to ${esc(label(moving))}`)}${act("keep-section", `Keep in ${esc(label(recipe.category))}`)}</div>
+    </div>` : ""}
     ${formButtons()}
   </form>`;
 }
@@ -654,7 +665,7 @@ function detailsHTML() {
   const auto = window.SSSIcons.iconFor({ ...r, icon: undefined });
   return `<div class="edit-details-body">
     <fieldset class="edit-set"><legend>About</legend>
-      ${select("Kind", "kind", [["", "Dish"], ["component", "Component (used in other recipes)"]], r.kind === "component" ? "component" : "", ` data-act="field" data-field="kind" data-key="d-kind"`)}
+      ${select("Kind", "kind", [["dish", "Dish"], ["component", "Component (used in other recipes)"]], r.kind === "component" ? "component" : "dish", ` data-act="kind" data-key="d-kind"`)}
       ${select("Drawing", "icon", [["", `Picked for you (${auto || "none"})`], ...ICONS.map((k) => [k, k])], r.icon || "", ` data-act="field" data-field="icon" data-key="d-icon"`)}
       ${labelled("Date added", `<input type="date" value="${esc(r.added || "")}" data-act="field" data-field="added" data-key="d-added">`)}
       ${labelled("Source", `<input value="${esc(r.source?.name || "")}" data-act="field" data-field="source.name" data-key="d-source-name" placeholder="A book, a site or a person">`)}
@@ -883,7 +894,7 @@ function partKey(target) {
 // to focus after Cancel (the part's own line, unless it was just added).
 function openLine(target, { added = false, back = partKey(target), before = recipe } = {}) {
   commit(); // what was typed in the line being left is one step
-  if (target !== editing) { lineupOpen = false; mlFor = null; }
+  if (target !== editing) { lineupOpen = false; mlFor = null; moving = null; }
   editing = target;
   opened = { before, added, back };
 }
@@ -892,6 +903,7 @@ function openLine(target, { added = false, back = partKey(target), before = reci
 // just added comes out again. Changes made elsewhere meanwhile are kept.
 function cancel() {
   const was = editing;
+  moving = null;
   const { before, added, back } = opened || { back: partKey(was) };
   editing = null;
   opened = null;
@@ -1114,6 +1126,15 @@ root.addEventListener("click", (e) => {
     return draw();
   }
   if (a === "cancel") return cancel();
+  if (a === "keep-section") { moving = null; focusKey = "edit-category"; return draw(); }
+  if (a === "move-section") {
+    const lost = M.tagsLost(recipe, [moving], vocab);
+    return update(M.setCategory(recipe, moving, vocab), () => {
+      moving = null;
+      focusKey = "edit-category";
+      note = `Took off ${lost.length} ${lost.length === 1 ? "tag" : "tags"}: ${lost.map((t) => `${t.dimLabel}: ${t.label}`).join(", ")}.`;
+    });
+  }
   if (a === "go") return goTo(JSON.parse(b.dataset.go));
   if (form?.dataset.form === "facts" && a.startsWith("time-")) return factsAction(a, form, Number(b.dataset.k));
   if (a === "undo") return undo();
@@ -1304,6 +1325,12 @@ function onChange(t) {
   }
   const n = Number(t.dataset.n);
   if (a === "field") return update(M.setField(recipe, t.dataset.field, t.value));
+  if (a === "kind") return update(M.setKind(recipe, t.value, original || {}));
+  if (a === "category") {
+    if (t.value === recipe.category) { moving = null; focusKey = "edit-category"; return draw(); }
+    if (M.tagsLost(recipe, [t.value], vocab).length) { moving = t.value; focusKey = "edit-act-move-section"; return draw(); }
+    return update(M.setCategory(recipe, t.value, vocab), () => { moving = null; focusKey = "edit-category"; });
+  }
   if (a === "time") return update(M.setTime(recipe, t.dataset.field, t.value));
   if (a === "tag") {
     const values = [...root.querySelectorAll(`input[data-act="tag"][data-dim="${CSS.escape(t.dataset.dim)}"]:checked`)].map((x) => x.value);

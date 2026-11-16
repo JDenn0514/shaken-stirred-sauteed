@@ -226,8 +226,9 @@ Object.assign(PAGE_ONLY, {
 export const EDITOR_RECIPES = {
   // Fields the editor has no control for (nutrition, origin, an unknown
   // field), and lineup data (`wait: false` too), which must come out of an edit unchanged.
+  // Says "kind": "dish" outright, which the editor keeps as written.
   "old-fashioned": {
-    title: "Old Fashioned", category: "cocktails", wobble: { kept: ["as", "is"] },
+    title: "Old Fashioned", category: "cocktails", kind: "dish", wobble: { kept: ["as", "is"] },
     abv: "32%", standardDrinks: 1.6, nutrition: "Mostly sugar", origin: "Louisville, 1880s", glass: "Rocks",
     serve: "soon", sits: "5 min",
     ingredients: [

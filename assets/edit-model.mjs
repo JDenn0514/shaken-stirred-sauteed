@@ -56,7 +56,15 @@ function change(recipe, key, n, fn) {
 // keeping every other change: what Cancel does to the line that was open.
 const KEYS = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
 export function putBack(recipe, before, target) {
-  if (target === "about") return ["title", "description", "yield"].reduce((r, k) => setField(r, k, before[k]), recipe);
+  if (target === "about") {
+    // The section and its tags go back too: a move is made in the About form.
+    const r = ["title", "description", "yield"].reduce((x, k) => setField(x, k, before[k]), recipe);
+    for (const k of ["category", "tags"]) {
+      if (before[k] === undefined) delete r[k];
+      else r[k] = structuredClone(before[k]);
+    }
+    return r;
+  }
   if (target === "facts") {
     const r = setField(recipe, "yield", before.yield);
     for (const k of ["times", "time", ...ALL_FACTS]) {
@@ -87,6 +95,61 @@ export function setField(recipe, key, value) {
     return r;
   }
   put(r, key, clean(value));
+  return r;
+}
+
+// --- The section, and the kind ---------------------------------------------------
+
+export const SECTIONS = ["cooking", "baking", "cocktails"];
+
+// The values a section allows for a tag dimension, from recipes/vocabulary.json
+// (as the checker reads it), or null when the section doesn't have it.
+function sectionValues(vocab, dim, section) {
+  const d = vocab.dimensions.find((x) => x.key === dim);
+  if (!d || d.computed || !d.sections.includes(section)) return null;
+  return d.valuesBySection ? d.valuesBySection[section] || [] : d.values || (d.groups || []).flatMap((g) => g.values);
+}
+
+// The tags a recipe would lose if it were in these sections:
+// [{ dim, value, dimLabel, label }], in the file's order. A tag stays if any
+// of the sections has it, so this works for picking several sections later.
+export function tagsLost(recipe, sections, vocab) {
+  const tags = recipe.tags && typeof recipe.tags === "object" && !Array.isArray(recipe.tags) ? recipe.tags : {};
+  const lost = [];
+  for (const [dim, values] of Object.entries(tags)) {
+    const d = vocab.dimensions.find((x) => x.key === dim);
+    const allowed = new Set(sections.flatMap((c) => (sectionValues(vocab, dim, c) || []).map((v) => v.key)));
+    const labelOf = (v) => [recipe.category, ...SECTIONS].map((c) => (sectionValues(vocab, dim, c) || []).find((x) => x.key === v)?.label).find(Boolean) || v;
+    for (const v of Array.isArray(values) ? values : []) {
+      if (!allowed.has(v)) lost.push({ dim, value: v, dimLabel: d?.label || dim, label: labelOf(v) });
+    }
+  }
+  return lost;
+}
+
+// The recipe moved to another section, without the tags that section doesn't
+// have (tagsLost says which). Undo brings them back; moving back doesn't.
+export function setCategory(recipe, category, vocab) {
+  if (!SECTIONS.includes(category)) throw new Error(`"${category}" isn't one of the site's sections`);
+  const r = structuredClone(recipe);
+  r.category = category;
+  const lost = tagsLost(recipe, [category], vocab);
+  for (const { dim, value } of lost) {
+    r.tags[dim] = r.tags[dim].filter((v) => v !== value);
+    if (!r.tags[dim].length) delete r.tags[dim];
+  }
+  return r;
+}
+
+// Dish or component. "kind": "dish" stays as the file had it (original is the
+// recipe as it was loaded): switching to Component and back never removes it,
+// and never adds it to a file that didn't say it. The field keeps its place.
+export function setKind(recipe, kind, original = {}) {
+  if (kind !== "dish" && kind !== "component") throw new Error(`a recipe's kind is "dish" or "component", not "${kind}"`);
+  const r = structuredClone(recipe);
+  if (kind === "component") r.kind = "component";
+  else if (original.kind === "dish") r.kind = "dish";
+  else delete r.kind;
   return r;
 }
 

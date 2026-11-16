@@ -1440,6 +1440,10 @@ body.cooking > .site-footer { display: none; }
 .edit-note, .edit-problems, .edit-todo { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
 .edit-note h2, .edit-problems h2, .edit-todo h2 { font-size: 1.15rem; margin: 0 0 6px; }
 .edit-problems { border-color: var(--error); }
+/* "Move to Cocktails?": what a move takes off, asked in the About form. */
+.edit-ask { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--section); border-radius: var(--radius); background: var(--section-wash); }
+.edit-ask p { margin: 0; font-weight: 600; }
+.edit-ask ul { margin: 0; padding-left: 1.2em; display: grid; gap: 2px; }
 .edit-problems ul, .edit-todo ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 8px; }
 .edit-todo li .edit-row { margin-top: 6px; }
 /* To-dos and the intake's things to check, folded into one strip: they don't
