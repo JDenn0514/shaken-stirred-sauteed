@@ -1593,7 +1593,34 @@ body.cooking > .site-footer { display: none; }
 .edit-tags > legend, .edit-ing > legend, .edit-step > legend { font-weight: 600; padding: 0; float: left; width: 100%; margin-bottom: 4px; }
 .edit-subhead { margin: 4px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .edit-chips { display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.edit-uses { display: grid; gap: 4px; }
+.edit-uses { display: grid; gap: 8px; }
+/* Uses as chips, under the ingredient group names so two "Sugar"s can be told
+   apart. Real checkboxes underneath; a ticked chip takes the family fill and
+   its row, with "Amount for this step" beside it. */
+.edit-use-head { margin: 0 0 4px; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--section); font-weight: 600; }
+.edit-use-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.edit-use { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.edit-use.picked { flex: 1 1 100%; flex-wrap: nowrap; align-items: end; }
+.edit-use .edit-field.inline { margin: 0; flex: 1 1 auto; gap: 2px; }
+.edit-use .edit-field.inline label { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+.edit-use.picked .edit-chip { flex: none; }
+.edit-chip { align-items: center; min-height: 44px; padding: 4px 14px 4px 10px; border: 1px solid var(--rule-strong); border-radius: 999px; background: var(--surface); cursor: pointer; }
+.edit-chip input { accent-color: var(--section); width: 18px; height: 18px; margin: 0; }
+.edit-chip:has(input:checked) { border-color: var(--section); background: var(--section-wash); font-weight: 600; }
+.edit-chip:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* Hands-on time and Prep side by side; the equipment in a compact grid. */
+.edit-pair, .edit-equipment { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.edit-equipment > .edit-subhead { grid-column: 1 / -1; margin: 0; }
+/* A select and a text box differ in height (more so in Safari): keep each
+   field's label and control at the top, so the controls in a row line up. */
+.edit-pair > .edit-field, .edit-equipment > .edit-field { align-content: start; }
+@media (min-width: 700px) { .edit-equipment { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+/* On a phone, an open step's fold reaches back under the step's number, which
+   sits above it, so its two columns have room. */
+@media (max-width: 599px) {
+  .steps li > .edit-form .edit-lineup { margin-left: -60px; }
+  .edit-lineup-body { padding: 4px 10px 10px; }
+}
 
 /* ---- A new recipe's original, beside the preview (intake.html, edit.html?new):
    on a phone, one tap away. assets/import-view.mjs ---- */

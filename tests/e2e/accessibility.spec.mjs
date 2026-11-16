@@ -281,6 +281,12 @@ const PAGES = [
     await fold.getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
     await expect(fold.getByLabel("Oven temperature")).toBeVisible();
   }, null, editor],
+  ["editor with a step's Uses chips under group names", "edit.html?r=lemon-bars", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit step 3" }).click();
+    const fold = page.getByRole("group", { name: "For the lineup" });
+    await fold.getByText(/^For the lineup/).click();
+    await expect(fold.getByRole("group", { name: "Filling", exact: true })).toBeVisible();
+  }, null, editor],
   ["editor with a step's lineup settings open on a step with no wait", "edit.html?r=garlic-bread", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit step 3" }).click();
     const fold = page.getByRole("group", { name: "For the lineup" });
