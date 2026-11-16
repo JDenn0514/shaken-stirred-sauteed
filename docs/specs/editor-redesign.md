@@ -384,7 +384,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - `edit.html?new=cooking|baking|cocktails` opens a blank sheet with its own draft key (never `sss:intake`, which would clash with an import in progress).
     - Empty fields are left out of the JSON.
     - Bare `?new` with nothing waiting offers "Bring one in" or the three sections, with the family drawing. This replaces today's "Nothing to finish" page.
-25. **(M) Checking imports on a phone** (number unchanged).
+25. **Done** (#79, 2026-11-16). **(M) Checking imports on a phone** (number unchanged).
     - The original opens over the page from the bar.
     - A "Checked" tick next to each amount on an imported recipe, cleared when the amount is edited.
     - On the first Save of an import, a gentle reminder names the amounts not yet ticked. It never blocks (decision 8).
