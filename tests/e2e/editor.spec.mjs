@@ -1478,3 +1478,100 @@ test.describe("skip links and keyboard shortcuts", () => {
     await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Bake the crust.?");
   });
 });
+
+// Motion (spec section 4, "While editing a line"): the opened line fades in,
+// and a line that was moved, added, split, joined or brought back by Undo
+// flashes. The page is redrawn on every change, so these check each motion
+// plays once, on that line only, and never with reduced motion.
+test.describe("motion", () => {
+  // From now on, the lines that start an animation, by their text (an open
+  // line by its form's text), and what it does: "fades in" from clear, or
+  // "flashes" its colour.
+  const watchMotion = (page) => page.evaluate(() => {
+    window.moved = [];
+    document.addEventListener("animationstart", (e) => {
+      const li = e.target.closest(".edit-preview li");
+      if (!li) return;
+      const text = li.querySelector("textarea")?.value ?? (li.querySelector("button") ?? li).textContent.trim();
+      const played = e.target.getAnimations().find((a) => a.animationName === e.animationName);
+      const how = played?.effect.getKeyframes().some((k) => "opacity" in k) ? "fades in" : "flashes";
+      if (!window.moved.some(([t, h]) => t === text && h === how)) window.moved.push([text, how]);
+    });
+  });
+  const moved = (page) => page.evaluate(() => window.moved);
+  // What started moving in the next 400ms: longer than any of the motions takes to start.
+  const movedSoon = async (page) => { await page.waitForTimeout(400); return moved(page); };
+
+  test("opening a line fades it in, once", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await watchMotion(page);
+    await preview(page).getByRole("button", { name: "Edit step 2" }).click();
+    await expect.poll(() => moved(page)).toEqual([["Braise until tender.", "fades in"]]);
+    await page.evaluate(() => { window.moved = []; });
+    await page.getByText("For the lineup", { exact: true }).click();
+    await page.getByLabel("Needs you there the whole wait").check();
+    expect(await movedSoon(page)).toEqual([]);
+  });
+
+  test("a moved line flashes, and only that line", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).click();
+    await watchMotion(page);
+    await page.getByRole("button", { name: "Move down", exact: true }).click();
+    await expect.poll(() => moved(page)).toEqual([["Season the pork.", "flashes"]]);
+    expect(await movedSoon(page)).toEqual([["Season the pork.", "flashes"]]);
+  });
+
+  test("an added line flashes, from the open line or the list", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).click();
+    await watchMotion(page);
+    await page.getByRole("button", { name: "Add a step after this" }).click();
+    await expect.poll(() => moved(page)).toEqual([["", "flashes"]]);
+    await page.getByRole("button", { name: "Cancel" }).click();
+    await page.evaluate(() => { window.moved = []; });
+    await preview(page).getByRole("button", { name: "Add step", exact: true }).click();
+    await expect.poll(() => moved(page)).toEqual([["", "flashes"]]);
+  });
+
+  test("a split step flashes its first half, and a joined one flashes", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).click();
+    // The step opens with the cursor at the end; step back over "the pork.".
+    for (let k = 0; k < "the pork.".length; k++) await page.getByLabel("Step", { exact: true }).press("ArrowLeft");
+    await watchMotion(page);
+    await page.getByRole("button", { name: "Split here" }).click();
+    await expect.poll(() => moved(page)).toEqual([[expect.stringMatching(/^Season/), "flashes"]]);
+    await page.evaluate(() => { window.moved = []; });
+    await preview(page).getByRole("button", { name: "Edit step 3" }).click();
+    // Let the opened line's fade start before watching the join.
+    await expect.poll(() => moved(page)).toEqual([["Braise until tender.", "fades in"]]);
+    await page.evaluate(() => { window.moved = []; });
+    await page.getByRole("button", { name: "Join with the next step" }).click();
+    await expect.poll(() => moved(page)).toEqual([[expect.stringMatching(/^Braise until tender\..*Shred the pork\./), "flashes"]]);
+  });
+
+  test("Remove flashes the line that takes its place, and Undo the line it brings back", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 3" }).click();
+    await watchMotion(page);
+    await page.getByRole("button", { name: "Remove" }).click();
+    await expect.poll(() => moved(page)).toEqual([["Crisp it in a hot pan.", "flashes"]]);
+    await page.evaluate(() => { window.moved = []; });
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect.poll(() => moved(page)).toEqual([["Shred the pork.", "flashes"]]);
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+    test("nothing fades or flashes", async ({ page, baseURL }) => {
+      await openEditor(page, baseURL, "pork-carnitas");
+      await watchMotion(page);
+      await preview(page).getByRole("button", { name: "Edit step 1" }).click();
+      await page.getByRole("button", { name: "Move down", exact: true }).click();
+      await page.getByRole("button", { name: "Remove" }).click();
+      await page.getByRole("button", { name: "Undo" }).click();
+      expect(await movedSoon(page)).toEqual([]);
+    });
+  });
+});

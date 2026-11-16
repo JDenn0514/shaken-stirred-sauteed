@@ -1645,6 +1645,15 @@ body.cooking > .site-footer { display: none; }
 .skip-links a:focus, .skip-links button:focus { left: max(8px, env(safe-area-inset-left, 0px)); }
 .edit-dialog input:focus-visible, .edit-dialog button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-form { display: grid; gap: 10px; padding: 10px 12px; margin: 6px 0; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
+/* A line that has just opened fades in from its wash, so the eye lands on it.
+   Keyframes, not a transition: the page is redrawn on every change, so there's
+   nothing to reverse, and the class is only on the draw right after opening. */
+.edit-arrive { animation: edit-arrive 150ms var(--ease-out); }
+@keyframes edit-arrive { from { opacity: 0; background-color: var(--section-wash); } }
+/* A line that was just moved, added, split, joined or brought back by Undo
+   holds its wash for a moment, then lets it go, so you can see where it went. */
+.edit-flash, .edit-flash > .edit-form { animation: edit-flash 700ms var(--ease-in-out); }
+@keyframes edit-flash { 0%, 30% { background-color: var(--section-wash); } }
 .edit-fields { display: flex; flex-wrap: wrap; gap: 10px; }
 .edit-fields > .edit-field, .edit-fields > .edit-field-wrap { flex: 1 1 140px; min-width: 0; }
 /* A field with a line under it is taller: the others in its row keep their own height. */
