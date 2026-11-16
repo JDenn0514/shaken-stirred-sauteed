@@ -33,6 +33,76 @@ async function retitle(page, from, to) {
 }
 const published = (slug, n = 1) => ({ json: { slug, title: "x", sha: `${n}`.repeat(40), commit: "c".repeat(40) } });
 
+// "What's changed": shown before Save only when an amount, a time or a
+// temperature changed (docs/specs/editor-redesign.md, decision 7), and one
+// tap away from the bar otherwise.
+test.describe("what's changed", () => {
+  const newSalt = async (page) => {
+    await preview(page).getByRole("button", { name: "Edit Kosher salt" }).press("Enter");
+    await page.getByLabel("Amount", { exact: true }).fill("1 tbsp");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+  };
+
+  test("a new amount is shown before saving, and saved from there", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await newSalt(page);
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await page.getByRole("button", { name: "Save" }).press("Enter");
+    const check = page.getByRole("dialog", { name: "Check what's changed" });
+    await expect(check.getByRole("listitem")).toHaveText(["Kosher salt: 2 tsp → 1 tbsp", "Title: “Pork Carnitas” → “Crispy Carnitas”"]);
+    expect(sent).toHaveLength(0);
+    await expect(check.getByRole("button", { name: "Save" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(check).toBeHidden();
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    expect(sent).toHaveLength(1);
+    expect(sent[0].body.recipe.ingredients[1].items[1].qty).toBe("1 tbsp");
+  });
+
+  test("Keep editing goes back without saving", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await newSalt(page);
+    await page.getByRole("button", { name: "Save" }).press("Enter");
+    await page.getByRole("dialog", { name: "Check what's changed" }).getByRole("button", { name: "Keep editing" }).press("Enter");
+    await expect(page.getByRole("dialog")).toBeHidden();
+    await expect(page.getByRole("button", { name: "Save" })).toBeFocused();
+    expect(sent).toHaveLength(0);
+    expect(await draftOf(page, "pork-carnitas")).not.toBeNull();
+  });
+
+  test("other changes save in one tap", async ({ page, baseURL }) => {
+    const sent = await fakeWorker(page, "save", (_, n) => published("pork-carnitas", n));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await page.getByRole("button", { name: "Save" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Published" })).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeHidden();
+    expect(sent).toHaveLength(1);
+  });
+
+  test("the bar's What's changed lists them any time, and closes back to itself", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await expect(page.getByRole("button", { name: "What's changed" })).toHaveCount(0);
+    await retitle(page, "Pork Carnitas", "Crispy Carnitas");
+    await page.getByRole("button", { name: "What's changed" }).press("Enter");
+    const list = page.getByRole("dialog", { name: "What's changed" });
+    await expect(list.getByRole("listitem")).toHaveText(["Title: “Pork Carnitas” → “Crispy Carnitas”"]);
+    await expect(list.getByRole("button", { name: "Save" })).toHaveCount(0);
+    await list.getByRole("button", { name: "Close" }).press("Enter");
+    await expect(page.getByRole("button", { name: "What's changed" })).toBeFocused();
+  });
+
+  test("an unsaved draft offered back says what it changed", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await newSalt(page);
+    await page.reload();
+    const offer = page.getByRole("region", { name: "Unsaved changes" });
+    await expect(offer.getByRole("listitem")).toHaveText(["Kosher salt: 2 tsp → 1 tbsp"]);
+  });
+});
+
 test.describe("the editor's Save", () => {
   test("opens the recipe as it is on main, from the Worker", async ({ page, baseURL }) => {
     await signIn(page, baseURL);

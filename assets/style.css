@@ -1423,6 +1423,12 @@ body.cooking > .site-footer { display: none; }
 .edit-kicker { margin: 2px 0 0; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .edit-kicker code { text-transform: none; letter-spacing: 0; overflow-wrap: anywhere; }
 .edit-changes { margin: 0; font-size: .88rem; color: var(--muted); }
+/* "What's changed" under "Unsaved changes": a quiet link-style button, so
+   Undo, Redo and Save still fit on one row on a phone. */
+.edit-state { display: grid; justify-items: end; gap: 0; }
+.edit-link { font: inherit; font-size: .88rem; color: var(--section); background: none; border: 0; padding: 4px 0; min-height: 24px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.edit-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.edit-change-list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
 /* Save in the section's colour, like "Start cooking"; off, a dashed outline with the reason beside it. */
 .edit-bar .edit-primary { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section-fill); }
 .edit-bar .edit-primary:disabled { background: transparent; color: var(--muted); border: var(--rule) dashed var(--rule-strong); opacity: 1; }

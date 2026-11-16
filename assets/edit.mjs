@@ -25,6 +25,7 @@
 import * as M from "./edit-model.mjs";
 import { explain } from "./edit-words.mjs";
 import { numbering } from "./edit-numbers.mjs";
+import { changes } from "./edit-changes.mjs";
 import { createHistory, changedLine } from "./edit-history.mjs";
 import { factsForm, hintText, MINUTES } from "./edit-facts.mjs";
 import { lineupFold as foldHTML } from "./edit-fold.mjs";
@@ -147,6 +148,10 @@ function checks() {
 const showingPrepFirst = () => stepOrder(recipe, true).differs && prepFirst;
 // Step numbers and names as the sheet shows them now (assets/edit-numbers.mjs).
 const numbers = () => numbering(recipe, stepOrder(recipe, showingPrepFirst()).steps);
+// What's different from the recipe on the site (assets/edit-changes.mjs), its
+// steps named as the sheet numbers them.
+const whatChanged = (from, to = recipe) => changes(from, to, { vocab, stepName: (i) => numbering(to, stepOrder(to, stepOrder(to, true).differs && prepFirst).steps).stepNames([i + 1]) });
+const changeList = (list) => `<ul class="edit-change-list">${list.map((c) => `<li>${esc(c.text)}</li>`).join("")}</ul>`;
 const shownNumbers = () => numbers().shown;
 const say = (text) => numbers().say(text);
 const namesHidden = (text) => numbers().namesHidden(text);
@@ -261,6 +266,7 @@ function draw() {
     ${offer ? `<section class="edit-note" aria-labelledby="draft-h">
       <h2 id="draft-h">Unsaved changes</h2>
       <p>You changed this recipe on ${esc(new Date(offer.at).toLocaleString())} and didn't save. Editing it now starts from the recipe as it is on the site.</p>
+      ${changeList(whatChanged(original, offer.recipe))}
       ${offer.base && offer.base !== version ? `<p><strong>The recipe has been saved since you made these changes</strong>, on another device or in another tab. If you bring them back, Save will stop and say so rather than replace what was saved.</p>` : ""}
       <div class="edit-row">
         <button class="btn edit-primary" type="button" data-act="restore" data-key="restore">Bring back my changes</button>
@@ -273,7 +279,10 @@ function draw() {
         <p class="edit-kicker">${fresh ? `New recipe · ${name ? `will be saved as <code>recipes/${esc(name)}.json</code>` : "give it a title, and its file name is made from it"}`
           : `Editing · ${esc(CATEGORIES[recipe.category]?.label || recipe.category || "")}`}</p>
       </div>
-      <p class="edit-changes" id="edit-changes">${changesText()}</p>
+      <div class="edit-state">
+        <p class="edit-changes" id="edit-changes">${changesText()}</p>
+        ${!fresh && unsaved() ? `<button class="edit-link" type="button" data-act="show-changes" data-key="show-changes">What's changed</button>` : ""}
+      </div>
       <div class="edit-row edit-history">
         <button class="btn" type="button" data-act="undo" data-key="undo"${canUndo() ? "" : " disabled"}>Undo</button>
         <button class="btn" type="button" data-act="redo" data-key="redo"${undoHistory.canRedo() ? "" : " disabled"}>Redo</button>
@@ -756,11 +765,32 @@ function deleteHTML() {
 // The confirmation: a dialog outside the editor's drawing, so redrawing never closes it.
 const dialog = document.createElement("dialog");
 dialog.className = "edit-dialog";
-dialog.setAttribute("aria-labelledby", "delete-title");
 document.body.append(dialog);
+let dialogBack = "delete"; // what has focus again when the dialog closes
+
+// What's changed since the recipe on the site. Before a save (confirm), with
+// Save and Keep editing; from the bar, with Close.
+function openChanges(confirm) {
+  dialogBack = confirm ? "save" : "show-changes";
+  dialog.setAttribute("aria-labelledby", "changes-title");
+  dialog.innerHTML = `<div class="edit-dialog-body">
+    <h2 id="changes-title">${confirm ? "Check what's changed" : "What's changed"}</h2>
+    ${confirm ? "<p>An amount, a time or a temperature changed. Check them before this goes on the site.</p>" : ""}
+    ${changeList(whatChanged(original))}
+    <div class="edit-row">
+      ${confirm ? `<button class="btn edit-primary" type="button" data-act="confirm-save">Save</button>
+      <button class="btn" type="button" data-act="close-dialog">Keep editing</button>`
+      : `<button class="btn" type="button" data-act="close-dialog">Close</button>`}
+    </div>
+  </div>`;
+  dialog.showModal();
+  dialog.querySelector(confirm ? "[data-act=confirm-save]" : "[data-act=close-dialog]").focus();
+}
 
 function openDelete() {
   const name = original.title || slug;
+  dialogBack = "delete";
+  dialog.setAttribute("aria-labelledby", "delete-title");
   dialog.innerHTML = `<div class="edit-dialog-body">
     <h2 id="delete-title">Delete ${esc(name)}?</h2>
     <p>This takes it off the site for good. To be sure, type its name: <strong>${esc(name)}</strong></p>
@@ -777,18 +807,20 @@ function openDelete() {
 
 const typedRight = () => dialog.querySelector("#delete-name").value.trim().toLowerCase() === (original.title || slug).trim().toLowerCase();
 dialog.addEventListener("input", () => {
-  dialog.querySelector("[data-act=confirm-delete]").disabled = !typedRight();
+  const del = dialog.querySelector("[data-act=confirm-delete]");
+  if (del) del.disabled = !typedRight();
 });
 dialog.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.target.id === "delete-name" && typedRight()) dialog.querySelector("[data-act=confirm-delete]").click();
 });
-// Closed by Cancel or Escape: back to the Delete button.
+// Closed by Cancel, Close or Escape: back to the button that opened it.
 dialog.addEventListener("close", () => {
-  if (root.isConnected) root.querySelector('[data-key="delete"]')?.focus();
+  if (root.isConnected) root.querySelector(`[data-key="${dialogBack}"]`)?.focus();
 });
 dialog.addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-act]");
-  if (b?.dataset.act === "cancel-delete") return dialog.close();
+  if (b?.dataset.act === "cancel-delete" || b?.dataset.act === "close-dialog") return dialog.close();
+  if (b?.dataset.act === "confirm-save") { dialog.close(); return save(); }
   if (b?.dataset.act !== "confirm-delete" || !typedRight()) return;
   const problem = dialog.querySelector("#delete-problem");
   b.disabled = true;
@@ -1173,7 +1205,13 @@ root.addEventListener("click", (e) => {
     return draw();
   }
   // What's typed in an open line is already in the recipe; Save closes it.
-  if (a === "save") { editing = null; return save(); }
+  if (a === "save") {
+    editing = null;
+    // An amount, a time or a temperature changed: check the list first.
+    if (!fresh && whatChanged(original).some((c) => c.number)) return openChanges(true);
+    return save();
+  }
+  if (a === "show-changes") return openChanges(false);
   if (a === "delete") return openDelete();
   if (a === "no-equipment") {
     return update(M.setStepField(recipe, Number(b.dataset.step), b.dataset.field, false), () => { focusKey = "save"; });
