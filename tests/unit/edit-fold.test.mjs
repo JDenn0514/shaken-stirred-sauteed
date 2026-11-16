@@ -1,33 +1,11 @@
 // A step's "For the lineup" fold in the editor (assets/edit-fold.mjs): its
-// summary line says what's set, so the fold can stay shut.
+// checkboxes, its chips, and what it says when something isn't offered.
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import fc from "fast-check";
-import { lineupSummary, lineupFold, usesByGroup, mentions } from "../../assets/edit-fold.mjs";
+import { lineupFold, usesByGroup, mentions } from "../../assets/edit-fold.mjs";
 import * as M from "../../assets/edit-model.mjs";
 import { recipeArb, flat as flatList } from "../helpers/recipe-arb.mjs";
-
-describe("lineupSummary", () => {
-  test("nothing set", () => assert.equal(lineupSummary({ do: "Stir." }, 0), "nothing set"));
-  test("the oven at a temperature, and preheating", () =>
-    assert.equal(lineupSummary({ oven: "200C", preheat: "220C" }, 0), "Oven 200C · Heats the oven to 220C"));
-  test("the oven off, and broil", () => {
-    assert.equal(lineupSummary({ oven: "off" }, 0), "Oven off");
-    assert.equal(lineupSummary({ oven: "broil" }, 0), "Broil");
-  });
-  test("a step that doesn't use the oven says nothing about it", () => assert.equal(lineupSummary({ oven: false }, 0), "nothing set"));
-  test("the other equipment, only when used", () =>
-    assert.equal(lineupSummary({ burner: true, grill: false, microwave: true }, 0), "Burner · Microwave"));
-  test("hands-on time, prep, needing you, keeping, and uses, in that order", () =>
-    assert.equal(lineupSummary({ uses: ["Salt"], holds: true, watch: true, prep: true, hands: "5 min" }, 2),
-      "5 min hands-on · Prep, ahead · Needs you · Keeps after this · uses 2"));
-  test("prep just before", () => assert.equal(lineupSummary({ prep: "just before" }, 0), "Prep, just before"));
-  test("a step that doesn't wait, and one done during another's wait", () => {
-    assert.equal(lineupSummary({ wait: false }, 0), "Doesn't wait");
-    assert.equal(lineupSummary({ during: true, hands: "2 min" }, 0), "2 min hands-on · During an earlier wait");
-  });
-  test("a wait with a time says nothing: the step shows it", () => assert.equal(lineupSummary({ wait: "5 min" }, 0), "nothing set"));
-});
 
 // The fold's checkboxes, as [label, ticked], read from its HTML. Drawing uses
 // the page's escaping (window.SSS.esc), so the test gives it a plain one.
@@ -37,6 +15,16 @@ const unescape = (s) => s.replace(/&#(\d+);/g, (_, c) => String.fromCharCode(c))
   .replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 const fold = (steps, n, ctx = {}) => boxes(lineupFold({ ingredients: [], steps }, n, { named: `step ${n + 1}`, ...ctx }));
 const has = (steps, n, label, ctx) => fold(steps, n, ctx).find(([l]) => l === label);
+
+// The fold's label: what it is, and how many problems and to-dos are about it.
+const label = (ctx) => lineupFold({ ingredients: [], steps: ["Stir."] }, 0, { named: "step 1", ...ctx }).match(/<summary[^>]*>([^<]*)<\/summary>/)[1];
+describe("lineupFold: its label", () => {
+  test("just For the lineup, with nothing to check", () => assert.equal(label({}), "For the lineup"));
+  test("with something to check, how many", () => {
+    assert.equal(label({ toCheck: 1 }), "For the lineup: 1 to check");
+    assert.equal(label({ toCheck: 3 }), "For the lineup: 3 to check");
+  });
+});
 
 describe("lineupFold: waiting", () => {
   const NO_WAIT = "It doesn't wait";
@@ -63,6 +51,31 @@ describe("lineupFold: done during an earlier step's wait", () => {
     const got = fold([{ do: "Rest.", wait: "30 min" }, "Chop."], 1, { duringGuess: GUESS });
     assert.equal(got.find(([l]) => l === DURING), undefined);
     assert.deepEqual(got.find(([l]) => l === "Done while an earlier step waits"), ["Done while an earlier step waits", true]);
+  });
+  test("on an imported recipe, the guess says nothing about why", () =>
+    assert.equal(why([{ do: "Stir.", wait: "5 min", watch: true }, "Chop."], 1, { duringGuess: GUESS }), ""));
+});
+
+// Where it isn't offered, the fold says why, in place of the checkbox, and
+// how to make it fit when there's a way.
+const why = (steps, n, ctx) => unescape(lineupFold({ ingredients: [], steps }, n, { named: `step ${n + 1}`, ...ctx }).match(/<p class="edit-why[^"]*">([^<]*)<\/p>/)?.[1] || "");
+describe("lineupFold: why done during an earlier step's wait isn't offered", () => {
+  const NOT = "Done during an earlier step's wait isn't offered";
+  test("on the first step", () => assert.equal(why([{ do: "Rest.", wait: "30 min" }], 0), `${NOT}: no earlier step waits.`));
+  test("after a wait that needs you there", () =>
+    assert.equal(why([{ do: "Stir.", wait: "5 min", watch: true }, "Chop."], 1), `${NOT}: step 1's wait needs you there the whole time.`));
+  test("after a step that doesn't wait", () =>
+    assert.equal(why(["Mix.", "Chop."], 1), `${NOT}: step 1, just before it, doesn't wait.`));
+  test("after a step that doesn't wait but could be done during the wait before it, how to make it fit", () =>
+    assert.equal(why([{ do: "Bake.", wait: "20 min" }, "Whip the cream.", "Mix it in the mixer."], 2),
+      `${NOT}: step 2, just before it, doesn't wait. If step 2 happens while step 1 waits, tick it there first, and this one can be too.`));
+  test("steps named as the sheet names them", () =>
+    assert.equal(why(["Mix.", "Chop."], 1, { nameOf: (i) => `step ${i + 5}` }), `${NOT}: step 5, just before it, doesn't wait.`));
+  test("on an added prep step", () =>
+    assert.equal(why([{ do: "Rest.", wait: "30 min" }, { do: "Mince the garlic.", prepOnly: true }], 1), `${NOT} on an added prep step: prep is planned on its own.`));
+  test("nothing said where it's offered, or ticked", () => {
+    assert.equal(why([{ do: "Rest.", wait: "30 min" }, "Chop."], 1), "");
+    assert.equal(why([{ do: "Stir.", wait: "5 min", watch: true }, { do: "Chop.", during: true }], 1), "");
   });
 });
 
@@ -152,4 +165,18 @@ describe(`usesByGroup laws (seed ${usesSeed})`, () => {
         assert.deepEqual(rank, [...rank].sort(), JSON.stringify(g));
       }
     }), opts));
+});
+
+// Every step either offers "Done during an earlier step's wait" or says why
+// not: never both, never neither.
+const whySeed = Number(process.env.WHY_SEED) || Date.now() % 2 ** 31;
+describe(`why-not law (seed ${whySeed})`, () => {
+  const withStep = recipeArb.chain((r) => fc.nat({ max: Math.max(0, flatList(r.steps).length - 1) }).map((n) => [r, n]));
+  test("a step offers During or says why not, never both", () =>
+    fc.assert(fc.property(withStep, ([r, n]) => {
+      const html = lineupFold(r, n, { named: `step ${n + 1}` });
+      const offered = boxes(html).some(([l]) => l === "Done during an earlier step's wait");
+      const said = /<p class="edit-why/.test(html);
+      assert.notEqual(offered, said, JSON.stringify(flatList(r.steps)));
+    }), { seed: whySeed, numRuns: 200 }));
 });

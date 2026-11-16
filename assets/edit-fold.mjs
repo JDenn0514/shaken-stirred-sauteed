@@ -1,14 +1,16 @@
 // A step's settings for the lineup in the editor (edit.html), folded under the
 // open step: what it uses and how much, hands-on time and prep, needing you
 // through its wait, not waiting at all, being done during an earlier step's
-// wait, the equipment, and whether the dish keeps after it. The
-// fold says what's set, and opens by itself when one of them has a problem or
-// a to-do (edit.mjs decides that). On a new recipe, the intake's own guesses
+// wait, the equipment, and whether the dish keeps after it. Where "during"
+// isn't offered, it says why. The fold opens by itself when one of them has a
+// problem or a to-do (edit.mjs decides that), and its label counts them. On a new recipe, the intake's own guesses
 // ("Needs you there", "Done while an earlier step waits") stand in for the
 // editor's while they're still to confirm; edit.mjs passes them in drawn.
 //
 // The fold takes, besides the recipe and the step's place in it (from 0):
 //   open        whether it starts open
+//   toCheck     how many problems and to-dos are about it, for its label
+//   nameOf      names another step as the sheet does, "step 3"
 //   named       the step as the sheet names it, "step 3" or "the added prep step"
 //   ovenTemp    a step whose oven was just set to "At a temperature", before
 //               a temperature is typed
@@ -24,21 +26,24 @@ const asObject = (s) => (typeof s === "string" ? { do: s } : s || {});
 const TRI = [["", "Not set"], ["true", "Uses it"], ["false", "Doesn't use it"]];
 const tri = (v) => (v === true ? "true" : v === false ? "false" : "");
 
-// What's set on a step, for the fold's summary line, given how many
-// ingredients it uses.
-export function lineupSummary(o, uses) {
-  const said = [];
-  if (typeof o.oven === "string") said.push(o.oven === "off" ? "Oven off" : o.oven === "broil" ? "Broil" : `Oven ${o.oven}`);
-  if (typeof o.preheat === "string") said.push(`Heats the oven to ${o.preheat}`);
-  for (const [k, word] of [["burner", "Burner"], ["grill", "Grill"], ["microwave", "Microwave"]]) if (o[k] === true) said.push(word);
-  if (o.hands) said.push(`${o.hands} hands-on`);
-  if (o.prep) said.push(o.prep === true ? "Prep, ahead" : "Prep, just before");
-  if (o.wait === false) said.push("Doesn't wait");
-  if (o.watch) said.push("Needs you");
-  if (o.during) said.push("During an earlier wait");
-  if (o.holds) said.push("Keeps after this");
-  if (uses) said.push(`uses ${uses}`);
-  return said.join(" · ") || "nothing set";
+// Why "Done during an earlier step's wait" isn't offered on step n, and how to
+// make it fit when there's a way, or "" where it's offered. nameOf(k) names
+// step k as the sheet does. It follows M.canRunDuring: the nearest earlier step
+// that isn't itself during (or an added prep step) needs a wait nobody watches.
+export function whyNotDuring(recipe, n, nameOf = (k) => `step ${k + 1}`) {
+  const steps = flat(recipe.steps);
+  const o = asObject(steps[n]);
+  if (o.during || M.canRunDuring(recipe, n)) return "";
+  const NOT = "Done during an earlier step's wait isn't offered";
+  if (o.prepOnly) return `${NOT} on an added prep step: prep is planned on its own.`;
+  const at = steps.slice(0, n).findLastIndex((x) => x && !x.during && !x.prepOnly);
+  if (at < 0) return `${NOT}: no earlier step waits.`;
+  const before = asObject(steps[at]);
+  if (before.wait) return `${NOT}: ${nameOf(at)}'s wait needs you there the whole time.`;
+  const said = `${NOT}: ${nameOf(at)}${at === n - 1 ? ", just before it," : ""} doesn't wait.`;
+  if (!M.canRunDuring(recipe, at)) return said;
+  const waits = steps.slice(0, at).findLastIndex((x) => x && !x.during && !x.prepOnly);
+  return `${said} If ${nameOf(at)} happens while ${nameOf(waits)} waits, tick it there first, and this one can be too.`;
 }
 
 // Whether a step's text names an ingredient: its name (without an amount in
@@ -78,14 +83,13 @@ export function usesByGroup(recipe, n) {
 }
 
 export function lineupFold(recipe, n, ctx) {
-  const o = asObject(flat(recipe.steps)[n]);
   return `<details class="edit-lineup" aria-label="For the lineup"${ctx.open ? " open" : ""}>
-    <summary data-key="edit-lineup">For the lineup: ${esc(lineupSummary(o, M.usesOf(recipe, n).picks.length))}</summary>
+    <summary data-key="edit-lineup">For the lineup${ctx.toCheck ? `: ${ctx.toCheck} to check` : ""}</summary>
     ${stepLineup(recipe, n, ctx)}
   </details>`;
 }
 
-function stepLineup(recipe, n, { named, ovenTemp, watchGuess = "", duringGuess = "" }) {
+function stepLineup(recipe, n, { named, ovenTemp, watchGuess = "", duringGuess = "", nameOf }) {
   const o = asObject(flat(recipe.steps)[n]);
   const { unmatched } = M.usesOf(recipe, n);
   const oven = o.oven === false ? "false" : o.oven === "broil" || o.oven === "off" ? o.oven : o.oven || ovenTemp === n ? "temp" : "";
@@ -109,7 +113,8 @@ function stepLineup(recipe, n, { named, ovenTemp, watchGuess = "", duringGuess =
     </div>
     ${o.wait ? "" : check("It doesn't wait", sf(` data-field="wait" data-key="d-wait-${n}"`), o.wait === false)}
     ${watchGuess || (o.wait ? check("Needs you there the whole wait", sf(` data-field="watch" data-key="d-watch-${n}"`), o.watch === true) : "")}
-    ${duringGuess || (o.during || M.canRunDuring(recipe, n) ? check("Done during an earlier step's wait", sf(` data-field="during" data-key="d-during-${n}"`), o.during === true) : "")}
+    ${duringGuess || (o.during || M.canRunDuring(recipe, n) ? check("Done during an earlier step's wait", sf(` data-field="during" data-key="d-during-${n}"`), o.during === true)
+      : `<p class="edit-why muted">${esc(whyNotDuring(recipe, n, nameOf))}</p>`)}
     <div class="edit-equipment" role="group" aria-label="Equipment">
       <p class="edit-subhead">Equipment</p>
       ${select("Oven", "oven", [["", "Not set"], ["false", "Doesn't use the oven"], ["temp", "At a temperature"], ["broil", "Broil"], ["off", "Turn it off"]], oven, sf(` data-field="oven" data-key="d-oven-${n}"`))}

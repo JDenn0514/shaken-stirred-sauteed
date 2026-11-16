@@ -28,6 +28,7 @@ import { numbering } from "./edit-numbers.mjs";
 import { changes } from "./edit-changes.mjs";
 import { tagChoices, pickedSays, TAG_RANGES, drawingChoices } from "./edit-pickers.mjs";
 import { createHistory, changedLine } from "./edit-history.mjs";
+import { shortcuts, isMac } from "./edit-keys.mjs";
 import { factsForm, hintText, MINUTES } from "./edit-facts.mjs";
 import { lineupFold as foldHTML } from "./edit-fold.mjs";
 import { labelled, field, select, check, act, formButtons } from "./edit-html.mjs";
@@ -40,6 +41,7 @@ const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.S
 const ICONS = window.SSSIcons.KEYS;
 
 const root = document.getElementById("editor");
+const skipNav = document.getElementById("skip-links");
 const params = new URLSearchParams(location.search);
 let slug = params.get("r") || "";
 let fresh = !slug && params.has("new"); // a new recipe, from the intake, not saved yet
@@ -299,7 +301,7 @@ function draw() {
       <p data-status-slot></p>
       ${status?.error ? `<div class="edit-save-error" role="alert">${failureHTML(status)}</div>` : ""}
     </div>
-    ${errors.length ? `<section class="edit-problems" aria-labelledby="problems-h">
+    ${errors.length ? `<section class="edit-problems" id="edit-problems" tabindex="-1" aria-labelledby="problems-h">
       <h2 id="problems-h">Problems to fix</h2>
       <ul>${errors.map((e) => `<li>${esc(words(e))}${showPrepButton(e)}${goButton(e)}</li>`).join("")}</ul>
     </section>` : ""}
@@ -319,15 +321,16 @@ function draw() {
     <section class="edit-card" aria-label="Card preview">
       <ul class="grid">${cardHTML(entry)}</ul>
     </section>
-    <section class="recipe edit-preview" aria-label="Recipe preview"${entry.icon ? ` data-icon="${esc(entry.icon)}"` : ""}>
+    <section class="recipe edit-preview" id="edit-preview" tabindex="-1" aria-label="Recipe preview"${entry.icon ? ` data-icon="${esc(entry.icon)}"` : ""}>
       ${recipePageHTML(recipe, vocab, { prepFirst: showPrepFirst })}
     </section>
     <details class="edit-details"${detailsOpen ? " open" : ""}>
-      <summary data-key="details">Details</summary>
+      <summary data-key="details" id="edit-details">Details</summary>
       ${detailsHTML()}
     </details>
     ${fresh ? "" : deleteHTML()}
     </div></div>`;
+  drawSkipLinks(errors.length > 0);
 
   // The status line is one element for the life of the page, moved into each
   // new bar, so screen readers read out what it says as it changes.
@@ -390,17 +393,20 @@ const part = (target, key, inner) =>
 const editButton = (target, key, name) =>
   `<button class="edit-open" type="button" data-act="edit" data-target="${target}" data-key="${key}" aria-label="${esc(name)}"><span class="edit-pencil" aria-hidden="true">✎</span><span class="edit-word" aria-hidden="true">Edit</span></button>`;
 // The title, the description and the section. Moving to a section that
-// doesn't have some of the recipe's tags asks first, listing them.
+// doesn't have some of the recipe's tags asks first, listing them, with a
+// drink's details when it leaves Cocktails.
+const comingOff = (to) => ({ tags: M.tagsLost(recipe, [to], vocab), facts: M.factsLost(recipe, [to]) });
 function aboutForm() {
   const label = (c) => CATEGORIES[c]?.label || c;
-  const lost = moving ? M.tagsLost(recipe, [moving], vocab) : [];
+  const { tags, facts } = moving ? comingOff(moving) : { tags: [], facts: [] };
+  const these = [tags.length ? "these tags" : "", facts.length ? "a drink's details" : ""].filter(Boolean).join(" or ");
   return `<form class="edit-form" data-form="about">
     ${field("Title", "title", recipe.title)}
     ${labelled("Description", `<textarea name="description" rows="3" data-key="edit-description">${esc(recipe.description || "")}</textarea>`)}
     ${select("Section", "category", M.SECTIONS.map((c) => [c, label(c)]), moving || recipe.category, ` data-act="category" data-key="edit-category"`)}
     ${moving ? `<div class="edit-ask" role="group" aria-label="Move to ${esc(label(moving))}?">
-      <p>${esc(label(moving))} doesn't have these tags, so they come off:</p>
-      <ul>${lost.map((t) => `<li>${esc(t.dimLabel)}: ${esc(t.label)}</li>`).join("")}</ul>
+      <p>${esc(label(moving))} doesn't have ${these}, so they come off:</p>
+      <ul>${[...tags.map((t) => `${t.dimLabel}: ${t.label}`), ...facts.map((f) => `${f.label}: ${f.value}`)].map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
       <div class="edit-row">${act("move-section", `Move to ${esc(label(moving))}`)}${act("keep-section", `Keep in ${esc(label(recipe.category))}`)}</div>
     </div>` : ""}
     ${formButtons()}
@@ -594,7 +600,13 @@ function decorate(page, errors, showPrepFirst) {
   page.querySelectorAll("li[data-step]").forEach((li, shown) => {
     const n = Number(li.dataset.step);
     li.removeAttribute("tabindex");
-    if (editing === `step:${n}`) li.innerHTML = stepForm(n);
+    // On a phone the open step's number heads it, named, and the form below
+    // takes the width (the name is shown only there, so it's hidden from
+    // screen readers, which have the form).
+    if (editing === `step:${n}`) {
+      li.classList.add("edit-open-step");
+      li.innerHTML = `<p class="edit-step-name" aria-hidden="true">Step ${shown + 1}</p>${stepForm(n)}`;
+    }
     else li.innerHTML = part(`step:${n}`, `part-step-${n}`, stepText(steps[n]) ? li.innerHTML : "Empty step: add what to do")
       + editButton(`step:${n}`, `edit-step-${n}`, `Edit step ${shown + 1}`);
   });
@@ -780,13 +792,15 @@ function lineupFold(n) {
   const s = flat(recipe.steps)[n];
   const o = typeof s === "string" ? { do: s } : s || {};
   const { errors, warnings } = checks();
-  const flagged = [...errors, ...warnings].some((m) => partOf(m).step === n && (mentions(m) || (explain(m)?.go?.field || "").startsWith("d-")));
+  const flagged = [...errors, ...warnings].filter((m) => partOf(m).step === n && (mentions(m) || (explain(m)?.go?.field || "").startsWith("d-"))).length;
   const imported = fresh && review && o.reviewId ? reviewOf(withReview()) : null;
   const guess = (kind) => imported?.confirms.find((c) => c.kind === kind && c.step === o.reviewId);
   const watch = guess("watch"), during = guess("during");
   return foldHTML(recipe, n, {
-    open: lineupOpen || flagged,
+    open: lineupOpen || flagged > 0,
+    toCheck: flagged,
     named: shownNumbers().has(n) ? `step ${shownNumbers().get(n)}` : "the added prep step",
+    nameOf: (k) => (shownNumbers().has(k) ? `step ${shownNumbers().get(k)}` : "an added prep step"),
     ovenTemp,
     watchGuess: watch ? guessHTML("watch", o.reviewId, watch.value) : "",
     duringGuess: during ? guessHTML("during", o.reviewId, during.value) : "",
@@ -829,6 +843,41 @@ function openAmounts() {
   </div>`;
   dialog.showModal();
   dialog.querySelector("[data-act=confirm-save]").focus();
+}
+
+// The skip links, first on the page and shown once focused: to the problems
+// when there are any, the recipe, Details, and the keyboard shortcuts.
+function drawSkipLinks(problems) {
+  const link = (id, text) => `<a href="#${id}" data-skip="${id}">${text}</a>`;
+  skipNav.innerHTML = `${problems ? link("edit-problems", "Skip to the problems") : ""}${link("edit-preview", "Skip to the recipe")}${link("edit-details", "Skip to Details")}
+    <button type="button" data-act="shortcuts" data-key="skip-shortcuts">Keyboard shortcuts</button>`;
+  skipNav.hidden = false;
+}
+skipNav.addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-skip]");
+  if (a) {
+    e.preventDefault();
+    const to = document.getElementById(a.dataset.skip);
+    to?.focus();
+    to?.scrollIntoView({ block: "start" });
+  }
+  if (e.target.closest("[data-act=shortcuts]")) openShortcuts("skip-shortcuts");
+});
+
+// The keyboard shortcuts, from the skip links or "?". Closing goes back to
+// whatever had focus.
+function openShortcuts(back) {
+  dialogBack = back;
+  dialog.setAttribute("aria-labelledby", "shortcuts-title");
+  dialog.innerHTML = `<div class="edit-dialog-body">
+    <h2 id="shortcuts-title">Keyboard shortcuts</h2>
+    <table class="edit-keys">
+      ${shortcuts(isMac(navigator)).map((s) => `<tr><th scope="row">${s.keys.map((k) => `<kbd>${esc(k)}</kbd>`).join(" or ")}</th><td>${esc(s.does)}</td></tr>`).join("")}
+    </table>
+    <div class="edit-row"><button class="btn edit-primary" type="button" data-act="close-dialog">Close</button></div>
+  </div>`;
+  dialog.showModal();
+  dialog.querySelector("[data-act=close-dialog]").focus();
 }
 
 // On a phone, the original opens over the page from the bar, so it's there
@@ -888,7 +937,7 @@ dialog.addEventListener("keydown", (e) => {
 });
 // Closed by Cancel, Close or Escape: back to the button that opened it.
 dialog.addEventListener("close", () => {
-  if (root.isConnected) root.querySelector(`[data-key="${dialogBack}"]`)?.focus();
+  if (root.isConnected) document.querySelector(`[data-key="${dialogBack}"]`)?.focus();
 });
 dialog.addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-act]");
@@ -1214,6 +1263,15 @@ document.addEventListener("keydown", (e) => {
   save();
 });
 
+// "?" shows the shortcuts, except while typing.
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "?" || e.ctrlKey || e.metaKey || e.altKey || !recipe || dialog.open) return;
+  const t = e.target;
+  if (t.isContentEditable || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || (t.tagName === "INPUT" && !["checkbox", "radio", "button", "submit"].includes(t.type))) return;
+  e.preventDefault();
+  openShortcuts(t.dataset?.key || "save");
+});
+
 root.addEventListener("keydown", (e) => {
   // Escape is Cancel: the open form closes without keeping its changes.
   if (e.key !== "Escape" || !e.target.closest(".edit-form") || !editing) return;
@@ -1237,11 +1295,12 @@ root.addEventListener("click", (e) => {
   if (a === "cancel") return cancel();
   if (a === "keep-section") { moving = null; focusKey = "edit-category"; return draw(); }
   if (a === "move-section") {
-    const lost = M.tagsLost(recipe, [moving], vocab);
+    const { tags, facts } = comingOff(moving);
+    const count = (n, one) => (n ? `${n} ${one}${n === 1 ? "" : "s"}` : "");
     return update(M.setCategory(recipe, moving, vocab), () => {
       moving = null;
       focusKey = "edit-category";
-      note = `Took off ${lost.length} ${lost.length === 1 ? "tag" : "tags"}: ${lost.map((t) => `${t.dimLabel}: ${t.label}`).join(", ")}.`;
+      note = `Took off ${[count(tags.length, "tag"), count(facts.length, "drink detail")].filter(Boolean).join(" and ")}: ${[...tags.map((t) => `${t.dimLabel}: ${t.label}`), ...facts.map((f) => `${f.label}: ${f.value}`)].join(", ")}.`;
     });
   }
   if (a === "go") return goTo(JSON.parse(b.dataset.go));
@@ -1449,7 +1508,8 @@ function onChange(t) {
   if (a === "tag-filter") return;
   if (a === "category") {
     if (t.value === recipe.category) { moving = null; focusKey = "edit-category"; return draw(); }
-    if (M.tagsLost(recipe, [t.value], vocab).length) { moving = t.value; focusKey = "edit-act-move-section"; return draw(); }
+    const { tags, facts } = comingOff(t.value);
+    if (tags.length || facts.length) { moving = t.value; focusKey = "edit-act-move-section"; return draw(); }
     return update(M.setCategory(recipe, t.value, vocab), () => { moving = null; focusKey = "edit-category"; });
   }
   if (a === "time") return update(M.setTime(recipe, t.dataset.field, t.value));

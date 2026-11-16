@@ -1595,6 +1595,24 @@ body.cooking > .site-footer { display: none; }
 .edit-dialog h2 { font-size: 1.3rem; margin: 0 0 8px; }
 .edit-dialog-body { display: grid; gap: 12px; }
 .edit-dialog-body p { margin: 0; }
+/* The keyboard shortcuts (edit.html, "?"): the keys, then what they do. */
+.edit-keys { border-collapse: collapse; width: 100%; }
+.edit-keys th, .edit-keys td { padding: 7px 0; border-top: 1px solid var(--border); text-align: left; vertical-align: baseline; }
+.edit-keys th { padding-right: 14px; font-weight: 400; white-space: nowrap; }
+.edit-keys kbd {
+  display: inline-block; min-width: 1.8em; padding: 1px 6px; border: 1px solid var(--rule-strong); border-bottom-width: 2px;
+  border-radius: 4px; background: var(--surface); font-family: var(--mono); font-size: .82rem; text-align: center;
+}
+
+/* Skip links (edit.html): off the page until one has focus, then over the
+   top of the header. */
+.skip-links a, .skip-links button {
+  position: absolute; left: -10000px; top: 8px; z-index: 30;
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 2px solid var(--focus); border-radius: var(--radius-ctl); background: var(--surface); color: var(--text);
+  font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.skip-links a:focus, .skip-links button:focus { left: max(8px, env(safe-area-inset-left, 0px)); }
 .edit-dialog input:focus-visible, .edit-dialog button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-form { display: grid; gap: 10px; padding: 10px 12px; margin: 6px 0; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface); }
 .edit-fields { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -1680,10 +1698,14 @@ body.cooking > .site-footer { display: none; }
    field's label and control at the top, so the controls in a row line up. */
 .edit-pair > .edit-field, .edit-equipment > .edit-field { align-content: start; }
 @media (min-width: 700px) { .edit-equipment { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
-/* On a phone, an open step's fold reaches back under the step's number, which
-   sits above it, so its two columns have room. */
+/* On a phone, the step being edited drops the column its number sits in: the
+   number heads it, named, and the form below takes the width. */
+.edit-step-name { display: none; }
+/* Why "Done during an earlier step's wait" isn't offered, where it would be. */
+.edit-why { margin: 0; font-size: .9rem; }
 @media (max-width: 599px) {
-  .steps li > .edit-form .edit-lineup { margin-left: -60px; }
+  .steps li.edit-open-step { padding-left: 12px; padding-right: 12px; }
+  .edit-open-step > .edit-step-name { display: flex; align-items: center; min-height: 32px; margin: -2px 0 4px 44px; font-weight: 600; font-size: 1.05rem; }
   .edit-lineup-body { padding: 4px 10px 10px; }
 }
 

@@ -404,6 +404,10 @@ describe("a step that doesn't wait, and a step done during another's wait", () =
       assert.deepEqual(can([{ do: "a", wait: "5 min" }]), [false]));
     test("a step after one with a wait", () =>
       assert.deepEqual(can([{ do: "a", wait: "5 min" }, { do: "b" }, "c"]), [false, true, false]));
+    // The lineup planner runs a "during" step alongside the step just before
+    // it, plain text included, so the editor and checker count it too.
+    test("not after a step written as plain text, which doesn't wait", () =>
+      assert.deepEqual(can([{ do: "a", wait: "5 min" }, "b", { do: "c" }]), [false, true, false]));
     test("not after a wait that doesn't wait", () =>
       assert.deepEqual(can([{ do: "a", wait: false }, { do: "b" }]), [false, false]));
     test("not after a watched wait, which needs your hands", () =>
@@ -421,6 +425,7 @@ describe("a step that doesn't wait, and a step done during another's wait", () =
         [{ do: "a", wait: "5 min", watch: true }, { do: "b" }],
         [{ do: "a", wait: "30 min" }, { do: "b", during: true }, { do: "c" }],
         [{ do: "a", wait: "30 min" }, { do: "p", prep: true, prepOnly: true }, { do: "c" }],
+        [{ do: "a", wait: "30 min" }, "b", { do: "c" }],
       ];
       for (const steps of cases) {
         const n = steps.length - 1;
@@ -522,6 +527,26 @@ describe("moving to another section", () => {
   test("moving back doesn't bring the dropped tags back: Undo does", () =>
     assert.deepEqual(M.setCategory(M.setCategory(carnitas(), "cocktails", VOCAB), "cooking", VOCAB).tags, { ingredients: ["pork"], occasion: ["weeknight"] }));
   test("only to a section the site has", () => assert.throws(() => M.setCategory(carnitas(), "drinks", VOCAB)));
+
+  // A drink's own details (the README's cocktail display fields) only belong
+  // in Cocktails: moving elsewhere takes them off too, listed like the tags.
+  const fashioned = () => ({
+    title: "Old Fashioned", category: "cocktails", abv: "32%", standardDrinks: 1.6, glass: "Rocks", origin: "Louisville",
+    tags: { spirit: ["whiskey"] }, steps: ["Stir."],
+  });
+  test("the drink's details a move would take off, with what they say", () =>
+    assert.deepEqual(M.factsLost(fashioned(), ["cooking"]), [
+      { key: "glass", label: "Glass", value: "Rocks" },
+      { key: "abv", label: "ABV", value: "32%" },
+      { key: "standardDrinks", label: "Standard drinks", value: "1.6" },
+    ]));
+  test("none while Cocktails is one of the sections", () => {
+    assert.deepEqual(M.factsLost(fashioned(), ["cocktails"]), []);
+    assert.deepEqual(M.factsLost(fashioned(), ["cooking", "cocktails"]), []);
+  });
+  test("a drink with no details loses none", () => assert.deepEqual(M.factsLost({ category: "cocktails", steps: [] }, ["baking"]), []));
+  test("moving out of Cocktails takes the drink's details off, and keeps the rest", () =>
+    assert.deepEqual(M.setCategory(fashioned(), "cooking", VOCAB), { title: "Old Fashioned", category: "cooking", origin: "Louisville", steps: ["Stir."] }));
   test("Cancel on the About form puts the section and its tags back, where they were", () => {
     const moved = M.setField(M.setCategory(carnitas(), "cocktails", VOCAB), "title", "Carnitas");
     const back = M.putBack(moved, carnitas(), "about");
