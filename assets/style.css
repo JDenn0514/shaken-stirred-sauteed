@@ -1701,6 +1701,8 @@ body.cooking > .site-footer { display: none; }
 /* On a phone, the step being edited drops the column its number sits in: the
    number heads it, named, and the form below takes the width. */
 .edit-step-name { display: none; }
+/* Why "Done during an earlier step's wait" isn't offered, where it would be. */
+.edit-why { margin: 0; font-size: .9rem; }
 @media (max-width: 599px) {
   .steps li.edit-open-step { padding-left: 12px; padding-right: 12px; }
   .edit-open-step > .edit-step-name { display: flex; align-items: center; min-height: 32px; margin: -2px 0 4px 44px; font-weight: 600; font-size: 1.05rem; }
