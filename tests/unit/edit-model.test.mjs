@@ -526,6 +526,9 @@ describe("moving to another section", () => {
   });
   test("moving back doesn't bring the dropped tags back: Undo does", () =>
     assert.deepEqual(M.setCategory(M.setCategory(carnitas(), "cocktails", VOCAB), "cooking", VOCAB).tags, { ingredients: ["pork"], occasion: ["weeknight"] }));
+  // Found by the laws below (seed 1719508107).
+  test("a move that drops every tag leaves no empty tags behind", () =>
+    assert.deepEqual(M.setCategory({ category: "cocktails", tags: { flavor: ["spirit-forward"] } }, "cooking", VOCAB), { category: "cooking" }));
   test("only to a section the site has", () => assert.throws(() => M.setCategory(carnitas(), "drinks", VOCAB)));
 
   // A drink's own details (the README's cocktail display fields) only belong
@@ -575,7 +578,8 @@ describe("moving to another section", () => {
       fc.assert(fc.property(move, ([from, to, tags]) => {
         const lost = new Set(M.tagsLost({ category: from, tags }, [to], VOCAB).map((t) => `${t.dim}:${t.value}`));
         const before = Object.entries(tags).flatMap(([d, vs]) => vs.map((v) => `${d}:${v}`));
-        const after = Object.entries(M.setCategory({ category: from, tags }, to, VOCAB).tags).flatMap(([d, vs]) => vs.map((v) => `${d}:${v}`));
+        // With every tag dropped, the move leaves no tags at all.
+        const after = Object.entries(M.setCategory({ category: from, tags }, to, VOCAB).tags ?? {}).flatMap(([d, vs]) => vs.map((v) => `${d}:${v}`));
         assert.deepEqual(after, before.filter((t) => !lost.has(t)));
       }), opts));
     test("moving back drops nothing more", () =>

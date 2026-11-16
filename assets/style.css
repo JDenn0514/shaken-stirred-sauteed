@@ -133,6 +133,13 @@
   --mono: "FGP Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --soft: "SOFT" 100, "WONK" 0;
 
+  /* Motion: strong curves, so things start fast and settle softly.
+     ease-out for things arriving or leaving, ease-in-out for things
+     moving on screen, drawer for sheets that slide in from an edge. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
   /* Glyphs (data URIs are allowed by img-src data:) */
   --chk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.6' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --ico-clock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cg fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='9' r='5.6'/%3E%3Cpath d='M8 6v3.2l2 1.3M6.4 1.8h3.2'/%3E%3C/g%3E%3C/svg%3E");
@@ -457,7 +464,10 @@ body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: 
 }
 
 /* Option panel: a bottom sheet on phones, a dropdown under its button on wider screens. */
-.backdrop { position: fixed; inset: 0; z-index: 20; background: var(--scrim); }
+.backdrop {
+  position: fixed; inset: 0; z-index: 20; background: var(--scrim);
+  transition: opacity 200ms var(--ease-out), display 200ms allow-discrete;
+}
 .sheet {
   position: fixed; z-index: 21; left: 0; right: 0; bottom: 0;
   max-height: 75vh; display: flex; flex-direction: column;
@@ -466,8 +476,18 @@ body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: 
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+  transition: transform 320ms var(--ease-drawer), display 320ms allow-discrete;
 }
-.sheet[hidden], .backdrop[hidden] { display: none; }
+/* Closed: gone, but only once it has slid away. Closing never catches a tap
+   meant for the page underneath. */
+.sheet[hidden], .backdrop[hidden] { display: none; pointer-events: none; }
+.sheet[hidden] { transform: translateY(100%); }
+.backdrop[hidden] { opacity: 0; }
+/* Opening: the sheet rises from the bottom edge and the backdrop fades in. */
+@starting-style {
+  .sheet:not([hidden]) { transform: translateY(100%); }
+  .backdrop:not([hidden]) { opacity: 0; }
+}
 /* Links only for the signed-in owner (assets/common.js shows them). */
 [data-signed-in][hidden] { display: none !important; }
 .sheet-head {
@@ -503,13 +523,18 @@ body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: 
 .opt:disabled { opacity: .45; cursor: default; border-style: dashed; }
 body.sheet-open { overflow: hidden; }
 @media (min-width: 720px) {
-  .backdrop { background: transparent; }
+  .backdrop { background: transparent; transition: none; }
   .sheet {
     position: absolute; left: 0; right: auto; bottom: auto; top: 100%;
     width: min(420px, 100%); max-height: 60vh;
     padding: 0;
     border: 1px solid var(--section); border-top-width: 4px; border-radius: var(--radius-ctl);
+    transform-origin: top left;
+    transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out), display 160ms allow-discrete;
   }
+  /* A dropdown grows from its button's corner instead of sliding up. */
+  .sheet[hidden] { transform: scale(0.97); opacity: 0; }
+  @starting-style { .sheet:not([hidden]) { transform: scale(0.97); opacity: 0; } }
   body.sheet-open { overflow: auto; }
 }
 
@@ -1113,6 +1138,11 @@ body.cooking > .site-header, body.cooking > main { display: none; }
 /* ===== Motion ===== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  /* The filter sheet still fades, so it doesn't blink in and out, but never moves. */
+  .sheet, .backdrop { transition: opacity 200ms var(--ease-out), display 200ms allow-discrete !important; }
+  .sheet, .sheet[hidden] { transform: none; }
+  .sheet[hidden] { opacity: 0; }
+  @starting-style { .sheet:not([hidden]) { opacity: 0; } }
 }
 
 /* ===== Print: a clean specimen sheet on white ===== */
