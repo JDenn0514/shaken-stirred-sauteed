@@ -67,6 +67,7 @@ let checksOpen = false; // the strip of to-dos and things to check
 let lineupOpen = false; // the open step's "For the lineup" fold
 let offer = null;      // an unsaved draft from before, offered back
 let focusKey = null;   // what to focus after the next draw
+let motion = null;     // what the next draw plays, once: "open" (the opened line fades in) or "flash" (the line focused flashes)
 let status = null;     // how the last save went: { saving }, { published }, or { error, problems, signIn }
 let review = null;     // a new recipe's review from the intake (tools/intake/review.mjs), its recipe kept in `recipe`
 let source = null;     // what a new recipe was read from: the original, shown beside the preview
@@ -257,6 +258,8 @@ function draw() {
   const live = !focusKey && active && ["INPUT", "TEXTAREA"].includes(active.tagName) && !["checkbox", "radio"].includes(active.type)
     ? { value: active.value, start: active.selectionStart, end: active.selectionEnd } : null;
   focusKey = null;
+  const playing = motion;
+  motion = null;
   const { errors, warnings } = checks();
   problemCount = errors.length;
   const name = fileName();
@@ -348,6 +351,10 @@ function draw() {
   if (imported) importNotes(root.querySelector(".edit-preview"), imported);
   const back = key && root.querySelector(`[data-key="${CSS.escape(key)}"]`);
   if (back) back.focus();
+  // The page is redrawn on every change, so a motion is played only by the
+  // draw straight after what caused it.
+  if (playing === "open") root.querySelector(".edit-preview .edit-form")?.classList.add("edit-arrive");
+  if (playing === "flash") back?.closest(".edit-preview li")?.classList.add("edit-flash");
   // A redraw can drop focus without a focusout, so check where it is now.
   typingInLine(inLineField(document.activeElement));
   measureBars();
@@ -1050,7 +1057,7 @@ function partKey(target) {
 // to focus after Cancel (the part's own line, unless it was just added).
 function openLine(target, { added = false, back = partKey(target), before = recipe } = {}) {
   commit(); // what was typed in the line being left is one step
-  if (target !== editing) { lineupOpen = false; mlFor = null; moving = null; }
+  if (target !== editing) { lineupOpen = false; mlFor = null; moving = null; motion ||= "open"; }
   editing = target;
   opened = { before, added, back };
 }
@@ -1095,6 +1102,7 @@ function travel(go, said) {
   note = said;
   keepDraft();
   focusKey = changedLine(was, recipe);
+  motion = "flash";
   draw();
 }
 const undo = () => travel(undoHistory.undo, "Undone.");
@@ -1144,6 +1152,7 @@ root.addEventListener("submit", (e) => {
     if (!name) { editing = null; focusKey = `add-group-${f.dataset.list}`; return draw(); }
     const { recipe: made, at } = M.addGroup(next, f.dataset.list, name);
     const kind = KIND[f.dataset.list];
+    motion = "flash";
     return update(made, () => { openLine(`${kind}:${at}`, { added: true, back: `add-group-${f.dataset.list}`, before: made }); focusKey = FIRST_FIELD[kind]; });
   }
   // A note or Before you start line left empty comes out: nothing is written until you type.
@@ -1324,6 +1333,7 @@ root.addEventListener("click", (e) => {
   if (a === "add") {
     const list = b.dataset.list, kind = KIND[list];
     const { recipe: next, at } = ops(kind).add(recipe);
+    motion = "flash";
     return update(next, () => { openLine(`${kind}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = FIRST_FIELD[kind]; });
   }
   if (form && ["add-ml", "add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
@@ -1394,10 +1404,12 @@ function formAction(a, form) {
     next = ops(kind).move(next, n, dir);
     // At the end, the button goes off: focus moves to the other one.
     const more = M.canMove(next, list, to, dir);
+    motion = "flash";
     return update(next, () => { openLine(`${kind}:${to}`, { before: next }); focusKey = more ? `edit-act-${a}` : `edit-act-${a === "move-up" ? "move-down" : "move-up"}`; });
   }
   if (a === "move-to") {
     const { recipe: moved, at } = M.moveTo(next, list, n, form.querySelector('[data-key="edit-move-to"]').value);
+    motion = "flash";
     return update(moved, () => { openLine(`${kind}:${at}`, { before: moved }); focusKey = "edit-act-move-to"; });
   }
   if (a === "add-ml") {
@@ -1411,6 +1423,7 @@ function formAction(a, form) {
   }
   if (a === "add-after") {
     const { recipe: added, at } = ops(kind).add(next, { after: n });
+    motion = "flash";
     return update(added, () => { openLine(`${kind}:${at}`, { added: true, back: `part-${kind}-${n}`, before: added }); focusKey = FIRST_FIELD[kind]; });
   }
   if (a === "remove") {
@@ -1419,6 +1432,7 @@ function formAction(a, form) {
     editing = null;
     const left = flat(next[list]).length;
     const touched = kind === "ing" ? stepsTouched(kept, next) : null;
+    motion = "flash";
     return update(next, () => {
       focusKey = left ? `part-${kind}-${Math.min(n, left - 1)}` : `add-${list}`;
       if (touched) note = `Also updated ${touched}, which used it.`;
@@ -1432,15 +1446,18 @@ function formAction(a, form) {
     // back to the text to put the cursor somewhere.
     if (same(split, next)) { note = "Put the cursor where the new step starts."; focusKey = "edit-do"; return draw(); }
     editing = null;
+    motion = "flash";
     return update(split, () => { focusKey = `part-step-${n}`; note = usesNote(next, n, 2); });
   }
   if (a === "split-times") {
     const parts = M.timedParts(flat(next.steps)[n]?.do);
     editing = null;
+    motion = "flash";
     return update(M.splitAtTimes(next, n), () => { focusKey = `part-step-${n}`; note = usesNote(next, n, parts); });
   }
   if (a === "join") {
     editing = null;
+    motion = "flash";
     return update(M.mergeSteps(next, n), () => { focusKey = `part-step-${n}`; });
   }
 }

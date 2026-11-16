@@ -389,7 +389,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - A "Checked" tick next to each amount on an imported recipe, cleared when the amount is edited.
     - On the first Save of an import, a gentle reminder names the amounts not yet ticked. It never blocks (decision 8).
 26. **Done** (#80, 2026-11-16). **(M) Pickers and Details** (was 22, with what was left of 23). The tag filter with the "1–4" counter, and the drawing grid with plain names. Details (About, Serving, Tags, each ingredient's link) restyled as specimen labels in the same change.
-27. **(S–M) Keyboard and screen reader polish** (was 26). Focus after every action, 44px targets, off buttons that look off and live hints are done already. What's left:
+27. **Done** (#86, 2026-11-16). **(S–M) Keyboard and screen reader polish** (was 26). Focus after every action, 44px targets, off buttons that look off and live hints are done already. What's left:
     - skip links;
     - shortcut help (Cmd/Ctrl+S, Cmd/Ctrl+Z and the rest);
     - the WCAG 2.2 rules turned on in the accessibility scan for editor pages, and what they find fixed.
