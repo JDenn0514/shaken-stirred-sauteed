@@ -1,6 +1,7 @@
 // A step's settings for the lineup in the editor (edit.html), folded under the
 // open step: what it uses and how much, hands-on time and prep, needing you
-// through its wait, the equipment, and whether the dish keeps after it. The
+// through its wait, not waiting at all, being done during an earlier step's
+// wait, the equipment, and whether the dish keeps after it. The
 // fold says what's set, and opens by itself when one of them has a problem or
 // a to-do (edit.mjs decides that). On a new recipe, the intake's own guesses
 // ("Needs you there", "Done while an earlier step waits") stand in for the
@@ -32,7 +33,9 @@ export function lineupSummary(o, uses) {
   for (const [k, word] of [["burner", "Burner"], ["grill", "Grill"], ["microwave", "Microwave"]]) if (o[k] === true) said.push(word);
   if (o.hands) said.push(`${o.hands} hands-on`);
   if (o.prep) said.push(o.prep === true ? "Prep, ahead" : "Prep, just before");
+  if (o.wait === false) said.push("Doesn't wait");
   if (o.watch) said.push("Needs you");
+  if (o.during) said.push("During an earlier wait");
   if (o.holds) said.push("Keeps after this");
   if (uses) said.push(`uses ${uses}`);
   return said.join(" · ") || "nothing set";
@@ -67,8 +70,9 @@ function stepLineup(recipe, n, { named, ovenTemp, watchGuess = "", duringGuess =
       ${labelled("Hands-on time", `<input value="${esc(o.hands || "")}" placeholder="e.g. 5 min"${sf(` data-field="hands" data-key="d-hands-${n}"`)}>`)}
       ${select("Prep", "prep", [["", "Not prep"], ["true", "Can be done ahead"], ["just before", "Just before"]], o.prep === true ? "true" : o.prep || "", sf(` data-field="prep" data-key="d-prep-${n}"`))}
     </div>
+    ${o.wait ? "" : check("It doesn't wait", sf(` data-field="wait" data-key="d-wait-${n}"`), o.wait === false)}
     ${watchGuess || (o.wait ? check("Needs you there the whole wait", sf(` data-field="watch" data-key="d-watch-${n}"`), o.watch === true) : "")}
-    ${duringGuess}
+    ${duringGuess || (o.during || M.canRunDuring(recipe, n) ? check("Done during an earlier step's wait", sf(` data-field="during" data-key="d-during-${n}"`), o.during === true) : "")}
     <div class="edit-fields">
       ${select("Oven", "oven", [["", "Not set"], ["false", "Doesn't use the oven"], ["temp", "At a temperature"], ["broil", "Broil"], ["off", "Turn it off"]], oven, sf(` data-field="oven" data-key="d-oven-${n}"`))}
       ${oven === "temp" ? labelled("Oven temperature", `<input value="${esc(typeof o.oven === "string" ? o.oven : "")}" placeholder="200C or 400F"${sf(` data-field="oven-temp" data-key="d-oven-temp-${n}"`)}>`) : ""}

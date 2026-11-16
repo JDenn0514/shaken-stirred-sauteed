@@ -360,7 +360,7 @@ A step is marked **Done** once its pull request is merged.
 
 Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor as it was then (section 8). They're numbered in the order they'll be built. The old numbers are in brackets.
 
-19. **(S–M) Tidy up `assets/edit.mjs`.** It's about 1,580 lines. Move out the parts the next steps change, with no change in behaviour: the browser tests stay as they are, and each part that doesn't draw anything gets its own unit tests.
+19. **Done** (#73, 2026-11-12). **(S–M) Tidy up `assets/edit.mjs`.** It's about 1,580 lines. Move out the parts the next steps change, with no change in behaviour: the browser tests stay as they are, and each part that doesn't draw anything gets its own unit tests.
     - `edit-numbers.mjs`: step numbers as the sheet shows them (`shownNumbers`, `say`, `namesHidden`, `stepNames`). Steps 20, 23 and 25 use them.
     - `edit-history.mjs`: Undo and Redo (`commit`, `travel`, `changedLine`). Step 23 builds on it.
     - `edit-fold.mjs`: a step's "For the lineup" fold (`lineupSummary`, `stepLineup`). Steps 20 and 21 change it.

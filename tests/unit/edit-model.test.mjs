@@ -5,6 +5,10 @@
 // out exactly as they went in.
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
+import fc from "fast-check";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { recipe as goodRecipe } from "../helpers/build-index.mjs";
 import * as M from "../../assets/edit-model.mjs";
 
 // A recipe with fields the editor never touches, in an unusual order.
@@ -26,6 +30,13 @@ const keeper = () => ({
   serve: "soon",
   afterword: "kept",
 });
+
+// The real checker, for tests that ask whether it would accept what the editor wrote.
+const { checkRecipe } = createRequire(import.meta.url)("../../assets/recipe-checks.js");
+const VOCAB = JSON.parse(readFileSync(new URL("../../recipes/vocabulary.json", import.meta.url), "utf8"));
+const BASE = goodRecipe();
+const ovenProblems = (setting) =>
+  checkRecipe("x", { ...BASE, steps: [{ do: "Bake.", oven: setting }] }, VOCAB).errors.filter((e) => /oven setting/.test(e));
 
 const flat = (l) => l.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
 
@@ -351,6 +362,127 @@ describe("lineup fields", () => {
     assert.deepEqual(M.servingFallback({ category: "cocktails" }), { serve: "soon", sits: "5 min" });
     assert.deepEqual(M.servingFallback({ category: "baking" }), { serve: "keeps", sits: "" });
     assert.deepEqual(M.servingFallback({ category: "cooking", kind: "component" }), { serve: "keeps", sits: "" });
+  });
+});
+
+describe("a step that doesn't wait, and a step done during another's wait", () => {
+  const soup = () => ({
+    steps: [
+      { do: "Chop the onion." },
+      { do: "Simmer the stock.", wait: "20 min", watch: true },
+      { do: "Toast the bread.", hands: "3 min" },
+    ],
+  });
+
+  test("It doesn't wait is wait: false, and taking it back leaves no wait", () => {
+    const r = M.setStepField(soup(), 0, "wait", false);
+    assert.deepEqual(r.steps[0], { do: "Chop the onion.", wait: false });
+    assert.deepEqual(M.setStepField(r, 0, "wait", undefined).steps[0], { do: "Chop the onion." });
+  });
+  test("a plain-text step that doesn't wait becomes { do, wait: false }", () =>
+    assert.deepEqual(M.setStepField({ steps: ["Stir."] }, 0, "wait", false).steps, [{ do: "Stir.", wait: false }]));
+  test("saying a step with a wait doesn't wait takes its watch with it, since watch needs a wait", () =>
+    assert.deepEqual(M.setStepField(soup(), 1, "wait", false).steps[1], { do: "Simmer the stock.", wait: false }));
+  test("typing a time into a step that doesn't wait replaces the false", () =>
+    assert.equal(M.updateStep(M.setStepField(soup(), 0, "wait", false), 0, { wait: "5 min" }).steps[0].wait, "5 min"));
+  test("only false or nothing: a wait's time is typed in the step's Wait", () =>
+    assert.throws(() => M.setStepField(soup(), 0, "wait", "5 min")));
+
+  test("during is set and taken out", () => {
+    const r = M.setStepField(soup(), 2, "during", true);
+    assert.deepEqual(r.steps[2], { do: "Toast the bread.", hands: "3 min", during: true });
+    assert.deepEqual(M.setStepField(r, 2, "during", undefined).steps[2], soup().steps[2]);
+  });
+
+  // During is offered only where the checker would accept it: the nearest
+  // earlier step that isn't itself during (or an added prep step) has a wait
+  // nobody has to watch.
+  describe("which steps can be done during an earlier step's wait", () => {
+    const can = (steps) => steps.map((_, n) => M.canRunDuring({ steps }, n));
+    test("not the first step, which has nothing before it", () =>
+      assert.deepEqual(can([{ do: "a", wait: "5 min" }]), [false]));
+    test("a step after one with a wait", () =>
+      assert.deepEqual(can([{ do: "a", wait: "5 min" }, { do: "b" }, "c"]), [false, true, false]));
+    test("not after a wait that doesn't wait", () =>
+      assert.deepEqual(can([{ do: "a", wait: false }, { do: "b" }]), [false, false]));
+    test("not after a watched wait, which needs your hands", () =>
+      assert.deepEqual(can([{ do: "a", wait: "5 min", watch: true }, { do: "b" }]), [false, false]));
+    test("several steps in a row during the same wait", () =>
+      assert.deepEqual(can([{ do: "a", wait: "30 min" }, { do: "b", during: true }, { do: "c" }]), [false, true, true]));
+    test("an added prep step in between is skipped over, and isn't offered it itself, since it's done ahead", () =>
+      assert.deepEqual(can([{ do: "a", wait: "30 min" }, { do: "p", prep: true, prepOnly: true }, { do: "c" }]), [false, false, true]));
+    test("across groups, counted as the file does", () =>
+      assert.equal(M.canRunDuring({ steps: [{ group: "Stock", items: [{ do: "a", wait: "1 hr" }] }, { group: "Bread", items: ["b"] }] }, 1), true));
+    test("agrees with the checker on every case above", () => {
+      const cases = [
+        [{ do: "a", wait: "5 min" }, { do: "b" }],
+        [{ do: "a", wait: false }, { do: "b" }],
+        [{ do: "a", wait: "5 min", watch: true }, { do: "b" }],
+        [{ do: "a", wait: "30 min" }, { do: "b", during: true }, { do: "c" }],
+        [{ do: "a", wait: "30 min" }, { do: "p", prep: true, prepOnly: true }, { do: "c" }],
+      ];
+      for (const steps of cases) {
+        const n = steps.length - 1;
+        const marked = steps.map((s, k) => (k === n ? { ...s, during: true } : s));
+        const complains = checkRecipe("x", { ...BASE, steps: marked }, VOCAB).errors.some((e) => /"during"/.test(e));
+        assert.equal(M.canRunDuring({ steps }, n), !complains, JSON.stringify(steps));
+      }
+    });
+  });
+});
+
+// Oven settings as people write them, tidied into the file's "400F" or "200C".
+describe("oven temperatures in any common form", () => {
+  for (const [typed, want] of [
+    ["400°F", "400F"], ["400 °F", "400F"], ["400° F", "400F"], ["400 F", "400F"], ["400f", "400F"],
+    ["200 degrees C", "200C"], ["200 degrees Celsius", "200C"], ["350 deg F", "350F"], ["180ºC", "180C"],
+    ["425˚F", "425F"], ["220 c", "220C"], ["375 Fahrenheit", "375F"], ["160 centigrade", "160C"],
+    ["  400F  ", "400F"], ["400F", "400F"], ["400 °F.", "400F"], ["Broil", "broil"], [" OFF ", "off"],
+  ]) test(`"${typed}" is ${want}`, () => assert.equal(M.ovenSetting(typed), want));
+
+  // Left as typed, so the checker still says what's wrong with it.
+  for (const typed of ["400", "400°", "gas mark 6", "hot", "", "4OO F", "400 K", "400FF", "F 400", "400 / 200C"])
+    test(`"${typed}" is left as it is`, () => assert.equal(M.ovenSetting(typed), typed));
+
+  test("the oven and preheat are tidied as they're set; nothing else is", () => {
+    let r = M.setStepField({ steps: ["Bake."] }, 0, "oven", "400 °F");
+    r = M.setStepField(r, 0, "preheat", "200 degrees C");
+    r = M.setStepField(r, 0, "hands", "5 F");
+    assert.deepEqual(r.steps[0], { do: "Bake.", oven: "400F", preheat: "200C", hands: "5 F" });
+  });
+
+  // Laws, checked on random spellings. The seed is in the group's name;
+  // OVEN_SEED=<seed> runs the same ones again.
+  const seed = Number(process.env.OVEN_SEED) || Date.now() % 2 ** 31;
+  describe(`laws (seed ${seed})`, () => {
+    const opts = { seed, numRuns: 300 };
+    const degrees = fc.constantFrom("", "°", "º", "˚", " degrees ", " degree ", " deg ", "deg");
+    const space = fc.constantFrom("", " ", "  ");
+    const units = { F: ["F", "f", "Fahrenheit", "fahrenheit", "FAHRENHEIT"], C: ["C", "c", "Celsius", "celsius", "centigrade"] };
+    const spelled = fc.record({
+      n: fc.integer({ min: 50, max: 600 }),
+      unit: fc.constantFrom("F", "C"),
+      pick: fc.nat(),
+      a: space, deg: degrees, b: space, dot: fc.constantFrom("", "."), pad: space,
+    }).map((x) => ({ ...x, text: `${x.pad}${x.n}${x.a}${x.deg}${x.b}${units[x.unit][x.pick % units[x.unit].length]}${x.dot}${x.pad}` }));
+
+    test("any common spelling of a temperature comes out as its number and unit, which the checker accepts", () =>
+      fc.assert(fc.property(spelled, ({ n, unit, text }) => {
+        const got = M.ovenSetting(text);
+        assert.equal(got, `${n}${unit}`, `"${text}"`);
+        assert.deepEqual(ovenProblems(got), [], `"${text}" → "${got}"`);
+      }), opts));
+
+    test("anything else comes back exactly as typed, or as a setting the checker accepts", () =>
+      fc.assert(fc.property(fc.string({ unit: fc.constantFrom(..."0123456789 °FfCcdegrsbilofKk.") }), (text) => {
+        const got = M.ovenSetting(text);
+        if (got !== text) assert.deepEqual(ovenProblems(got), [], `"${text}" → "${got}"`);
+      }), opts));
+
+    test("tidying twice is the same as tidying once", () =>
+      fc.assert(fc.property(fc.oneof(spelled.map((x) => x.text), fc.string()), (text) => {
+        assert.equal(M.ovenSetting(M.ovenSetting(text)), M.ovenSetting(text));
+      }), opts));
   });
 });
 

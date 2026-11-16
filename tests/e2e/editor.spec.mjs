@@ -385,6 +385,38 @@ test.describe("ingredients, by keyboard", () => {
     await expect(preview(page).getByRole("heading", { name: "For the braise" })).toBeVisible();
   });
 
+  test("Add ml gives any ingredient a Millilitres field", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    await preview(page).getByRole("button", { name: "Edit Garlic butter", exact: true }).press("Enter");
+    await expect(page.getByLabel("Millilitres")).toHaveCount(0);
+    await page.getByLabel("Amount", { exact: true }).fill("5 tbsp");
+    await page.getByRole("button", { name: "Add ml" }).press("Enter");
+    await expect(page.getByLabel("Millilitres")).toBeFocused();
+    await expect(page.getByLabel("Amount", { exact: true })).toHaveValue("5 tbsp");
+    await expect(page.getByRole("button", { name: "Add ml" })).toHaveCount(0);
+    await page.keyboard.type("75");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    expect((await draftOf(page, "garlic-bread")).ingredients[1]).toEqual({ qty: "5 tbsp", item: "Garlic butter", recipe: "garlic-butter", ml: 75 });
+    // Once it has millilitres, the field is there when it opens again.
+    await preview(page).getByRole("button", { name: "Edit Garlic butter", exact: true }).press("Enter");
+    await expect(page.getByLabel("Millilitres")).toHaveValue("75");
+  });
+
+  test("Add ml left empty adds nothing, and a cocktail's ingredients have Millilitres already", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    await preview(page).getByRole("button", { name: "Edit Baguette", exact: true }).press("Enter");
+    await page.getByRole("button", { name: "Add ml" }).press("Enter");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    expect(await draftOf(page, "garlic-bread")).toBeUndefined();
+    await preview(page).getByRole("button", { name: "Edit Baguette", exact: true }).press("Enter");
+    await expect(page.getByLabel("Millilitres")).toHaveCount(0);
+
+    await openEditor(page, baseURL, "old-fashioned");
+    await preview(page).getByRole("button", { name: "Edit Bourbon", exact: true }).press("Enter");
+    await expect(page.getByLabel("Millilitres")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Add ml" })).toHaveCount(0);
+  });
+
   test("tapping an ingredient's amount opens it at the amount", async ({ page, baseURL }) => {
     await openEditor(page, baseURL, "pork-carnitas");
     await preview(page).getByRole("button", { name: "2 tsp Kosher salt" }).getByText("2 tsp").click();
@@ -804,6 +836,85 @@ test.describe("a step's lineup settings", () => {
     await openEditor(page, baseURL, "garlic-bread");
     await expect((await lineup(page, 2)).getByLabel("Needs you there the whole wait")).toBeVisible();
     await expect((await lineup(page, 1)).getByLabel("Needs you there the whole wait")).toHaveCount(0);
+  });
+
+  test("It doesn't wait is offered on a step with no wait, and shows in its Wait", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    const NO_WAIT = "It doesn't wait";
+    await expect((await lineup(page, 2)).getByRole("checkbox", { name: NO_WAIT })).toHaveCount(0);
+    const fold = await lineup(page, 3);
+    await fold.getByRole("checkbox", { name: NO_WAIT }).focus();
+    await page.keyboard.press("Space");
+    await expect.poll(async () => (await draftOf(page, "garlic-bread"))?.steps[2]).toEqual({ do: "Slice and serve.", hands: "2 min", wait: false });
+    expect((await draftOf(page, "garlic-bread")).steps[2]).toEqual({ do: "Slice and serve.", hands: "2 min", wait: false });
+    await expect(page.getByLabel("Wait", { exact: true })).toHaveAttribute("placeholder", "Doesn't wait");
+    await expect(fold.locator("summary")).toHaveText("For the lineup: 2 min hands-on · Doesn't wait");
+    await expect(fold.getByRole("checkbox", { name: NO_WAIT })).toBeFocused();
+
+    await fold.getByRole("checkbox", { name: NO_WAIT }).uncheck();
+    expect(await draftOf(page, "garlic-bread")).toBeUndefined();
+  });
+
+  test("typing a wait into a step that doesn't wait takes It doesn't wait away", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "old-fashioned");
+    await preview(page).getByRole("button", { name: /^Strain over/ }).press("Enter");
+    const fold = page.getByRole("group", { name: "For the lineup" });
+    await fold.locator("summary").click();
+    await expect(fold.getByRole("checkbox", { name: "It doesn't wait" })).toBeChecked();
+    await page.getByLabel("Wait", { exact: true }).fill("1 min");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    expect((await draftOf(page, "old-fashioned")).steps[1].wait).toBe("1 min");
+    await preview(page).getByRole("button", { name: /^Strain over/ }).press("Enter");
+    await expect(page.getByRole("group", { name: "For the lineup" }).getByRole("checkbox", { name: "It doesn't wait" })).toHaveCount(0);
+  });
+
+  test("a step can be done during an earlier step's wait, and the checker's rule shows when it stops fitting", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    const DURING = "Done during an earlier step's wait";
+    await expect((await lineup(page, 1)).getByRole("checkbox", { name: DURING })).toHaveCount(0);
+    const fold = await lineup(page, 3);
+    await fold.getByRole("checkbox", { name: DURING }).check();
+    expect((await draftOf(page, "garlic-bread")).steps[2].during).toBe(true);
+    await expect(fold.locator("summary")).toContainText("During an earlier wait");
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
+
+    // Step 2's wait now needs you there, so step 3 can't be done during it.
+    // Go to on the problem opens step 3 at the checkbox.
+    await (await lineup(page, 2)).getByRole("checkbox", { name: "Needs you there the whole wait" }).check();
+    const problems = page.getByRole("region", { name: "Problems to fix" });
+    await expect(problems).toContainText("Step 3 happens during a wait that needs you there the whole time, so it can't.");
+    await problems.getByRole("button", { name: "Go to step 3" }).press("Enter");
+    const during = page.getByRole("group", { name: "For the lineup" }).getByRole("checkbox", { name: DURING });
+    await expect(during).toBeFocused();
+    await expect(during).toBeChecked();
+    await during.press("Space");
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
+    expect((await draftOf(page, "garlic-bread")).steps[2].during).toBeUndefined();
+  });
+
+  test("an oven temperature typed any common way is saved as 400F or 200C", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    const fold = await lineup(page, 2);
+    await fold.getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
+    await fold.getByLabel("Oven temperature").fill("425 °F");
+    await fold.getByLabel("Oven temperature").press("Tab");
+    await expect(fold.getByLabel("Oven temperature")).toHaveValue("425F");
+    await fold.getByLabel("Heats the oven to").fill("200 degrees C");
+    await fold.getByLabel("Heats the oven to").press("Tab");
+    await expect(fold.getByLabel("Heats the oven to")).toHaveValue("200C");
+    const step = (await draftOf(page, "garlic-bread")).steps[1];
+    expect([step.oven, step.preheat]).toEqual(["425F", "200C"]);
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toHaveCount(0);
+  });
+
+  test("an oven temperature it can't read is kept as typed, and the checker says so", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "garlic-bread");
+    const fold = await lineup(page, 2);
+    await fold.getByLabel("Oven", { exact: true }).selectOption({ label: "At a temperature" });
+    await fold.getByLabel("Oven temperature").fill("gas mark 6");
+    await fold.getByLabel("Oven temperature").press("Tab");
+    await expect(page.getByRole("group", { name: "For the lineup" }).getByLabel("Oven temperature")).toHaveValue("gas mark 6");
+    await expect(page.getByRole("region", { name: "Problems to fix" })).toContainText("gas mark 6");
   });
 
   test("keeping after one step clears it from another", async ({ page, baseURL }) => {

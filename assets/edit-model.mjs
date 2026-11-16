@@ -224,18 +224,48 @@ export function updateStep(recipe, n, changes) {
   });
 }
 
-// Lineup fields on a step. hands: a time; watch, burner, grill, microwave:
-// true or false; oven and preheat: a setting ("200C", "broil", "off") or false;
-// prep: true or "just before". Holds has its own function, since only one step
+// Lineup fields on a step. hands: a time; watch, burner, grill, microwave,
+// during: true or false; oven and preheat: a setting ("200C", "broil", "off")
+// or false, tidied by ovenSetting; prep: true or "just before"; wait: only
+// false ("It doesn't wait") or nothing, since a wait's time is typed in the
+// step itself (updateStep). Holds has its own function, since only one step
 // has it.
-const STEP_FIELDS = ["hands", "watch", "oven", "preheat", "burner", "grill", "microwave", "prep"];
+const STEP_FIELDS = ["hands", "watch", "oven", "preheat", "burner", "grill", "microwave", "prep", "wait", "during"];
 export function setStepField(recipe, n, key, value) {
   if (!STEP_FIELDS.includes(key)) throw new Error(`the editor doesn't set a step's "${key}"`);
+  if (key === "wait" && value !== false && !empty(value)) throw new Error(`a step's wait time is set with updateStep`);
   return change(recipe, "steps", n, (step) => {
     const s = asStep(step);
-    put(s, key, clean(value));
+    const tidy = (key === "oven" || key === "preheat") && typeof value === "string" ? ovenSetting(value) : value;
+    put(s, key, clean(tidy));
+    // Watch needs a wait, so it goes when the wait does.
+    if (!s.wait) delete s.watch;
     return s;
   });
+}
+
+// An oven setting as people write it ("400°F", "400 F", "200 degrees C",
+// "Broil") in the file's own form: "400F", "200C", "broil" or "off". Anything
+// it can't read comes back exactly as typed, so the checker can say what's
+// wrong with it.
+const TEMPERATURE = /^(\d+)\s*(?:°|º|˚|degrees?|deg)?\s*(f|c|fahrenheit|celsius|centigrade)\.?$/i;
+export function ovenSetting(text) {
+  if (typeof text !== "string") return text;
+  const t = text.trim();
+  const m = TEMPERATURE.exec(t);
+  if (m) return `${m[1]}${m[2][0].toUpperCase() === "F" ? "F" : "C"}`;
+  return /^(broil|off)$/i.test(t) ? t.toLowerCase() : text;
+}
+
+// Whether step n (counting across groups) can be done during an earlier
+// step's wait, as the checker allows: the nearest earlier step that isn't
+// itself done during one, or an added prep step, has a wait nobody watches.
+// An added prep step is done ahead, so it's never offered this.
+export function canRunDuring(recipe, n) {
+  const steps = flat(recipe.steps || []);
+  if (steps[n]?.prepOnly) return false;
+  const alongside = steps.slice(0, n).findLast((x) => x && typeof x === "object" && !x.during && !x.prepOnly);
+  return !!alongside?.wait && !alongside.watch;
 }
 
 export function setHolds(recipe, n) {
