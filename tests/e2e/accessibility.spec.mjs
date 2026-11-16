@@ -18,7 +18,10 @@ const PAGES = [
   ["index page", "recipes.html", (page) => expect(page.locator("#count")).toHaveText("6 recipes")],
   ["index page with a filter open", "recipes.html?cat=cooking&cuisine=mexican", async (page) => {
     await page.locator("#filters").getByRole("button", { name: /^Cuisine/ }).click();
-    await expect(page.getByRole("dialog", { name: "Cuisine" })).toBeVisible();
+    const sheet = page.getByRole("dialog", { name: "Cuisine" });
+    await expect(sheet).toBeVisible();
+    // Scan the panel once it has faded in, not halfway.
+    await sheet.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
   }],
   ["recipe page", "recipe.html?r=pork-carnitas", (page) => expect(page.getByRole("heading", { level: 1 })).toBeVisible()],
   ["recipe page part-way through", "recipe.html?r=pork-carnitas", async (page) => {
