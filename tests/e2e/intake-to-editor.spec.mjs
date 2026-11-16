@@ -64,11 +64,14 @@ test.describe("from the intake", () => {
     await expect(page.getByRole("link", { name: "Continue in the editor" })).toBeVisible();
   });
 
-  test("with nothing read, there's nothing to finish", async ({ page, baseURL }) => {
+  test("with nothing read, it offers to bring one in or start from scratch in a section", async ({ page, baseURL }) => {
     await signIn(page, baseURL);
     await page.goto("edit.html?new");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Nothing to finish");
-    await expect(page.getByRole("link", { name: "Add a recipe" }).last()).toHaveAttribute("href", "intake.html");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add a recipe");
+    await expect(page.getByRole("link", { name: "Bring one in" })).toHaveAttribute("href", "intake.html");
+    const sections = page.getByRole("navigation", { name: "Start from scratch" }).getByRole("link");
+    await expect(sections).toHaveText([/Baking/, /Cooking/, /Cocktails/]);
+    expect(await sections.evaluateAll((as) => as.map((a) => a.getAttribute("href")))).toEqual(["edit.html?new=baking", "edit.html?new=cooking", "edit.html?new=cocktails"]);
   });
 
   test("signed out, it asks you to sign in", async ({ page }) => {

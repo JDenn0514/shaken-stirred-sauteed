@@ -376,7 +376,8 @@ const PAGES = [
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.getByRole("alert")).toBeVisible();
   }, null, editorSaving({ status: 409, json: { error: "There's already a recipe called recipes/milk-rolls.json. Open it in the editor to change it." } })],
-  ["editor with no new recipe to finish", "edit.html?new", (page) => expect(page.getByRole("heading", { name: "Nothing to finish" })).toBeVisible(), null, editor],
+  ["editor choosing how to start a new recipe", "edit.html?new", (page) => expect(page.getByRole("heading", { name: "Add a recipe" })).toBeVisible(), null, editor],
+  ["editor with a blank recipe from scratch", "edit.html?new=cocktails", (page) => expect(page.getByRole("region", { name: "Problems to fix" })).toBeVisible(), null, editor],
   ["editor checking what's changed before a save", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit Kosher salt" }).click();
     await page.getByLabel("Amount", { exact: true }).fill("1 tbsp");

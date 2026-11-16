@@ -9,6 +9,7 @@ import fc from "fast-check";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { recipe as goodRecipe } from "../helpers/build-index.mjs";
+import { recipeArb } from "../helpers/recipe-arb.mjs";
 import * as M from "../../assets/edit-model.mjs";
 
 // A recipe with fields the editor never touches, in an unusual order.
@@ -574,6 +575,52 @@ describe("kind", () => {
   test("a component made a dish, with no original, has no kind", () =>
     assert.deepEqual(M.setKind({ kind: "component" }, "dish"), {}));
   test("only dish or component", () => assert.throws(() => M.setKind({}, "side")));
+});
+
+// A recipe started from scratch (edit.html?new=cooking): a blank sheet in
+// its section, and saved without the fields left empty.
+describe("starting from scratch", () => {
+  test("a blank recipe in its section", () =>
+    assert.deepEqual(M.blankRecipe("baking"), { title: "", category: "baking", ingredients: [], steps: [] }));
+  test("only a section the site has", () => assert.throws(() => M.blankRecipe("drinks")));
+
+  test("saving leaves out what was left empty, and dates it", () => {
+    const typed = {
+      title: "Shortbread", description: "", category: "baking", yield: "",
+      ingredients: [{ qty: "2 cups", item: "Flour", note: "" }, { item: "" }, { group: "Topping", items: [{ item: "" }] }],
+      steps: [{ do: "Mix.", wait: "", cue: "" }, "", { do: "" }],
+      notes: [""], beforeYouStart: [], tags: { type: [], ingredients: ["butter"] }, time: {}, source: { name: "" },
+    };
+    assert.deepEqual(M.forSaving(typed, { today: "2026-11-16" }), {
+      title: "Shortbread", category: "baking",
+      ingredients: [{ qty: "2 cups", item: "Flour" }],
+      steps: ["Mix."],
+      tags: { ingredients: ["butter"] }, added: "2026-11-16",
+    });
+  });
+  test("keeps false and 0, which say something", () =>
+    assert.deepEqual(M.forSaving({ title: "T", steps: [{ do: "Rest.", wait: false, oven: false }], time: { prep: 0 } }),
+      { title: "T", steps: [{ do: "Rest.", wait: false, oven: false }], time: { prep: 0 } }));
+  test("a step that's only words is written as words, as the hand-written files do", () =>
+    assert.deepEqual(M.forSaving({ steps: [{ do: "Mix." }, { do: "Bake.", wait: "20 min" }, { group: "Finish", items: [{ do: "Cool.", cue: "" }] }] }).steps,
+      ["Mix.", { do: "Bake.", wait: "20 min" }, { group: "Finish", items: ["Cool."] }]));
+  test("a date already there is kept", () => assert.equal(M.forSaving({ title: "T", added: "2026-01-01" }, { today: "2026-11-16" }).added, "2026-01-01"));
+
+  // Laws, on random recipes the checker accepts. The seed is in the group's
+  // name; SAVE_SEED=<seed> runs the same ones again.
+  const seed = Number(process.env.SAVE_SEED) || Date.now() % 2 ** 31;
+  describe(`laws (seed ${seed})`, () => {
+    const opts = { seed, numRuns: 200 };
+    const empties = (v, at = "") => (v === "" || (Array.isArray(v) && !v.length) || (v && typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length)
+      ? [at || "(the recipe)"]
+      : v && typeof v === "object" ? Object.entries(v).flatMap(([k, x]) => empties(x, `${at}.${k}`)) : []);
+    test("nothing empty is left anywhere in what's saved", () =>
+      fc.assert(fc.property(recipeArb, (r) => assert.deepEqual(empties(M.forSaving(r)), [])), opts));
+    test("what the checker accepted, it still accepts", () =>
+      fc.assert(fc.property(recipeArb, (r) => assert.deepEqual(checkRecipe("x", M.forSaving(r), VOCAB).errors, [])), opts));
+    test("saving twice is the same as saving once", () =>
+      fc.assert(fc.property(recipeArb, (r) => assert.deepEqual(M.forSaving(M.forSaving(r)), M.forSaving(r))), opts));
+  });
 });
 
 describe("the ingredients a step uses", () => {
