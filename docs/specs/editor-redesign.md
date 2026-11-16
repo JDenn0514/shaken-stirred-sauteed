@@ -380,7 +380,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - The model first: `changes(original, recipe)` in its own module with unit tests, naming steps through `edit-numbers.mjs`.
     - A read-only list: "Butter: 100 g → 115 g", "Removed: Thyme", "Tags: + lemon", with numbers that changed first.
     - Shown before Save only when an amount, time or temperature changed (decision 7), and in the draft offer.
-24. **(M) Start from scratch** (was 21). It needs the category choice from 22.
+24. **Done** (#78, 2026-11-16). **(M) Start from scratch** (was 21). It needs the category choice from 22.
     - `edit.html?new=cooking|baking|cocktails` opens a blank sheet with its own draft key (never `sss:intake`, which would clash with an import in progress).
     - Empty fields are left out of the JSON.
     - Bare `?new` with nothing waiting offers "Bring one in" or the three sections, with the family drawing. This replaces today's "Nothing to finish" page.

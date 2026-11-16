@@ -4,7 +4,7 @@
 // ingredients they're about. The guesses are changed through the review's own
 // functions (tools/intake/review.mjs), which find steps and ingredients by the
 // `reviewId` they carry until the recipe is saved.
-import { joinBack, splitBack, setPlanning, setLink } from "../tools/intake/review.mjs";
+import { joinBack, splitBack, setPlanning, setLink, tickAmount, amountChecked } from "../tools/intake/review.mjs";
 
 const { esc } = window.SSS;
 
@@ -71,6 +71,15 @@ export function ingredientNotesHTML(i, review, titles = {}) {
   </div>`;
 }
 
+// An amount the reader read, to tick "Checked" against the original. Its name
+// says which, for a screen reader; on the page it's beside the amount.
+export function tickHTML(i, state) {
+  const id = i?.reviewId;
+  if (!id || ![i.qty, i.grams, i.ml].some((v) => v !== undefined && v !== "")) return "";
+  const amount = i.qty || (i.grams != null ? `${i.grams} g` : `${i.ml} ml`);
+  return `<label class="import-tick"><input type="checkbox" data-act="r-tick" data-id="${esc(id)}" data-key="r-tick-${esc(id)}"${amountChecked(state, id) ? " checked" : ""}> Checked<span class="visually-hidden"> ${esc(amount)} ${esc(i.item || "")}</span></label>`;
+}
+
 export const AMOUNTS = "Check every amount against the original: fractions are where reading goes wrong.";
 
 // What a guess's control does to the review: the next review, or null when
@@ -82,6 +91,7 @@ export function reviewAction(state, el) {
   if (act === "r-unlink") return setLink(state, id, { recipe: null });
   if (act === "r-made") return setLink(state, id, { alreadyMade: el.checked });
   if (act === "r-watch" || act === "r-during") return setPlanning(state, id, act.slice(2), el.checked);
+  if (act === "r-tick") return tickAmount(state, id, el.checked);
   if (act === "r-prep") return setPlanning(state, id, "prep", el.value === "ahead" ? true : el.value === "just before" ? "just before" : false);
   return null;
 }

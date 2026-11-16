@@ -257,6 +257,32 @@ export function updateIngredient(state, id, changes) {
   return next;
 }
 
+// Ticking an amount "Checked" against the original. A tick holds for the
+// amount it was given to, so changing the amount takes it off, and putting
+// the amount back puts it back. Kept in the review, never in the recipe.
+const amountKey = (i) => JSON.stringify([i.qty ?? "", i.grams ?? "", i.ml ?? ""]);
+const hasAmount = (i) => [i.qty, i.grams, i.ml].some((v) => v !== undefined && v !== "");
+const ingredientById = (state, id) => flatten(state.recipe.ingredients).find((i) => i?.reviewId === id);
+export function tickAmount(state, id, on) {
+  const ing = ingredientById(state, id);
+  if (!ing) return state;
+  const checked = { ...state.checked };
+  if (on) checked[id] = amountKey(ing);
+  else delete checked[id];
+  return { ...state, checked };
+}
+export function amountChecked(state, id) {
+  const ing = ingredientById(state, id);
+  return !!ing && state.checked?.[id] === amountKey(ing);
+}
+// The amounts the reader read that aren't ticked yet: [{ id, text }], text
+// as "500 g flour".
+export function amountsToCheck(state) {
+  return flatten(state.recipe.ingredients)
+    .filter((i) => i && typeof i === "object" && i.reviewId && hasAmount(i) && !amountChecked(state, i.reviewId))
+    .map((i) => ({ id: i.reviewId, text: [i.qty || (i.grams != null ? `${i.grams} g` : `${i.ml} ml`), i.item].filter(Boolean).join(" ") }));
+}
+
 // Editing a step's text (and its wait, which must be a time or empty; empty
 // keeps a "doesn't wait" answer). New text can make a new question (a bake
 // with no time).
