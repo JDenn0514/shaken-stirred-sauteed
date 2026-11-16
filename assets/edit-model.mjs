@@ -141,6 +141,44 @@ export function setCategory(recipe, category, vocab) {
   return r;
 }
 
+// A recipe started from scratch: a blank sheet in its section.
+export function blankRecipe(category) {
+  if (!SECTIONS.includes(category)) throw new Error(`"${category}" isn't one of the site's sections`);
+  return { title: "", category, ingredients: [], steps: [] };
+}
+
+// A new recipe as it's saved: what was left empty is left out (an empty
+// text, list or object, and a line with nothing in it), anywhere in it, and
+// it's dated today unless it says otherwise. false and 0 say something, so
+// they stay. A step that's only words is written as plain text.
+const blank = (v) => v === "" || v === null || v === undefined || (Array.isArray(v) && !v.length) || (isPlain(v) && !Object.keys(v).length);
+const isPlain = (v) => v && typeof v === "object" && !Array.isArray(v);
+function leaveOutEmpty(v) {
+  if (Array.isArray(v)) {
+    return v.map(leaveOutEmpty).filter((x) => !blank(x));
+  }
+  if (isPlain(v)) {
+    const out = {};
+    for (const [k, x] of Object.entries(v)) {
+      const kept = leaveOutEmpty(x);
+      if (!blank(kept)) out[k] = kept;
+    }
+    // A line without its words is no line at all, and a group without lines no group.
+    if (["item", "do", "items"].some((k) => k in v && !(k in out))) return {};
+    return out;
+  }
+  return typeof v === "string" ? v.trim() : v;
+}
+// A step that's only words is written as words.
+const plainSteps = (list) => list.map((e) => (isPlain(e) && Array.isArray(e.items) ? { ...e, items: plainSteps(e.items) }
+  : isPlain(e) && Object.keys(e).length === 1 && "do" in e ? e.do : e));
+export function forSaving(recipe, { today } = {}) {
+  const out = leaveOutEmpty(recipe);
+  if (Array.isArray(out.steps)) out.steps = plainSteps(out.steps);
+  if (!out.added && today) out.added = today;
+  return out;
+}
+
 // Dish or component. "kind": "dish" stays as the file had it (original is the
 // recipe as it was loaded): switching to Component and back never removes it,
 // and never adds it to a file that didn't say it. The field keeps its place.

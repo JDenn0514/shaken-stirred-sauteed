@@ -1429,6 +1429,8 @@ body.cooking > .site-footer { display: none; }
 .edit-link { font: inherit; font-size: .88rem; color: var(--section); background: none; border: 0; padding: 4px 0; min-height: 24px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .edit-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .edit-change-list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+/* edit.html?new with nothing waiting: the section doors, as on the home page. */
+.edit-start-h { margin: 32px 0 12px; font-size: 1.3rem; }
 /* Save in the section's colour, like "Start cooking"; off, a dashed outline with the reason beside it. */
 .edit-bar .edit-primary { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section-fill); }
 .edit-bar .edit-primary:disabled { background: transparent; color: var(--muted); border: var(--rule) dashed var(--rule-strong); opacity: 1; }

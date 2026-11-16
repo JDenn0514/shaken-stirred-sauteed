@@ -376,7 +376,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
 22. **Done** (#76, 2026-11-16). **(M) Category and Kind** (was 20).
     - Category goes in the About form. Before switching, it lists the tags that will be dropped. A model function returns those tags, built so it can later become picking several sections (decision 6). Undo works. The page recolours live.
     - Kind keeps an explicit `"kind": "dish"` (decision 11). Today only switching the menu from Component back to Dish removes it, so this is a small fix with a test.
-23. **(M) "What's changed"** (was 24).
+23. **Done** (#77, 2026-11-16). **(M) "What's changed"** (was 24).
     - The model first: `changes(original, recipe)` in its own module with unit tests, naming steps through `edit-numbers.mjs`.
     - A read-only list: "Butter: 100 g → 115 g", "Removed: Thyme", "Tags: + lemon", with numbers that changed first.
     - Shown before Save only when an amount, time or temperature changed (decision 7), and in the draft offer.

@@ -42,7 +42,10 @@ const root = document.getElementById("editor");
 const params = new URLSearchParams(location.search);
 let slug = params.get("r") || "";
 let fresh = !slug && params.has("new"); // a new recipe, from the intake, not saved yet
-const draftKey = () => `sss:draft:${slug}`;
+// A recipe started from scratch (edit.html?new=cooking) is kept under its
+// section's own key, never the intake's, so an import in progress is left alone.
+let scratch = M.SECTIONS.includes(params.get("new")) ? params.get("new") : null;
+const draftKey = () => (scratch ? `sss:new:${scratch}` : `sss:draft:${slug}`);
 const KEPT_REVIEW = "sss:intake";      // the intake's review, which a new recipe is
 
 let original = null;   // the recipe as it is on the site (loaded, or last saved)
@@ -104,7 +107,7 @@ function readDraft() {
 function keepDraft() {
   try {
     // A new recipe is the intake's review, kept as the intake keeps it.
-    if (fresh) localStorage.setItem(KEPT_REVIEW, JSON.stringify(toKeep(withReview(), { original: source })));
+    if (fresh && !scratch) localStorage.setItem(KEPT_REVIEW, JSON.stringify(toKeep(withReview(), { original: source })));
     else if (same(recipe, original)) localStorage.removeItem(draftKey());
     // base: the version of the recipe the draft was made from, so a draft made
     // before a newer save (on another device or tab) can say so.
@@ -265,7 +268,8 @@ function draw() {
     <div class="with-original-main">
     ${offer ? `<section class="edit-note" aria-labelledby="draft-h">
       <h2 id="draft-h">Unsaved changes</h2>
-      <p>You changed this recipe on ${esc(new Date(offer.at).toLocaleString())} and didn't save. Editing it now starts from the recipe as it is on the site.</p>
+      <p>${scratch ? `You started this recipe on ${esc(new Date(offer.at).toLocaleString())} and didn't save it. Discard it to start again from a blank sheet.`
+        : `You changed this recipe on ${esc(new Date(offer.at).toLocaleString())} and didn't save. Editing it now starts from the recipe as it is on the site.`}</p>
       ${changeList(whatChanged(original, offer.recipe))}
       ${offer.base && offer.base !== version ? `<p><strong>The recipe has been saved since you made these changes</strong>, on another device or in another tab. If you bring them back, Save will stop and say so rather than replace what was saved.</p>` : ""}
       <div class="edit-row">
@@ -329,6 +333,7 @@ function draw() {
     : status?.published ? `Published. The site updates in a minute or two. <a href="recipe.html?r=${encodeURIComponent(slug)}">See ${esc(status.published)} on the site</a>`
     : note ? esc(note)
     : !unsaved() ? ""
+    : scratch ? "Give it a title, its ingredients and its steps, then save it to the site."
     : fresh ? "Fix what was read wrong, check the guesses against the original, then save it to the site." : "";
   if (statusLine.innerHTML !== said) statusLine.innerHTML = said;
   decorate(root.querySelector(".edit-preview"), errors, showPrepFirst);
@@ -889,14 +894,16 @@ async function save() {
 // other, and the intake has nothing left to offer back.
 async function saveNew() {
   const name = fileName();
-  const saved = recipeToSave(withReview(), { today: new Date().toLocaleDateString("en-CA") });
+  const today = new Date().toLocaleDateString("en-CA");
+  const saved = scratch ? M.forSaving(recipe, { today }) : recipeToSave(withReview(), { today });
   status = { saving: true };
   draw();
   const done = await send("/api/save", { slug: name, recipe: saved });
   if (done.error) status = done;
   else {
-    try { localStorage.removeItem(KEPT_REVIEW); } catch {}
+    try { localStorage.removeItem(scratch ? draftKey() : KEPT_REVIEW); } catch {}
     fresh = false;
+    scratch = null;
     slug = name;
     recipe = saved;
     original = structuredClone(saved);
@@ -1444,24 +1451,53 @@ root.addEventListener("toggle", (e) => {
   draw();
 })();
 
-// A new recipe: the review the intake keeps (sss:intake).
+// A new recipe: from scratch in a section (edit.html?new=cooking), or the
+// review the intake keeps (sss:intake). With neither, a choice of the two.
 async function startNew() {
+  if (scratch) return startScratch();
   let kept = null;
   try { kept = fromKept(JSON.parse(localStorage.getItem(KEPT_REVIEW))); } catch {}
-  if (!kept) {
-    gate("Nothing to finish", "A new recipe starts on Add a recipe: give it a recipe's text, web address or PDF, answer its questions, then continue here.");
-    root.insertAdjacentHTML("beforeend", `<p><a class="btn edit-primary" href="intake.html">Add a recipe</a></p>`);
-    return;
-  }
+  if (!kept) return chooseStart();
   try {
     [vocab, index] = await Promise.all([getJSON("recipes/vocabulary.json"), getJSON("recipes/index.json").catch(() => [])]);
   } catch {
     return gate("Couldn't open the recipe", "Check your connection, then reload to try again.");
   }
   const { recipe: r, ...rest } = kept.state;
+  // (A recipe from scratch starts in startScratch, below.)
   recipe = r;
   review = rest;
   source = kept.original;
   forgetHistory();
   draw();
+}
+
+// A blank sheet in its section. Its unsaved draft is offered back, as an
+// existing recipe's is.
+async function startScratch() {
+  try {
+    [vocab, index] = await Promise.all([getJSON("recipes/vocabulary.json"), getJSON("recipes/index.json").catch(() => [])]);
+  } catch {
+    return gate("Couldn't open the editor", "Check your connection, then reload to try again.");
+  }
+  original = M.blankRecipe(scratch);
+  recipe = structuredClone(original);
+  forgetHistory();
+  const draft = readDraft();
+  if (draft?.recipe && !same(draft.recipe, original)) offer = draft;
+  draw();
+}
+
+// edit.html?new with nothing waiting: bring a recipe in, or start one from
+// scratch in a section, through the same doors as the home page.
+function chooseStart() {
+  gate("Add a recipe", "Bring one in from a recipe's text, web address or PDF, or start from scratch.");
+  const door = (c) => `<a class="door fam-${c}" href="edit.html?new=${c}">
+      <span class="door-name">${esc(CATEGORIES[c].label)}</span>
+      <span class="door-count">Start from scratch</span>
+      <span class="plate" aria-hidden="true"></span>
+    </a>`;
+  root.insertAdjacentHTML("beforeend", `<p><a class="btn edit-primary" href="intake.html">Bring one in</a></p>
+    <h2 class="edit-start-h">Or start from scratch</h2>
+    <nav class="doors" aria-label="Start from scratch">${["baking", "cooking", "cocktails"].map(door).join("")}</nav>`);
 }
