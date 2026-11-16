@@ -116,7 +116,8 @@
       // A "during" step runs while the nearest earlier step that isn't "during"
       // (or an added prep step) waits.
       if (s.during === true) {
-        const runsAlongside = steps.slice(0, n).findLast((x) => x && typeof x === "object" && !x.during && !x.prepOnly);
+        // A step written as plain text counts: it's a step that doesn't wait.
+        const runsAlongside = steps.slice(0, n).findLast((x) => x && !x.during && !x.prepOnly);
         if (!runsAlongside?.wait) problems.push(`${step}: "during" needs an earlier step with a wait to run alongside`);
         else if (runsAlongside.watch) problems.push(`${step}: "during" can't run alongside a watched wait, which needs your hands`);
       }

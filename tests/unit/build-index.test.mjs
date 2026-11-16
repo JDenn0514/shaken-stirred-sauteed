@@ -220,6 +220,8 @@ describe("planning data", () => {
     rejects(withStep({ during: true }), /step 1: "during" needs an earlier step with a wait to run alongside/));
   test("rejects during after a step with no wait", () =>
     rejects(recipe({ steps: [{ do: "Chop." }, { do: "Fry.", during: true }] }), /step 2: "during" needs an earlier step with a wait to run alongside/));
+  test("rejects during after a step written as plain text, which doesn't wait", () =>
+    rejects(recipe({ steps: [{ do: "Bake.", wait: "20 min" }, "Whip the cream.", { do: "Mix it in.", during: true }] }), /step 3: "during" needs an earlier step with a wait to run alongside/));
   test("rejects during after a watched wait, which needs your hands", () =>
     rejects(recipe({ steps: [{ do: "Sear.", wait: "4 min", watch: true }, { do: "Chop.", during: true }] }), /step 2: "during" can't run alongside a watched wait/));
   test("rejects more than one holds in a recipe", () =>

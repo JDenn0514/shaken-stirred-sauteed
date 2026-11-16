@@ -1,6 +1,7 @@
 // Automated accessibility scan (axe) of each page, in light and dark mode,
-// against WCAG 2.1 A and AA. It catches things like low colour contrast and
-// missing labels; it can't judge everything, so it's a floor, not a guarantee.
+// against WCAG 2.1 A and AA, and 2.2 for the editor. It catches things like
+// low colour contrast and missing labels; it can't judge everything, so it's a
+// floor, not a guarantee.
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect, onMenu, signIn, EDITOR_INDEX } from "./fixtures.mjs";
@@ -275,6 +276,26 @@ const PAGES = [
     await page.getByText("Details", { exact: true }).click();
     await expect(page.getByLabel("Made by another recipe").first()).toBeVisible();
   }, null, editor],
+  ["editor on a phone, a step open at full width, saying why During isn't offered", "edit.html?r=lemon-bars", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit step 4" }).press("Enter");
+    const fold = page.getByRole("group", { name: "For the lineup" });
+    await fold.locator("summary").click();
+    await expect(fold).toContainText("isn't offered");
+  }, null, async (page) => { await editor(page); await page.setViewportSize({ width: 390, height: 844 }); }],
+  ["editor asking before a drink moves out of Cocktails", "edit.html?r=old-fashioned", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Old Fashioned" }).first().press("Enter");
+    await page.getByLabel("Section", { exact: true }).selectOption({ label: "Cooking" });
+    await expect(page.getByRole("group", { name: "Move to Cooking?" })).toContainText("Glass: Rocks");
+  }, null, editor],
+  ["editor with a skip link showing", "edit.html?r=lemon-bars", async (page) => {
+    await page.getByRole("navigation", { name: "Skip links" }).getByRole("link", { name: "Skip to the recipe" }).focus();
+    await expect(page.getByRole("link", { name: "Skip to the recipe" })).toBeInViewport();
+  }, null, editor],
+  ["editor showing the keyboard shortcuts", "edit.html?r=lemon-bars", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Edit step 2" }).focus();
+    await page.keyboard.press("?");
+    await expect(page.getByRole("dialog", { name: "Keyboard shortcuts" })).toBeVisible();
+  }, null, editor],
   ["editor with key ingredients narrowed and a drawing chosen", "edit.html?r=pork-carnitas", async (page) => {
     await page.getByText("Details", { exact: true }).click();
     await page.getByRole("searchbox", { name: "Find an ingredient" }).fill("lim");
@@ -488,9 +509,12 @@ const summarize = (violations) => violations.flatMap((v) =>
 // scan never catches a colour halfway through changing.
 test.use({ colorScheme: "light", reducedMotion: "reduce" });
 
+// The editor is also held to WCAG 2.2 (build step 27 in
+// docs/specs/editor-redesign.md): its targets are at least 24px, among others.
 const scan = async (page) => {
+  const editing = new URL(page.url()).pathname.endsWith("/edit.html");
   const { violations } = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", ...(editing ? ["wcag22a", "wcag22aa"] : [])])
     .analyze();
   return summarize(violations);
 };
