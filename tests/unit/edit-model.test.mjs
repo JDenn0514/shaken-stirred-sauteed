@@ -11,6 +11,7 @@ import { createRequire } from "node:module";
 import { recipe as goodRecipe } from "../helpers/build-index.mjs";
 import { recipeArb } from "../helpers/recipe-arb.mjs";
 import * as M from "../../assets/edit-model.mjs";
+import { minutes } from "../../assets/planner.mjs";
 
 // A recipe with fields the editor never touches, in an unusual order.
 const keeper = () => ({
@@ -997,5 +998,11 @@ describe("pasting lines", () => {
     const { recipe: r, count } = M.pasteLines(keeper(), "steps", " \n\n");
     assert.deepEqual(r, keeper());
     assert.equal(count, 0);
+  });
+});
+
+describe("quick waits", () => {
+  test("each is a time the planner reads, shortest first", () => {
+    assert.deepEqual(M.QUICK_WAITS.map(minutes), [5, 10, 12.5, 22.5, 30, 60]);
   });
 });

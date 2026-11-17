@@ -1632,3 +1632,34 @@ test.describe("pasting lines", () => {
     await expect(page.getByLabel("Amount", { exact: true })).toBeFocused();
   });
 });
+
+test.describe("quick waits on a phone", () => {
+  const bar = (page) => page.getByRole("region", { name: "Editing" });
+  const waits = (page) => page.getByRole("group", { name: "Quick waits" });
+
+  test("a quick wait fills the step's Wait, keeps what was typed, and one Undo takes it back", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Cue", { exact: true }).fill("Salt on every side");
+    const chip = waits(page).getByRole("button", { name: "10 to 15 min", exact: true });
+    await chip.focus();
+    await chip.press("Enter");
+    await expect(page.getByLabel("Wait", { exact: true })).toHaveValue("10 to 15 min");
+    await expect(page.getByLabel("Cue", { exact: true })).toHaveValue("Salt on every side");
+    await expect(chip).toHaveAttribute("aria-pressed", "true");
+    await expect(chip).toBeFocused();
+    await expect(waits(page).getByRole("button", { name: "5 min", exact: true })).toHaveAttribute("aria-pressed", "false");
+    await bar(page).getByRole("button", { name: "Undo" }).click();
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await expect(page.getByLabel("Wait", { exact: true })).toHaveValue("");
+  });
+
+  test("on a laptop there are no quick waits", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await expect(page.getByLabel("Wait", { exact: true })).toBeVisible();
+    await expect(waits(page)).toBeHidden();
+  });
+});
