@@ -15,6 +15,9 @@ import { readIngredient, pastedLines } from "../tools/intake/parse.mjs";
 // The lists a line belongs to, by the kind of line, as the editor names them.
 export const LISTS = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
 
+// The waits a step's Wait offers with a tap on a phone, shortest first.
+export const QUICK_WAITS = ["5 min", "10 min", "10 to 15 min", "20 to 25 min", "30 min", "1 hr"];
+
 const isGroup = (e) => !!e && Array.isArray(e.items);
 const flat = (list = []) => list.flatMap((e) => (isGroup(e) ? e.items : [e]));
 const lower = (s) => String(s ?? "").trim().toLowerCase();

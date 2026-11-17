@@ -483,10 +483,19 @@ function stepForm(n) {
       ${o.wait === false ? field("Wait", "wait", "", ` placeholder="Doesn't wait"`) : field("Wait", "wait", o.wait, ` placeholder="e.g. 20 min"`)}
       ${field("Cue", "cue", o.cue, ` placeholder="e.g. Golden at the edges"`)}
     </div>
+    ${quickWaits(o.wait)}
     ${lineupFold(n)}
     ${formButtons(act("add-after", "Add a step after this") + moveControls("step", n) + act("split", "Split here")
       + (M.timedParts(o.do) > 1 ? act("split-times", "Split at each time") : "") + act("join", "Join with the next step") + act("remove", "Remove"))}
   </form>`;
+}
+
+// On a phone, a tap for the usual waits under a step's Wait, so they needn't
+// be typed. Ranges where a wait is one (the Field Guide's "waits are ranges").
+// Hidden on wider screens by the stylesheet.
+function quickWaits(wait) {
+  return `<div class="edit-quick-waits" role="group" aria-label="Quick waits">${M.QUICK_WAITS.map((w, k) =>
+    `<button class="chip" type="button" data-act="quick-wait" data-wait="${esc(w)}" data-key="edit-wait-${k}" aria-pressed="${wait === w}">${esc(w)}</button>`).join("")}</div>`;
 }
 
 // The lists a line belongs to, by the kind of line, and how each is changed.
@@ -1372,6 +1381,10 @@ root.addEventListener("click", (e) => {
     const { recipe: next, at } = ops(kind).add(recipe);
     motion = "flash";
     return update(next, () => { openLine(`${kind}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = FIRST_FIELD[kind]; });
+  }
+  if (form && a === "quick-wait") {
+    form.querySelector('[name="wait"]').value = b.dataset.wait;
+    return update(applyForm(form), () => { focusKey = b.dataset.key; });
   }
   if (form && ["add-ml", "split-ing", "add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {

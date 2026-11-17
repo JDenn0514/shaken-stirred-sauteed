@@ -1777,3 +1777,8 @@ body.cooking > .site-footer { display: none; }
 .import-guess select { font: inherit; padding: 4px 6px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--bg); color: var(--text); }
 .import-guess input:focus-visible, .import-guess select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .import-check { margin: 4px 0 0; font-size: .92rem; color: var(--baking); }
+
+/* Quick waits under a step's Wait, on a phone only (assets/edit.mjs, quickWaits). */
+.edit-quick-waits { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.edit-quick-waits .chip { min-height: 44px; padding: 4px 14px; background: var(--surface); }
+@media (min-width: 600px) { .edit-quick-waits { display: none; } }
