@@ -7,7 +7,7 @@
 // `category` is "baking", "cooking" or "cocktails" (asked for when missing);
 // `titles` maps existing recipe slugs to titles, so ingredients can link to
 // the recipes that make them. See tools/intake/README.md.
-import { parseRecipeText, parseIngredient } from "./parse.mjs";
+import { parseRecipeText, parseIngredient, tidyIngredient } from "./parse.mjs";
 import { restructure } from "../restructure/restructure.mjs";
 import { planLineup } from "../../assets/planner.mjs";
 
@@ -83,29 +83,6 @@ export function totalTimeCheck(recipe) {
   if (planned <= stated * 1.25 + 10) return [];
   const about = (m) => { const r = m >= 20 ? Math.round(m / 5) * 5 : Math.round(m); return r >= 60 ? `${Math.floor(r / 60)} hr${r % 60 ? ` ${r % 60} min` : ""}` : `${r} min`; };
   return [{ kind: "total-time", text, why: `the steps add up to about ${about(planned)}, more than the stated total: check for a rest, rise or chill the total leaves out, and correct it` }];
-}
-
-// Fractions the way the site writes them: "1 ½" → "1 1/2".
-const FRACTIONS = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8" };
-const slashed = (s) => s.replace(/(\d)?(\s*)([½⅓⅔¼¾⅛⅜⅝⅞])/g, (_, d, sp, f) => (d ? `${d} ` : sp) + FRACTIONS[f]);
-
-// An ingredient written the way the recipe checker asks (README, "Writing
-// ingredients"): a capital on the name, the amount in lowercase, fractions with
-// a slash, "about" instead of "~", and grams or ml in their own fields
-// ("200g/7oz" → grams 200, "7 oz"). Plain-text ingredients are left as they are.
-function tidyIngredient(i) {
-  if (!i || typeof i !== "object" || typeof i.item !== "string") return i;
-  const out = { item: slashed(i.item).replace(/^\p{Ll}/u, (c) => c.toUpperCase()) };
-  let qty = typeof i.qty === "string" ? slashed(i.qty.toLowerCase().replace(/~\s*/g, "about ")) : i.qty;
-  for (const [unit, field] of [["g", "grams"], ["ml", "ml"]]) {
-    const m = typeof qty === "string" && new RegExp(`(\\d+(?:\\.\\d+)?)\\s*${unit}\\b`).exec(qty);
-    if (!m || i[field] != null) continue;
-    out[field] = Number(m[1]);
-    qty = qty.replace(m[0], "").replace(/[()/]/g, " ").replace(/(\d)\s*(oz|lb)\b/g, "$1 $2").replace(/\s+/g, " ").trim() || undefined;
-  }
-  // The fields in the order the recipe files write them.
-  const { grams = out.grams, ml = out.ml, ...rest } = { ...i, ...out, qty };
-  return Object.fromEntries(Object.entries({ grams, qty, ml, ...rest }).filter(([, v]) => v !== undefined));
 }
 
 // Adds planning data (tools/restructure) and drops its bookkeeping.

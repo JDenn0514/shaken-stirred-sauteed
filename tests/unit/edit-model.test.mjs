@@ -952,3 +952,50 @@ describe("the baking and cocktail facts", () => {
     assert.deepEqual(M.putBack(now, before, "facts"), before);
   });
 });
+
+// Build step 29: pasting lines, and a plain-text ingredient split into amount
+// and name, both read the way the intake reads them (tools/intake/parse.mjs).
+describe("a plain-text ingredient split into amount and name", () => {
+  test("reads the amount and name, and the steps that use it follow", () => {
+    const r = M.splitIngredient(keeper(), 1);
+    assert.deepEqual(r.ingredients[1].items[0], { qty: "1 tsp", item: "Sugar" });
+    assert.deepEqual(r.steps[0].uses, ["Sugar", "Bitters"]);
+  });
+
+  test("grams in the line go in their own field, written the way the checker asks", () => {
+    const r = M.splitIngredient({ ...keeper(), ingredients: ["1 ½ cups (200g) plain flour, sifted"] }, 0);
+    assert.deepEqual(r.ingredients[0], { grams: 200, qty: "1 1/2 cups", item: "Plain flour", note: "sifted" });
+  });
+
+  test("an ingredient that already has its parts is left alone", () => {
+    assert.deepEqual(M.splitIngredient(keeper(), 0), keeper());
+  });
+});
+
+describe("pasting lines", () => {
+  test("each ingredient line is read into its parts, at the end of the last group", () => {
+    const { recipe: r, at, count } = M.pasteLines(keeper(), "ingredients", "• 2 cups (250g) flour\n\n▢ 1 egg, beaten\n");
+    assert.deepEqual(r.ingredients[1].items.slice(2), [{ grams: 250, qty: "2 cups", item: "Flour" }, { qty: "1", item: "Egg", note: "beaten" }]);
+    assert.equal(at, 3);
+    assert.equal(count, 2);
+  });
+
+  test("steps lose their numbers, and a line that wrapped is joined back", () => {
+    const { recipe: r, at, count } = M.pasteLines({ title: "T", steps: [{ do: "Heat the pan." }] }, "steps", "1. Melt the butter\nand sugar.\n2) Stir in the flour.");
+    assert.deepEqual(r.steps, [{ do: "Heat the pan." }, { do: "Melt the butter and sugar." }, { do: "Stir in the flour." }]);
+    assert.equal(at, 1);
+    assert.equal(count, 2);
+  });
+
+  test("notes start the list when there are none", () => {
+    const { recipe: r, at } = M.pasteLines({ title: "T" }, "notes", "- Keeps 3 days.\n- Freezes well.");
+    assert.deepEqual(r.notes, ["Keeps 3 days.", "Freezes well."]);
+    assert.equal(at, 0);
+  });
+
+  test("nothing but blank lines changes nothing", () => {
+    const { recipe: r, count } = M.pasteLines(keeper(), "steps", " \n\n");
+    assert.deepEqual(r, keeper());
+    assert.equal(count, 0);
+  });
+});

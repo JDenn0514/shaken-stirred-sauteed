@@ -10,6 +10,7 @@
 // new one goes at the end.
 
 import { minutes, timesIn } from "./planner.mjs";
+import { readIngredient, pastedLines } from "../tools/intake/parse.mjs";
 
 // The lists a line belongs to, by the kind of line, as the editor names them.
 export const LISTS = { ing: "ingredients", step: "steps", note: "notes", start: "beforeYouStart" };
@@ -306,6 +307,12 @@ export function updateIngredient(recipe, n, changes) {
   }), (k) => k);
 }
 
+// A plain-text ingredient ("1 tsp sugar") split into amount and name, read
+// the way the intake reads a line. The steps that use it follow it.
+export function splitIngredient(recipe, n) {
+  return carryUses(recipe, change(recipe, "ingredients", n, (ing) => (typeof ing === "string" ? readIngredient(ing) : ing)), (k) => k);
+}
+
 // Lineup fields on an ingredient: recipe (the linked recipe's slug), optional
 // and alreadyMade. Only a required, linked ingredient can start on Already made.
 const INGREDIENT_FIELDS = ["recipe", "optional", "alreadyMade"];
@@ -530,6 +537,20 @@ function add(recipe, key, { after } = {}) {
   const last = r[key].at(-1);
   (isGroup(last) ? last.items : r[key]).push(BLANK[key]());
   return { recipe: r, at: flat(r[key]).length - 1 };
+}
+// Pasted text, one entry per line, at the end of the list (or its last
+// section), each read the way the intake reads it. Returns where the first is
+// and how many there are.
+const PASTED = { ingredients: readIngredient, steps: (l) => ({ do: l }), notes: (l) => l, beforeYouStart: (l) => l };
+export function pasteLines(recipe, key, text) {
+  const lines = pastedLines(text).map(PASTED[key]);
+  if (!lines.length) return { recipe, at: -1, count: 0 };
+  const r = structuredClone(recipe);
+  r[key] ||= [];
+  const at = flat(r[key]).length;
+  const last = r[key].at(-1);
+  (isGroup(last) ? last.items : r[key]).push(...lines);
+  return { recipe: r, at, count: lines.length };
 }
 export const addIngredient = (recipe, where) => add(recipe, "ingredients", where);
 export const addStep = (recipe, where) => add(recipe, "steps", where);

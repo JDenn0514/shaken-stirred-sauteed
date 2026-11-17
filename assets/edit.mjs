@@ -424,7 +424,8 @@ function ingredientForm(n) {
   const i = flat(recipe.ingredients)[n];
   const moves = act("add-after", "Add an ingredient after this") + moveControls("ing", n) + act("remove", "Remove");
   if (typeof i === "string") {
-    return `<form class="edit-form" data-form="ing" data-n="${n}">${field("Ingredient", "text", i)}${formButtons(moves)}</form>`;
+    return `<form class="edit-form" data-form="ing" data-n="${n}">${field("Ingredient", "text", i)}
+      <div class="edit-row">${act("split-ing", "Split into amount and name")}</div>${formButtons(moves)}</form>`;
   }
   return `<form class="edit-form" data-form="ing" data-n="${n}">
     <div class="edit-fields">
@@ -535,7 +536,8 @@ function linesSection(kind) {
   const ghost = empty ? `<button class="edit-ghost" type="button" data-act="add" data-list="${list}" data-key="add-${list}">${esc(L.ghost)}</button>` : "";
   const adds = [empty ? "" : `<button class="btn" type="button" data-act="add" data-list="${list}" data-key="add-${list}">${L.one}</button>`,
     !L.group ? "" : editing === `new-group:${list}` ? groupForm("new-group", "", list)
-      : `<button class="btn" type="button" data-act="edit" data-target="new-group:${list}" data-key="add-group-${list}">${L.group}</button>`].join("");
+      : `<button class="btn" type="button" data-act="edit" data-target="new-group:${list}" data-key="add-group-${list}">${L.group}</button>`,
+    kind === "note" ? pasteButton(list) : ""].join("");
   return `<section class="section${kind === "start" ? " before" : ""}"${kind === "note" ? ` id="notes"` : ""} aria-labelledby="${kind}-lines-h">
     <h2 id="${kind}-lines-h">${L.heading}</h2>${body}${ghost}${adds ? `<div class="edit-row edit-adds">${adds}</div>` : ""}</section>`;
 }
@@ -684,9 +686,10 @@ function editableGroups(section, list, own) {
   });
 }
 
+const pasteButton = (list) => `<button class="btn" type="button" data-act="paste" data-list="${list}" data-key="paste-${list}">Paste ${list}</button>`;
 function addButtons(list, one, group) {
   return `<div class="edit-row edit-adds">
-    <button class="btn" type="button" data-act="add" data-list="${list}" data-key="add-${list}">${one}</button>
+    <button class="btn" type="button" data-act="add" data-list="${list}" data-key="add-${list}">${one}</button>${pasteButton(list)}
     ${editing === `new-group:${list}` ? groupForm("new-group", "", list)
       : `<button class="btn" type="button" data-act="edit" data-target="new-group:${list}" data-key="add-group-${list}">${group}</button>`}
   </div>`;
@@ -887,6 +890,38 @@ function openShortcuts(back) {
   dialog.querySelector("[data-act=close-dialog]").focus();
 }
 
+// Paste lines: several ingredients, steps or notes at once, one per line,
+// added at the end and read the way the intake reads them (M.pasteLines).
+const PASTE_ONE = { ingredients: "ingredient", steps: "step", notes: "note" };
+let pasteList = null;
+function openPaste(list) {
+  pasteList = list;
+  dialogBack = `paste-${list}`;
+  dialog.setAttribute("aria-labelledby", "paste-title");
+  dialog.innerHTML = `<div class="edit-dialog-body">
+    <h2 id="paste-title">Paste ${list}</h2>
+    ${labelled(`One ${PASTE_ONE[list]} per line`, `<textarea rows="8" data-key="paste-text"></textarea>`)}
+    <div class="edit-row">
+      <button class="btn edit-primary" type="button" data-act="paste-add">Add them</button>
+      <button class="btn" type="button" data-act="close-dialog">Cancel</button>
+    </div>
+  </div>`;
+  dialog.showModal();
+  dialog.querySelector("textarea").focus();
+}
+function pasteAdd() {
+  const list = pasteList, kind = KIND[list];
+  const { recipe: next, at, count } = M.pasteLines(recipe, list, dialog.querySelector("textarea").value);
+  if (!count) return dialog.close();
+  // Closing puts focus on dialogBack: the first line added, once it's drawn.
+  dialogBack = `part-${kind}-${at}`;
+  editing = null;
+  opened = null;
+  motion = "flash";
+  update(next, () => { focusKey = dialogBack; note = `Added ${count} ${PASTE_ONE[list]}${count === 1 ? "" : "s"}.`; });
+  dialog.close();
+}
+
 // On a phone, the original opens over the page from the bar, so it's there
 // wherever you are on the page. Closing it goes back to the bar.
 function openOriginal() {
@@ -950,6 +985,7 @@ dialog.addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-act]");
   if (b?.dataset.act === "cancel-delete" || b?.dataset.act === "close-dialog") return dialog.close();
   if (b?.dataset.act === "confirm-save") { dialog.close(); return save(); }
+  if (b?.dataset.act === "paste-add") return pasteAdd();
   if (b?.dataset.act !== "confirm-delete" || !typedRight()) return;
   const problem = dialog.querySelector("#delete-problem");
   b.disabled = true;
@@ -1330,13 +1366,14 @@ root.addEventListener("click", (e) => {
       : editing.startsWith("step:") ? "edit-do" : /^(note|start):/.test(editing) ? "edit-line" : "edit-group";
     return draw();
   }
+  if (a === "paste") return openPaste(b.dataset.list);
   if (a === "add") {
     const list = b.dataset.list, kind = KIND[list];
     const { recipe: next, at } = ops(kind).add(recipe);
     motion = "flash";
     return update(next, () => { openLine(`${kind}:${at}`, { added: true, back: `add-${list}`, before: next }); focusKey = FIRST_FIELD[kind]; });
   }
-  if (form && ["add-ml", "add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
+  if (form && ["add-ml", "split-ing", "add-after", "move-up", "move-down", "move-to", "as-written", "split", "split-times", "join", "remove"].includes(a)) return formAction(a, form);
   if (a === "restore") {
     const draft = offer;
     // A draft made on an older version saves against that version, so the
@@ -1412,6 +1449,7 @@ function formAction(a, form) {
     motion = "flash";
     return update(moved, () => { openLine(`${kind}:${at}`, { before: moved }); focusKey = "edit-act-move-to"; });
   }
+  if (a === "split-ing") return update(M.splitIngredient(next, n), () => { focusKey = "edit-qty"; });
   if (a === "add-ml") {
     mlFor = n;
     return update(next, () => { focusKey = "edit-ml"; });

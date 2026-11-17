@@ -394,7 +394,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
     - shortcut help (Cmd/Ctrl+S, Cmd/Ctrl+Z and the rest);
     - the WCAG 2.2 rules turned on in the accessibility scan for editor pages, and what they find fixed.
     - Added on 2026-11-16 (Jacob's answers to the open questions): on a phone, the step being edited takes the full width with its number above it; where "Done during an earlier step's wait" isn't offered, the fold says why and how to make it fit; the fold's label is just "For the lineup", with a count of what's to check; moving a drink out of Cocktails lists and takes off its details (glass, ice, garnish, method, keeps, ABV, standard drinks) along with the tags.
-28. **(S) Motion** (was 27). The open-line fade and the moved-line flash, both off with reduced motion.
+28. **Done** (#88, 2026-11-16). **(S) Motion** (was 27). The open-line fade and the moved-line flash, both off with reduced motion.
 29. **(M) Paste lines** (was part of 28). "Paste lines" on Ingredients, Steps and Notes, and turning a plain-text ingredient into amount plus name. Both use the intake's own reading (`tidyIngredient`).
 30. **(S) Wait chips on phones** (was part of 28).
 31. **(M–L, after your OK) The wide-laptop side rail** (was 29).

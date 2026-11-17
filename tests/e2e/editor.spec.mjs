@@ -1575,3 +1575,60 @@ test.describe("motion", () => {
     });
   });
 });
+
+// Build step 29: pasting several lines at once, read the way the intake reads
+// them (the rules are unit tested in tests/unit/edit-model.test.mjs).
+test.describe("pasting lines", () => {
+  const bar = (page) => page.getByRole("region", { name: "Editing" });
+  const paste = async (page, button, label, text) => {
+    await preview(page).getByRole("button", { name: button }).click();
+    const box = page.getByRole("dialog", { name: button });
+    await box.getByLabel(label).fill(text);
+    await box.getByRole("button", { name: "Add them" }).click();
+    await expect(box).toBeHidden();
+  };
+
+  test("pasted ingredients are added, read into their parts, and one Undo takes them back", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await paste(page, "Paste ingredients", "One ingredient per line", "• 4 cloves garlic, smashed\n1 tsp cumin");
+    await expect(preview(page).getByRole("button", { name: "4 cloves Garlic smashed", exact: true })).toBeFocused();
+    await expect(preview(page).getByRole("button", { name: "1 tsp Cumin", exact: true })).toBeVisible();
+    await expect(bar(page).getByRole("status")).toHaveText("Added 2 ingredients.");
+    await bar(page).getByRole("button", { name: "Undo" }).click();
+    await expect(preview(page).getByRole("button", { name: "1 tsp Cumin", exact: true })).toHaveCount(0);
+  });
+
+  test("pasted steps lose their numbers", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await paste(page, "Paste steps", "One step per line", "1. Warm the tortillas.\n2. Serve with lime.");
+    expect((await stepTexts(page)).slice(-2)).toEqual(["Warm the tortillas.", "Serve with lime."]);
+  });
+
+  test("pasted notes are added after the others", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await paste(page, "Paste notes", "One note per line", "Warm it through in a pan.\nAdd lime at the table.");
+    const notes = page.getByRole("region", { name: "Notes" });
+    await expect(notes.getByRole("button", { name: "Warm it through in a pan.", exact: true })).toBeFocused();
+    await expect(notes.locator("li").last()).toContainText("Add lime at the table.");
+  });
+
+  test("Cancel adds nothing and goes back to the button", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    const open = preview(page).getByRole("button", { name: "Paste steps" });
+    await open.focus();
+    await open.press("Enter");
+    await page.getByRole("dialog", { name: "Paste steps" }).getByLabel("One step per line").fill("Serve.");
+    await page.keyboard.press("Escape");
+    await expect(open).toBeFocused();
+    expect(await stepTexts(page)).toHaveLength(4);
+  });
+
+  test("a plain-text ingredient splits into amount and name", async ({ page, baseURL }) => {
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("button", { name: "1 orange", exact: true }).click();
+    await page.getByRole("button", { name: "Split into amount and name" }).click();
+    await expect(page.getByLabel("Amount", { exact: true })).toHaveValue("1");
+    await expect(page.getByLabel("Ingredient", { exact: true })).toHaveValue("Orange");
+    await expect(page.getByLabel("Amount", { exact: true })).toBeFocused();
+  });
+});
