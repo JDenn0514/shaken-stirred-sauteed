@@ -97,6 +97,39 @@ export function parseIngredient(line) {
   return out;
 }
 
+// Fractions the way the site writes them: "1 ½" → "1 1/2".
+const FRACTIONS = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8", "⅜": "3/8", "⅝": "5/8", "⅞": "7/8" };
+const slashed = (s) => s.replace(/(\d)?(\s*)([½⅓⅔¼¾⅛⅜⅝⅞])/g, (_, d, sp, f) => (d ? `${d} ` : sp) + FRACTIONS[f]);
+
+// An ingredient written the way the recipe checker asks (README, "Writing
+// ingredients"): a capital on the name, the amount in lowercase, fractions with
+// a slash, "about" instead of "~", and grams or ml in their own fields
+// ("200g/7oz" → grams 200, "7 oz"). Plain-text ingredients are left as they are.
+export function tidyIngredient(i) {
+  if (!i || typeof i !== "object" || typeof i.item !== "string") return i;
+  const out = { item: slashed(i.item).replace(/^\p{Ll}/u, (c) => c.toUpperCase()) };
+  let qty = typeof i.qty === "string" ? slashed(i.qty.toLowerCase().replace(/~\s*/g, "about ")) : i.qty;
+  for (const [unit, field] of [["g", "grams"], ["ml", "ml"]]) {
+    const m = typeof qty === "string" && new RegExp(`(\\d+(?:\\.\\d+)?)\\s*${unit}\\b`).exec(qty);
+    if (!m || i[field] != null) continue;
+    out[field] = Number(m[1]);
+    qty = qty.replace(m[0], "").replace(/[()/]/g, " ").replace(/(\d)\s*(oz|lb)\b/g, "$1 $2").replace(/\s+/g, " ").trim() || undefined;
+  }
+  // The fields in the order the recipe files write them.
+  const { grams = out.grams, ml = out.ml, ...rest } = { ...i, ...out, qty };
+  return Object.fromEntries(Object.entries({ grams, qty, ml, ...rest }).filter(([, v]) => v !== undefined));
+}
+
+// Lines pasted into the editor, read as the intake reads a page: OCR slips
+// repaired, a line that wrapped joined back, and bullets and numbers taken off.
+export const pastedLines = (text) =>
+  joinWrapped(repair(String(text ?? "")).split(/\r?\n/).map((l) => l.trim()).filter(Boolean))
+    .map((l) => l.replace(BULLET, "").trim()).filter(Boolean);
+
+// One ingredient line as the intake writes it into a draft: read, then tidied.
+// The editor reads pasted lines and plain-text ingredients this way too.
+export const readIngredient = (line) => tidyIngredient(parseIngredient(line));
+
 // Times as written -> minutes, for the recipe's "time".
 const minutesOf = (t) => {
   const h = /(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b/i.exec(t), m = /(\d+)\s*min/i.exec(t);

@@ -235,6 +235,14 @@ const PAGES = [
     await editorPreview(page).getByRole("button", { name: "Rocks" }).click();
     await expect(page.getByRole("form", { name: "Facts" }).getByRole("group", { name: "The drink" })).toBeVisible();
   }, null, editor],
+  ["editor pasting lines", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "Paste ingredients" }).click();
+    await expect(page.getByRole("dialog", { name: "Paste ingredients" })).toBeVisible();
+  }, null, editor],
+  ["editor with a plain-text ingredient open, which can be split", "edit.html?r=pork-carnitas", async (page) => {
+    await editorPreview(page).getByRole("button", { name: "1 orange", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Split into amount and name" })).toBeVisible();
+  }, null, editor],
   ["editor asking where to split a step", "edit.html?r=pork-carnitas", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Edit step 2" }).click();
     await page.getByRole("button", { name: "Split here" }).click();
