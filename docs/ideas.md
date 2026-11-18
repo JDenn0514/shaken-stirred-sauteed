@@ -170,3 +170,35 @@ A recipe's facts box has one line for what it's cooked in: the `pan` field, show
 - **A list of equipment** in the recipe format, shown as its own short list on the recipe page (perhaps beside Before you start), editable in place like notes.
 - **Its name needs care:** the lineup planner already calls a step's oven, burner, grill and microwave its "equipment" (`docs/specs/meal-planner-design.md`), and the checker's warning says "no equipment field". The new list would need another name in the file, or those would need rewording.
 - **The `pan` line** could become the list's first entry, so nothing is said twice.
+
+## A build step, TypeScript and React
+
+2026-11-17 · from Jacob, after reading how OpenClaw cut its CI time (vincent.build/openclaw-ci-cost-reduction)
+
+Today the site has no build step and no dependencies: the files in the repo are the files the browser runs. This idea adds a build step, so the site could be written in TypeScript, use React for its pages, and pull in other libraries from npm.
+
+**What it would buy:**
+
+- **TypeScript:** mistakes like typos, a wrong argument shape or a forgotten `null` caught before the code runs. It doesn't make the site faster (TypeScript is turned back into JavaScript), and it would replace very few tests: the tests here check behaviour (which recipes match, the planner laws, focus, cook mode), not types.
+- **React:** the editor and cook mode redraw a lot of the page as you work. Components could make that code easier to grow, if it gets hard to manage by hand.
+- **Other libraries:** anything from npm (a date or fraction library, drag and drop, a UI kit), bundled into the site.
+- **Smaller files,** minified and bundled.
+
+**What it would cost:**
+
+- **The files you edit aren't the files that run.** Errors point at built code unless source maps are set up, and every change needs a rebuild or a watcher.
+- **More to keep working:** a bundler (such as Vite), its config and its updates, and the libraries' updates.
+- **Everything has to point at the built output:** the browser tests, the link checker, the service worker's list of files to cache, and how the site is published. Each is a place to test one thing and ship another.
+- **Easy to forget,** like `recipes/index.json` today, which is why CI checks it's up to date.
+- **A big move:** switching the pages to React means rewriting them, not converting them. CI would get slower, not faster, by the time the build and type check take.
+
+**Smaller steps that get part of the way:**
+
+- **Type checking without a build:** `// @ts-check` and JSDoc comments in the existing `.js`/`.mjs` files, checked with `tsc --noEmit` as part of `npm run check`.
+- **TypeScript for `scripts/`, `tests/` and the Worker only:** Node runs `.ts` files directly now, and the Worker's tooling (Wrangler) already handles TypeScript, so those need no build step for the site.
+
+**Things to work out:**
+
+- **What's actually hurting:** whether the editor and cook mode code have grown hard to change, or a library is needed that can't be loaded as a plain module. Without one of those, the cost may outweigh the gain.
+- **All at once or bit by bit:** a bundler can serve plain JavaScript and TypeScript side by side, so pages could move over one at a time.
+- **The tests:** the browser tests mostly test what a visitor sees, so they should survive a rewrite, and they'd be how to check one.
