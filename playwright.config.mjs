@@ -17,6 +17,8 @@ process.env.RECIPE_SEED ||= String(Date.now() % 2 ** 31);
 
 export default defineConfig({
   testDir: "tests/e2e",
+  // Stops this run if another browser test run is already going on this Mac.
+  globalSetup: "./tests/helpers/one-run.mjs",
   // Lets CI split the tests evenly across machines (--shard), test by test
   // rather than file by file.
   fullyParallel: true,

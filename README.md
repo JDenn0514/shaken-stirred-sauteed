@@ -214,7 +214,7 @@ npm test                         # the quick checks, then the browser tests in C
 npm run test:all                 # the same, with the browser tests in WebKit too, like CI
 ```
 
-If the browser tests stop with "port already used", something else (often a test server left running by another checkout) has port 8123: stop it, or run with `TEST_PORT=8124`.
+If the browser tests stop with "port already used", something else (often a test server left running by another checkout) has port 8123: stop it, or run with `TEST_PORT=8124`. If they stop with "Another browser test run is already going", wait for that run to finish: two at once slow each other down badly.
 
 `npm test` leaves WebKit to CI, which runs every browser test in both, because running both locally doubles the wait. Run `npm run test:all` before pushing a change that could behave differently in Safari, such as focus, scrolling, dates, timers or layout. `npx playwright test --project=webkit` runs only the WebKit half, and naming a file (`npx playwright test cook-mode`) runs just that file's tests.
 

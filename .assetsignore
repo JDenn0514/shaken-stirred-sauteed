@@ -26,6 +26,8 @@ worker
 docs
 moved
 README.md
+CLAUDE.md
+REVIEW.md
 # The site's own licence. Not every LICENSE: assets/vendor/'s are served with
 # the files they cover.
 /LICENSE
