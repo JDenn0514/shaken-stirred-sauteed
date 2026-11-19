@@ -13,6 +13,8 @@ Look hardest for these, in this order:
 5. **It stops working for someone.** It can't be reached by keyboard, a control has no label, focus gets lost, the contrast fails, or it breaks in Safari or at phone width.
 6. **The code and the README disagree.** One of them is wrong; say which you think it is.
 
+Then read the triggers in `docs/review-checklist.md`, bugs this repo has had before, and run the check for each trigger the diff matches. Say which items fired.
+
 Tests: flag a test that was weakened or deleted to get a run passing, a browser test that checks a rule belonging in a unit-tested module, and a browser test that uses the real recipes. `.claude/rules/testing.md` has the rest.
 
 ## Leave out
