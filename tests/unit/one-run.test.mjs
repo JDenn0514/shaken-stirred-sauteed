@@ -47,3 +47,29 @@ test("the Playwright browser tool and Playwright's own workers aren't runs", () 
     [402, 102, "node /Users/me/site/node_modules/playwright/lib/common/process.js"],
     [403, 1, "node /Users/me/site/node_modules/.bin/playwright show-report"],
   ), 102), []));
+
+// The VS Code extension keeps `cli.js test-server` running while the editor is
+// open, and runs tests in it: its workers exist only while tests are running.
+const WORKER = "/opt/homebrew/bin/node /Users/me/other/node_modules/playwright/lib/worker/workerProcessEntry.js";
+const VSCODE = [500, 1, "/opt/homebrew/bin/node /Users/me/other/node_modules/@playwright/test/cli.js test-server -c playwright.config.mjs"];
+
+test("a VS Code run is found by its workers, once, as the test server running them", () =>
+  assert.deepEqual(otherRuns(ps(...MINE, VSCODE, [501, 500, WORKER], [502, 500, WORKER]), 102), [{ pid: 500, command: VSCODE[2] }]));
+
+test("VS Code's test server sitting idle isn't a run", () =>
+  assert.deepEqual(otherRuns(ps(...MINE, VSCODE), 102), []));
+
+test("node …/cli.js test is found", () =>
+  assert.deepEqual(otherRuns(ps(...MINE, [600, 1, "node /Users/me/other/node_modules/@playwright/test/cli.js test --project=chrome"]), 102).map((r) => r.pid), [600]));
+
+test("this run's own workers, under it, aren't another run", () =>
+  assert.deepEqual(otherRuns(ps(...MINE, [103, 102, WORKER.replace("other", "site")], [104, 102, WORKER.replace("other", "site")]), 102), []));
+
+test("a worker left behind by a crashed run is reported as itself, not as launchd", () =>
+  assert.deepEqual(otherRuns(ps(...MINE, [1, 0, "/sbin/launchd"], [700, 1, WORKER]), 102), [{ pid: 700, command: WORKER }]));
+
+test("a run started with node flags is found, by its runner and its workers", () => {
+  const runner = "node --inspect /Users/me/other/node_modules/.bin/playwright test";
+  assert.deepEqual(otherRuns(ps(...MINE, [800, 1, runner]), 102).map((r) => r.pid), [800]);
+  assert.deepEqual(otherRuns(ps(...MINE, [810, 1, "zsh"], [811, 810, WORKER.replace("node ", "node --inspect ")]), 102).map((r) => r.pid), [810]);
+});
