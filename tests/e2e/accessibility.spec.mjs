@@ -530,12 +530,20 @@ const scan = async (page) => {
   return summarize(violations);
 };
 
+// Elements marked hidden that a stylesheet rule shows anyway: screen readers
+// and the page disagree about what's there. A sheet that's closing stays shown
+// until it has slid away, so a state that closes one waits for its animations
+// first (as "index page with a filter open" does when opening).
+const hiddenButShown = (page) => page.locator("[hidden]").evaluateAll((els) =>
+  els.filter((el) => getComputedStyle(el).display !== "none").map((el) => el.outerHTML.slice(0, 100)));
+
 for (const [name, url, ready, menu, before] of PAGES) {
   test(`${name} has no detectable accessibility problems, in light or dark mode`, async ({ page }) => {
     if (menu) await onMenu(page, menu);
     if (before) await before(page);
     await page.goto(url);
     await ready(page);
+    expect.soft(await hiddenButShown(page), "marked hidden, but shown").toEqual([]);
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     expect.soft(await scan(page), "light mode").toEqual([]);
 

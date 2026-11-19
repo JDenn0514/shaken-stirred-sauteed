@@ -19,7 +19,7 @@ window.SSSMenuPeek = (() => {
     host.innerHTML = `<section class="menu-peek${dishes.length ? "" : " empty"}" aria-labelledby="peek-h">
         <h2 class="menu-peek-head" id="peek-h">Your menu</h2>
         <button class="menu-peek-toggle" type="button" aria-expanded="${open}" aria-controls="peek-body">Your menu<span aria-hidden="true">${open ? " ▴" : " ▾"}</span></button>
-        <div class="menu-peek-body" id="peek-body"${open ? "" : " hidden"}>
+        <div class="menu-peek-body" id="peek-body">
           ${dishes.length ? `<ul class="menu-peek-list">${dishes.slice(0, SHOWN).map(row).join("")}</ul>
             ${dishes.length > SHOWN ? `<p class="muted">+${dishes.length - SHOWN} more</p>` : ""}
             <a class="menu-peek-go" href="menu.html">Your menu →</a>`
@@ -32,8 +32,9 @@ window.SSSMenuPeek = (() => {
     if (!b) return;
     const open = b.getAttribute("aria-expanded") !== "true";
     b.setAttribute("aria-expanded", String(open));
+    // style.css shows or hides the list from aria-expanded, on a phone only:
+    // on a wide screen it's always open beside the recipes.
     b.lastElementChild.textContent = open ? " ▴" : " ▾";
-    document.getElementById(b.getAttribute("aria-controls")).hidden = !open;
   });
   return { render };
 })();

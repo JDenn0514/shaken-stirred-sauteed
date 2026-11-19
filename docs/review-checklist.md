@@ -88,11 +88,6 @@ Bugs this repo has already had, each with a **trigger** you can spot in a diff, 
 
 ## Styles
 
-**A stylesheet rule beats `hidden`**
-- Trigger: a rule that sets `display` on an element the page shows and hides with `hidden`.
-- Check: the element really disappears when hidden.
-- From: 3089448 (the menu card's search box showed). `style.css` already has four separate `[hidden]` patches for this.
-
 **CSS containers cut off counters**
 - Trigger: `container-type` on a list, or on anything around numbered steps or lettered ingredients.
 - Check: numbering still carries on across groups (1–4, not 1–2, 1–2).
