@@ -1687,6 +1687,16 @@ test.describe("the side rail on a wide laptop", () => {
     await expect(rail(page).getByText("Details", { exact: true })).toBeInViewport();
   });
 
+  for (const width of [1280, 1600]) {
+    test(`at ${width}px, the site's name lines up with the recipe's name in the bar`, async ({ page, baseURL }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await openEditor(page, baseURL, "salsa-verde");
+      const brand = await page.getByRole("link", { name: "Shaken, Stirred & Sautéed", exact: true }).boundingBox();
+      const name = await page.getByRole("region", { name: "Editing" }).getByText("Salsa Verde", { exact: true }).boundingBox();
+      expect(Math.round(brand.x)).toBe(Math.round(name.x));
+    });
+  }
+
   test("below 1440px there's no rail, and Details stays under the sheet", async ({ page, baseURL }) => {
     await page.setViewportSize({ width: 1439, height: 900 });
     await openEditor(page, baseURL, "salsa-verde");

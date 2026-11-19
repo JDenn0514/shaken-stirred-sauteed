@@ -1786,6 +1786,7 @@ body.cooking > .site-footer { display: none; }
 /* ---- The editor's side rail, from 1440px (assets/edit.mjs, draw): the full
    sheet, with Details, the to-dos and what's changed beside it. ---- */
 .edit.edit-railed { max-width: 1464px; }
+
 .edit-columns { display: grid; grid-template-columns: minmax(0, 1fr) 320px; column-gap: 32px; align-items: start; }
 .edit-sheet { min-width: 0; }
 .edit-rail {
@@ -1796,3 +1797,11 @@ body.cooking > .site-footer { display: none; }
 .edit-rail > .edit-checks, .edit-rail > .edit-todo, .edit-rail > .edit-details { margin-top: 16px; }
 .edit-rail > :not(:first-child) { margin-top: 0; }
 .edit-rail-changes:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* The editor's header: the site's name lines up with the recipe's name in the
+   bar, at the page's own width less its 16px gutters (1080px, an import's
+   1120px, or 1464px with the side rail). main.edit makes these outrank the
+   recipe page's body:has(.recipe) .brand, wherever they sit in the file. */
+body:has(main.edit) .brand { max-width: 1048px; }
+body:has(main.edit.edit-wide) .brand { max-width: 1088px; }
+body:has(main.edit.edit-railed) .brand { max-width: 1432px; }
