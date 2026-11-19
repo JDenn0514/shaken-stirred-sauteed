@@ -15,7 +15,9 @@
   },
   "env": { "browser": true, "es2024": true },
   // assets/vendor: other people's code (pdf.js), committed as they publish it.
-  "ignorePatterns": ["style-guides/**", "assets/vendor/**"],
+  // .claude/skills/security-audit: Cloudflare's skill, installed by `npx skills`
+  // (skills-lock.json); editing it would break the lock's hash.
+  "ignorePatterns": ["style-guides/**", "assets/vendor/**", ".claude/skills/security-audit/**"],
   "overrides": [
     { "files": ["sw.js"], "env": { "serviceworker": true } },
     { "files": ["assets/recipe-icons.js", "moved/moved.js"], "globals": { "module": "readonly" } },
