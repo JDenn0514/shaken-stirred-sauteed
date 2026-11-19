@@ -293,6 +293,12 @@ const PAGES = [
     await fold.locator("summary").click();
     await expect(fold).toContainText("isn't offered");
   }, null, async (page) => { await editor(page); await page.setViewportSize({ width: 390, height: 844 }); }],
+  ["editor on a wide laptop, with the side rail open", "edit.html?r=salsa-verde", async (page) => {
+    const rail = page.getByRole("complementary", { name: "Checks and details" });
+    await rail.getByText(/things? to check/).click();
+    await rail.getByText("Details", { exact: true }).click();
+    await expect(rail.getByRole("region", { name: "To do" })).toBeVisible();
+  }, null, async (page) => { await editor(page); await page.setViewportSize({ width: 1440, height: 900 }); }],
   ["editor asking before a drink moves out of Cocktails", "edit.html?r=old-fashioned", async (page) => {
     await editorPreview(page).getByRole("button", { name: "Old Fashioned" }).first().press("Enter");
     await page.getByLabel("Section", { exact: true }).selectOption({ label: "Cooking" });
