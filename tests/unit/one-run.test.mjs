@@ -22,8 +22,22 @@ test("another checkout's run is found, with its command", () =>
     [{ pid: 200, command: "node /Users/me/other/node_modules/.bin/playwright test cook-mode" }],
   ));
 
-test("npx playwright test is found", () =>
-  assert.equal(otherRuns(ps(...MINE, [300, 1, "npm exec playwright test --project=webkit"]), 102).length, 1));
+test("npx playwright test is found, once, by its node process", () =>
+  assert.deepEqual(otherRuns(ps(
+    ...MINE,
+    [300, 1, "npm exec playwright test --project=webkit"],
+    [301, 300, "node /Users/me/other/node_modules/.bin/playwright test --project=webkit"],
+  ), 102).map((r) => r.pid), [301]));
+
+test("a shell whose command only mentions playwright test isn't a run, even a copy of this run's own shell", () =>
+  assert.deepEqual(otherRuns(ps(
+    [90, 1, "/bin/zsh -c eval 'npx playwright test accessibility | grep -E passed'"],
+    [91, 90, "/bin/zsh -c eval 'npx playwright test accessibility | grep -E passed'"],
+    [92, 91, "npm exec playwright test accessibility"],
+    [93, 92, "node /Users/me/site/node_modules/.bin/playwright test accessibility"],
+    [94, 90, "/bin/zsh -c eval 'npx playwright test accessibility | grep -E passed'"],
+    [95, 1, "/bin/zsh -c eval 'git commit -m \"run playwright test first\"'"],
+  ), 93), []));
 
 test("the Playwright browser tool and Playwright's own workers aren't runs", () =>
   assert.deepEqual(otherRuns(ps(

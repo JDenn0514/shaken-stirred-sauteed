@@ -271,6 +271,10 @@ body:has(.tab[data-cat="cocktails"][aria-pressed="true"]), body:has(.recipe .rec
 
 /* ===== Base ===== */
 *, *::before, *::after { box-sizing: border-box; }
+/* Hidden always wins, whatever display a class gives an element. A sheet still
+   animates out: its display transition (allow-discrete) holds it on screen
+   until it has slid away, and transitions outrank !important. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -480,7 +484,7 @@ body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: 
 }
 /* Closed: gone, but only once it has slid away. Closing never catches a tap
    meant for the page underneath. */
-.sheet[hidden], .backdrop[hidden] { display: none; pointer-events: none; }
+.sheet[hidden], .backdrop[hidden] { pointer-events: none; }
 .sheet[hidden] { transform: translateY(100%); }
 .backdrop[hidden] { opacity: 0; }
 /* Opening: the sheet rises from the bottom edge and the backdrop fades in. */
@@ -488,8 +492,6 @@ body:has(.recipe .back) .site-header { border-image: none; border-bottom-color: 
   .sheet:not([hidden]) { transform: translateY(100%); }
   .backdrop:not([hidden]) { opacity: 0; }
 }
-/* Links only for the signed-in owner (assets/common.js shows them). */
-[data-signed-in][hidden] { display: none !important; }
 .sheet-head {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
   padding: 14px 16px 12px; border-bottom: 1px solid var(--border);
@@ -758,10 +760,8 @@ body.sheet-open { overflow: hidden; }
   cursor: pointer; font-size: .92rem; font-weight: 600; line-height: 1.2;
   transition: background-color .15s ease, border-color .15s ease;
 }
-.btn[hidden] { display: none; }
 /* The toolbar labels start with an emoji; hide it and let the words speak. */
 .toolbar .btn { display: inline-block; padding: 9px 12px; font-size: .86rem; min-height: 38px; text-indent: -.24em; }
-.toolbar .btn[hidden] { display: none; }
 .toolbar .btn::first-letter { font-size: 0; }
 .btn[aria-pressed="true"] { background: var(--section-fill); color: var(--on-section-fill); border-color: var(--section); }
 
@@ -1204,7 +1204,8 @@ body.cooking > .site-footer { display: none; }
 }
 .menu-peek.empty .menu-peek-toggle { display: none; }
 .menu-peek-body { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px; border: 1.5px solid var(--text); border-radius: var(--radius); background: var(--surface); }
-.menu-peek-body[hidden] { display: none; }
+/* On a phone the toggle opens and closes it (below 960px). */
+@media (max-width: 959px) { .menu-peek-toggle[aria-expanded="false"] + .menu-peek-body { display: none; } }
 .menu-peek-body p { margin: 0; font-size: .9rem; }
 .menu-peek-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .menu-peek-list li { display: grid; grid-template-columns: auto minmax(12px, 1fr) auto; align-items: baseline; gap: 6px; }
@@ -1222,7 +1223,7 @@ body.cooking > .site-footer { display: none; }
   .menu-peek-head { position: static; width: auto; height: auto; clip: auto; overflow: visible; margin: 0 0 -1px; padding: 14px 14px 0; border: 1.5px solid var(--text); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; background: var(--surface);
     font: 500 .72rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-align: center; }
   .menu-peek-toggle { display: none; }
-  .menu-peek-body, .menu-peek-body[hidden] { display: grid; border-top: 0; border-radius: 0 0 var(--radius) var(--radius); }
+  .menu-peek-body { display: grid; border-top: 0; border-radius: 0 0 var(--radius) var(--radius); }
 }
 @media (max-width: 959px) { .menu-page .menu-peek-host { display: none; } }
 /* A card on your menu gets a strip of lime tape across its corner. */
@@ -1237,7 +1238,6 @@ body.cooking > .site-footer { display: none; }
    with a dotted leader to its time, nested recipes indented under their dish. */
 .menu-page { display: flex; flex-direction: column; gap: 14px; padding-top: 16px; padding-bottom: 48px; max-width: 680px; }
 .menu-page .back { margin: 0; }
-.menu-page .search[hidden] { display: none; }
 #menu-body { display: flex; flex-direction: column; gap: 16px; }
 #menu-body > p { margin: 0; }
 .menu-toprow { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }

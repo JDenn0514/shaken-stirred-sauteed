@@ -4,10 +4,13 @@
 // before any test. CI runs one per machine, so it's skipped there.
 import { execFileSync } from "node:child_process";
 
-const RUN = /(^|[\s/])playwright(\.js)? test(\s|$)/;
+// The runner itself: `node …/playwright test …`. Shells and npm whose command
+// only mentions it don't count: a shell running a pipe forks copies of itself
+// with the same command, and those aren't this run's parents.
+const RUN = /^\S*node\s+\S*\/playwright(\.js)?\s+test(\s|$)/;
 
-// The `playwright test` processes in `ps -Ao pid=,ppid=,command=` output,
-// other than this run itself and the npm and shell processes that started it.
+// The `playwright test` runners in `ps -Ao pid=,ppid=,command=` output, other
+// than this run itself.
 export function otherRuns(psOutput, pid) {
   const rows = psOutput.split("\n").map((line) => line.match(/^\s*(\d+)\s+(\d+)\s(.*)$/)).filter(Boolean)
     .map(([, p, pp, command]) => ({ pid: Number(p), ppid: Number(pp), command: command.trim() }));
