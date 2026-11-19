@@ -1782,3 +1782,17 @@ body.cooking > .site-footer { display: none; }
 .edit-quick-waits { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .edit-quick-waits .chip { min-height: 44px; padding: 4px 14px; background: var(--surface); }
 @media (min-width: 600px) { .edit-quick-waits { display: none; } }
+
+/* ---- The editor's side rail, from 1440px (assets/edit.mjs, draw): the full
+   sheet, with Details, the to-dos and what's changed beside it. ---- */
+.edit.edit-railed { max-width: 1464px; }
+.edit-columns { display: grid; grid-template-columns: minmax(0, 1fr) 320px; column-gap: 32px; align-items: start; }
+.edit-sheet { min-width: 0; }
+.edit-rail {
+  position: sticky; top: calc(var(--header-h, 60px) + var(--edit-bar-h, 0px) + 12px);
+  max-height: calc(100vh - var(--header-h, 60px) - var(--edit-bar-h, 0px) - 24px); overflow-y: auto;
+  display: grid; gap: 16px; align-content: start; padding: 4px; /* room for focus rings, which overflow would clip */
+}
+.edit-rail > .edit-checks, .edit-rail > .edit-todo, .edit-rail > .edit-details { margin-top: 16px; }
+.edit-rail > :not(:first-child) { margin-top: 0; }
+.edit-rail-changes:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }

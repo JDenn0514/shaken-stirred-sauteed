@@ -244,6 +244,15 @@ test.describe("the original, in the editor", () => {
     await expect(step).toHaveValue(typed);
   });
 
+  test("on a wide laptop, the original keeps the place beside the preview: there's no side rail", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    await expect(page.getByRole("complementary", { name: "Checks and details" })).toHaveCount(0);
+    const side = await original(page).boundingBox(), sheet = await preview(page).boundingBox();
+    expect(side.x).toBeGreaterThanOrEqual(sheet.x + sheet.width);
+  });
+
   test("on a laptop, the bar has no button for it: it's beside the preview already", async ({ page, baseURL }) => {
     await readRolls(page, baseURL);
     await continueInEditor(page);

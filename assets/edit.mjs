@@ -41,6 +41,17 @@ const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.S
 const ICONS = window.SSSIcons.KEYS;
 
 const root = document.getElementById("editor");
+// A screen wide enough for the side rail beside the full sheet. Crossing it
+// redraws the page, once it's drawn.
+const WIDE = matchMedia("(min-width: 1440px)");
+// A Details field typed in and not yet left lands first: after a redraw,
+// Safari wouldn't count the text as changed when the field is left.
+WIDE.addEventListener("change", () => {
+  if (!root.querySelector(".edit-bar")) return;
+  const active = document.activeElement;
+  if (typing && active?.dataset?.act && root.contains(active)) active.dispatchEvent(new Event("change", { bubbles: true }));
+  draw();
+});
 const skipNav = document.getElementById("skip-links");
 const params = new URLSearchParams(location.search);
 let slug = params.get("r") || "";
@@ -271,6 +282,40 @@ function draw() {
   const hasOrders = stepOrder(recipe, true).differs;
   const showPrepFirst = hasOrders && prepFirst;
 
+  // From 1440px, Details, the to-dos and what's changed go in a rail beside
+  // the sheet. An imported recipe's original has that place already.
+  const railed = WIDE.matches && !(fresh && source);
+  root.classList.toggle("edit-railed", railed);
+  const checksHTML = warnings.length + unplaced.length ? `<details class="edit-checks"${checksOpen ? " open" : ""} aria-label="${checkCount(warnings.length + unplaced.length)}">
+    <summary data-key="checks">${checkCount(warnings.length + unplaced.length)}</summary>
+    ${unplaced.length ? `<section class="edit-todo" aria-labelledby="import-checks-h">
+      <h2 id="import-checks-h">Things to check</h2>
+      <p class="muted">From reading the recipe in. The rest sit beside the step or ingredient they're about.</p>
+      <ul>${unplaced.map((c) => `<li>${c.text ? `<b>${esc(c.text)}</b>: ` : ""}${esc(c.why)}</li>`).join("")}</ul>
+    </section>` : ""}
+    ${warnings.length ? `<section class="edit-todo" aria-labelledby="todo-h">
+      <h2 id="todo-h">To do</h2>
+      <p class="muted">These help the lineup plan a meal. They don't stop you saving.</p>
+      <ul>${warnings.map(todoHTML).join("")}</ul>
+    </section>` : ""}
+    </details>` : "";
+  const detailsBox = `<details class="edit-details"${detailsOpen ? " open" : ""}>
+      <summary data-key="details" id="edit-details">Details</summary>
+      ${detailsHTML()}
+    </details>`;
+  const sheet = `<section class="edit-card" aria-label="Card preview">
+      <ul class="grid">${cardHTML(entry)}</ul>
+    </section>
+    <section class="recipe edit-preview" id="edit-preview" tabindex="-1" aria-label="Recipe preview"${entry.icon ? ` data-icon="${esc(entry.icon)}"` : ""}>
+      ${recipePageHTML(recipe, vocab, { prepFirst: showPrepFirst })}
+    </section>`;
+  // It takes the bar button's key, so focus left on that button (or a dialog
+  // it opened) lands here when the window widens.
+  const changedHTML = !fresh && unsaved() ? `<section class="edit-todo edit-rail-changes" aria-labelledby="rail-changes-h" tabindex="-1" data-key="show-changes">
+      <h2 id="rail-changes-h">What's changed</h2>
+      ${changeList(whatChanged(original))}
+    </section>` : "";
+
   root.innerHTML = `<div class="with-original${fresh && source ? " has-original" : ""}">
     ${fresh ? originalHTML(source, sourceOpen) : ""}
     <div class="with-original-main">
@@ -293,7 +338,7 @@ function draw() {
       </div>
       <div class="edit-state">
         <p class="edit-changes" id="edit-changes">${changesText()}</p>
-        ${!fresh && unsaved() ? `<button class="edit-link" type="button" data-act="show-changes" data-key="show-changes">What's changed</button>` : ""}
+        ${!fresh && unsaved() && !railed ? `<button class="edit-link" type="button" data-act="show-changes" data-key="show-changes">What's changed</button>` : ""}
         ${fresh && source ? `<button class="edit-link edit-original-open" type="button" data-act="original-sheet" data-key="original-sheet">Show the original</button>` : ""}
       </div>
       <div class="edit-row edit-history">
@@ -308,30 +353,10 @@ function draw() {
       <h2 id="problems-h">Problems to fix</h2>
       <ul>${errors.map((e) => `<li>${esc(words(e))}${showPrepButton(e)}${goButton(e)}</li>`).join("")}</ul>
     </section>` : ""}
-    ${warnings.length + unplaced.length ? `<details class="edit-checks"${checksOpen ? " open" : ""} aria-label="${checkCount(warnings.length + unplaced.length)}">
-    <summary data-key="checks">${checkCount(warnings.length + unplaced.length)}</summary>
-    ${unplaced.length ? `<section class="edit-todo" aria-labelledby="import-checks-h">
-      <h2 id="import-checks-h">Things to check</h2>
-      <p class="muted">From reading the recipe in. The rest sit beside the step or ingredient they're about.</p>
-      <ul>${unplaced.map((c) => `<li>${c.text ? `<b>${esc(c.text)}</b>: ` : ""}${esc(c.why)}</li>`).join("")}</ul>
-    </section>` : ""}
-    ${warnings.length ? `<section class="edit-todo" aria-labelledby="todo-h">
-      <h2 id="todo-h">To do</h2>
-      <p class="muted">These help the lineup plan a meal. They don't stop you saving.</p>
-      <ul>${warnings.map(todoHTML).join("")}</ul>
-    </section>` : ""}
-    </details>` : ""}
-    <section class="edit-card" aria-label="Card preview">
-      <ul class="grid">${cardHTML(entry)}</ul>
-    </section>
-    <section class="recipe edit-preview" id="edit-preview" tabindex="-1" aria-label="Recipe preview"${entry.icon ? ` data-icon="${esc(entry.icon)}"` : ""}>
-      ${recipePageHTML(recipe, vocab, { prepFirst: showPrepFirst })}
-    </section>
-    <details class="edit-details"${detailsOpen ? " open" : ""}>
-      <summary data-key="details" id="edit-details">Details</summary>
-      ${detailsHTML()}
-    </details>
-    ${fresh ? "" : deleteHTML()}
+    ${railed ? `<div class="edit-columns">
+      <div class="edit-sheet">${sheet}${fresh ? "" : deleteHTML()}</div>
+      <aside class="edit-rail" aria-label="Checks and details">${checksHTML}${changedHTML}${detailsBox}</aside>
+    </div>` : `${checksHTML}${sheet}${detailsBox}${fresh ? "" : deleteHTML()}`}
     </div></div>`;
   drawSkipLinks(errors.length > 0);
 

@@ -1663,3 +1663,69 @@ test.describe("quick waits on a phone", () => {
     await expect(waits(page)).toBeHidden();
   });
 });
+
+// From 1440px, Details, the to-dos and What's changed sit in a rail beside
+// the sheet (docs/specs/editor-redesign.md, build step 31, decision 5).
+test.describe("the side rail on a wide laptop", () => {
+  const rail = (page) => page.getByRole("complementary", { name: "Checks and details" });
+
+  test("holds Details, the to-dos and what's changed, beside the sheet, and stays in view", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openEditor(page, baseURL, "salsa-verde");
+    await expect(rail(page).getByText("Details", { exact: true })).toBeVisible();
+    await expect(rail(page).getByText(/things? to check/)).toBeVisible();
+    const sheet = await preview(page).boundingBox(), side = await rail(page).boundingBox();
+    expect(side.x).toBeGreaterThanOrEqual(sheet.x + sheet.width);
+    expect(side.width).toBe(320);
+    // An edit shows in the rail as a list, not behind a button in the bar.
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Chop everything finely.");
+    await page.getByRole("button", { name: "Done", exact: true }).press("Enter");
+    await expect(rail(page).getByRole("region", { name: "What's changed" })).toContainText("Chop everything finely.");
+    await expect(page.getByRole("region", { name: "Editing" }).getByRole("button", { name: "What's changed" })).toHaveCount(0);
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await expect(rail(page).getByText("Details", { exact: true })).toBeInViewport();
+  });
+
+  test("below 1440px there's no rail, and Details stays under the sheet", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1439, height: 900 });
+    await openEditor(page, baseURL, "salsa-verde");
+    await expect(page.getByText("Details", { exact: true })).toBeVisible();
+    await expect(rail(page)).toHaveCount(0);
+  });
+
+  test("widening the window to 1440px brings the rail, and an open line keeps what was typed", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openEditor(page, baseURL, "salsa-verde");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Chop everything finely.");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(rail(page)).toBeVisible();
+    await expect(page.getByLabel("Step", { exact: true })).toHaveValue("Chop everything finely.");
+    await expect(page.getByLabel("Step", { exact: true })).toBeFocused();
+  });
+
+  test("a Details field typed in, not yet left, keeps its text and lands when left after the rail comes", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openEditor(page, baseURL, "salsa-verde");
+    const box = await details(page);
+    const source = box.getByLabel("Source", { exact: true });
+    await source.fill("Aunt May");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(rail(page)).toBeVisible();
+    await expect(rail(page).getByLabel("Source", { exact: true })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(rail(page).getByRole("region", { name: "What's changed" })).toContainText("Aunt May");
+  });
+
+  test("focus on the bar's What's changed moves to the rail's list when the window widens", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openEditor(page, baseURL, "salsa-verde");
+    await preview(page).getByRole("button", { name: "Edit step 1" }).press("Enter");
+    await page.getByLabel("Step", { exact: true }).fill("Chop everything finely.");
+    await page.getByRole("button", { name: "Done", exact: true }).press("Enter");
+    await page.getByRole("region", { name: "Editing" }).getByRole("button", { name: "What's changed" }).focus();
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(rail(page).getByRole("region", { name: "What's changed" })).toBeFocused();
+  });
+});
