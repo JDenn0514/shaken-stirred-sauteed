@@ -9,5 +9,18 @@
   },
   "enabledPlugins": {
     "mattpocock-skills@mattpocock": true
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-skipped-checks.mjs\"" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "cd \"$CLAUDE_PROJECT_DIR\" && node .claude/hooks/quick-checks.mjs", "timeout": 60 }]
+      }
+    ]
   }
 }

@@ -24,7 +24,19 @@
     // These post to and from a Web Worker, whose postMessage takes no target
     // origin (its second argument is a transfer list); the rule is for windows.
     { "files": ["assets/menu.mjs", "assets/plan-worker.mjs"], "rules": { "unicorn/require-post-message-target-origin": "off" } },
-    { "files": ["scripts/**", "tests/**", "tools/**", "*.config.mjs"], "env": { "node": true } },
+    { "files": ["scripts/**", "tests/**", "tools/**", "*.config.mjs", ".claude/hooks/**"], "env": { "node": true } },
+    // Browser tests go through the fixture, which blocks every request to
+    // another site and serves the test recipes instead of the real ones.
+    {
+      "files": ["tests/e2e/**"],
+      "rules": {
+        "no-restricted-imports": ["error", { "paths": [{
+          "name": "@playwright/test",
+          "message": "Import test and expect from ./fixtures.mjs: it blocks outside requests and serves the test recipes."
+        }] }]
+      }
+    },
+    { "files": ["tests/e2e/fixtures.mjs"], "rules": { "no-restricted-imports": "off" } },
     // The Worker's helper script, test settings and fake GitHub run in Node.
     { "files": ["worker/scripts/**", "worker/test/**", "worker/*.config.js"], "env": { "node": true } }
   ]
