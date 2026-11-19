@@ -214,7 +214,7 @@ The screenshots named below (`vis-*.png`, `walk-*.png`) were taken during the re
 - **Motion.**
   - A 150ms wash fades in on the opened line.
   - A brief wash flash shows on a line after it's moved, added, split, joined or undone. After a Remove, the flash goes on its neighbour.
-  - The site's reduced-motion rule (`style.css:1103-1104`) already turns all of this off.
+  - The site's reduced-motion rule (`@media (prefers-reduced-motion: reduce)` in `style.css`, which sets `animation: none`) already turns all of this off.
 
 ### Details becomes short and tidy
 
@@ -236,10 +236,11 @@ The screenshots named below (`vis-*.png`, `walk-*.png`) were taken during the re
   - Details folded after the sheet.
   - **The original** on an imported recipe: a "Show the original" button in the bar opens it as a sheet over the page, so you don't scroll to the top. Later, a "Show this step in the original" link highlights the matching lines, since the intake already knows which sentences made which step.
 - **Tablet and small laptop (600–1439px):** the sheet at the live page's width, with Details below it.
-- **Wide laptop (1440px and up), if you agree:**
+- **Wide laptop (1440px and up), built in step 31:**
   - a 320px sticky rail beside the full 1080px sheet, holding Details, the to-do list and "What's changed";
   - for an imported recipe, the original keeps the rail. Below 1440px the sheet and the rail don't both fit, so it stays one column.
   - Leave the intake page's own layout alone; it shares those styles.
+  - As built: "What's changed" is a list in the rail rather than a button in the bar. Below 1440px, the page and its order are as before. Crossing 1440px redraws the page; a Details field still being typed in is saved first, since Safari wouldn't count it as changed after a redraw. The header's site name follows the editor's width at every size (the plain sheet, an import, the rail), so it lines up with the recipe's name in the bar.
 
 ### Colour for problems (show you before changing)
 
@@ -397,7 +398,7 @@ Steps 19 onward were re-planned on 2026-11-12, after step 18, against the editor
 28. **Done** (#88, 2026-11-16). **(S) Motion** (was 27). The open-line fade and the moved-line flash, both off with reduced motion.
 29. **Done** (#89, 2026-11-16). **(M) Paste lines** (was part of 28). "Paste lines" on Ingredients, Steps and Notes, and turning a plain-text ingredient into amount plus name. Both use the intake's own reading (`tidyIngredient`).
 30. **Done** (#90, 2026-11-16). **(S) Wait chips on phones** (was part of 28).
-31. **(M–L, after your OK) The wide-laptop side rail** (was 29).
+31. **Done** (#96, 2026-11-19; the header lined up in the follow-up PR). **(M–L) The wide-laptop side rail** (was 29). The to-dos, What's changed as a list, and Details in a sticky 320px rail beside the full sheet; an imported recipe keeps its original there instead.
 
 WebKit: the cloud sessions can't run WebKit, so Safari is only checked by CI. A local `npm run test:all` on the Mac is still worth one run.
 

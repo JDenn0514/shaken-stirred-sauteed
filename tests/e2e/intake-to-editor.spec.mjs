@@ -244,6 +244,15 @@ test.describe("the original, in the editor", () => {
     await expect(step).toHaveValue(typed);
   });
 
+  test("on a laptop, the site's name lines up with the recipe's name in the bar", async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await readRolls(page, baseURL);
+    await continueInEditor(page);
+    const brand = await page.getByRole("link", { name: "Shaken, Stirred & Sautéed", exact: true }).boundingBox();
+    const bar = await page.getByRole("region", { name: "Editing" }).boundingBox();
+    expect(Math.round(brand.x)).toBe(Math.round(bar.x));
+  });
+
   test("on a wide laptop, the original keeps the place beside the preview: there's no side rail", async ({ page, baseURL }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await readRolls(page, baseURL);
