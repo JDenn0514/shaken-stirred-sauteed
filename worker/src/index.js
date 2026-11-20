@@ -14,6 +14,7 @@
 // Everything else under /api/ needs you to be signed in: 401 if you aren't.
 import { forgetAuth, getAuth, isAllowed, removeUser } from "./auth.js";
 import { fetchPage } from "./fetch-page.js";
+import { SECURITY_HEADERS } from "./headers.js";
 import { Refusal, SIGN_IN_AGAIN, github } from "./github.js";
 import { deleteRecipe, isSlug, loadRecipe, saveRecipe } from "./recipes.js";
 
@@ -26,27 +27,35 @@ const SESSION_DAYS = 30; // as in auth.js
 
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
-    if (url.pathname.startsWith("/api/")) {
-      let res;
-      try {
-        res = await api(request, env, url);
-      } catch (error) {
-        console.error(error);
-        forgetAuth();
-        res = Response.json({ error: "Sign-in isn't working right now. Try again in a minute." }, { status: 500 });
-      }
-      res.headers.set("Cache-Control", "no-store");
-      return res;
-    }
-    // A folder ("/", "/style-guides/x/"): its index.html, as GitHub Pages did.
-    if (url.pathname.endsWith("/")) {
-      url.pathname += "index.html";
-      return env.ASSETS.fetch(new Request(url, request));
-    }
-    return new Response("Not found", { status: 404 });
+    // A copy, since the assets' responses can't be changed.
+    const answered = await answer(request, env);
+    const res = new Response(answered.body, answered);
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) res.headers.set(name, value);
+    return res;
   },
 };
+
+async function answer(request, env) {
+  const url = new URL(request.url);
+  if (url.pathname.startsWith("/api/")) {
+    let res;
+    try {
+      res = await api(request, env, url);
+    } catch (error) {
+      console.error(error);
+      forgetAuth();
+      res = Response.json({ error: "Sign-in isn't working right now. Try again in a minute." }, { status: 500 });
+    }
+    res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+  // A folder ("/", "/style-guides/x/"): its index.html, as GitHub Pages did.
+  if (url.pathname.endsWith("/")) {
+    url.pathname += "index.html";
+    return env.ASSETS.fetch(new Request(url, request));
+  }
+  return new Response("Not found", { status: 404 });
+}
 
 async function api(request, env, url) {
   const auth = getAuth(env);

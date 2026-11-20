@@ -22,8 +22,8 @@ jobs:
     name: Lint, links, recipes and the Worker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -64,8 +64,8 @@ jobs:
         # workers each). The total comes from this list.
         shard: [1, 2, 3, 4]
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -90,7 +90,7 @@ jobs:
           echo "key=webkit-debs-$ImageOS-$ImageVersion-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
       - name: Restore WebKit's system packages
         id: webkit-debs
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/webkit-debs
           key: ${{ steps.webkit-debs-key.outputs.key }}
@@ -164,13 +164,13 @@ jobs:
       # Only after a full download, so the cache never holds half of it.
       - name: Save WebKit's system packages
         if: steps.webkit-debs.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/webkit-debs
           key: ${{ steps.webkit-debs-key.outputs.key }}
       - name: Browser tests
         run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
         with:
           name: playwright-traces-${{ matrix.shard }}

@@ -338,3 +338,16 @@ test.describe("checking the amounts", () => {
     expect(sent).toHaveLength(1);
   });
 });
+
+test("signing out on the intake forgets the review, and nothing writes it back", async ({ page, baseURL }) => {
+  await page.route("**/api/signout", (route) => route.fulfill({ json: { signedOut: true } }));
+  await readRolls(page, baseURL);
+  const onward = page.getByRole("link", { name: "Continue in the editor" });
+  await expect(onward).toBeVisible();
+  expect(await kept(page)).not.toBeNull();
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("contentinfo").getByRole("button", { name: "Sign out" }).click();
+  await expect(onward).toHaveCount(0);
+  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Sign in" })).toBeVisible();
+  expect(await kept(page)).toBeNull();
+});

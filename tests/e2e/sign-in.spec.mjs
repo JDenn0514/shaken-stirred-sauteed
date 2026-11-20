@@ -48,6 +48,54 @@ test("Sign out signs you out and the footer goes back to Sign in", async ({ page
   await expect(footer(page).getByRole("link", { name: "Sign in" })).toBeVisible();
 });
 
+// What's kept while editing: a draft of a recipe on the site, a new recipe's
+// draft (no title yet), and the intake's review of Milk Rolls.
+const EDITING = {
+  "sss:draft:pork-carnitas": JSON.stringify({ recipe: { title: "Pork Carnitas" } }),
+  "sss:new:baking": JSON.stringify({ recipe: {} }),
+  "sss:intake": JSON.stringify({ state: { recipe: { title: "Milk Rolls" } } }),
+};
+const OWN = { "sss:lineup": "[]", "sss:progress": "{}", "sss:answers": "{}" };
+const store = (page, items) => page.evaluate((i) => { for (const [k, v] of Object.entries(i)) localStorage.setItem(k, v); }, items);
+const stored = (page) => page.evaluate(() => Object.fromEntries(Object.entries(localStorage)));
+
+test("with unsaved changes, Sign out asks first, naming them, then forgets them and keeps the rest", async ({ page, baseURL }) => {
+  await signedIn(page, baseURL);
+  await page.route("**/api/signout", (route) => route.fulfill({ json: { signedOut: true } }));
+  await page.goto("recipes.html");
+  await store(page, { ...OWN, ...EDITING });
+  const asked = [];
+  page.once("dialog", (d) => { asked.push(d.message()); d.accept(); });
+  await footer(page).getByRole("button", { name: "Sign out" }).click();
+  await expect(footer(page).getByRole("link", { name: "Sign in" })).toBeVisible();
+  expect(asked).toEqual(["Signing out forgets your unsaved changes to Pork Carnitas, Milk Rolls and a new recipe on this device. Sign out anyway?"]);
+  expect(await stored(page)).toEqual(OWN);
+});
+
+test("saying no to the question keeps you signed in, with your changes", async ({ page, baseURL }) => {
+  await signedIn(page, baseURL);
+  const signOuts = [];
+  await page.route("**/api/signout", (route) => { signOuts.push(1); return route.fulfill({ json: { signedOut: true } }); });
+  await page.goto("recipes.html");
+  await store(page, EDITING);
+  page.once("dialog", (d) => d.dismiss());
+  await footer(page).getByRole("button", { name: "Sign out" }).click();
+  await expect(footer(page).getByRole("button", { name: "Sign out" })).toBeVisible();
+  expect(signOuts).toEqual([]);
+  expect(await stored(page)).toEqual(EDITING);
+});
+
+test("a failed sign-out keeps the drafts", async ({ page, baseURL }) => {
+  await signedIn(page, baseURL);
+  await page.route("**/api/signout", (route) => route.abort("internetdisconnected"));
+  await page.goto("recipes.html");
+  await store(page, EDITING);
+  page.once("dialog", (d) => d.accept());
+  await footer(page).getByRole("button", { name: "Sign out" }).click();
+  await expect(footer(page).getByRole("status")).toHaveText("Couldn't sign out. Check your connection and try again.");
+  expect(await stored(page)).toEqual(EDITING);
+});
+
 test("a failed sign-out says so and stays signed in", async ({ page, baseURL }) => {
   await signedIn(page, baseURL);
   await page.route("**/api/signout", (route) => route.abort("internetdisconnected"));

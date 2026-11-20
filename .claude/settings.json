@@ -3,7 +3,8 @@
     "mattpocock": {
       "source": {
         "source": "github",
-        "repo": "mattpocock/skills"
+        "repo": "mattpocock/skills",
+        "ref": "d1478fcb140db0b93c0c8df17bcfd311844749d0"
       }
     }
   },

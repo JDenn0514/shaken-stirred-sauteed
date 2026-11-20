@@ -53,6 +53,43 @@ window.SSS = (() => {
   // footer. The hint holds no secret; the editor checks the real sign-in itself.
   const hinted = () => /(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie);
   const signedIn = hinted();
+  // Signing out forgets what was being edited on this device (the editor's
+  // drafts and the intake's review), so the next person on a shared phone
+  // doesn't find it. A visitor's own things (lineup, progress, timers) stay.
+  // Then it tells the pages that keep them, in this tab and the others
+  // (through a "storage" event), so an open editor doesn't write its draft back.
+  const SIGNED_OUT = "sss:signed-out";
+  const editingKeys = () => {
+    try {
+      // Sorted: browsers list localStorage in different orders.
+      return Object.keys(localStorage).filter((key) => /^sss:(draft:|new:|intake$)/.test(key)).sort();
+    } catch {
+      return [];
+    }
+  };
+  // The titles of what's unsaved, for the question Sign out asks first.
+  const unsaved = () => [...new Set(editingKeys().map((key) => {
+    try {
+      const kept = JSON.parse(localStorage.getItem(key));
+      return (key === "sss:intake" ? kept?.state?.recipe?.title : kept?.recipe?.title) || "a new recipe";
+    } catch {
+      return "a new recipe";
+    }
+  }))];
+  const listed = (names) => (names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`);
+  const forgetEditing = () => {
+    try {
+      for (const key of editingKeys()) localStorage.removeItem(key);
+      localStorage.setItem(SIGNED_OUT, String(Date.now()));
+      localStorage.removeItem(SIGNED_OUT);
+    } catch {}
+    window.dispatchEvent(new Event(SIGNED_OUT));
+  };
+  // Runs fn when someone signs out, in this tab or another.
+  const onSignOut = (fn) => {
+    window.addEventListener(SIGNED_OUT, fn);
+    window.addEventListener("storage", (e) => { if (e.key === SIGNED_OUT && e.newValue) fn(); });
+  };
   // Who's signed in ({ name, canEdit }), for a page with data-who on its
   // footer; null when nobody is, or it couldn't be found out.
   let me = Promise.resolve(null);
@@ -77,6 +114,8 @@ window.SSS = (() => {
       const out = el("button", { type: "button", className: "link-button" }, "Sign out");
       out.addEventListener("click", async () => {
         status.textContent = "";
+        const titles = unsaved();
+        if (titles.length && !confirm(`Signing out forgets your unsaved changes to ${listed(titles)} on this device. Sign out anyway?`)) return;
         try {
           const res = await fetch("/api/signout", { method: "POST" });
           if (!res.ok) throw new Error(res.status);
@@ -85,6 +124,7 @@ window.SSS = (() => {
           return;
         }
         document.cookie = "signed-in=; Path=/; Max-Age=0";
+        forgetEditing();
         showSignedOut().focus();
       });
       footer.replaceChildren(...(who ? [el("span", {}, who)] : []), out, status);
@@ -148,5 +188,5 @@ window.SSS = (() => {
     return { steps, differs };
   }
 
-  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder, signedIn, me };
+  return { CATEGORIES, esc, fmtMinutes, totalMinutes, getJSON, toGroups, stepOrder, signedIn, me, onSignOut };
 })();
