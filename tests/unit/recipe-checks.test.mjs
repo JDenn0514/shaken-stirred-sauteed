@@ -42,6 +42,27 @@ describe("checkRecipe", () => {
     assert.deepEqual(result, fromBuild("Bad_Name", bad));
   });
 
+  // Found by the save law in worker/test/save.test.js: a title of {} passed as
+  // "there", then broke sorting the index by title.
+  test("a title that isn't text is refused, as the build says it", () => {
+    for (const title of [{}, ["Rice"], 12, true]) {
+      const r = recipe({ title });
+      assert.deepEqual(checkRecipe("test-recipe", r, vocab).errors, ['"title" must be text'], JSON.stringify(title));
+      assert.deepEqual(checkRecipe("test-recipe", r, vocab), fromBuild("test-recipe", r));
+    }
+  });
+
+  // Also found by the save law: ingredients or steps that aren't lists made the
+  // checker throw instead of answering.
+  test("ingredients or steps that aren't lists are refused, as the build says it", () => {
+    for (const bad of [{}, null, "1 cup rice", 3]) {
+      const r = recipe({ ingredients: bad, steps: bad });
+      assert.deepEqual(checkRecipe("test-recipe", r, vocab).errors,
+        ['"ingredients" must be a list', '"steps" must be a list', "no ingredients", "no steps"], JSON.stringify(bad));
+      assert.deepEqual(checkRecipe("test-recipe", r, vocab), fromBuild("test-recipe", r));
+    }
+  });
+
   test("bad planning data gets the build's messages", () => {
     const bad = recipe({
       serve: "cold",

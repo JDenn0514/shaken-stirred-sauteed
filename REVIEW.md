@@ -13,6 +13,19 @@ Look hardest for these, in this order:
 5. **It stops working for someone.** It can't be reached by keyboard, a control has no label, focus gets lost, the contrast fails, or it breaks in Safari or at phone width.
 6. **The code and the README disagree.** One of them is wrong; say which you think it is.
 
+### When the diff touches the Worker, sign-in or what's saved
+
+Check each of these; a miss is **Important**:
+
+- **Every route asks who's signed in before doing anything,** and refuses with 401 when no one is. A new route is also added to the access laws (`worker/test/access-laws.test.js`); that test fails until it is.
+- **Each person only reaches their own things.** Every D1 query that reads, changes or deletes something a person owns is limited to that person (`WHERE user_id = ?`, with the id from the session, never from the request).
+- **Nothing a request sends decides who it's for:** a user id, owner or role in the body, URL or a header is ignored, not trusted.
+- **Changes only come from the site's own pages** (the `Origin` check `/api/save` has), and only by POST.
+- **What's published:** a new top-level file or folder is either meant to be on the web or is in `.assetsignore`.
+- **What goes into a page from a recipe or an imported web page** goes through `esc()` or `safeURL`, never straight into `innerHTML`.
+
+Findings from a security audit (the `security-audit` skill) stay outside this repo, which is public: in its default folder, `~/security-audit-skill/`. Each one fixed here gets a test that failed before the fix.
+
 Then read the triggers in `docs/review-checklist.md`, bugs this repo has had before, and run the check for each trigger the diff matches. Say which items fired.
 
 Tests: flag a test that was weakened or deleted to get a run passing, a browser test that checks a rule belonging in a unit-tested module, and a browser test that uses the real recipes. `.claude/rules/testing.md` has the rest.

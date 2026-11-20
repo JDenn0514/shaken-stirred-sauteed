@@ -53,6 +53,9 @@ export async function saveRecipe(gh, { slug, recipe, baseSha }) {
     const index = parse(indexText, "recipes/index.json");
 
     const problems = checkRecipe(slug, recipe, vocab).errors;
+    // A recipe the checker refuses may not be safe to index (a title that
+    // isn't text can't be sorted), so it's refused before indexing.
+    if (problems.length) throw new Refusal(422, "This recipe has problems to fix before it can be saved.", { problems });
     const patched = patchIndex(index, slug, indexEntry(slug, recipe, vocab));
     // Only link problems this save makes: a problem already on main isn't this recipe's to fix.
     const before = new Set(checkLinks(index));

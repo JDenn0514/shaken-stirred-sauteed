@@ -49,8 +49,9 @@
   const strengthFacet = (sd) => (sd == null || !Number.isFinite(sd) ? [] : [sd < 1 ? "light" : sd <= 2 ? "medium" : "strong"]);
 
   // Lists hold entries (strings or objects) and { group, items } sections.
-  const flatten = (list = []) =>
-    list.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
+  // Anything that isn't a list counts as empty (checkRecipe says it's wrong).
+  const flatten = (list) =>
+    (Array.isArray(list) ? list.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e])) : []);
   // Ingredients may be { grams, qty, ml, item, note }; steps may be { do, wait, cue }.
   const ingText = (i) => (typeof i === "string" ? i : [i?.qty, i?.item, i?.note].filter(Boolean).join(" "));
   const stepText = (s) => (typeof s === "string" ? s : s?.do);
@@ -62,7 +63,7 @@
   const lower = (s) => String(s ?? "").trim().toLowerCase();
   function checkUses(r, steps) {
     const problems = [];
-    const named = (r.ingredients || []).flatMap((e) => (e && Array.isArray(e.items) ? e.items.map((i) => [e.group, i]) : [["", e]]))
+    const named = (Array.isArray(r.ingredients) ? r.ingredients : []).flatMap((e) => (e && Array.isArray(e.items) ? e.items.map((i) => [e.group, i]) : [["", e]]))
       .map(([group, i]) => ({ group: lower(group), item: lower(typeof i === "string" ? i : i?.item) }));
     steps.forEach((s, n) => {
       if (s?.uses === undefined) return;
@@ -179,8 +180,10 @@
 
     if (!/^[a-z0-9-]+$/.test(slug)) errors.push(`file name must be lowercase letters, numbers and dashes`);
     if (!r.title) errors.push(`missing "title"`);
+    else if (typeof r.title !== "string") errors.push(`"title" must be text`);
     if (!CATEGORIES.includes(r.category)) errors.push(`"category" must be one of ${CATEGORIES.join(", ")}`);
     if (r.kind && !KINDS.includes(r.kind)) errors.push(`"kind" must be one of ${KINDS.join(", ")}`);
+    for (const key of ["ingredients", "steps"]) if (r[key] !== undefined && !Array.isArray(r[key])) errors.push(`"${key}" must be a list`);
     const ings = flatten(r.ingredients), steps = flatten(r.steps);
     if (!ings.length) errors.push(`no ingredients`);
     if (!steps.length) errors.push(`no steps`);
