@@ -36,6 +36,23 @@ describe("an account that isn't on the list", () => {
   });
 });
 
+// Found by review: Better Auth links a new GitHub account to an existing user
+// with the same verified email, so a stranger who verified the owner's old
+// address on GitHub became the owner's user, and the check above then deleted
+// the owner's rows.
+describe("an account with a listed user's email", () => {
+  it("is turned away, and the listed user's rows are untouched", async () => {
+    const { b: owner } = await signIn("linked");
+    expect(await rowsFor("linked@example.com")).toEqual({ users: 1, accounts: 1, sessions: 1 });
+
+    const { back } = await signIn("impostor");
+    expect(new URL(back.headers.get("Location"), SITE).pathname).toBe("/api/auth/error");
+    expect(sessionCookie(back)?.value || "").toBe("");
+    expect(await rowsFor("linked@example.com")).toEqual({ users: 1, accounts: 1, sessions: 1 });
+    expect((await owner.fetch("/api/me")).status).toBe(200);
+  });
+});
+
 describe("an account taken off the list", () => {
   it("is signed out on its next request, and its rows are deleted", async () => {
     const { b } = await signIn("former");

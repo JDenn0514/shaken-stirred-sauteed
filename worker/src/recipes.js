@@ -42,11 +42,15 @@ export async function loadRecipe(gh, slug) {
 }
 
 // A title as a commit message's subject: its first line, without control
-// characters, at most 72 characters. A title from an imported page could
-// otherwise add lines to the commit (a Co-authored-by, say).
-const oneLine = (title) => {
-  const line = [...title.split(/\r?\n/)[0]].filter((c) => c >= " " && c !== "\u007f").join("").trim();
-  return line.length > 72 ? `${line.slice(0, 71)}…` : line;
+// characters or other line breaks, at most 72 characters (counted as a reader
+// would, so an emoji isn't cut in half), or the file name when that leaves
+// nothing. A title from an imported page could otherwise add lines to the
+// commit (a Co-authored-by, say).
+const oneLine = (title, slug) => {
+  const chars = [...String(title).split(/\r?\n/)[0]].filter((c) => c >= " " && !(c >= "\u007f" && c <= "\u009f") && c !== "\u2028" && c !== "\u2029");
+  const line = [...chars.join("").trim()];
+  if (!line.length) return slug;
+  return line.length > 72 ? `${line.slice(0, 71).join("")}…` : line.join("");
 };
 
 const UNREADABLE = "part of the recipe isn't text, a number or a list where it should be";
@@ -82,7 +86,7 @@ export async function saveRecipe(gh, { slug, recipe, baseSha }) {
     if (problems.length) throw new Refusal(422, "This recipe has problems to fix before it can be saved.", { problems });
 
     const text = formatRecipe(recipe);
-    const message = `${file ? "Edit" : "Add"} ${oneLine(recipe.title)}`;
+    const message = `${file ? "Edit" : "Add"} ${oneLine(recipe.title, slug)}`;
     const made = await gh.commit(commit, tree, { [pathOf(slug)]: text, [INDEX]: formatIndex(patched) }, message);
     if (!(await gh.moveMain(made))) return null;
     return { slug, title: recipe.title, sha: await blobSha(text), commit: made };
@@ -102,7 +106,7 @@ export async function deleteRecipe(gh, { slug, baseSha }) {
       throw new Refusal(409, `${says.join("; ")}. Take ${usedBy.length === 1 ? "that link" : "those links"} out first.`, { usedBy });
     }
     const title = parse(file.text, `recipes/${slug}.json`).title || slug;
-    const made = await gh.commit(commit, tree, { [pathOf(slug)]: null, [INDEX]: formatIndex(patchIndex(index, slug, null)) }, `Delete ${oneLine(String(title))}`);
+    const made = await gh.commit(commit, tree, { [pathOf(slug)]: null, [INDEX]: formatIndex(patchIndex(index, slug, null)) }, `Delete ${oneLine(title, slug)}`);
     if (!(await gh.moveMain(made))) return null;
     return { slug, title, commit: made };
   });

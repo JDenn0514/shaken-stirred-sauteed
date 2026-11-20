@@ -27,8 +27,11 @@ export function authOptions(env, database = env.DB) {
         disableDefaultScope: true,
       },
     },
-    // The GitHub token can commit to the repo, so it's encrypted in D1.
-    account: { encryptOAuthTokens: true },
+    // The GitHub token can commit to the repo, so it's encrypted in D1. No
+    // linking: Better Auth would otherwise attach a new GitHub account to an
+    // existing user with the same verified email, so whoever verified the
+    // owner's old address on GitHub would become the owner's user.
+    account: { encryptOAuthTokens: true, accountLinking: { enabled: false } },
     // Signed in for 30 days from the last visit (Better Auth renews it once a
     // day of use). GitHub's own token lasts 8 hours and is renewed by Better
     // Auth with its refresh token, which lasts 6 months.

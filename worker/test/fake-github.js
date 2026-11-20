@@ -25,6 +25,9 @@ const PEOPLE = {
   // ALLOWED_GITHUB_IDS (vitest.config.js); "former" is, until a test takes it off.
   stranger: { id: 11, login: "stranger", name: "A Stranger", push: false },
   former: { id: 12, login: "former", name: "Former Friend", push: true },
+  // "impostor" isn't on the list but has verified "linked"'s email on GitHub.
+  linked: { id: 14, login: "linked", name: "Linked Owner", push: true },
+  impostor: { id: 13, login: "impostor", name: "An Impostor", push: false, email: "linked@example.com" },
 };
 // Tokens GitHub has stopped accepting (run out, or replaced by a refresh).
 const deadTokens = new Set();
@@ -82,7 +85,7 @@ export async function fakeGitHub(request) {
     return who ? json({ id: who.id, login: who.login, name: who.name, email: null, avatar_url: `https://avatars.example/${who.id}` }) : json({ message: "Bad credentials" }, 401);
   }
   if (at === "GET https://api.github.com/user/emails") {
-    return who ? json([{ email: `${who.login}@example.com`, primary: true, verified: true }]) : json({ message: "Bad credentials" }, 401);
+    return who ? json([{ email: who.email ?? `${who.login}@example.com`, primary: true, verified: true }]) : json({ message: "Bad credentials" }, 401);
   }
   if (at === "GET https://api.github.com/repos/JDenn0514/shaken-stirred-sauteed") {
     return json({ full_name: "JDenn0514/shaken-stirred-sauteed", permissions: { admin: who.push, push: who.push, pull: true } });

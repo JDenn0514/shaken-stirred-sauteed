@@ -239,6 +239,9 @@ describe("POST /api/save", () => {
       ["two-lines", "Rice\nCo-authored-by: Someone <a@b.example>", "Add Rice"],
       ["tabbed", "Rice\tand\u0007 beans", "Add Riceand beans"],
       ["long", "A".repeat(200), `Add ${"A".repeat(71)}…`],
+      ["emoji", `${"A".repeat(70)}🍋🍋🍋`, `Add ${"A".repeat(70)}🍋…`],
+      ["other-breaks", "Rice\u0085and\u2028 beans", "Add Riceand beans"],
+      ["blank-first", "\nRice", "Add blank-first"],
     ]) {
       const res = await send("/api/save", { slug, recipe: recipe({ title }) });
       expect(res.status, slug).toBe(200);
