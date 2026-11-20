@@ -232,6 +232,23 @@ describe("POST /api/save", () => {
     expect((await res.json()).problems).toEqual(["recipe links loop: garlic-bread → garlic-butter → garlic-bread"]);
   });
 
+  // A title from an imported page can hold anything: the commit message keeps
+  // only its first line, without control characters, at most 72 characters.
+  it("commits with the title on one short line", async () => {
+    for (const [slug, title, message] of [
+      ["two-lines", "Rice\nCo-authored-by: Someone <a@b.example>", "Add Rice"],
+      ["tabbed", "Rice\tand\u0007 beans", "Add Riceand beans"],
+      ["long", "A".repeat(200), `Add ${"A".repeat(71)}…`],
+      ["emoji", `${"A".repeat(70)}🍋🍋🍋`, `Add ${"A".repeat(70)}🍋…`],
+      ["other-breaks", "Rice\u0085and\u2028 beans", "Add Riceand beans"],
+      ["blank-first", "\nRice", "Add blank-first"],
+    ]) {
+      const res = await send("/api/save", { slug, recipe: recipe({ title }) });
+      expect(res.status, slug).toBe(200);
+      expect((await repo()).history[0].message, slug).toBe(message);
+    }
+  });
+
   // From the save law: shapes the checker can't even read are refused, not a 500.
   it("refuses a recipe the checker can't read, with nothing committed", async () => {
     const before = await repo();

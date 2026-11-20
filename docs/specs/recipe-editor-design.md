@@ -73,7 +73,7 @@ Decided 2026-11-05 (Jacob). Serving the site and the Worker from one address mak
 ## Signing in
 
 - **Sign in with GitHub**, run by **Better Auth inside the Worker**, with its tables in D1. When friends and family come, Better Auth adds Google or email sign-in for them, and Jacob's account carries over.
-- The GitHub side is a **GitHub App installed only on this repo**, not an older OAuth app, which could only ask for access to all of Jacob's public repos. That also settles "only Jacob" without extra code: anyone can sign in, but only Jacob has permission to commit to the repo, so GitHub refuses anyone else's save. The editor should still show a clear message rather than a failed save if someone else signs in.
+- The GitHub side is a **GitHub App installed only on this repo**, not an older OAuth app, which could only ask for access to all of Jacob's public repos. That also settles "only Jacob" without extra code: anyone can sign in, but only Jacob has permission to commit to the repo, so GitHub refuses anyone else's save. The editor should still show a clear message rather than a failed save if someone else signs in. (Since 2026-11-20 only the accounts in `ALLOWED_GITHUB_IDS` can sign in at all: README, "Hosting".)
 - The sign-in link sits somewhere quiet (the footer, for instance). Once signed in, the site shows an **"Edit"** button on each recipe page; signed out, it doesn't. **"Add recipe"** (site bar and welcome page, leading to the intake, `intake.html`) also shows only when signed in.
 
 ### Better Auth and the GitHub token

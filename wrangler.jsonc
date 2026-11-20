@@ -15,7 +15,10 @@
   // BETTER_AUTH_SECRET) are set in Cloudflare's dashboard, never here.
   "vars": {
     "SITE_URL": "https://shaken-stirred-sauteed.com",
-    "GITHUB_REPO": "JDenn0514/shaken-stirred-sauteed"
+    "GITHUB_REPO": "JDenn0514/shaken-stirred-sauteed",
+    // Who may sign in, by GitHub account ID (comma-separated; public, not a
+    // secret). Only the owner (JDenn0514) until the multi-user project.
+    "ALLOWED_GITHUB_IDS": "80338305"
   },
   // Sign-in's users, sessions and GitHub tokens. Its tables are made by the
   // migrations in worker/migrations (README, "Hosting").
@@ -37,8 +40,11 @@
     "html_handling": "none",
     "not_found_handling": "none"
   },
-  // `wrangler preview` (each branch's preview) needs this block. It's empty
-  // because previews use the same settings as the live site.
+  // `wrangler preview` (each branch's preview) needs this block. It's empty on
+  // purpose: previews get none of the settings above (no database, no vars),
+  // and none of the dashboard's secrets, so branch code (Dependabot's too)
+  // can't reach sign-in's data. /api/ doesn't work on a preview; the pages do.
+  // Checked in a preview's build log on 2026-11-20.
   "previews": {},
   // Keeps the Worker's logs and each request's CPU time in the dashboard, so
   // errors can be read after the fact and CPU time checked against the free

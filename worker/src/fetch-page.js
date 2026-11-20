@@ -1,7 +1,8 @@
 // POST /api/fetch { url }: a recipe website's page, for the intake
 // (docs/specs/recipe-editor-design.md, "Recipe websites"). A browser can't
 // read another site's page from this one, so the Worker gets it. index.js only
-// sends signed-in requests here, so it can't be used as an open proxy.
+// sends signed-in requests here, and only the accounts in ALLOWED_GITHUB_IDS
+// can sign in, so it can't be used as an open proxy.
 //
 // Answers { html, url } (url: where the page ended up after redirects), or
 // { error } with a message to show as it is, plus `refused: true` when the
