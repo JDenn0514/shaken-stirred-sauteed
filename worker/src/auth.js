@@ -46,5 +46,30 @@ export function authOptions(env, database = env.DB) {
 // database out of reach, or its tables not made yet) is retried on the next
 // request rather than kept until Cloudflare restarts the Worker.
 let auth;
-export const getAuth = (env) => (auth ??= betterAuth(authOptions(env)));
+export function getAuth(env) {
+  // Better Auth would quietly use a public default without one (it only
+  // refuses when NODE_ENV is "production", which Workers don't set), and the
+  // secret is what encrypts the GitHub tokens: no secret, no sign-in.
+  if ((clean(env.BETTER_AUTH_SECRET) ?? "").length < 32) throw new Error("BETTER_AUTH_SECRET is missing or shorter than 32 characters");
+  return (auth ??= betterAuth(authOptions(env)));
+}
 export const forgetAuth = () => { auth = undefined; };
+
+// Who may sign in: the GitHub accounts in ALLOWED_GITHUB_IDS (wrangler.jsonc),
+// by GitHub's account ID. Today only the site's owner, until the multi-user
+// project opens it up (docs/specs/multi-user-security.md).
+export async function isAllowed(env, userId) {
+  const ids = new Set(String(env.ALLOWED_GITHUB_IDS ?? "").split(",").map((s) => s.trim()).filter(Boolean));
+  const { results } = await env.DB.prepare(`select "accountId" from "account" where "userId" = ? and "providerId" = 'github'`).bind(userId).all();
+  return results.length > 0 && results.every((a) => ids.has(String(a.accountId)));
+}
+
+// Deletes everything kept for a person: their sessions, their GitHub account
+// (with its tokens) and the user itself.
+export async function removeUser(env, userId) {
+  await env.DB.batch([
+    env.DB.prepare(`delete from "session" where "userId" = ?`).bind(userId),
+    env.DB.prepare(`delete from "account" where "userId" = ?`).bind(userId),
+    env.DB.prepare(`delete from "user" where "id" = ?`).bind(userId),
+  ]);
+}

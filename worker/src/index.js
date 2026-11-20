@@ -12,7 +12,7 @@
 //   POST /api/save                  { slug, recipe, baseSha }: commit it to main
 //   POST /api/delete                { slug, baseSha }: take it off main
 // Everything else under /api/ needs you to be signed in: 401 if you aren't.
-import { forgetAuth, getAuth } from "./auth.js";
+import { forgetAuth, getAuth, isAllowed, removeUser } from "./auth.js";
 import { fetchPage } from "./fetch-page.js";
 import { Refusal, SIGN_IN_AGAIN, github } from "./github.js";
 import { deleteRecipe, isSlug, loadRecipe, saveRecipe } from "./recipes.js";
@@ -56,11 +56,16 @@ async function api(request, env, url) {
   if (url.pathname === "/api/signout") return route === "POST /api/signout" ? signOut(auth, request) : notAllowed("POST");
   // Better Auth's own pages that sign-in needs: GitHub's way back, and the page
   // it shows when sign-in fails. Its other routes aren't used, so they're closed.
-  if (route === "GET /api/auth/callback/github") return withHint(await auth.handler(request));
+  if (route === "GET /api/auth/callback/github") return withHint(await onlyListed(auth, env, await auth.handler(request)));
   if (route === "GET /api/auth/error") return auth.handler(request);
 
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) return signedOut("Sign in first.");
+  // A session from before its account was taken off the list.
+  if (!(await isAllowed(env, session.user.id))) {
+    await removeUser(env, session.user.id);
+    return signedOut(NOT_OPEN);
+  }
 
   if (route === "GET /api/me") return me(auth, request, env, session);
 
@@ -155,6 +160,26 @@ function sitePage(path, site) {
   if (url.origin !== new URL(site).origin) return null;
   if (!/^\/([\w-]+\/)*([\w-]+\.html)?$/.test(url.pathname)) return null;
   return url.pathname + url.search;
+}
+
+const NOT_OPEN = "This site is only open to its owner for now.";
+
+// GitHub's way back, for an account that isn't on the list: Better Auth has
+// already made its user, account and session (D1 can't undo them as one), so
+// they're deleted, its cookies cleared, and it's sent to the sign-in error page.
+async function onlyListed(auth, env, res) {
+  const set = res.headers.getSetCookie().map((c) => /^([^=;]+)=([^;]*)/.exec(c)).filter(Boolean);
+  const token = set.find(([, name, value]) => /^(__Secure-)?better-auth\.session_token$/.test(name) && value);
+  if (!token) return res;
+  const session = await auth.api.getSession({ headers: new Headers({ Cookie: `${token[1]}=${token[2]}` }) });
+  if (!session || (await isAllowed(env, session.user.id))) return res;
+  await removeUser(env, session.user.id);
+  const to = new URL("/api/auth/error", env.SITE_URL);
+  to.searchParams.set("error", "not_open_yet");
+  to.searchParams.set("error_description", NOT_OPEN);
+  const headers = new Headers({ Location: to.pathname + to.search });
+  for (const [, name] of set) headers.append("Set-Cookie", `${name}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax`);
+  return new Response(null, { status: 302, headers });
 }
 
 // Adds the hint cookie when Better Auth's response signs someone in.

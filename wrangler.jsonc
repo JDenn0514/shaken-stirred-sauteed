@@ -15,7 +15,10 @@
   // BETTER_AUTH_SECRET) are set in Cloudflare's dashboard, never here.
   "vars": {
     "SITE_URL": "https://shaken-stirred-sauteed.com",
-    "GITHUB_REPO": "JDenn0514/shaken-stirred-sauteed"
+    "GITHUB_REPO": "JDenn0514/shaken-stirred-sauteed",
+    // Who may sign in, by GitHub account ID (comma-separated; public, not a
+    // secret). Only the owner (JDenn0514) until the multi-user project.
+    "ALLOWED_GITHUB_IDS": "80338305"
   },
   // Sign-in's users, sessions and GitHub tokens. Its tables are made by the
   // migrations in worker/migrations (README, "Hosting").

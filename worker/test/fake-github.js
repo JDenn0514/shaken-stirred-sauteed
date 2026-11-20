@@ -21,6 +21,10 @@ const PEOPLE = {
   lapsing: { id: 8, login: "lapsing", name: "Lapsing", push: true, refuseRefresh: true },
   // For the access laws (access-laws.test.js).
   lawEditor: { id: 9, login: "law-editor", name: "Law Editor", push: true },
+  // For owner-only sign-in (owner-only.test.js): "stranger" isn't in
+  // ALLOWED_GITHUB_IDS (vitest.config.js); "former" is, until a test takes it off.
+  stranger: { id: 11, login: "stranger", name: "A Stranger", push: false },
+  former: { id: 12, login: "former", name: "Former Friend", push: true },
 };
 // Tokens GitHub has stopped accepting (run out, or replaced by a refresh).
 const deadTokens = new Set();
