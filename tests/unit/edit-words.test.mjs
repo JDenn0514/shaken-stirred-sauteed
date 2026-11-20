@@ -76,6 +76,9 @@ const BROKEN = [
   { ...base(), tags: { course: ["dessert-wine"] } },
   { ...base(), tags: {} },
   { ...base(), time: {} },
+  { ...base(), title: {} },
+  { ...base(), source: { url: 5 } },
+  { ...base(), ingredients: "rice", steps: "cook it" },
 ];
 const recipeMessages = BROKEN.flatMap((r) => {
   const { errors, warnings } = checkRecipe("soup", r, vocab);

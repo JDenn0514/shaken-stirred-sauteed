@@ -3,11 +3,12 @@
 // GitHub's repository (fake-github.js). Each test starts from the same small
 // set of recipes on main, with an index.json built from them.
 import { env } from "cloudflare:test";
+import fc from "fast-check";
 import { beforeEach, describe, expect, it } from "vitest";
 import checks from "../../assets/recipe-checks.js";
 import vocab from "../../recipes/vocabulary.json";
 import { formatRecipe } from "../src/format.js";
-import { browser, signIn } from "./browser.js";
+import { SITE, browser, signIn } from "./browser.js";
 
 const { indexEntry, patchIndex } = checks;
 const fake = (path, init) => fetch(`https://fake-github.test${path}`, init);
@@ -231,6 +232,20 @@ describe("POST /api/save", () => {
     expect((await res.json()).problems).toEqual(["recipe links loop: garlic-bread → garlic-butter → garlic-bread"]);
   });
 
+  // From the save law: shapes the checker can't even read are refused, not a 500.
+  it("refuses a recipe the checker can't read, with nothing committed", async () => {
+    const before = await repo();
+    for (const r of [
+      { title: {}, category: null, ingredients: ["1 cup rice"], steps: 0, tags: { ingredients: ["rice"] }, time: [], image: { toString: null } },
+      recipe({ ingredients: [{ qty: { toString: null }, item: "Rice" }] }),
+    ]) {
+      const res = await send("/api/save", { slug: "odd", recipe: r });
+      expect(res.status, JSON.stringify(r)).toBe(422);
+      expect((await res.json()).error).toMatch(/problems to fix/);
+    }
+    expect((await repo()).main).toBe(before.main);
+  });
+
   it("someone who can't push to the repo is told so, with nothing committed", async () => {
     const before = await repo();
     const { b: looker } = await signIn("looker");
@@ -338,5 +353,67 @@ describe("formatRecipe", () => {
   it("puts a long list one item to a line", () => {
     const long = Array.from({ length: 12 }, (_, i) => `ingredient number ${i}`);
     expect(formatRecipe({ uses: long })).toBe(JSON.stringify({ uses: long }, null, 2) + "\n");
+  });
+});
+
+// Laws: who can change main, on random saves and deletes. Here rather than in
+// access-laws.test.js because they need this file's repository; the seed works
+// the same way (ACCESS_SEED=<seed> replays it).
+const seed = Number(env.ACCESS_SEED) || Date.now() % 2 ** 31;
+describe(`who can change main: laws (seed ${seed})`, { timeout: 30_000 }, () => {
+  const opts = { numRuns: 40, seed };
+  // A save or delete: of a recipe that's there or a new one, with its current
+  // version or none.
+  const change = fc.record({
+    path: fc.constantFrom("/api/save", "/api/delete"),
+    slug: fc.oneof(fc.constantFrom(...Object.keys(RECIPES)), fc.stringMatching(/^[a-z][a-z0-9-]{0,15}$/)),
+    title: fc.constantFrom("Test Recipe", "Green Salsa", "Rice"),
+    withSha: fc.boolean(),
+  });
+  const bodyOf = async ({ path, slug, title, withSha }) => {
+    const baseSha = withSha ? (await repo()).shas[`recipes/${slug}.json`] : undefined;
+    return path === "/api/save" ? { slug, recipe: recipe({ title }), baseSha } : { slug, baseSha };
+  };
+  // Any other site's address, or none.
+  const elsewhere = fc.oneof(
+    fc.constantFrom("", "null", "https://evil.example", "http://shaken-stirred-sauteed.com", "https://shaken-stirred-sauteed.com.evil.example"),
+    fc.webUrl().map((u) => new URL(u).origin),
+  ).filter((o) => o !== SITE);
+
+  it("someone who can't push never changes main, whatever they send", async () => {
+    const { b: looker } = await signIn("looker");
+    await fc.assert(fc.asyncProperty(change, async (c) => {
+      const before = (await repo()).main;
+      const res = await send(c.path, await bodyOf(c), looker);
+      expect(res.ok, `${c.path} ${JSON.stringify(c)}`).toBe(false);
+      expect((await repo()).main).toBe(before);
+    }), opts);
+  });
+
+  // A recipe whose fields are any JSON at all: wrong types, nesting, nulls.
+  const anyRecipe = fc.record({
+    title: fc.jsonValue(), category: fc.oneof(fc.constant("cooking"), fc.jsonValue()),
+    ingredients: fc.oneof(fc.constant(["1 cup rice"]), fc.jsonValue()), steps: fc.oneof(fc.constant(["Cook the rice."]), fc.jsonValue()),
+    tags: fc.oneof(fc.constant({ ingredients: ["rice"] }), fc.jsonValue()), time: fc.oneof(fc.constant({ total: 20 }), fc.jsonValue()),
+    image: fc.jsonValue(), source: fc.jsonValue(), description: fc.jsonValue(),
+    glass: fc.jsonValue(), garnish: fc.jsonValue(), origin: fc.jsonValue(), kind: fc.jsonValue(), yield: fc.jsonValue(),
+  }, { requiredKeys: ["title", "category", "ingredients", "steps", "tags", "time"] });
+  it("no recipe an editor sends breaks the Worker: a save never answers 500", async () => {
+    await fc.assert(fc.asyncProperty(fc.stringMatching(/^[a-z][a-z0-9-]{0,15}$/), anyRecipe, async (slug, r) => {
+      const res = await send("/api/save", { slug, recipe: r });
+      expect(res.status, `save ${JSON.stringify(r)}`).not.toBe(500);
+      expect(res.status, "still signed in").not.toBe(401);
+    }), opts);
+  });
+
+  it("an editor's changes only count from the site's own pages", async () => {
+    await fc.assert(fc.asyncProperty(change, elsewhere, async (c, origin) => {
+      const before = (await repo()).main;
+      const res = await b.fetch(c.path, {
+        method: "POST", headers: { "Content-Type": "application/json", Origin: origin }, body: JSON.stringify(await bodyOf(c)),
+      });
+      expect(res.status, `${c.path} from "${origin}"`).toBe(403);
+      expect((await repo()).main).toBe(before);
+    }), opts);
   });
 });

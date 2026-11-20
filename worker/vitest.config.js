@@ -18,6 +18,8 @@ export default defineConfig(async () => ({
           GITHUB_CLIENT_SECRET: "test-client-secret",
           BETTER_AUTH_SECRET: "a-test-secret-that-is-long-enough-for-better-auth",
           MIGRATIONS: await readD1Migrations("migrations"),
+          // Replays the access laws' random requests (test/access-laws.test.js).
+          ACCESS_SEED: process.env.ACCESS_SEED ?? "",
         },
         // Every request the Worker makes to anywhere goes here instead.
         outboundService: (request) => (/(^|\.)github\.com$|^fake-github\.test$/.test(new URL(request.url).hostname) ? fakeGitHub(request) : fakeSites(request)),

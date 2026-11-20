@@ -19,6 +19,8 @@ const PEOPLE = {
   saver: { id: 6, login: "saver", name: "Saver", push: true },
   looker: { id: 7, login: "looker", name: "Looker", push: false },
   lapsing: { id: 8, login: "lapsing", name: "Lapsing", push: true, refuseRefresh: true },
+  // For the access laws (access-laws.test.js).
+  lawEditor: { id: 9, login: "law-editor", name: "Law Editor", push: true },
 };
 // Tokens GitHub has stopped accepting (run out, or replaced by a refresh).
 const deadTokens = new Set();

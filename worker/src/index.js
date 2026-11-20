@@ -85,12 +85,22 @@ async function api(request, env, url) {
     const token = await githubToken(auth, request);
     if (!token) return signedOut(SIGN_IN_AGAIN);
     const gh = github(token, env.GITHUB_REPO);
-    if (recipe) return Response.json(await loadRecipe(gh, decodeURIComponent(recipe[1])));
+    if (recipe) return Response.json(await loadRecipe(gh, decoded(recipe[1])));
     if (url.pathname === "/api/save") return Response.json(await saveRecipe(gh, body));
     return Response.json(await deleteRecipe(gh, body));
   } catch (error) {
     if (!(error instanceof Refusal)) throw error;
     return error.status === 401 ? signedOut(error.message) : Response.json(error.body, { status: error.status });
+  }
+}
+
+// A name from the address, %-codes decoded; "" when they're broken (%E0), which
+// is no recipe's name, so it gets loadRecipe's 404.
+function decoded(text) {
+  try {
+    return decodeURIComponent(text);
+  } catch {
+    return "";
   }
 }
 

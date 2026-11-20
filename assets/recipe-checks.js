@@ -48,9 +48,13 @@
   const timeFacet = (min) => (min == null ? [] : [min <= 30 && "under-30", min <= 60 && "under-60"].filter(Boolean));
   const strengthFacet = (sd) => (sd == null || !Number.isFinite(sd) ? [] : [sd < 1 ? "light" : sd <= 2 ? "medium" : "strong"]);
 
+  // Recipe fields that are always text when present.
+  const TEXT_FIELDS = ["title", "description", "category", "kind", "yield", "image", "added", "icon", "origin", "glass", "garnish"];
+
   // Lists hold entries (strings or objects) and { group, items } sections.
-  const flatten = (list = []) =>
-    list.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e]));
+  // Anything that isn't a list counts as empty (checkRecipe says it's wrong).
+  const flatten = (list) =>
+    (Array.isArray(list) ? list.flatMap((e) => (e && Array.isArray(e.items) ? e.items : [e])) : []);
   // Ingredients may be { grams, qty, ml, item, note }; steps may be { do, wait, cue }.
   const ingText = (i) => (typeof i === "string" ? i : [i?.qty, i?.item, i?.note].filter(Boolean).join(" "));
   const stepText = (s) => (typeof s === "string" ? s : s?.do);
@@ -62,7 +66,7 @@
   const lower = (s) => String(s ?? "").trim().toLowerCase();
   function checkUses(r, steps) {
     const problems = [];
-    const named = (r.ingredients || []).flatMap((e) => (e && Array.isArray(e.items) ? e.items.map((i) => [e.group, i]) : [["", e]]))
+    const named = (Array.isArray(r.ingredients) ? r.ingredients : []).flatMap((e) => (e && Array.isArray(e.items) ? e.items.map((i) => [e.group, i]) : [["", e]]))
       .map(([group, i]) => ({ group: lower(group), item: lower(typeof i === "string" ? i : i?.item) }));
     steps.forEach((s, n) => {
       if (s?.uses === undefined) return;
@@ -178,6 +182,15 @@
     const { allowed } = allowedTags(vocab);
 
     if (!/^[a-z0-9-]+$/.test(slug)) errors.push(`file name must be lowercase letters, numbers and dashes`);
+    // Fields shown or indexed as text, and the two lists, come first: nothing
+    // else can be checked safely until they're the right kind of thing.
+    const shapes = [];
+    for (const [name, value] of [...TEXT_FIELDS.map((k) => [k, r[k]]), ["source.url", r.source?.url]]) {
+      if (value != null && typeof value !== "string") shapes.push(`"${name}" must be text`);
+    }
+    for (const key of ["ingredients", "steps"]) if (r[key] !== undefined && !Array.isArray(r[key])) shapes.push(`"${key}" must be a list`);
+    if (shapes.length) return { errors: [...errors, ...shapes], warnings };
+
     if (!r.title) errors.push(`missing "title"`);
     if (!CATEGORIES.includes(r.category)) errors.push(`"category" must be one of ${CATEGORIES.join(", ")}`);
     if (r.kind && !KINDS.includes(r.kind)) errors.push(`"kind" must be one of ${KINDS.join(", ")}`);
