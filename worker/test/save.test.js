@@ -232,6 +232,20 @@ describe("POST /api/save", () => {
     expect((await res.json()).problems).toEqual(["recipe links loop: garlic-bread → garlic-butter → garlic-bread"]);
   });
 
+  // From the save law: shapes the checker can't even read are refused, not a 500.
+  it("refuses a recipe the checker can't read, with nothing committed", async () => {
+    const before = await repo();
+    for (const r of [
+      { title: {}, category: null, ingredients: ["1 cup rice"], steps: 0, tags: { ingredients: ["rice"] }, time: [], image: { toString: null } },
+      recipe({ ingredients: [{ qty: { toString: null }, item: "Rice" }] }),
+    ]) {
+      const res = await send("/api/save", { slug: "odd", recipe: r });
+      expect(res.status, JSON.stringify(r)).toBe(422);
+      expect((await res.json()).error).toMatch(/problems to fix/);
+    }
+    expect((await repo()).main).toBe(before.main);
+  });
+
   it("someone who can't push to the repo is told so, with nothing committed", async () => {
     const before = await repo();
     const { b: looker } = await signIn("looker");
@@ -382,6 +396,7 @@ describe(`who can change main: laws (seed ${seed})`, () => {
     ingredients: fc.oneof(fc.constant(["1 cup rice"]), fc.jsonValue()), steps: fc.oneof(fc.constant(["Cook the rice."]), fc.jsonValue()),
     tags: fc.oneof(fc.constant({ ingredients: ["rice"] }), fc.jsonValue()), time: fc.oneof(fc.constant({ total: 20 }), fc.jsonValue()),
     image: fc.jsonValue(), source: fc.jsonValue(), description: fc.jsonValue(),
+    glass: fc.jsonValue(), garnish: fc.jsonValue(), origin: fc.jsonValue(), kind: fc.jsonValue(), yield: fc.jsonValue(),
   }, { requiredKeys: ["title", "category", "ingredients", "steps", "tags", "time"] });
   it("no recipe an editor sends breaks the Worker: a save never answers 500", async () => {
     await fc.assert(fc.asyncProperty(fc.stringMatching(/^[a-z][a-z0-9-]{0,15}$/), anyRecipe, async (slug, r) => {

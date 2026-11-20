@@ -41,6 +41,8 @@ export async function loadRecipe(gh, slug) {
   return { slug, recipe: parse(file.text, `recipes/${slug}.json`), sha: file.sha };
 }
 
+const UNREADABLE = "part of the recipe isn't text, a number or a list where it should be";
+
 // { slug, recipe, baseSha }: baseSha is the version opened, or missing for a
 // new recipe, whose file name must be free.
 export async function saveRecipe(gh, { slug, recipe, baseSha }) {
@@ -52,11 +54,19 @@ export async function saveRecipe(gh, { slug, recipe, baseSha }) {
     const vocab = parse(vocabText, "recipes/vocabulary.json");
     const index = parse(indexText, "recipes/index.json");
 
-    const problems = checkRecipe(slug, recipe, vocab).errors;
     // A recipe the checker refuses may not be safe to index (a title that
-    // isn't text can't be sorted), so it's refused before indexing.
+    // isn't text can't be sorted), so it's refused before indexing. A shape the
+    // checker can't even read (an amount that can't be turned into text) is
+    // refused the same way, rather than breaking the Worker.
+    let problems, patched;
+    try {
+      problems = checkRecipe(slug, recipe, vocab).errors;
+      if (!problems.length) patched = patchIndex(index, slug, indexEntry(slug, recipe, vocab));
+    } catch (error) {
+      if (!(error instanceof TypeError)) throw error;
+      problems = [UNREADABLE];
+    }
     if (problems.length) throw new Refusal(422, "This recipe has problems to fix before it can be saved.", { problems });
-    const patched = patchIndex(index, slug, indexEntry(slug, recipe, vocab));
     // Only link problems this save makes: a problem already on main isn't this recipe's to fix.
     const before = new Set(checkLinks(index));
     const mine = `recipes/${slug}.json: `;

@@ -48,6 +48,9 @@
   const timeFacet = (min) => (min == null ? [] : [min <= 30 && "under-30", min <= 60 && "under-60"].filter(Boolean));
   const strengthFacet = (sd) => (sd == null || !Number.isFinite(sd) ? [] : [sd < 1 ? "light" : sd <= 2 ? "medium" : "strong"]);
 
+  // Recipe fields that are always text when present.
+  const TEXT_FIELDS = ["title", "description", "category", "kind", "yield", "image", "added", "icon", "origin", "glass", "garnish"];
+
   // Lists hold entries (strings or objects) and { group, items } sections.
   // Anything that isn't a list counts as empty (checkRecipe says it's wrong).
   const flatten = (list) =>
@@ -179,11 +182,18 @@
     const { allowed } = allowedTags(vocab);
 
     if (!/^[a-z0-9-]+$/.test(slug)) errors.push(`file name must be lowercase letters, numbers and dashes`);
+    // Fields shown or indexed as text, and the two lists, come first: nothing
+    // else can be checked safely until they're the right kind of thing.
+    const shapes = [];
+    for (const [name, value] of [...TEXT_FIELDS.map((k) => [k, r[k]]), ["source.url", r.source?.url]]) {
+      if (value != null && typeof value !== "string") shapes.push(`"${name}" must be text`);
+    }
+    for (const key of ["ingredients", "steps"]) if (r[key] !== undefined && !Array.isArray(r[key])) shapes.push(`"${key}" must be a list`);
+    if (shapes.length) return { errors: [...errors, ...shapes], warnings };
+
     if (!r.title) errors.push(`missing "title"`);
-    else if (typeof r.title !== "string") errors.push(`"title" must be text`);
     if (!CATEGORIES.includes(r.category)) errors.push(`"category" must be one of ${CATEGORIES.join(", ")}`);
     if (r.kind && !KINDS.includes(r.kind)) errors.push(`"kind" must be one of ${KINDS.join(", ")}`);
-    for (const key of ["ingredients", "steps"]) if (r[key] !== undefined && !Array.isArray(r[key])) errors.push(`"${key}" must be a list`);
     const ings = flatten(r.ingredients), steps = flatten(r.steps);
     if (!ings.length) errors.push(`no ingredients`);
     if (!steps.length) errors.push(`no steps`);

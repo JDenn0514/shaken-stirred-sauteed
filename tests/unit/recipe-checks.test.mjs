@@ -42,23 +42,33 @@ describe("checkRecipe", () => {
     assert.deepEqual(result, fromBuild("Bad_Name", bad));
   });
 
-  // Found by the save law in worker/test/save.test.js: a title of {} passed as
-  // "there", then broke sorting the index by title.
-  test("a title that isn't text is refused, as the build says it", () => {
-    for (const title of [{}, ["Rice"], 12, true]) {
-      const r = recipe({ title });
-      assert.deepEqual(checkRecipe("test-recipe", r, vocab).errors, ['"title" must be text'], JSON.stringify(title));
-      assert.deepEqual(checkRecipe("test-recipe", r, vocab), fromBuild("test-recipe", r));
+  // Found by the save law in worker/test/save.test.js: fields the checker turns
+  // into text made it throw, or passed as "there", when they weren't text.
+  // The rest of the recipe isn't checked until they are.
+  test("a text field that isn't text is refused, as the build says it", () => {
+    for (const field of ["title", "description", "category", "kind", "yield", "image", "added", "icon", "origin", "glass", "garnish"]) {
+      for (const bad of [{}, ["Rice"], 12, true]) {
+        const r = recipe({ [field]: bad });
+        assert.deepEqual(checkRecipe("test-recipe", r, vocab), { errors: [`"${field}" must be text`], warnings: [] }, `${field}: ${JSON.stringify(bad)}`);
+        assert.deepEqual(checkRecipe("test-recipe", r, vocab), fromBuild("test-recipe", r));
+      }
+    }
+    assert.deepEqual(checkRecipe("test-recipe", recipe({ source: { name: "A site", url: ["https://a.example"] } }), vocab).errors, ['"source.url" must be text']);
+  });
+
+  test("a field that can't even be turned into text is refused, not thrown on", () => {
+    // The reviewer's counterexample, from ACCESS_SEED=10.
+    const r = { title: {}, category: null, ingredients: ["1 cup rice"], steps: 0, tags: { ingredients: ["rice"] }, time: [], image: { toString: null } };
+    assert.deepEqual(checkRecipe("a", r, vocab).errors, ['"title" must be text', '"image" must be text', '"steps" must be a list']);
+    for (const field of ["category", "glass", "garnish", "origin"]) {
+      assert.deepEqual(checkRecipe("a", recipe({ [field]: { toString: null } }), vocab).errors, [`"${field}" must be text`]);
     }
   });
 
-  // Also found by the save law: ingredients or steps that aren't lists made the
-  // checker throw instead of answering.
   test("ingredients or steps that aren't lists are refused, as the build says it", () => {
-    for (const bad of [{}, null, "1 cup rice", 3]) {
+    for (const bad of [{}, "1 cup rice", 3]) {
       const r = recipe({ ingredients: bad, steps: bad });
-      assert.deepEqual(checkRecipe("test-recipe", r, vocab).errors,
-        ['"ingredients" must be a list', '"steps" must be a list', "no ingredients", "no steps"], JSON.stringify(bad));
+      assert.deepEqual(checkRecipe("test-recipe", r, vocab), { errors: ['"ingredients" must be a list', '"steps" must be a list'], warnings: [] }, JSON.stringify(bad));
       assert.deepEqual(checkRecipe("test-recipe", r, vocab), fromBuild("test-recipe", r));
     }
   });

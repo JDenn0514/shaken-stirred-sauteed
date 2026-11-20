@@ -72,7 +72,7 @@ describe(`access laws (seed ${seed})`, () => {
     ({ b: editor } = await signIn("lawEditor"));
   });
 
-  // Found by the review in docs/ideas.md: a broken %-code in a recipe's name.
+  // Found by a security review: a broken %-code in a recipe's name.
   it("answers 404, not 500, for a recipe address with a broken %-code", async () => {
     const res = await editor.fetch("/api/recipe/%E0");
     expect(res.status).toBe(404);

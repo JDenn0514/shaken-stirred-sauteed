@@ -114,7 +114,7 @@ export const RULES = [
     words: () => "The file name can only have lowercase letters, numbers and dashes." },
   { match: /^missing "title"$/, words: () => "The recipe needs a title.", go: () => ({ open: "about", field: "edit-title" }) },
   // Only a recipe file written by hand can get these two; the editor always writes text and lists.
-  { match: /^"title" must be text$/, words: () => "The title must be words.", go: () => ({ open: "about", field: "edit-title" }) },
+  { match: /^"([\w.]+)" must be text$/, words: ([, f]) => (f === "source.url" ? "The source's address must be words." : `The ${f} must be words.`) },
   { match: /^"(ingredients|steps)" must be a list$/, words: ([, what]) => `The ${what} must be a list.` },
   { match: /^"category" must be one of .+$/, words: () => "The recipe needs a section: Baking, Cooking or Cocktails." },
   { match: /^"kind" must be one of .+$/, words: () => "Choose whether it's a dish or a component, under Details.", go: () => ({ field: "d-kind" }) },
