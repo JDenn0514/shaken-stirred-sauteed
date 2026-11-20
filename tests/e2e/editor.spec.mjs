@@ -1386,6 +1386,38 @@ test("signing out takes Add recipe away", async ({ page, baseURL }) => {
   await expect(add).toHaveCount(0);
 });
 
+test.describe("signing out forgets the draft", () => {
+  // Opens pork-carnitas with a change made, so it has a draft.
+  async function withDraft(page, baseURL) {
+    await page.route("**/api/signout", (route) => route.fulfill({ json: { signedOut: true } }));
+    await openEditor(page, baseURL, "pork-carnitas");
+    await preview(page).getByRole("heading", { level: 1 }).getByRole("button").press("Enter");
+    await page.getByLabel("Title").fill("Carnitas for Sunday");
+    await page.getByRole("button", { name: "Done" }).press("Enter");
+    expect((await draftOf(page, "pork-carnitas")).title).toBe("Carnitas for Sunday");
+  }
+
+  test("from the editor's own footer: the recipe goes, and nothing writes the draft back", async ({ page, baseURL }) => {
+    await withDraft(page, baseURL);
+    page.once("dialog", (d) => d.accept());
+    await page.getByRole("contentinfo").getByRole("button", { name: "Sign out" }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sign in to edit");
+    await expect(page.getByText("Carnitas for Sunday")).toHaveCount(0);
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+  });
+
+  test("from another tab: the editor's tab lets the recipe go too", async ({ page, baseURL }) => {
+    await withDraft(page, baseURL);
+    const other = await page.context().newPage();
+    await other.route("**/api/signout", (route) => route.fulfill({ json: { signedOut: true } }));
+    await other.goto("recipes.html");
+    other.once("dialog", (d) => d.accept());
+    await other.getByRole("contentinfo").getByRole("button", { name: "Sign out" }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sign in to edit");
+    expect(await draftOf(page, "pork-carnitas")).toBeUndefined();
+  });
+});
+
 test.describe("signed out", () => {
   test("edit.html asks you to sign in, and shows no recipe", async ({ page }) => {
     await page.goto("edit.html?r=pork-carnitas");

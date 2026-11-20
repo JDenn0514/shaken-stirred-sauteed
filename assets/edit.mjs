@@ -35,7 +35,7 @@ import { labelled, field, select, check, act, formButtons } from "./edit-html.mj
 import { originalHTML, stepNotesHTML, ingredientNotesHTML, guessHTML, reviewAction, tickHTML, AMOUNTS } from "./import-view.mjs";
 import { reviewOf, recipeToSave, slugOf, toKeep, fromKept, amountsToCheck } from "../tools/intake/review.mjs";
 
-const { CATEGORIES, esc, getJSON, stepOrder, totalMinutes, signedIn: hinted } = window.SSS;
+const { CATEGORIES, esc, getJSON, stepOrder, totalMinutes, signedIn: hinted, onSignOut } = window.SSS;
 const { recipePageHTML, cardHTML } = window.SSSView;
 const { checkRecipe, checkLinks, indexEntry, linkedFrom, patchIndex } = window.SSSChecks;
 const ICONS = window.SSSIcons.KEYS;
@@ -121,6 +121,9 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 function readDraft() {
   try { return JSON.parse(localStorage.getItem(draftKey())); } catch { return null; }
 }
+// Signing out (here or in another tab) has forgotten the draft: start again
+// signed out, so the next change doesn't write it back.
+onSignOut(() => location.reload());
 function keepDraft() {
   try {
     // A new recipe is the intake's review, kept as the intake keeps it.

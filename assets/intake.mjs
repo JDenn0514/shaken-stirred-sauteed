@@ -15,7 +15,7 @@ import { startImport } from "./intake-import.mjs";
 import { originalHTML, AMOUNTS } from "./import-view.mjs";
 import { startReview, reviewOf, answerWait, answerServe, recipeToSave, slugOf, toKeep, fromKept } from "../tools/intake/review.mjs";
 
-const { esc, stepOrder, me } = window.SSS;
+const { esc, stepOrder, me, onSignOut } = window.SSS;
 const { recipePageHTML } = window.SSSView;
 const $ = (id) => document.getElementById(id);
 const out = $("review");
@@ -39,6 +39,9 @@ fetch("recipes/index.json", { cache: "no-cache" })
 // --- Keeping the review --------------------------------------------------------
 
 const KEEP = "sss:intake";
+// Signing out (here or in another tab) has forgotten the review: start again,
+// so the next answer doesn't write it back.
+onSignOut(() => location.reload());
 function keep() {
   try { localStorage.setItem(KEEP, JSON.stringify(toKeep(state, { original }))); } catch {}
 }

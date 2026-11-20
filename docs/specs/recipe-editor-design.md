@@ -155,7 +155,7 @@ The rules that turn plain text into a draft:
 - **Edit existing** opens the recipe as it is on the site.
 - **What's changed** lists the differences from the recipe on the site in a cook's words ("Butter: 8 tbsp → 10 tbsp", "Step 2 wait: 15 min → 18 min", "Tags: + Ingredients: Eggs"), amounts, times and temperatures first. It's one tap away under "Unsaved changes", in the unsaved-draft offer, and shown before Save only when an amount, a time or a temperature changed (`assets/edit-changes.mjs`, build step 23).
 - The recipe's file name (its slug) is made from the title when it's first saved, using lowercase letters, numbers and dashes as the README says. Editing the title later **doesn't rename the file**, so links and saved progress keep working (Claude's call).
-- The editor keeps an unsaved draft in the browser, so a reload or an accidental back doesn't lose work.
+- The editor keeps an unsaved draft in the browser, so a reload or an accidental back doesn't lose work. Signing out forgets every draft and the intake's review on that device, so the next person on a shared phone doesn't find them; it asks first, naming them, and an editor or intake open in another tab starts again signed out.
 
 ## Lineup data
 
