@@ -19,13 +19,13 @@ test("every GitHub Action is pinned to a commit, with its version beside it", as
   }
 });
 
-// A release tag for now: a commit SHA in `ref` needs Claude Code 2.1.324 or
-// later, and this Mac had 2.1.201 (2026-11-20). The plugin's source is the
-// marketplace's own folder ("./"), so pinning the marketplace pins the plugin.
-test("the project's plugin marketplaces are pinned to a version", async () => {
+// A commit in `ref` needs Claude Code 2.1.324 or later (the desktop app and
+// `claude update` have it). The plugin's source is the marketplace's own
+// folder ("./"), so pinning the marketplace pins the plugin.
+test("the project's plugin marketplaces are pinned to a commit", async () => {
   const settings = JSON.parse(await readFile(new URL(".claude/settings.json", root), "utf8"));
   for (const [name, { source }] of Object.entries(settings.extraKnownMarketplaces ?? {})) {
-    assert.ok(source.ref, `.claude/settings.json: give the "${name}" marketplace a ref (a release tag or commit)`);
-    assert.notEqual(source.ref, "main", `.claude/settings.json: "${name}" follows a branch; pin it to a release tag or commit`);
+    assert.match(source.ref ?? "", /^[0-9a-f]{40}$/,
+      `.claude/settings.json: pin the "${name}" marketplace to a commit: "ref": "<40-character SHA>" (a release's commit)`);
   }
 });
