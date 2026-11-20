@@ -360,7 +360,7 @@ describe("formatRecipe", () => {
 // access-laws.test.js because they need this file's repository; the seed works
 // the same way (ACCESS_SEED=<seed> replays it).
 const seed = Number(env.ACCESS_SEED) || Date.now() % 2 ** 31;
-describe(`who can change main: laws (seed ${seed})`, () => {
+describe(`who can change main: laws (seed ${seed})`, { timeout: 30_000 }, () => {
   const opts = { numRuns: 40, seed };
   // A save or delete: of a recipe that's there or a new one, with its current
   // version or none.

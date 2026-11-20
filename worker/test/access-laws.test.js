@@ -52,7 +52,9 @@ const forged = fc.oneof(
   fc.stringMatching(/^[A-Za-z0-9._-]{1,40}$/).map((v) => `__Secure-better-auth.session_token=${v}; signed-in=1`),
 );
 
-describe(`access laws (seed ${seed})`, () => {
+// Hundreds of requests each, so more than vitest's 5 s a test: with the test
+// files running side by side on a busy machine, the broad law can go past it.
+describe(`access laws (seed ${seed})`, { timeout: 30_000 }, () => {
   it("cover every route the Worker's code names", () => {
     const named = new Set(Object.values(SOURCES).flatMap((code) => code.match(/\/api\/[a-z][a-z/-]*/g) ?? [])
       .map((p) => p.replace(/\/$/, "")));
