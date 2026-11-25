@@ -51,7 +51,7 @@ It's an **invite-only beta**, built to the standard a public launch needs: limit
 
 16. As the owner, I want an "Invite" form that only I can see, so that I can let someone in by their email address.
 17. As the owner, I want to see who's invited and whether they've signed in yet, so that I know who's using the beta.
-18. As the owner, I want to take someone off the invite list, confirmed by typing, so that I can end their access; their account and cookbook are deleted on their next request, as with Delete my account.
+18. As the owner, I want to take someone off the invite list, confirmed by typing, so that I can end their access; their account and cookbook are deleted at once, as with Delete my account.
 19. As the owner, I want inviting the same address twice to do nothing new, so that I can't make a mess of the list.
 20. As an invited person, I want my invite to work with the Google account for that address however I type its capitals, so that a small difference doesn't lock me out.
 21. As an invited person, I want sign-in to accept only an address Google has verified, so that nobody can claim my invite with an unverified address.
@@ -115,7 +115,7 @@ It's an **invite-only beta**, built to the standard a public launch needs: limit
 
 ### Leaving
 
-64. As a member, I want **Download my recipes** to give me a file of all my recipes in the site's recipe format, so that I can keep them or take them elsewhere.
+64. As a member, I want **Download my cookbook** to give me a file of all my recipes in the site's recipe format, so that I can keep them or take them elsewhere.
 65. As a member, I want **Delete my account**, confirmed by typing a phrase, so that I can leave completely.
 66. As a member deleting my account, I want everything of mine removed from the database (account, sessions, recipes, limits used, invite), so that nothing is left behind.
 67. As a member deleting my account, I want to be signed out and my device forgotten, as with signing out, so that I leave nothing on the device either.
@@ -139,7 +139,7 @@ It's an **invite-only beta**, built to the standard a public launch needs: limit
 
 ### The Worker becomes TypeScript first
 
-- The first step converts today's Worker and its tests to TypeScript with no change in behaviour: the existing Worker tests, converted, are the proof. Wrangler and the Worker's test runner run TypeScript directly, so the site still has no build step. The site's pages stay plain JavaScript.
+- The first step converts today's Worker and its tests to TypeScript with no change in behaviour: the existing Worker tests, converted, are the proof. The access law that every route the code names is listed reads `../src/*.js` as text; the conversion changes it to `.ts` and makes it fail when it finds no routes at all, so the law can't pass by checking nothing (broken once on purpose and watched failing). Wrangler and the Worker's test runner run TypeScript directly, so the site still has no build step. The site's pages stay plain JavaScript.
 - The recipe checker stays one JavaScript file shared by the site, the build script and the Worker. The Worker imports it as it is, with type declarations for what it uses.
 - A type check (no output files) joins `npm run check`.
 
@@ -148,23 +148,25 @@ It's an **invite-only beta**, built to the standard a public launch needs: limit
 - The owner is the GitHub account in the existing allowlist of GitHub account IDs. That list, and GitHub sign-in, stay exactly as they are.
 - Members sign in with Google, added as a second sign-in provider in Better Auth. Better Auth's account linking stays off, so a Google account is never joined to the owner's GitHub account, whatever its email.
 - A Google sign-in is let in only when Google says the address is verified and it's on the invite list, compared in lower case. The check runs in Better Auth's user-creation hook (`databaseHooks.user.create.before`), so an uninvited sign-in leaves no row. Step 2 first confirms that hook runs for a social sign-in; if it doesn't, Google falls back to what GitHub does. GitHub's check stays as it is: it runs after the callback (`onlyListed` in `worker/src/index.js`) and deletes the rows Better Auth already wrote.
-- A Google sign-in with the owner's email is refused: the `user` table's email is unique and account linking is off, so Better Auth won't make a second user or join the two.
+- A Google sign-in with the owner's email is refused: the `user` table's email is unique and account linking is off, so Better Auth won't make a second user or join the two. That refusal is Better Auth's own "account not linked" error, before the user-creation hook runs, so the Worker turns it into the shared message on the sign-in error page.
 - Every refused sign-in (not invited, unverified, the owner's email on Google, a GitHub account not on the list) gets the same message: "This site is invite-only for now."
 - Google's way back (`GET /api/auth/callback/google`) joins GitHub's on the short list of Better Auth routes the Worker lets through, and in `ROUTES` and `PUBLIC` in `worker/test/access-laws.test.js`.
-- A member taken off the invite list has everything of theirs deleted on their next request (the same deletes as Delete my account), the way an account taken off the GitHub allowlist is today. Removing an invite is confirmed by typing on the invite form, which says it deletes their recipes.
-- `isAllowed` (`worker/src/auth.js`) today lets in only users whose every account is a listed GitHub account, so as it stands it would delete every member. It becomes: the owner (on the GitHub list) or a member whose email is on the invite list. `removeUser` gains the new tables.
+- Taking a member off the invite list deletes everything of theirs there and then (the same deletes as Delete my account, sessions included), so they're signed out on their next request and nothing is left if they never come back. Removing an invite is confirmed by typing on the invite form, which says it deletes their recipes.
+- `isAllowed` (`worker/src/auth.js`) today lets in only users who have a GitHub account, all of whose GitHub accounts are listed, so as it stands it would delete every member. It becomes: the owner (on the GitHub list) or a member whose email is on the invite list. `removeUser` gains the new tables.
 - "Who's signed in" (`/api/me`) answers `{ name, role }`, where `role` is `owner` or `member` (signed out stays a 401). Only the owner's answer asks GitHub, and adds `canEdit` (push permission) as today; a member has no GitHub token and never reaches GitHub. Pages decide what to show from it; the Worker decides what's allowed from the session.
 
 ### What's stored (new D1 tables, by migration)
 
 - **Invites:** email (lower case, unique), when invited. Whether they've signed in comes from the user table.
-- **Recipes:** owner (user id), slug, the recipe as JSON, its index entry (what the recipes page lists, made by the same code that builds `recipes/index.json` for one recipe), a version number that goes up on every save, the public recipe it was copied from (if any), and when it was created and changed. Unique on owner and slug, with an index on owner, so every read is limited to one person and never scans the table.
+- **Recipes:** user id, slug, the recipe as JSON, its index entry (what the recipes page lists, made by the same code that builds `recipes/index.json` for one recipe), a version number that goes up on every save, the public recipe it was copied from (if any), and when it was created and changed. Unique on user id and slug, with an index on user id, so every read is limited to one person and never scans the table.
 - **Usage:** user id, day (UTC), kind (save, fetch, AI), count. One row per person per kind per day. Old days are removed by a daily clean-up.
 - The cleanup is one Cron Trigger (the free plan allows five), which also removes expired sessions and sign-in checks.
 - All of a person's rows are found by their user id, so deleting an account is a fixed list of deletes, run as one batch.
 - The tables go in the existing D1 database, `shaken-stirred-sauteed-auth`. D1 can't rename a database, so it keeps the name; step 3 updates the comment in `wrangler.jsonc` to say it holds cookbooks too.
 
-### The cookbook API (new Worker routes, all signed-in only)
+### The cookbook API (new Worker routes, members only)
+
+- The owner has no cookbook (public recipes are the owner's), so every cookbook route answers the owner 404, as the invite routes answer a member.
 
 - **List my cookbook:** the index entries of all my recipes, in the same shape as `recipes/index.json`, so the recipes page's existing list rules (`recipe-list.mjs`) work on it unchanged.
 - **Open one of my recipes:** the recipe and its version. Someone else's recipe, and one that doesn't exist, both answer 404.
@@ -175,7 +177,7 @@ It's an **invite-only beta**, built to the standard a public launch needs: limit
   - A slug taken by a different recipe of mine gets a numbered slug, and links in the copy are rewritten to match.
   - The copy's `source` is the public recipe's `source`; if it has none, `{ "name": "Jacob Dennen's recipe, Shaken, Stirred & Sautéed", "url": <the public recipe's page> }`.
   - All or nothing: over the recipe limit, nothing is copied.
-- **Download my recipes:** every recipe of mine, as one JSON file: slug to recipe, in the repo's recipe format.
+- **Download my cookbook:** every recipe of mine, as one JSON file: slug to recipe, in the repo's recipe format.
 - **Delete my account (POST):** with the typed confirmation phrase in the body. Deletes everything listed above, then the session, and answers with a cleared sign-in cookie.
 - **Invites (owner only):** list, add and remove. A member asking answers 404.
 - Every POST checks `Origin`, as `/api/save` does. Every route takes the user id from the session only.
@@ -204,7 +206,7 @@ Days are UTC, matching Cloudflare's own reset.
 - The editor and intake save through the cookbook API for a member and through `/api/save` (GitHub) for the owner. The editor's saving part was built to be swapped like this (`docs/specs/recipe-editor-design.md`). For a member, the editor's linked-recipe picker offers only their cookbook.
 - The lineup, signed in as a member, picks from their cookbook. The lineup on the device is forgotten on sign-out, along with the drafts it already forgets.
 - The service worker never stores answers from `/api/`. A member's recipe open on the page stays in memory, so cook mode keeps going without a connection.
-- A new **Account** page (signed in only): Download my recipes and Delete my account for members; the invite list for the owner. It's added to the accessibility scan's pages.
+- A new **Account** page (signed in only): Download my cookbook and Delete my account for members; the invite list for the owner. It's added to the accessibility scan's pages.
 - Nothing a member wrote is ever put into a page as HTML (security rule 6). Their recipes go through the same escaping as Jacob's, under the Content-Security-Policy already in place.
 
 ### Settled elsewhere and unchanged
@@ -217,17 +219,18 @@ Days are UTC, matching Cloudflare's own reset.
 - **Two places to test, both existing:** the Worker's tests (Vitest in Cloudflare's real runtime with a local D1) for everything the server does, and the browser tests through `tests/e2e/fixtures.mjs` for what a person sees. No new test seam.
 - **Test what a person or a request sees:** answers, status codes, what's in the cookbook afterwards, what's on the page. Not internal functions or table layouts.
 - **Worker tests, through real HTTP requests:**
-  - Google sign-in against a fake Google, alongside the existing fake GitHub: invited, not invited (no row left, same message), unverified address, capitals in the address, taken off the list (nothing of theirs left), a Google account with the owner's email refused (no row added, nothing joined, same message).
+  - Google sign-in against a fake Google, alongside the existing fake GitHub: invited, not invited (no row left, the shared message's text), unverified address, capitals in the address, taken off the list (nothing of theirs left), a Google account with the owner's email refused (no row added, nothing joined, the shared message's text).
   - Each cookbook route: list, open, save (checker refusals with their messages, version clash, links outside the cookbook), delete (linked recipe kept).
   - Add to my cookbook: a recipe with no links, with nested and connected links, a linked recipe already copied, a slug clash, a second add of the same recipe, the credit with and without a `source`, and going over the recipe limit (nothing copied).
   - Limits: each one refused at its value and reset the next day; D1's own daily-limit error answered as a 429.
   - Download (every recipe, in the recipe format) and Delete my account (nothing of theirs left in any table, security rule 8).
-  - Invites: owner only, adding twice, removing signs the person out.
-- **Laws (`worker/test/access-laws.test.js` and the end of `save.test.js`):** every new route goes in `ROUTES`. A new ownership law: two random members and random requests across every cookbook route, and neither ever sees or changes the other's recipes, whose answers look the same as for a recipe that doesn't exist (security rule 2). The existing "only an editor changes main" laws gain members as one more kind of person who never changes main. Before trusting the new law, break the owner check for a moment and watch it fail.
+  - Invites: owner only, adding twice, removing deletes everything of theirs and signs them out.
+  - Cookbook routes: the owner gets 404 from each.
+- **Laws (`worker/test/access-laws.test.js` and the end of `save.test.js`):** every new route goes in `ROUTES`. A new ownership law: two random members and random requests across every cookbook route, and neither ever sees or changes the other's recipes, whose answers look the same as for a recipe that doesn't exist (security rule 2). The existing laws that only someone who can push changes main gain members as one more kind of person who never changes main. Before trusting the new law, break the owner check for a moment and watch it fail.
 - **The contract between the Worker and the pages' fake:** one shared file of example answers, one for each cookbook route the pages use (including a limit reached). A Worker contract test makes each request for real and checks its answer has the same shape as the example. The browser tests' fake cookbook answers with those same examples. A change to the Worker's answers fails its contract test until the example changes, and then the browser tests run against the new shape.
 - **Browser tests, one per control:** the recipes and home pages showing my cookbook and the switch to Jacob's, an empty cookbook's first steps, Add to my cookbook (and "already added"), the editor and intake saving to my cookbook, a member's recipe page and cook mode, cook mode carrying on when the connection drops, the lineup picking from my cookbook, a limit's message, sign-out forgetting the lineup, and the Account page's buttons. Rules about what a list shows stay in `tests/unit/recipe-list.test.mjs`.
 - **The accessibility scan** gains the Account page (member and owner) and the empty cookbook, in light and dark.
-- **The TypeScript conversion** is checked by today's Worker tests passing unchanged and the type check passing in `npm run check`.
+- **The TypeScript conversion** is checked by today's Worker tests, converted with no change to what they check, passing, and the type check passing in `npm run check`.
 - **Prior art:** `worker/test/owner-only.test.js` (allowlist, no rows left), `save.test.js` (saving, version clashes, the checker's messages, laws), `access-laws.test.js` (route laws), `fetch.test.js` with `fake-sites.js` (a fake outside service), `tests/e2e/sign-in.spec.mjs` (faking signed in), and `planner-laws.test.mjs` (laws with a replayable seed).
 - **Not tested on purpose,** as elsewhere: screenshots, offline mode (beyond cook mode keeping a recipe it has open), print.
 
@@ -250,10 +253,10 @@ Days are UTC, matching Cloudflare's own reset.
 
 | | Free plan | For this project |
 |---|---|---|
-| Worker requests | 100,000 a day; static files are free and don't count | Only `/api/` runs the Worker |
+| Worker requests | 100,000 a day; static files are free and don't count | Only `/api/` and folder addresses (such as `/`, the home page) run the Worker |
 | CPU time | 10 ms a request | The tightest limit: check saving and copying (above) |
 | Outgoing requests | 50 a request, 1,000 to Cloudflare's services | Plenty |
-| D1 | 5 million rows read and 100,000 written a day; 500 MB a database, 5 GB an account; since 2026-09-01, queries fail once a daily limit is hit, until midnight UTC | About 100,000 recipes at ~5 KB each; reads stay small with the owner index |
+| D1 | 5 million rows read and 100,000 written a day; 500 MB a database, 5 GB an account; since 2026-09-01, queries fail once a daily limit is hit, until midnight UTC | About 100,000 recipes at ~5 KB each; reads stay small with the user id index |
 | Workers AI | 10,000 Neurons a day for the whole account; some large models now need the paid plan | Shared by everyone: the per-member AI limit matters |
 | Cron Triggers | 5 an account | One for the daily clean-up |
 
@@ -268,6 +271,6 @@ Each step is its own PR, merged when CI passes, and keeps the site working for v
 5. The editor and intake save to my cookbook.
 6. Add to my cookbook.
 7. The lineup on my cookbook.
-8. The Account page: Download my recipes and Delete my account.
+8. The Account page: Download my cookbook and Delete my account.
 9. The owner's invite form on the Account page.
 10. Before the beta opens: confirm local runs and the dashboard can't reach the live database (rule 9; previews already can't, since PR #98 gave them no database, settings or secrets, checked 2026-11-20), measure CPU time on real saves, a full `security-audit` run repeated until it finds nothing new, and the README brought up to date.

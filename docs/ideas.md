@@ -142,7 +142,7 @@ Accounts for friends and family, so each person can add their own recipes and ke
 - **Sign-in:** Google for everyone but Jacob. GitHub sign-in is Jacob's alone and is never offered to anyone else, since it goes through the GitHub App that can write to the repo.
 - **Invites:** a list of email addresses in D1, with an "Invite" form only Jacob sees. Someone not on the list is told the site is invite-only, and nothing about them is kept.
 - **Limits, on Cloudflare's free plan:** to start, 500 recipes, 100 saves, 30 page fetches and 10 AI tidies a day for each person, tuned during the beta. A limit that's reached says to try again tomorrow; nothing else breaks.
-- **Leaving:** "Download my recipes" (a file of them in the recipe format) and "Delete my account" (type to confirm), which removes everything of theirs from D1.
+- **Leaving:** "Download my cookbook" (a file of them in the recipe format) and "Delete my account" (type to confirm), which removes everything of theirs from D1.
 - **Offline:** a person's own recipes need a connection to open, so they aren't left on a shared device after signing out. Cook mode keeps working if the connection drops once a recipe is open. Jacob's recipes work offline as now.
 - **Beta feedback:** testers text Jacob. The feedback feature (below) comes soon after.
 - **The Worker is written in TypeScript** from the start of this project (Wrangler runs it with no build step for the site). The site's pages stay plain JavaScript. The first step converts today's Worker and its tests (`worker/src/`, `worker/test/`, about 2,150 lines) on their own, with no change in behaviour, so the multi-user code is TypeScript from its first line. The Worker shares the recipe checker with the site (`assets/recipe-checks.js`), which stays JavaScript.
@@ -176,7 +176,7 @@ Letting anyone make an account, after the invite-only beta. Most of what it need
 
 A person shares one recipe from their private cookbook with a link. Anyone with the link sees it read-only, and a signed-in person can "Add to my cookbook".
 
-**Things to work out:** whether a link can be turned off (and stops working at once), whether it shows the owner's name, and that one person's recipe shown to another is text only, never HTML (security rule 6), which is the first time that matters. A copy of a shared original credits its author with a link.
+**Things to work out:** whether a link can be turned off (and stops working at once), whether it shows the name of the member who shared it, and that one person's recipe shown to another is text only, never HTML (security rule 6), which is the first time that matters. A copy of a shared original credits its author with a link.
 
 ## A demo before signing up
 
