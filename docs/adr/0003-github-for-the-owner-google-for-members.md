@@ -1,0 +1,3 @@
+# GitHub sign-in is the owner's alone; members use Google; accounts are never joined
+
+The owner signs in with GitHub and members with Google, and Better Auth's account linking stays off. GitHub sign-in goes through the GitHub App that can write to the repo, so it's offered to nobody else, and the GitHub account-ID list stays the only way to become the owner. With linking off and the `user` table's email unique, a Google sign-in using the owner's email is refused rather than joined: an email match must never make someone the owner. GitHub for everyone would have saved a second provider but put the repo's write path in every sign-in; one provider for everyone (Google) would have meant moving the owner's saving off the GitHub token.

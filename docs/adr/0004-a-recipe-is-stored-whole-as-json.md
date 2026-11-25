@@ -1,0 +1,3 @@
+# A member's recipe is stored whole, as JSON, with its index entry beside it
+
+In D1 each member recipe is one row holding the recipe as JSON in the repo's recipe format, plus its index entry (what the recipes page lists), made by the same code that builds `recipes/index.json`. Recipes aren't split into ingredient and step tables. This lets the recipe checker, the recipes page's list rules (`recipe-list.mjs`), cook mode and the lineup work on a member's recipe unchanged, and makes Download my recipes a plain read. The cost is that D1 can't query inside a recipe (for example "every recipe using an ingredient"); anything like that is done on the index entries or in the page.
