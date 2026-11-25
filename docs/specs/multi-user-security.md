@@ -7,15 +7,15 @@ Today GitHub decides who can change the site: saving commits with the signed-in 
 ## Who's involved
 
 - **Visitors:** not signed in. They see the public site.
-- **Signed-in people:** friends and family, each with their own things.
-- **Editors:** today only Jacob, who can change the shared recipes on main.
+- **Members:** invited friends and family, signed in, each with their own cookbook.
+- **The owner:** Jacob, the only one who can change the public recipes on main.
 - **Someone with a stolen session:** treated as that person, so a session must be easy to end and must not reach more than that person could.
 
 ## The rules
 
 1. **Who's asking comes from the session, nothing else.** A user id, owner, role or email in the request body, the address or a header is ignored. *Checked by:* the `REVIEW.md` checklist.
 2. **Each person's things are reached only by them.** Every D1 query that reads, changes or deletes something a person owns is limited to that person (`WHERE user_id = ?`, with the id from the session), including lists, counts, search and export. Someone else's thing answers 404, the same as one that doesn't exist, so ids can't be probed. *Checked by:* an ownership law in `worker/test/` for each table a person owns: two random people, random requests, and neither ever sees or changes the other's rows.
-3. **The shared recipes change only by an editor,** however the library question below is answered. *Checked by:* the laws at the end of `worker/test/save.test.js`.
+3. **The public recipes change only by the owner.** *Checked by:* the laws at the end of `worker/test/save.test.js`.
 4. **Changes only come from the site's own pages, by POST,** with the `Origin` check `/api/save` has. *Checked by:* the same laws, extended to each new route that changes something.
 5. **Every route asks who's signed in first,** and a visitor gets 401 from all but sign-in's own. *Checked by:* `worker/test/access-laws.test.js`, which fails when a route the code names isn't in its list.
 6. **What people write is shown as text, never as HTML.** Once one person's recipe is shown to another, a missed `esc()` lets one account act as another. Every page carries a Content-Security-Policy (`script-src 'self'`) in a meta tag, and every response a `frame-ancestors 'none'` header, from `_headers` and the Worker (`worker/src/headers.js`). *Checked by:* the checklist, `tests/unit/security-headers.test.mjs` (`_headers` matches the Worker's list) and `worker/test/headers.test.js` (the Worker serves them).
@@ -24,11 +24,13 @@ Today GitHub decides who can change the site: saving commits with the signed-in 
 9. **Branch previews and local runs never touch the live database or its secret.** *Checked by:* `wrangler.jsonc` and the Cloudflare dashboard, confirmed before launch.
 10. **Sessions stay as they are:** HttpOnly, Secure, `SameSite=Lax` cookies, and tokens encrypted at rest. A new way to sign in (Google, email) mustn't weaken them, and email sign-in must not say which addresses have accounts.
 
-## How the open questions change this
+## How the decisions shape this
 
-- **One shared library, or each person's own copies:** with one library, rule 3 carries most of the weight, and rule 2 only covers notes and settings. With copies, rule 2 covers recipes too, and the ownership law is the main check.
-- **How people sign in:** email links and passwords bring their own limits (rate of sign-in attempts, emails sent) under rule 7.
-- **Audience:** friends and family let sign-in be limited to known accounts. Opening it to the public makes rules 7 and 8 matter more, and needs a privacy note.
+The questions this section was written around were decided on 2026-11-21; the design is `docs/specs/multi-user-design.md`.
+
+- **Each member has their own cookbook,** with copies of public recipes rather than one shared set. So rule 2 covers recipes too, and the ownership law is the main check; rule 3 keeps guarding the public recipes.
+- **Sign-in:** Google for members, GitHub for the owner only, accounts never joined. Email links, if they come with opening sign-ups, bring their own limits (rate of sign-in attempts, emails sent) under rule 7. Passwords are ruled out.
+- **Audience:** an invite-only beta, so sign-in is limited to the invite list. Opening sign-ups to anyone (`docs/ideas.md`, "Opening sign-ups") makes rules 7 and 8 matter more, and needs a privacy note.
 
 ## Checking the whole
 
