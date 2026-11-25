@@ -17,3 +17,17 @@ Checks that run on their own, so you know where a block comes from:
 - When you end a turn with changes, a hook runs lint, the link checker and the recipe checker, and hands back what fails.
 - Pushing with `--no-verify` is blocked: fix what the pre-push checks find.
 - A browser test run stops if another one is already running on this Mac. Wait for it; it may be another session's.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues on this repo, through `gh`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five defaults: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` and `docs/adr/` at the root. See `docs/agents/domain.md`.
