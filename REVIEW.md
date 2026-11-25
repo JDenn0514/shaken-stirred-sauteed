@@ -12,6 +12,7 @@ Look hardest for these, in this order:
 4. **A recipe shows wrong.** Wrong amounts or missing steps or ingredients, or the recipe checker accepts a recipe the page can't draw.
 5. **It stops working for someone.** It can't be reached by keyboard, a control has no label, focus gets lost, the contrast fails, or it breaks in Safari or at phone width.
 6. **The code and the README disagree.** One of them is wrong; say which you think it is.
+7. **A doc uses a word the glossary avoids.** Specs, ADRs, the README and comments say Owner, Member, Cookbook, Copy and the rest as `GLOSSARY.md` defines them, not a word it lists under _Avoid_ (an "editor" for the owner, "shared recipes" for the public recipes). A new term the change relies on goes into `GLOSSARY.md`, and a hard-to-reverse decision gets an ADR in `docs/adr/`.
 
 ### When the diff touches the Worker, sign-in or what's saved
 

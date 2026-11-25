@@ -415,7 +415,7 @@ describe(`who can change main: laws (seed ${seed})`, { timeout: 30_000 }, () => 
     image: fc.jsonValue(), source: fc.jsonValue(), description: fc.jsonValue(),
     glass: fc.jsonValue(), garnish: fc.jsonValue(), origin: fc.jsonValue(), kind: fc.jsonValue(), yield: fc.jsonValue(),
   }, { requiredKeys: ["title", "category", "ingredients", "steps", "tags", "time"] });
-  it("no recipe an editor sends breaks the Worker: a save never answers 500", async () => {
+  it("no recipe the owner sends breaks the Worker: a save never answers 500", async () => {
     await fc.assert(fc.asyncProperty(fc.stringMatching(/^[a-z][a-z0-9-]{0,15}$/), anyRecipe, async (slug, r) => {
       const res = await send("/api/save", { slug, recipe: r });
       expect(res.status, `save ${JSON.stringify(r)}`).not.toBe(500);
@@ -423,7 +423,7 @@ describe(`who can change main: laws (seed ${seed})`, { timeout: 30_000 }, () => 
     }), opts);
   });
 
-  it("an editor's changes only count from the site's own pages", async () => {
+  it("the owner's changes only count from the site's own pages", async () => {
     await fc.assert(fc.asyncProperty(change, elsewhere, async (c, origin) => {
       const before = (await repo()).main;
       const res = await b.fetch(c.path, {

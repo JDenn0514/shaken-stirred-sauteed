@@ -129,13 +129,23 @@ Accounts for friends and family, so each person can add their own recipes and ke
 
 **What's already in place:** sign-in with GitHub through Better Auth in the Worker, with its tables in D1 (Cloudflare's database). Better Auth can add Google or email sign-in for others. The editor is built to be reused, with only saving swapped: from "commit to the repo" to "save to my account" in D1. D1 only holds sign-in data today.
 
-**Open questions,** parked on 2026-11-01:
+**Decided** on 2026-11-21 (the open questions parked on 2026-11-01). The spec is `docs/specs/multi-user-design.md`, built on `docs/specs/multi-user-security.md`.
 
-- **One shared library, or each person's own copies** of recipes.
-- **How people sign in:** GitHub suits Jacob, not most friends and family.
-- **Scope:** what a person can do (add recipes, edit others', only their own).
-- **Audience:** who it's for, and whether visitors without an account still see everything.
-- **The AI step:** friends importing with it would share the free daily allowance.
+- **Audience:** an invite-only beta first, built to the standard a public launch needs (limits per person, complete deletion, the ownership laws). Opening sign-ups is its own project (below).
+- **Each person has their own private cookbook** in D1, starting empty. Nobody else sees it.
+- **"Add to my cookbook"** on one of Jacob's recipes makes a copy the person owns and can edit. It doesn't follow Jacob's later edits. Recipes it links to are copied with it, so the lineup still works.
+- **Credit:** a copy keeps the recipe's real `source`. A copy of one of Jacob's originals gets `{ "name": "Jacob Dennen's recipe, Shaken, Stirred & Sautéed", "url": <its page> }`. Copying anyone's original credits them the same way, once recipes can be shared.
+- **Same rules as Jacob's recipes:** the same recipe checker and tag vocabulary, and a linked recipe can only be one in the person's own cookbook.
+- **Jacob's recipes stay in git** as the public site, unchanged for visitors. Jacob signs in with GitHub and edits them as now, with no separate cookbook in D1.
+- **Signed in:** the home and recipes pages show the person's cookbook, with Jacob's one tap away. The recipe page, cook mode, scaling and the lineup work on their recipes. **The biggest piece of work:** every page loads recipes from static files today, so they need to load a person's recipes from the Worker.
+- **The editor:** all of it, including import from a web page, photo or PDF. Page fetching and the AI step have daily limits per person. The photo or PDF a friend imports from isn't kept, only the recipe text.
+- **Sign-in:** Google for everyone but Jacob. GitHub sign-in is Jacob's alone and is never offered to anyone else, since it goes through the GitHub App that can write to the repo.
+- **Invites:** a list of email addresses in D1, with an "Invite" form only Jacob sees. Someone not on the list is told the site is invite-only, and nothing about them is kept.
+- **Limits, on Cloudflare's free plan:** to start, 500 recipes, 100 saves, 30 page fetches and 10 AI tidies a day for each person, tuned during the beta. A limit that's reached says to try again tomorrow; nothing else breaks.
+- **Leaving:** "Download my cookbook" (a file of them in the recipe format) and "Delete my account" (type to confirm), which removes everything of theirs from D1.
+- **Offline:** a person's own recipes need a connection to open, so they aren't left on a shared device after signing out. Cook mode keeps working if the connection drops once a recipe is open. Jacob's recipes work offline as now.
+- **Beta feedback:** testers text Jacob. The feedback feature (below) comes soon after.
+- **The Worker is written in TypeScript** from the start of this project (Wrangler runs it with no build step for the site). The site's pages stay plain JavaScript. The first step converts today's Worker and its tests (`worker/src/`, `worker/test/`, about 2,150 lines) on their own, with no change in behaviour, so the multi-user code is TypeScript from its first line. The Worker shares the recipe checker with the site (`assets/recipe-checks.js`), which stays JavaScript.
 
 **What waits for it**, and should be kept somewhere that can later move to a person's account:
 
@@ -144,9 +154,49 @@ Accounts for friends and family, so each person can add their own recipes and ke
 - **Saved lineups,** and maybe the size you last scaled a recipe to.
 - **Feedback and bug reports** (below).
 
+**What comes after it:** the five projects below, roughly in that order. Feedback first, then opening sign-ups, then sharing by link, a demo before signing up, and public cookbooks.
+
+## Opening sign-ups
+
+2026-11-21 · from the multi-user design (above)
+
+Letting anyone make an account, after the invite-only beta. Most of what it needs is built for the beta already (limits, deletion, the ownership laws); what's left:
+
+- **Remove the invite list,** or keep it as a way to skip a waiting list.
+- **A bot check on sign-up:** Cloudflare Turnstile (free).
+- **A short privacy note:** what's kept about a person, for how long, and how to delete it.
+- **Sign-in without Google:** email links ("magic links"), which need an email-sending service and their own limits on how many are sent. Email sign-in mustn't say which addresses have accounts (security rule 10).
+- **Passkeys,** as a quick and phishing-proof way back in, added after signing in once with Google or an email link, so losing a device doesn't lose the account. Better Auth has a passkey plugin.
+- **Limits per person** set for strangers, which may be lower than friends needed.
+- **Not passwords:** the site would hold password hashes worth stealing, need guessing limits, and need email for resets anyway.
+
+## Sharing a recipe by link
+
+2026-11-21 · from the multi-user design (above)
+
+A person shares one recipe from their private cookbook with a link. Anyone with the link sees it read-only, and a signed-in person can "Add to my cookbook".
+
+**Things to work out:** whether a link can be turned off (and stops working at once), whether it shows the name of the member who shared it, and that one person's recipe shown to another is text only, never HTML (security rule 6), which is the first time that matters. A copy of a shared original credits its author with a link.
+
+## A demo before signing up
+
+2026-11-21 · from the multi-user design (above)
+
+A page where a visitor can try the site before having an account: open a few recipes, cook one, and maybe add one or two of their own, kept only on their device.
+
+**Goes with it:** moving Jacob's recipes from git into D1, so every cookbook, his included, is stored and shown the same way, with one way to save. The recipe checker, the build's index and the tests that read `recipes/` would change with it.
+
+## Public cookbooks and following
+
+2026-11-21 · from the multi-user design (above). The last of the sharing projects, after sharing by link.
+
+Each person's cookbook can be public or private. Others can look at public ones, follow them or save them for ideas, and add recipes from them to their own.
+
+**Things to work out:** profile pages and their addresses, what following shows (new recipes, a feed), finding people, and what strangers' public content needs: reporting, removing, and blocking. This is when moderation starts to matter.
+
 ## Feedback and bug reports
 
-2026-11-10 · from Jacob, for when the multi-user version is built
+2026-11-10 · from Jacob, for when the multi-user version is built. 2026-11-21: the first project once the beta starts, before opening sign-ups.
 
 A way for people using the site to send feedback or report a bug, without leaving the site or needing a GitHub account: a "Send feedback" link in the footer, and maybe "Something wrong with this recipe?" on each recipe page.
 
