@@ -39,6 +39,10 @@ tools/intake/ocr
 tools/intake/compare.mjs
 tools/restructure/score.mjs
 
+# Security reports from Trail of Bits' plugins (see .gitignore)
+spec-compliance
+*_DIFFERENTIAL_REVIEW_*.md
+
 # The recipe cards the recipes were typed from: from published books and
 # sites, so they aren't put on the web
 source-pdfs

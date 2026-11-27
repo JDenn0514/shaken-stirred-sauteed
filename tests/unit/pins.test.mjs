@@ -20,12 +20,27 @@ test("every GitHub Action is pinned to a commit, with its version beside it", as
 });
 
 // A commit in `ref` needs Claude Code 2.1.324 or later (the desktop app and
-// `claude update` have it). The plugin's source is the marketplace's own
-// folder ("./"), so pinning the marketplace pins the plugin.
+// `claude update` have it). Each plugin turned on has its source inside its
+// marketplace ("./" or "./plugins/<name>"), so pinning the marketplace pins
+// it. When moving a pin, check that's still so: a plugin from its own repo
+// would need its own `sha`.
 test("the project's plugin marketplaces are pinned to a commit", async () => {
   const settings = JSON.parse(await readFile(new URL(".claude/settings.json", root), "utf8"));
   for (const [name, { source }] of Object.entries(settings.extraKnownMarketplaces ?? {})) {
     assert.match(source.ref ?? "", /^[0-9a-f]{40}$/,
       `.claude/settings.json: pin the "${name}" marketplace to a commit: "ref": "<40-character SHA>" (a release's commit)`);
+  }
+});
+
+// A plugin the project turns on comes from a marketplace defined (and pinned)
+// above, so nothing it runs follows a moving branch.
+test("every plugin the project turns on comes from one of its pinned marketplaces", async () => {
+  const settings = JSON.parse(await readFile(new URL(".claude/settings.json", root), "utf8"));
+  const pinned = new Set(Object.keys(settings.extraKnownMarketplaces ?? {}));
+  for (const [plugin, on] of Object.entries(settings.enabledPlugins ?? {})) {
+    if (!on) continue;
+    const market = plugin.split("@")[1];
+    assert.ok(pinned.has(market),
+      `.claude/settings.json: "${plugin}" comes from "${market}", which isn't in extraKnownMarketplaces with a pinned ref. Add it there, pinned to a commit.`);
   }
 });

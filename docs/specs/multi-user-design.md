@@ -273,4 +273,4 @@ Each step is its own PR, merged when CI passes, and keeps the site working for v
 7. The lineup on my cookbook.
 8. The Account page: Download my cookbook and Delete my account.
 9. The owner's invite form on the Account page.
-10. Before the beta opens: confirm local runs and the dashboard can't reach the live database (rule 9; previews already can't, since PR #98 gave them no database, settings or secrets, checked 2026-11-20), measure CPU time on real saves, a full `security-audit` run repeated until it finds nothing new, and the README brought up to date.
+10. Before the beta opens: confirm local runs and the dashboard can't reach the live database (rule 9; previews already can't, since PR #98 gave them no database, settings or secrets, checked 2026-11-20), measure CPU time on real saves, a full `security-audit` run repeated until it finds nothing new, Trail of Bits' `/insecure-defaults:audit` (settings that fail open) and `spec-to-code-compliance` against `docs/specs/multi-user-security.md`, and the README brought up to date. Their reports stay in `~/security-audit-skill/`, outside this repo.
