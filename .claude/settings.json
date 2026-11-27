@@ -6,10 +6,21 @@
         "repo": "mattpocock/skills",
         "ref": "d1478fcb140db0b93c0c8df17bcfd311844749d0"
       }
+    },
+    "trailofbits": {
+      "source": {
+        "source": "github",
+        "repo": "trailofbits/skills",
+        "ref": "149d7b21f4067765b82e67029730b42d228ef4b4"
+      }
     }
   },
   "enabledPlugins": {
-    "mattpocock-skills@mattpocock": true
+    "mattpocock-skills@mattpocock": true,
+    "insecure-defaults@trailofbits": true,
+    "differential-review@trailofbits": true,
+    "spec-to-code-compliance@trailofbits": true,
+    "supply-chain-risk-auditor@trailofbits": true
   },
   "hooks": {
     "PreToolUse": [

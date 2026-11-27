@@ -3,3 +3,8 @@ test-results/
 playwright-report/
 .wrangler/
 .dev.vars*
+
+# Security reports from Trail of Bits' plugins, if one lands here by default:
+# findings stay outside this public repo (docs/specs/multi-user-security.md).
+spec-compliance/
+*_DIFFERENTIAL_REVIEW_*.md
