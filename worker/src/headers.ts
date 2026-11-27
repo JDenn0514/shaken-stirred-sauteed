@@ -1,6 +1,6 @@
 // Security headers for every response (docs/specs/multi-user-security.md, rule 6).
 // Cloudflare adds them to the site's files from _headers; the Worker adds them
-// to what it answers (index.js), which _headers doesn't reach.
+// to what it answers (index.ts), which _headers doesn't reach.
 // tests/unit/security-headers.test.mjs checks _headers matches this list.
 export const SECURITY_HEADERS = {
   // No other site may show these pages in a frame (a meta tag can't say this).

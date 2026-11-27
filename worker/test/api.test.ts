@@ -1,10 +1,10 @@
-// The Worker's /api/: signing in with GitHub (faked, see fake-github.js),
+// The Worker's /api/: signing in with GitHub (faked, see fake-github.ts),
 // who's signed in, and signing out.
 import { env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import { forgetAuth } from "../src/auth.js";
-import worker from "../src/index.js";
-import { SITE, browser, hintCookie, sessionCookie, setCookies, signIn } from "./browser.js";
+import { forgetAuth } from "../src/auth.ts";
+import worker from "../src/index.ts";
+import { SITE, browser, hintCookie, sessionCookie, setCookies, signIn } from "./browser.ts";
 
 describe("signed out", () => {
   for (const [method, path] of [["GET", "/api/me"], ["GET", "/api/anything"], ["POST", "/api/save"]]) {
@@ -34,16 +34,16 @@ describe("GET /api/signin", () => {
     it(`brings you back to ${page}`, async () => {
       const { back } = await signIn("jacob", page);
       expect(back.status).toBe(302);
-      expect(new URL(back.headers.get("Location"), SITE).href).toBe(new URL(page, SITE).href);
+      expect(new URL(back.headers.get("Location")!, SITE).href).toBe(new URL(page, SITE).href);
     });
   }
 
   it("brings you back to the welcome page when no page is given", async () => {
     const b = browser();
     const start = await b.fetch("/api/signin");
-    const state = new URL(start.headers.get("Location")).searchParams.get("state");
+    const state = new URL(start.headers.get("Location")!).searchParams.get("state");
     const back = await b.fetch(`/api/auth/callback/github?code=jacob&state=${state}`);
-    expect(new URL(back.headers.get("Location"), SITE).href).toBe(`${SITE}/`);
+    expect(new URL(back.headers.get("Location")!, SITE).href).toBe(`${SITE}/`);
   });
 
   for (const page of ["https://evil.example/", "//evil.example/", "/\\evil.example/", "https:evil.example", "javascript:alert(1)",
@@ -51,7 +51,7 @@ describe("GET /api/signin", () => {
     it(`refuses to come back to ${page}`, async () => {
       const res = await browser().fetch(`/api/signin?return=${encodeURIComponent(page)}`);
       expect(res.status).toBe(400);
-      expect(res.headers.get("Location")).toBeNull();
+      expect(res.headers.get("Location")!).toBeNull();
       expect(await res.text()).toMatch(/isn't a page on this site/);
     });
   }
@@ -66,7 +66,7 @@ describe("GET /api/signin", () => {
       try {
         const res = await worker.fetch(new Request(`${SITE}/api/signin?return=/`), { ...env, GITHUB_CLIENT_ID: id });
         expect(res.status).toBe(302);
-        expect(new URL(res.headers.get("Location")).searchParams.get("client_id")).toBe("test-client-id");
+        expect(new URL(res.headers.get("Location")!).searchParams.get("client_id")).toBe("test-client-id");
       } finally {
         forgetAuth();
       }
@@ -85,17 +85,17 @@ describe("GET /api/signin", () => {
 describe("signing in", () => {
   it("sets the session cookie: HttpOnly, Secure, SameSite=Lax", async () => {
     const { back } = await signIn();
-    const c = sessionCookie(back);
+    const c = sessionCookie(back)!;
     expect(c.value).not.toBe("");
     expect(c.attrs.httponly).toBe(true);
     expect(c.attrs.secure).toBe(true);
-    expect(c.attrs.samesite?.toLowerCase()).toBe("lax");
+    expect((c.attrs.samesite as string | undefined)?.toLowerCase()).toBe("lax");
     expect(c.attrs.path).toBe("/");
   });
 
   it("sets a readable signed-in hint cookie with nothing secret in it", async () => {
     const { back } = await signIn();
-    const c = hintCookie(back);
+    const c = hintCookie(back)!;
     expect(c.value).toBe("1");
     expect(c.attrs.httponly).toBeUndefined();
     expect(c.attrs.secure).toBe(true);
@@ -119,24 +119,24 @@ describe("GET /api/me", () => {
     const res = await b.fetch("/api/me");
     expect(res.status).toBe(200);
     expect(res.headers.get("Cache-Control")).toBe("no-store");
-    expect(await res.json()).toEqual({ name: "Jacob Dennen", canEdit: true });
+    expect(await res.json<any>()).toEqual({ name: "Jacob Dennen", canEdit: true });
   });
 
   it("says when the account can't push to the repo", async () => {
     const { b } = await signIn("friend");
-    expect(await (await b.fetch("/api/me")).json()).toEqual({ name: "A Friend", canEdit: false });
+    expect(await (await b.fetch("/api/me")).json<any>()).toEqual({ name: "A Friend", canEdit: false });
   });
 
   it("asks you to sign in again, and clears the hint, when GitHub no longer accepts the token", async () => {
     const { b } = await signIn("expired");
     const res = await b.fetch("/api/me");
     expect(res.status).toBe(401);
-    expect((await res.json()).error).toMatch(/sign in again/i);
+    expect((await res.json<any>()).error).toMatch(/sign in again/i);
     expect(b.jar.has("signed-in")).toBe(false);
   });
 
   // GitHub's token lasts 8 hours; then Better Auth renews it with the refresh token.
-  async function tokenRunsOut(who) {
+  async function tokenRunsOut(who: string) {
     await fetch(`https://fake-github.test/expire?who=${who}`, { method: "POST" });
     await env.DB.prepare(`update "account" set "accessTokenExpiresAt" = ?`).bind(new Date(Date.now() - 60_000).toISOString()).run();
   }
@@ -146,7 +146,7 @@ describe("GET /api/me", () => {
     await tokenRunsOut("renew");
     const res = await b.fetch("/api/me");
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ name: "Renew User", canEdit: true });
+    expect(await res.json<any>()).toEqual({ name: "Renew User", canEdit: true });
   });
 
   it("asks you to sign in again when GitHub refuses to renew the token", async () => {
@@ -154,7 +154,7 @@ describe("GET /api/me", () => {
     await tokenRunsOut("stale");
     const res = await b.fetch("/api/me");
     expect(res.status).toBe(401);
-    expect((await res.json()).error).toMatch(/sign in again/i);
+    expect((await res.json<any>()).error).toMatch(/sign in again/i);
   });
 
   it("clears a hint cookie left over from an ended session", async () => {
@@ -168,8 +168,8 @@ describe("GET /api/me", () => {
 describe("POST /api/signout", () => {
   it("ends the session and clears both cookies", async () => {
     const { b } = await signIn();
-    const session = [...b.jar.keys()].find((k) => k.endsWith("session_token"));
-    const old = b.jar.get(session);
+    const session = [...b.jar.keys()].find((k) => k.endsWith("session_token"))!;
+    const old = b.jar.get(session)!;
 
     const res = await b.fetch("/api/signout", { method: "POST" });
     expect(res.status).toBe(200);
@@ -196,7 +196,7 @@ describe("when the database fails", () => {
     const res = await browser().fetch("/api/signin?return=/");
     expect(res.status).toBe(500);
     expect(res.headers.get("Cache-Control")).toBe("no-store");
-    expect((await res.json()).error).toMatch(/isn't working/);
+    expect((await res.json<any>()).error).toMatch(/isn't working/);
 
     await env.DB.exec(`alter table "verification_away" rename to "verification"`);
     expect((await browser().fetch("/api/signin?return=/")).status).toBe(302);

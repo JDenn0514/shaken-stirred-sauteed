@@ -1,5 +1,5 @@
 // Laws for the Worker's /api/: rules about who can do what that hold for every
-// request, not just the examples in api.test.js and save.test.js. fast-check
+// request, not just the examples in api.test.ts and save.test.ts. fast-check
 // makes the requests at random; when one breaks a law, it shrinks it to the
 // smallest one that still does and prints it, with the seed. Each run picks a
 // new seed, shown in the test group's name: ACCESS_SEED=<seed> npm run
@@ -7,10 +7,10 @@
 import { env } from "cloudflare:test";
 import fc from "fast-check";
 import { beforeEach, describe, expect, it } from "vitest";
-import { browser, signIn } from "./browser.js";
+import { type Browser, browser, signIn } from "./browser.ts";
 
 // The Worker's code, as text.
-const SOURCES = import.meta.glob("../src/*.js", { query: "?raw", import: "default", eager: true });
+const SOURCES = import.meta.glob<string>("../src/*.ts", { query: "?raw", import: "default", eager: true });
 
 const RUNS = 300;
 const seed = Number(env.ACCESS_SEED) || Date.now() % 2 ** 31;
@@ -58,7 +58,9 @@ describe(`access laws (seed ${seed})`, { timeout: 30_000 }, () => {
   it("cover every route the Worker's code names", () => {
     const named = new Set(Object.values(SOURCES).flatMap((code) => code.match(/\/api\/[a-z][a-z/-]*/g) ?? [])
       .map((p) => p.replace(/\/$/, "")));
-    expect([...named].filter((p) => !ROUTES.includes(p)), "add these to ROUTES in access-laws.test.js").toEqual([]);
+    // Finding none means the law read the wrong files, not that all is well.
+    expect(named.size, "no routes found in ../src/*.ts: is SOURCES reading the Worker's code?").toBeGreaterThan(0);
+    expect([...named].filter((p) => !ROUTES.includes(p)), "add these to ROUTES in access-laws.test.ts").toEqual([]);
   });
 
   it("signed out, every route but sign-in's own answers 401, whatever the cookie", async () => {
@@ -69,7 +71,7 @@ describe(`access laws (seed ${seed})`, { timeout: 30_000 }, () => {
     }), opts);
   });
 
-  let editor;
+  let editor: Browser;
   beforeEach(async () => {
     ({ b: editor } = await signIn("lawEditor"));
   });

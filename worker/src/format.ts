@@ -3,12 +3,12 @@
 // have them ("course": ["protein"]). docs/specs/recipe-editor-plan.md, "File format".
 const WIDTH = 100;
 
-export function formatRecipe(recipe) {
+export function formatRecipe(recipe: unknown): string {
   return `${lay(recipe, "", 0)}\n`;
 }
 
 // `used` is how much of the line is already taken (the indent and the key).
-function lay(value, indent, used) {
+function lay(value: unknown, indent: string, used: number): string | undefined {
   if (Array.isArray(value)) {
     if (!value.length) return "[]";
     if (value.every((x) => x === null || typeof x !== "object")) {
@@ -20,7 +20,7 @@ function lay(value, indent, used) {
   }
   if (value && typeof value === "object") {
     const inner = `${indent}  `;
-    const lines = Object.entries(value).flatMap(([k, v]) => {
+    const lines = Object.entries(value).flatMap(([k, v]): string[] => {
       const key = `${inner}${JSON.stringify(k)}: `;
       const text = lay(v, inner, key.length);
       return text === undefined ? [] : [key + text];

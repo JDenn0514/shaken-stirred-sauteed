@@ -1,6 +1,6 @@
 # Headers Cloudflare adds to the site's files (not served itself). The Worker
 # adds the same ones to what it answers: keep this in step with
-# worker/src/headers.js (tests/unit/security-headers.test.mjs checks).
+# worker/src/headers.ts (tests/unit/security-headers.test.mjs checks).
 /*
   Content-Security-Policy: frame-ancestors 'none'
   X-Content-Type-Options: nosniff

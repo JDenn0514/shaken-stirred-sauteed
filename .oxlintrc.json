@@ -40,6 +40,6 @@
     },
     { "files": ["tests/e2e/fixtures.mjs"], "rules": { "no-restricted-imports": "off" } },
     // The Worker's helper script, test settings and fake GitHub run in Node.
-    { "files": ["worker/scripts/**", "worker/test/**", "worker/*.config.js"], "env": { "node": true } }
+    { "files": ["worker/scripts/**", "worker/test/**", "worker/*.config.ts"], "env": { "node": true } }
   ]
 }

@@ -33,6 +33,13 @@ jobs:
       - name: Lint
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: npm run lint
+      - name: Type check the Worker
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: |
+          npm run typecheck || {
+            echo "::error::The Worker has a type error, or worker/worker-configuration.d.ts is out of date after a change to wrangler.jsonc. For the second, run 'npm run types:worker' and commit the result."
+            exit 1
+          }
       - name: Broken links
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: npm run check:links

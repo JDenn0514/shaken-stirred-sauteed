@@ -1,13 +1,13 @@
 // Cloudflare: one Worker serves the site at shaken-stirred-sauteed.com.
 // The site's own files are served as they are ("static assets": free, and not
 // counted against the daily request limit). Only /api/ runs the Worker's code
-// (worker/src/index.js): the editor's sign-in now, and saving later.
+// (worker/src/index.ts): the editor's sign-in now, and saving later.
 // Cloudflare deploys this on every push to main (Workers Builds), and runs
 // `wrangler preview` on every other branch. Files that aren't part of the site
 // are kept out by .assetsignore.
 {
   "name": "shaken-stirred-sauteed",
-  "main": "worker/src/index.js",
+  "main": "worker/src/index.ts",
   "compatibility_date": "2026-11-01",
   // Better Auth (sign-in) needs Node's AsyncLocalStorage.
   "compatibility_flags": ["nodejs_compat"],
