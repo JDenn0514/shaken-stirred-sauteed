@@ -24,6 +24,7 @@ Check each of these; a miss is **Important**:
 - **Changes only come from the site's own pages** (the `Origin` check `/api/save` has), and only by POST.
 - **What's published:** a new top-level file or folder is either meant to be on the web or is in `.assetsignore`.
 - **What goes into a page from a recipe or an imported web page** goes through `esc()` or `safeURL`, never straight into `innerHTML`.
+- **A second, security-only look:** run Trail of Bits' `/differential-review:diff-review` on the PR, with its report written under `~/security-audit-skill/shaken-stirred-sauteed/`, and answer what it finds like any other Important finding.
 
 Findings from a security audit (the `security-audit` skill) stay outside this repo, which is public: in its default folder, `~/security-audit-skill/`. Each one fixed here gets a test that failed before the fix.
 

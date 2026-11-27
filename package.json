@@ -11,7 +11,7 @@
     "lint": "oxlint",
     "check:links": "node scripts/check-links.mjs",
     "check:recipes": "node scripts/build-index.mjs && git diff --exit-code --stat recipes/index.json",
-    "check": "npm run lint && npm run check:links && npm run check:recipes && npm run test:unit && npm run test:worker",
+    "check": "npm run lint && npm run check:links && npm run check:recipes && node scripts/check-deps.mjs && npm run test:unit && npm run test:worker",
     "prepare": "git config core.hooksPath .githooks",
     "test:worker": "npm test --workspace worker"
   },

@@ -49,6 +49,11 @@ jobs:
       - name: Worker tests (sign-in)
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: npm run test:worker
+      # Fails when the Worker's dependencies changed since they were last
+      # audited (a Dependabot update to Better Auth, say); its message says how.
+      - name: Worker dependencies audited
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: node scripts/check-deps.mjs
 
   browser:
     name: Browser tests (${{ matrix.shard }})
