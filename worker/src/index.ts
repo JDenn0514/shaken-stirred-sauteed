@@ -91,18 +91,14 @@ async function api(request: Request, env: Env, url: URL): Promise<Response> {
   if (saving && origin !== url.origin) return Response.json({ error: "Saving only works from this site." }, { status: 403 });
 
   try {
-    let body: RequestBody | null = null;
-    if (saving) {
-      body = await request.json<RequestBody | null>().catch(() => null);
-      const problem = badRequest(url.pathname, body);
-      if (problem) return Response.json({ error: problem }, { status: 400 });
-    }
+    const change = saving ? readChange(url.pathname, await request.json().catch(() => null)) : null;
+    if (change && "error" in change) return Response.json({ error: change.error }, { status: 400 });
     const token = await githubToken(auth, request);
     if (!token) return signedOut(SIGN_IN_AGAIN);
     const gh = github(token, env.GITHUB_REPO);
-    if (recipe) return Response.json(await loadRecipe(gh, decoded(recipe[1])));
-    if (url.pathname === "/api/save") return Response.json(await saveRecipe(gh, body as SaveBody));
-    return Response.json(await deleteRecipe(gh, body as DeleteBody));
+    if (!change) return Response.json(await loadRecipe(gh, decoded(recipe![1])));
+    if ("save" in change) return Response.json(await saveRecipe(gh, change.save));
+    return Response.json(await deleteRecipe(gh, change.delete));
   } catch (error) {
     if (!(error instanceof Refusal)) throw error;
     return error.status === 401 ? signedOut(error.message) : Response.json(error.body, { status: error.status });
@@ -119,20 +115,23 @@ function decoded(text: string) {
   }
 }
 
-// A save or delete's request as sent, and once badRequest has passed it.
-type RequestBody = { slug?: unknown; recipe?: unknown; baseSha?: unknown };
-type SaveBody = Parameters<typeof saveRecipe>[1];
-type DeleteBody = Parameters<typeof deleteRecipe>[1];
+// A save or delete's request, read and checked: what's wrong with it, or what
+// saveRecipe or deleteRecipe needs.
+type Change =
+  | { error: string }
+  | { save: Parameters<typeof saveRecipe>[1] }
+  | { delete: Parameters<typeof deleteRecipe>[1] };
 
-// What's wrong with a save or delete's request, if anything.
-function badRequest(path: string, body: RequestBody | null) {
-  if (!body || typeof body !== "object" || Array.isArray(body)) return "Send the recipe as JSON.";
-  if (!isSlug(body.slug)) return "The recipe's file name must be lowercase letters, numbers and dashes.";
-  if (body.baseSha !== undefined && (typeof body.baseSha !== "string" || !/^[0-9a-f]{40}$/.test(body.baseSha))) return "That isn't a version of a recipe.";
-  if (path === "/api/delete") return body.baseSha === undefined ? "Say which version of the recipe to delete." : "";
-  const r = body.recipe;
-  if (!r || typeof r !== "object" || Array.isArray(r)) return "Send the recipe to save.";
-  return "";
+const isObject = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
+
+function readChange(path: string, body: unknown): Change {
+  if (!isObject(body)) return { error: "Send the recipe as JSON." };
+  const { slug, baseSha, recipe } = body;
+  if (!isSlug(slug)) return { error: "The recipe's file name must be lowercase letters, numbers and dashes." };
+  if (baseSha !== undefined && (typeof baseSha !== "string" || !/^[0-9a-f]{40}$/.test(baseSha))) return { error: "That isn't a version of a recipe." };
+  if (path === "/api/delete") return baseSha === undefined ? { error: "Say which version of the recipe to delete." } : { delete: { slug, baseSha } };
+  if (!isObject(recipe)) return { error: "Send the recipe to save." };
+  return { save: { slug, recipe, baseSha } };
 }
 
 // The signed-in person's GitHub token. Better Auth renews GitHub's 8-hour
