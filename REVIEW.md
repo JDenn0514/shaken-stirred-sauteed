@@ -18,7 +18,7 @@ Look hardest for these, in this order:
 
 Check each of these; a miss is **Important**:
 
-- **Every route asks who's signed in before doing anything,** and refuses with 401 when no one is. A new route is also added to the access laws (`worker/test/access-laws.test.js`); that test fails until it is.
+- **Every route asks who's signed in before doing anything,** and refuses with 401 when no one is. A new route is also added to the access laws (`worker/test/access-laws.test.ts`); that test fails until it is.
 - **Each person only reaches their own things.** Every D1 query that reads, changes or deletes something a person owns is limited to that person (`WHERE user_id = ?`, with the id from the session, never from the request).
 - **Nothing a request sends decides who it's for:** a user id, owner or role in the body, URL or a header is ignored, not trusted.
 - **Changes only come from the site's own pages** (the `Origin` check `/api/save` has), and only by POST.

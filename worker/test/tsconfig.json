@@ -1,0 +1,10 @@
+// The type check for the Worker's tests (npm run typecheck): the Worker's
+// settings, plus Node's types for the fakes and vitest.config.ts, which run in
+// Node, and cloudflare:test, the test runner's.
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "@cloudflare/vitest-plugin/types"]
+  },
+  "include": [".", "../src", "../vitest.config.ts", "../worker-configuration.d.ts", "../env.d.ts"]
+}

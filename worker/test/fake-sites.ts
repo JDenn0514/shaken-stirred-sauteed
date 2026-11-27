@@ -1,8 +1,8 @@
 // Fake outside websites for /api/fetch's tests (runs in Node, outside the
-// Worker, like fake-github.js). recipes.example is a recipe site; every
+// Worker, like fake-github.ts). recipes.example is a recipe site; every
 // address it's asked for is noted, so a test can check that a private address
 // was never reached. GET https://fake-sites.test/reached lists them.
-const reached = [];
+const reached: string[] = [];
 
 const LEMON_BARS = `<!doctype html><html><head><title>Lemon Bars</title>
 <meta property="og:site_name" content="Example Kitchen">
@@ -11,10 +11,10 @@ const LEMON_BARS = `<!doctype html><html><head><title>Lemon Bars</title>
 </head><body><h1>Lemon Bars</h1></body></html>`;
 
 const MB = 1024 * 1024;
-const page = (html, init = {}) => new Response(html, { ...init, headers: { "Content-Type": "text/html; charset=utf-8", ...init.headers } });
-const redirect = (to, status = 302) => new Response(null, { status, headers: { Location: to } });
+const page = (html: BodyInit, init: { headers?: Record<string, string> } = {}) => new Response(html, { ...init, headers: { "Content-Type": "text/html; charset=utf-8", ...init.headers } });
+const redirect = (to: string, status = 302) => new Response(null, { status, headers: { Location: to } });
 
-export async function fakeSites(request) {
+export async function fakeSites(request: Request) {
   const url = new URL(request.url);
   if (url.origin === "https://fake-sites.test") return Response.json(reached);
   reached.push(url.href);
@@ -34,7 +34,7 @@ export async function fakeSites(request) {
       const chunk = new TextEncoder().encode("x".repeat(MB));
       let sent = 0;
       return page(new ReadableStream({
-        pull(c) { if (sent++ < 6) c.enqueue(chunk); else c.close(); },
+        pull(c: ReadableStreamDefaultController<Uint8Array>) { if (sent++ < 6) c.enqueue(chunk); else c.close(); },
       }));
     }
     case "/slow":
