@@ -17,7 +17,6 @@
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
     "strict": true,
-    "noUncheckedIndexedAccess": false,
     "skipLibCheck": true
   },
   "include": ["src", "test", "vitest.config.ts", "worker-configuration.d.ts", "env.d.ts"]

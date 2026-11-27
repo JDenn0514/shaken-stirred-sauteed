@@ -51,7 +51,7 @@ describe("GET /api/signin", () => {
     it(`refuses to come back to ${page}`, async () => {
       const res = await browser().fetch(`/api/signin?return=${encodeURIComponent(page)}`);
       expect(res.status).toBe(400);
-      expect(res.headers.get("Location")!).toBeNull();
+      expect(res.headers.get("Location")).toBeNull();
       expect(await res.text()).toMatch(/isn't a page on this site/);
     });
   }

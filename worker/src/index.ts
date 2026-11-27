@@ -91,9 +91,9 @@ async function api(request: Request, env: Env, url: URL): Promise<Response> {
   if (saving && origin !== url.origin) return Response.json({ error: "Saving only works from this site." }, { status: 403 });
 
   try {
-    let body: Body | null = null;
+    let body: RequestBody | null = null;
     if (saving) {
-      body = await request.json<Body | null>().catch(() => null);
+      body = await request.json<RequestBody | null>().catch(() => null);
       const problem = badRequest(url.pathname, body);
       if (problem) return Response.json({ error: problem }, { status: 400 });
     }
@@ -120,12 +120,12 @@ function decoded(text: string) {
 }
 
 // A save or delete's request as sent, and once badRequest has passed it.
-type Body = { slug?: unknown; recipe?: unknown; baseSha?: unknown };
+type RequestBody = { slug?: unknown; recipe?: unknown; baseSha?: unknown };
 type SaveBody = Parameters<typeof saveRecipe>[1];
 type DeleteBody = Parameters<typeof deleteRecipe>[1];
 
 // What's wrong with a save or delete's request, if anything.
-function badRequest(path: string, body: Body | null) {
+function badRequest(path: string, body: RequestBody | null) {
   if (!body || typeof body !== "object" || Array.isArray(body)) return "Send the recipe as JSON.";
   if (!isSlug(body.slug)) return "The recipe's file name must be lowercase letters, numbers and dashes.";
   if (body.baseSha !== undefined && (typeof body.baseSha !== "string" || !/^[0-9a-f]{40}$/.test(body.baseSha))) return "That isn't a version of a recipe.";

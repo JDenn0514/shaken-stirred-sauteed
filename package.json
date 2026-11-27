@@ -24,6 +24,9 @@
     "oxlint": "^1.92.0",
     "wrangler": "4.158.0"
   },
+  "engines": {
+    "node": ">=22.18"
+  },
   "workspaces": [
     "worker"
   ]

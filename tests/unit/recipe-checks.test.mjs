@@ -42,7 +42,7 @@ describe("checkRecipe", () => {
     assert.deepEqual(result, fromBuild("Bad_Name", bad));
   });
 
-  // Found by the save law in worker/test/save.test.js: fields the checker turns
+  // Found by the save law in worker/test/save.test.ts: fields the checker turns
   // into text made it throw, or passed as "there", when they weren't text.
   // The rest of the recipe isn't checked until they are.
   test("a text field that isn't text is refused, as the build says it", () => {

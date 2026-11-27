@@ -37,6 +37,6 @@ test("no _headers rule takes a security header away", async () => {
 
 test("the referrer policy keeps the Origin header that saving checks", () => {
   // With no-referrer, a browser sends "Origin: null" on the editor's POSTs and
-  // the Worker refuses every save (worker/src/index.js).
+  // the Worker refuses every save (worker/src/index.ts).
   assert.notEqual(SECURITY_HEADERS["Referrer-Policy"], "no-referrer");
 });

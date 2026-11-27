@@ -207,7 +207,7 @@ That serves the site's files, so recipes, the menu, cook mode, and the intake wi
 
 ## Tests
 
-The tests need [Node.js](https://nodejs.org) and Google Chrome. They're for development only. The site itself has one dependency, committed as files rather than installed: pdf.js (`assets/vendor/pdfjs/`, with its licence), loaded only by the recipe intake when a PDF is chosen. (The Worker in `worker/` has its own, installed by the same `npm install`.)
+The tests need [Node.js](https://nodejs.org) 22.18 or newer (it runs the Worker's TypeScript files as they are) and Google Chrome. They're for development only. The site itself has one dependency, committed as files rather than installed: pdf.js (`assets/vendor/pdfjs/`, with its licence), loaded only by the recipe intake when a PDF is chosen. (The Worker in `worker/` has its own, installed by the same `npm install`.)
 
 ```sh
 npm install                      # once
