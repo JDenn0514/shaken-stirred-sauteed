@@ -12,7 +12,7 @@
     "check:links": "node scripts/check-links.mjs",
     "check:recipes": "node scripts/build-index.mjs && git diff --exit-code --stat recipes/index.json",
     "check": "npm run lint && npm run typecheck && npm run check:links && npm run check:recipes && npm run test:unit && npm run test:worker",
-    "typecheck": "npm run types:worker -- --check && tsc -p worker",
+    "typecheck": "npm run types:worker -- --check && tsc -p worker && tsc -p worker/test",
     "types:worker": "wrangler types worker/worker-configuration.d.ts --strict-vars=false",
     "prepare": "git config core.hooksPath .githooks",
     "test:worker": "npm test --workspace worker"

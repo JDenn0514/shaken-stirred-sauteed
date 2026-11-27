@@ -1,17 +1,18 @@
-// The type check for the Worker and its tests (npm run typecheck at the repo
-// root, part of npm run check). Nothing is compiled: Wrangler and vitest run
-// the .ts files as they are, so `noEmit`, and only syntax that can just be
-// erased (`erasableSyntaxOnly`), which Node can run too (scripts/auth-schema.mjs).
+// The type check for the Worker (npm run typecheck at the repo root, part of
+// npm run check; test/tsconfig.json is the tests'). Nothing is compiled:
+// Wrangler and vitest run the .ts files as they are, so `noEmit`, and only
+// syntax that can just be erased (`erasableSyntaxOnly`), which Node can run
+// too (scripts/auth-schema.mjs).
 {
   "compilerOptions": {
     "target": "es2024",
     "lib": ["es2024"],
     "module": "preserve",
     "moduleResolution": "bundler",
-    // The Workers runtime's own types come from worker-configuration.d.ts
-    // (made by `wrangler types`); Node's are for the tests' fakes and settings,
-    // which run in Node; cloudflare:test is the test runner's.
-    "types": ["node", "@cloudflare/vitest-plugin/types"],
+    // The Workers runtime's own types only, from worker-configuration.d.ts
+    // (made by `wrangler types`), so Node's (Buffer, process) can't creep into
+    // the Worker. The tests have their own settings (test/tsconfig.json).
+    "types": [],
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
@@ -19,5 +20,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src", "test", "vitest.config.ts", "worker-configuration.d.ts", "env.d.ts"]
+  "include": ["src", "worker-configuration.d.ts", "env.d.ts"]
 }
