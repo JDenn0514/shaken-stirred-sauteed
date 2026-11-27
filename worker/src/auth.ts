@@ -1,15 +1,19 @@
 // Sign-in with GitHub, run by Better Auth (docs/specs/recipe-editor-design.md,
 // "Signing in"). Its tables are in the D1 database (worker/migrations).
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthOptions } from "better-auth";
 
 // A secret as typed or pasted into Cloudflare's dashboard, without the spaces
 // or invisible characters that can come with it: zero-width space, zero-width
 // non-joiner and joiner, word joiner, and byte-order mark.
-const clean = (value) => value?.replace(/[\u200B-\u200D\u2060\uFEFF]/g, "").trim();
+const clean = <T extends string | undefined>(value: T) => value?.replace(/[\u200B-\u200D\u2060\uFEFF]/g, "").trim() as T;
+
+// The settings Better Auth needs; worker/scripts/auth-schema.mjs passes only these.
+type AuthEnv = Pick<Env, "SITE_URL" | "BETTER_AUTH_SECRET" | "GITHUB_CLIENT_ID" | "GITHUB_CLIENT_SECRET"> & { DB?: D1Database };
+export type Auth = ReturnType<typeof betterAuth<ReturnType<typeof authOptions>>>;
 
 // Better Auth's settings. Also used by worker/scripts/auth-schema.mjs, which
 // writes the SQL for the tables these settings need.
-export function authOptions(env, database = env.DB) {
+export function authOptions(env: AuthEnv, database: BetterAuthOptions["database"] = env.DB) {
   return {
     appName: "Shaken, Stirred & Sautéed",
     // Sign-in only works on the real domain: GitHub sends you back to the
@@ -41,15 +45,15 @@ export function authOptions(env, database = env.DB) {
       defaultCookieAttributes: { httpOnly: true, secure: true, sameSite: "lax" },
     },
     telemetry: { enabled: false },
-  };
+  } satisfies BetterAuthOptions;
 }
 
 // One Better Auth per Worker instance: its settings don't change between
 // requests. forgetAuth() drops it after an error, so a failed start (the
 // database out of reach, or its tables not made yet) is retried on the next
 // request rather than kept until Cloudflare restarts the Worker.
-let auth;
-export function getAuth(env) {
+let auth: Auth | undefined;
+export function getAuth(env: Env) {
   // Better Auth would quietly use a public default without one (it only
   // refuses when NODE_ENV is "production", which Workers don't set), and the
   // secret is what encrypts the GitHub tokens: no secret, no sign-in.
@@ -61,15 +65,15 @@ export const forgetAuth = () => { auth = undefined; };
 // Who may sign in: the GitHub accounts in ALLOWED_GITHUB_IDS (wrangler.jsonc),
 // by GitHub's account ID. Today only the site's owner, until the multi-user
 // project opens it up (docs/specs/multi-user-security.md).
-export async function isAllowed(env, userId) {
+export async function isAllowed(env: Env, userId: string) {
   const ids = new Set(String(env.ALLOWED_GITHUB_IDS ?? "").split(",").map((s) => s.trim()).filter(Boolean));
-  const { results } = await env.DB.prepare(`select "accountId" from "account" where "userId" = ? and "providerId" = 'github'`).bind(userId).all();
+  const { results } = await env.DB.prepare(`select "accountId" from "account" where "userId" = ? and "providerId" = 'github'`).bind(userId).all<{ accountId: string }>();
   return results.length > 0 && results.every((a) => ids.has(String(a.accountId)));
 }
 
 // Deletes everything kept for a person: their sessions, their GitHub account
 // (with its tokens) and the user itself.
-export async function removeUser(env, userId) {
+export async function removeUser(env: Env, userId: string) {
   await env.DB.batch([
     env.DB.prepare(`delete from "session" where "userId" = ?`).bind(userId),
     env.DB.prepare(`delete from "account" where "userId" = ?`).bind(userId),

@@ -1,18 +1,18 @@
 // POST /api/fetch: gets a recipe website's page for the intake (browsers can't
 // fetch another site's page themselves). Signed in only, https only, never a
 // private or local address, with a size limit and a time limit. The outside
-// site is faked (fake-sites.js).
+// site is faked (fake-sites.ts).
 import { env } from "cloudflare:test";
 import { exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
-import worker from "../src/index.js";
+import worker from "../src/index.ts";
 
 const SITE = "https://shaken-stirred-sauteed.com";
 
 // Signs in as the fake GitHub's "jacob" and keeps the session cookie.
 async function signedIn() {
-  const jar = new Map();
-  const send = async (path, init = {}, settings) => {
+  const jar = new Map<string, string>();
+  const send = async (path: string, init: RequestInit = {}, settings?: Partial<Env>) => {
     const headers = new Headers(init.headers);
     if (jar.size) headers.set("Cookie", [...jar].map(([k, v]) => `${k}=${v}`).join("; "));
     const request = new Request(new URL(path, SITE), { ...init, headers, redirect: "manual" });
@@ -25,18 +25,19 @@ async function signedIn() {
     return res;
   };
   const start = await send("/api/signin?return=/intake.html");
-  const state = new URL(start.headers.get("Location")).searchParams.get("state");
+  const state = new URL(start.headers.get("Location")!).searchParams.get("state");
   await send(`/api/auth/callback/github?code=jacob&state=${state}`);
   return send;
 }
 
-const getPage = (send, url, settings) => send("/api/fetch", {
+type Send = Awaited<ReturnType<typeof signedIn>>;
+const getPage = (send: Send, url: unknown, settings?: Partial<Env>) => send("/api/fetch", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ url }),
 }, settings);
 
-const reached = async () => (await fetch("https://fake-sites.test/reached")).json();
+const reached = async () => (await fetch("https://fake-sites.test/reached")).json<string[]>();
 
 describe("POST /api/fetch", () => {
   it("refuses you when you aren't signed in, without fetching anything", async () => {
@@ -52,21 +53,21 @@ describe("POST /api/fetch", () => {
     const res = await getPage(send, "https://recipes.example/lemon-bars");
     expect(res.status).toBe(200);
     expect(res.headers.get("Cache-Control")).toBe("no-store");
-    const body = await res.json();
+    const body = await res.json<any>();
     expect(body.url).toBe("https://recipes.example/lemon-bars");
     expect(body.html).toContain('"@type":"Recipe"');
   });
 
   it("follows a redirect, and says where it ended up", async () => {
     const send = await signedIn();
-    const body = await (await getPage(send, "https://recipes.example/moved")).json();
+    const body = await (await getPage(send, "https://recipes.example/moved")).json<any>();
     expect(body.url).toBe("https://recipes.example/lemon-bars");
     expect(body.html).toContain("Lemon Bars");
   });
 
   it("asks like a web browser, naming the site, since some sites turn away anything else", async () => {
     const send = await signedIn();
-    const { html } = await (await getPage(send, "https://recipes.example/user-agent")).json();
+    const { html } = await (await getPage(send, "https://recipes.example/user-agent")).json<any>();
     expect(html).toMatch(/^Mozilla\/5\.0 .*shaken-stirred-sauteed\.com/);
   });
 
@@ -76,7 +77,7 @@ describe("POST /api/fetch", () => {
       const send = await signedIn();
       const res = await getPage(send, url);
       expect(res.status).toBe(400);
-      expect((await res.json()).error).toMatch(/https:\/\//);
+      expect((await res.json<any>()).error).toMatch(/https:\/\//);
     });
   }
 
@@ -89,7 +90,7 @@ describe("POST /api/fetch", () => {
       const send = await signedIn();
       const res = await getPage(send, url);
       expect(res.status).toBe(400);
-      expect((await res.json()).error).toMatch(/isn't a public website/);
+      expect((await res.json<any>()).error).toMatch(/isn't a public website/);
       expect((await reached()).some((r) => r.startsWith(new URL(url).origin))).toBe(false);
     });
   }
@@ -99,7 +100,7 @@ describe("POST /api/fetch", () => {
     for (const path of ["/to-local", "/to-private"]) {
       const res = await getPage(send, `https://recipes.example${path}`);
       expect(res.status).toBe(400);
-      expect((await res.json()).error).toMatch(/isn't a public website/);
+      expect((await res.json<any>()).error).toMatch(/isn't a public website/);
     }
     const hosts = (await reached()).map((r) => new URL(r).hostname);
     expect(hosts).not.toContain("127.0.0.1");
@@ -110,14 +111,14 @@ describe("POST /api/fetch", () => {
     const send = await signedIn();
     const res = await getPage(send, "https://recipes.example/to-http");
     expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatch(/https:\/\//);
+    expect((await res.json<any>()).error).toMatch(/https:\/\//);
   });
 
   it("gives up on endless redirects", async () => {
     const send = await signedIn();
     const res = await getPage(send, "https://recipes.example/loop");
     expect(res.status).toBe(502);
-    expect((await res.json()).error).toMatch(/redirect/i);
+    expect((await res.json<any>()).error).toMatch(/redirect/i);
   });
 
   for (const path of ["/huge", "/huge-unannounced"]) {
@@ -125,7 +126,7 @@ describe("POST /api/fetch", () => {
       const send = await signedIn();
       const res = await getPage(send, `https://recipes.example${path}`);
       expect(res.status).toBe(413);
-      expect((await res.json()).error).toMatch(/too big/);
+      expect((await res.json<any>()).error).toMatch(/too big/);
     });
   }
 
@@ -134,7 +135,7 @@ describe("POST /api/fetch", () => {
     const started = Date.now();
     const res = await getPage(send, "https://recipes.example/slow", { FETCH_TIMEOUT_MS: "200" });
     expect(res.status).toBe(504);
-    expect((await res.json()).error).toMatch(/too long/);
+    expect((await res.json<any>()).error).toMatch(/too long/);
     expect(Date.now() - started).toBeLessThan(1500);
   });
 
@@ -143,7 +144,7 @@ describe("POST /api/fetch", () => {
       const send = await signedIn();
       const res = await getPage(send, `https://recipes.example${path}`);
       expect(res.status).toBe(502);
-      const { error, refused } = await res.json();
+      const { error, refused } = await res.json<any>();
       expect(refused).toBe(true);
       expect(error).toMatch(/won't share/);
       expect(error).toMatch(/copy/i);
@@ -154,14 +155,14 @@ describe("POST /api/fetch", () => {
     const send = await signedIn();
     const res = await getPage(send, "https://recipes.example/missing");
     expect(res.status).toBe(502);
-    expect((await res.json()).error).toMatch(/doesn't exist/);
+    expect((await res.json<any>()).error).toMatch(/doesn't exist/);
   });
 
   it("refuses something that isn't a web page", async () => {
     const send = await signedIn();
     const res = await getPage(send, "https://recipes.example/photo.jpg");
     expect(res.status).toBe(415);
-    expect((await res.json()).error).toMatch(/isn't a web page/);
+    expect((await res.json<any>()).error).toMatch(/isn't a web page/);
   });
 
   it("only takes POST", async () => {

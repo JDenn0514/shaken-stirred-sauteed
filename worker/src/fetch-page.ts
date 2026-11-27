@@ -1,6 +1,6 @@
 // POST /api/fetch { url }: a recipe website's page, for the intake
 // (docs/specs/recipe-editor-design.md, "Recipe websites"). A browser can't
-// read another site's page from this one, so the Worker gets it. index.js only
+// read another site's page from this one, so the Worker gets it. index.ts only
 // sends signed-in requests here, and only the accounts in ALLOWED_GITHUB_IDS
 // can sign in, so it can't be used as an open proxy.
 //
@@ -22,17 +22,19 @@ const USER_AGENT = "Mozilla/5.0 (compatible; recipe reader; +https://shaken-stir
 const COPY_INSTEAD = "Open the recipe on that site, copy its text, and paste it below.";
 
 class Problem extends Error {
-  constructor(status, error, extra = {}) {
+  status: number;
+  extra: Record<string, unknown>;
+  constructor(status: number, error: string, extra: Record<string, unknown> = {}) {
     super(error);
     this.status = status;
     this.extra = extra;
   }
 }
 
-export async function fetchPage(request, env) {
-  let address;
+export async function fetchPage(request: Request, env: Env) {
+  let address: unknown;
   try {
-    ({ url: address } = await request.json());
+    ({ url: address } = await request.json<{ url?: unknown }>());
   } catch {
     address = null;
   }
@@ -45,7 +47,7 @@ export async function fetchPage(request, env) {
   }
 }
 
-async function get(address, timeout) {
+async function get(address: unknown, timeout: number) {
   const signal = AbortSignal.timeout(timeout);
   let url = checked(address);
   try {
@@ -61,7 +63,7 @@ async function get(address, timeout) {
       });
       if (res.status >= 300 && res.status < 400 && res.headers.has("Location")) {
         await res.body?.cancel();
-        url = checked(new URL(res.headers.get("Location"), url).href);
+        url = checked(new URL(res.headers.get("Location")!, url).href);
         continue;
       }
       return { html: await read(res, url), url: url.href };
@@ -74,7 +76,7 @@ async function get(address, timeout) {
   throw new Problem(502, "That site keeps redirecting, so the page can't be read.");
 }
 
-async function read(res, url) {
+async function read(res: Response, url: URL) {
   if (!res.ok) {
     await res.body?.cancel();
     if (res.status === 404 || res.status === 410) throw new Problem(502, "That site says the page doesn't exist. Check the address.");
@@ -98,7 +100,7 @@ async function read(res, url) {
   // Counted as it comes, since Content-Length can be missing or wrong.
   const chunks = [];
   let size = 0;
-  const reader = res.body.getReader();
+  const reader = res.body!.getReader();
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -120,11 +122,11 @@ async function read(res, url) {
   }
 }
 
-const lower = (s) => s[0].toLowerCase() + s.slice(1);
+const lower = (s: string) => s[0].toLowerCase() + s.slice(1);
 
 // The address as a URL, if it's an https address of a public website.
-function checked(address) {
-  let url;
+function checked(address: unknown) {
+  let url: URL | null;
   try {
     url = new URL(String(address ?? "").trim());
   } catch {
@@ -138,7 +140,7 @@ function checked(address) {
 // Names and addresses that aren't the public internet. The URL parser has
 // already turned other ways of writing an IPv4 address (2130706433,
 // 0x7f000001, 127.1) into the usual four numbers.
-function isPrivate(host) {
+function isPrivate(host: string) {
   host = host.toLowerCase().replace(/\.$/, "");
   if (host.startsWith("[")) return privateV6(host.slice(1, -1));
   const v4 = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
@@ -147,7 +149,7 @@ function isPrivate(host) {
   return !host.includes(".") || /\.(localhost|local|lan|home|internal|intranet|corp|private|test|invalid|home\.arpa)$/.test(host);
 }
 
-function privateV4([a, b]) {
+function privateV4([a, b]: number[]) {
   return a === 0 || a === 10 || a === 127 || a >= 224 // this network, private, loopback, multicast and reserved
     || (a === 100 && b >= 64 && b <= 127) // shared address space (carrier NAT)
     || (a === 169 && b === 254) // link-local, including cloud metadata
@@ -157,7 +159,7 @@ function privateV4([a, b]) {
     || (a === 198 && (b === 18 || b === 19)); // benchmarking
 }
 
-function privateV6(host) {
+function privateV6(host: string) {
   // An IPv4 address inside IPv6 (::ffff:7f00:1 is 127.0.0.1).
   const mapped = /^(?:0*:)*:?ffff:([\da-f]{1,4}):([\da-f]{1,4})$/.exec(host);
   if (mapped) {

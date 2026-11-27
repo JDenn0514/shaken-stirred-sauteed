@@ -11,7 +11,9 @@
     "lint": "oxlint",
     "check:links": "node scripts/check-links.mjs",
     "check:recipes": "node scripts/build-index.mjs && git diff --exit-code --stat recipes/index.json",
-    "check": "npm run lint && npm run check:links && npm run check:recipes && node scripts/check-deps.mjs && npm run test:unit && npm run test:worker",
+    "check": "npm run lint && npm run typecheck && npm run check:links && npm run check:recipes && node scripts/check-deps.mjs && npm run test:unit && npm run test:worker",
+    "typecheck": "npm run types:worker -- --check && tsc -p worker && tsc -p worker/test",
+    "types:worker": "wrangler types worker/worker-configuration.d.ts --strict-vars=false",
     "prepare": "git config core.hooksPath .githooks",
     "test:worker": "npm test --workspace worker"
   },
@@ -21,6 +23,9 @@
     "fast-check": "^4.10.2",
     "oxlint": "^1.93.0",
     "wrangler": "4.168.0"
+  },
+  "engines": {
+    "node": ">=22.18"
   },
   "workspaces": [
     "worker"

@@ -21,6 +21,8 @@ tests
 scripts
 wrangler.jsonc
 worker
+# Types for the Worker's type check, beside the checker they describe
+assets/*.d.ts
 
 # Notes and the old address's "moved" page (served by GitHub Pages instead)
 docs
